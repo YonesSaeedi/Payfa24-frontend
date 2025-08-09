@@ -4,7 +4,7 @@ function App() {
 
   return (
     <div>
-      <a className='bg-primary text-secondary' href="#">asdfadsf</a>
+      <a className='bg-primary text-secondary' href="#"> asdfadsf</a>
     </div>
   )
 }
