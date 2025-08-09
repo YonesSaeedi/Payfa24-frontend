@@ -1,0 +1,26 @@
+:root {
+    --primary: #2476FF;
+    --secondary: #E9F1FF;
+    
+    --third:#6CA3FF;
+        --background:#E9F1FF;
+        --border:#292929;
+        --borderprimary:#D1D9F0;
+        --text:#000000;
+
+  }
+
+
+  .dark{
+--primary: #185BCC;
+        --secondary: #B0C6FF;
+        --background:#222935;
+        --third:#242F3F;
+--border:#FFFFFF;
+        --borderprimary:#8792AF;
+        --text:#FFFFFF;    
+
+  }
+
+
+
