@@ -6,7 +6,7 @@ import  Transaction from './pages/Transaction';
 import Market from './pages/Market';
 import Services from './pages/Services';
 import Walet from './pages/Walet';
-
+import Footer from "./Components/Footer/Footer.tsx"
 function App() {
   return (
     <Router>
@@ -20,6 +20,7 @@ function App() {
           <Route path="/transaction" element={< Transaction />} />
         </Routes>
       </div>
+     <Footer/>
     </Router>
   );
 }
