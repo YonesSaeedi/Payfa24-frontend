@@ -10,8 +10,8 @@ import Category from "../Icons/header/Category";
 import Frame from "../Icons/header/Frame";
 import Ring from "../Icons/header/ring";
 import Bitcoin from "../Icons/header/Bitcoin";
-import  {ThemeContext}  from "./../../Context/ThemeContext"; 
-import  { useContext } from "react";
+import { ThemeContext } from "./../../Context/ThemeContext";
+import { useContext } from "react";
 import { useState } from "react";
 
 export default function Header() {
@@ -20,7 +20,9 @@ export default function Header() {
   const themeContext = useContext(ThemeContext);
 
   if (!themeContext) {
-    throw new Error("ThemeContext is undefined. Did you forget to wrap in ThemeProvider?");
+    throw new Error(
+      "ThemeContext is undefined. Did you forget to wrap in ThemeProvider?"
+    );
   }
 
   const { toggleTheme } = themeContext;
@@ -73,99 +75,98 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-6">
-         
-<ul className="hidden lg:flex space-x-8 text-header-items">
-  <li>
-    <Link
-      to="/services"
-      onClick={() => setActiveItem("/services")}
-      className={`hover:text-blue-600 transition flex items-center ${
-        activeItem === "/services"
-          ? themeContext.theme === "dark"
-            ? "text-primary"
-            : "text-blue-600 font-semibold"
-          : "text-header-items"
-      }`}
-    >
-      خدمات
-      <span className="pl-2">
-        <Category />
-      </span>
-    </Link>
-  </li>
-  <li>
-    <Link
-      to="/walet"
-      onClick={() => setActiveItem("/walet")}
-      className={`hover:text-blue-600 transition flex items-center ${
-        activeItem === "/walet"
-          ? themeContext.theme === "dark"
-            ? "text-primary"
-            : "text-blue-600 font-semibold"
-          : "text-header-items"
-      }`}
-    >
-      کیف پول
-      <span className="pl-2">
-        <Wallet />
-      </span>
-    </Link>
-  </li>
-  <li>
-    <Link
-      to="/market"
-      onClick={() => setActiveItem("/market")}
-      className={`hover:text-blue-600 transition flex items-center ${
-        activeItem === "/market"
-          ? themeContext.theme === "dark"
-            ? "text-primary"
-            : "text-blue-600 font-semibold"
-          : "text-header-items"
-      }`}
-    >
-      بازارها
-      <span className="pl-2">
-        <Chart />
-      </span>
-    </Link>
-  </li>
-  <li>
-    <Link
-      to="/transaction"
-      onClick={() => setActiveItem("/transaction")}
-      className={`hover:text-blue-600 transition flex items-center ${
-        activeItem === "/transaction"
-          ? themeContext.theme === "dark"
-            ? "text-primary"
-            : "text-blue-600 font-semibold"
-          : "text-header-items"
-      }`}
-    >
-      معامله
-      <span className="pl-2">
-        <Bitcoin />
-      </span>
-    </Link>
-  </li>
-  <li>
-    <Link
-      to="/"
-      onClick={() => setActiveItem("/")}
-      className={`hover:text-blue-600 transition flex items-center ${
-        activeItem === "/"
-          ? themeContext.theme === "dark"
-            ? "text-primary"
-            : "text-blue-600 font-semibold"
-          : "text-header-items"
-      }`}
-    >
-      خانه
-      <span className="pl-2">
-        <Home />
-      </span>
-    </Link>
-  </li>
-</ul>
+          <ul className="hidden lg:flex space-x-8 text-header-items">
+            <li>
+              <Link
+                to="/services"
+                onClick={() => setActiveItem("/services")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/services"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
+              >
+                خدمات
+                <span className="pl-2">
+                  <Category />
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/walet"
+                onClick={() => setActiveItem("/walet")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/walet"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
+              >
+                کیف پول
+                <span className="pl-2">
+                  <Wallet />
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/market"
+                onClick={() => setActiveItem("/market")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/market"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
+              >
+                بازارها
+                <span className="pl-2">
+                  <Chart />
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/transaction"
+                onClick={() => setActiveItem("/transaction")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/transaction"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
+              >
+                معامله
+                <span className="pl-2">
+                  <Bitcoin />
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/"
+                onClick={() => setActiveItem("/")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
+              >
+                خانه
+                <span className="pl-2">
+                  <Home />
+                </span>
+              </Link>
+            </li>
+          </ul>
 
           <div className="text-blue-600 font-bold pl-6 flex items-center gap-2 lg:gap-4">
             <Link to="/" className="flex items-center">
@@ -186,7 +187,7 @@ export default function Header() {
               id="hamburgerBtn"
               aria-controls="mobileMenu"
               aria-expanded="false"
-              className="md:hidden p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+              className="lg:hidden p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
               title="open menu"
             >
               <img
