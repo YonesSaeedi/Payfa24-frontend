@@ -7,6 +7,8 @@
   --border: #292929;
   --border-primary: #D1D9F0;
   --text: #000000;
+  --background-main:#FFFFFF;
+  --header-items:#8792AF
 }
 
 .dark {
@@ -17,6 +19,8 @@
   --border: #FFFFFF;
   --border-primary: #8792AF;
   --text: #FFFFFF;
+  --background-main:#0A121F;
+  --header-items:#A7B2D9
 }
 
 
