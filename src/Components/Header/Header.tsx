@@ -18,7 +18,7 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-md">
-      <nav className="container  flex items-center justify-between py-4 px-6">
+      <nav className="container container-style flex items-center justify-between py-4">
         <div className="flex gap-4 text-gray-600">
           <button
             className="hover:text-blue-600 transition"
@@ -140,7 +140,7 @@ export default function Header() {
               id="hamburgerBtn"
               aria-controls="mobileMenu"
               aria-expanded="false"
-              className="md:hidden p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+              className="lg:hidden p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
               title="open menu"
             >
               <img
