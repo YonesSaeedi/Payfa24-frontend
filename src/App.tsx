@@ -1,41 +1,27 @@
-import './App.css'
-import AppRouter from './routes'
-import "./assets/Color/Color-Theme.css"
-
-
-import React, { useContext } from "react";
-import { ThemeContext } from "./Context/ThemeContext"; 
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './Components/Header/Header';
+import Home from './pages/Home';
+import  Transaction from './pages/Transaction';
+import Market from './pages/Market';
+import Services from './pages/Services';
+import Walet from './pages/Walet';
 
 function App() {
-const context = useContext(ThemeContext);
-  if (!context) throw new Error("ThemeContext is undefined");
-
-  const { theme, toggleTheme } = context;
   return (
-    <div className='bg-third'>
-      <AppRouter />
-     <button
-  className="bg-secondary px-4 py-2 rounded text-white"
-  onClick={() => {
-    document.documentElement.classList.toggle("dark");
-  }}
->
-  Toggle Dark Mode
-</button>
- <div className="min-h-screen bg-rose-300 text-text flex flex-col items-center justify-center gap-4">
-      <h1 className="text-2xl font-bold bg-secondary ">
-        حالت فعلی: <span className="capitalize">{theme}</span>
-      </h1>
-
-      <button
-        onClick={toggleTheme}
-        className="bg-primary text-white px-6 py-2 rounded shadow-md transition"
-      >
-        تغییر تم
-      </button>
-    </div>
-    </div>
-  )
+    <Router>
+      <Header />
+      <div className="p-4">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/market" element={<Market />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/walet" element={<Walet/>} />
+          <Route path="/transaction" element={< Transaction />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;
