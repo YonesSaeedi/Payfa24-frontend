@@ -29,7 +29,7 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-md   dark:bg-gray-900 dark:text-white ">
-      <nav className="container mx-auto  flex items-center justify-between py-4 px-6">
+      <nav className="container-style mx-auto  flex items-center justify-between py-4 px-6">
         <div className="flex gap-4 text-gray-600">
           <button
             className="hover:text-blue-600 transition"
@@ -89,9 +89,9 @@ export default function Header() {
                 }`}
               >
                 خدمات
-                <span className="pl-2">
-                  <Category />
-                </span>
+                <span className="icon-wrapper pl-2">
+    <Category />
+  </span>
               </Link>
             </li>
             <li>

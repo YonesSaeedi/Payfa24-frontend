@@ -1,70 +1,40 @@
 
+import React from "react";
+import SocialLinks from "./SocialLinks";
+import DownloadCard from "./DownLoadCard";
+import ContactInfo from "./ContactInfo";
 
+import mayket from "/images/download (1) 1.png";
+import bazzer from "/images/bazaar-logo-and-logotype 1 (1).png";
+import Logo from "/images/logo.png";
+import mobile from "/images/footer-mobile.png"
 
-export default function Header() {
+export default function Footer(): React.JSX.Element {
   return (
-<footer className="bg-blue-600 text-white px-6 py-10">
- 
-           
-<div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-  
-  
-  <div className="flex gap-4">
-    <a href="#" className="p-2 rounded-full border border-white hover:bg-white hover:text-blue-600 transition"></a>
-    <a href="#" className="p-2 rounded-full border border-white hover:bg-white hover:text-blue-600 transition"></a>
-    <a href="#" className="p-2 rounded-full border border-white hover:bg-white hover:text-blue-600 transition"></a>
-    <a href="#" className="p-2 rounded-full border border-white hover:bg-white hover:text-blue-600 transition"></a>
-  </div>
+    <footer className="bg-primary text-white py-5">
+    
+      <div className="container-style flex justify-between items-center gap-8">
+        <SocialLinks />
+        <img src={Logo} alt="لوگو" />
+      </div>
 
-  <div>
-    <img src="./../../../public/images/logo.png" alt="logo" />
-  </div>
+   
+      <div className="border-t border-white mt-4">
+        <div className="container-style mb-[14px] flex flex-col lg:flex-row lg:justify-between gap-8">
+        
+          <div className="order-2 lg:order-1 flex flex-col gap-4 items-end relative lg:ml-[76px]">
+            <img src={mobile} alt="اپلیکیشن موبایل" />
+            <div className="flex bg-white rounded-md w-[360px] h-[77px] absolute bottom-0 justify-center items-center text-black">
+              <DownloadCard title="مایکت" img={mayket} />
+              <div className="w-px h-[60px] bg-gray-400 mx-4"></div>
+              <DownloadCard title="بازار" img={bazzer} />
+            </div>
+          </div>
 
-</div>
-
-
-
-
-
-<div className="flex justify-center gap-20 px-6">
-
-
-  <div id="left" className="flex flex-col gap-4 items-start relative mr-[200px]">
-    <div>
-      <img src="./../../../public/images/footer-mobile.png" alt="footer" />
-    </div>
-    <div className="flex flex-row gap-2 absolute bottom-2.5">
-      <button className="bg-white text-blue-600 rounded-md px-4 py-2 flex items-center gap-2 shadow-md hover:bg-gray-100 transition">
-        <img src="" alt="مایکت" className="w-6 h-6" />
-        دریافت برنامه از مایکت
-      </button>
-      <button className="bg-white text-blue-600 rounded-md px-4 py-2 flex items-center gap-2 shadow-md hover:bg-gray-100 transition">
-        <img src="" alt="بازار" className="w-6 h-6" />
-        دریافت برنامه از بازار
-      </button>
-    </div>
-  </div>
-
-  <div id="right" className="flex flex-col space-y-2 text-center md:text-right">
-    <h2 className="text-lg font-semibold mb-2">ارتباط با ما</h2>
-    <div className="flex items-center gap-2 justify-center md:justify-end">
-      <span>۰۲۱-۱۲۳۴۵۶۷۸۹</span>
-    </div>
-    <div className="flex items-center gap-2 justify-center md:justify-end">
-      <span>PayFarF@gmail.com</span>
-    </div>
-    <div className="flex items-center gap-2 justify-center md:justify-end">
-      <span>آدرس:</span>
-      <span>
-        میدان شهید بهشتی، خیابان امام خمینی، جنب پارک شورا، شهر اردبیل، استان اردبیل.
-      </span>
-    </div>
-  </div>
-
-</div>
-
-
-</footer>
+       
+          <ContactInfo />
+        </div>
+      </div>
+    </footer>
   );
-};
-
+}
