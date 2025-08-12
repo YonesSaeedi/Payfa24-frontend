@@ -10,15 +10,26 @@ import Category from "../Icons/header/Category";
 import Frame from "../Icons/header/Frame";
 import Ring from "../Icons/header/ring";
 import Bitcoin from "../Icons/header/Bitcoin";
-
+import { ThemeContext } from "./../../Context/ThemeContext";
+import { useContext } from "react";
 import { useState } from "react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [activeItem, setActiveItem] = useState<string>("/");
+  const themeContext = useContext(ThemeContext);
+
+  if (!themeContext) {
+    throw new Error(
+      "ThemeContext is undefined. Did you forget to wrap in ThemeProvider?"
+    );
+  }
+
+  const { toggleTheme } = themeContext;
 
   return (
-    <header className="bg-white shadow-md">
-      <nav className="container container-style flex items-center justify-between py-4">
+    <header className="bg-white shadow-md   dark:bg-gray-900 dark:text-white ">
+      <nav className="container-style mx-auto  flex items-center justify-between py-4 px-6">
         <div className="flex gap-4 text-gray-600">
           <button
             className="hover:text-blue-600 transition"
@@ -39,6 +50,7 @@ export default function Header() {
           <button
             className="hover:text-blue-600 transition hidden lg:block"
             aria-label="Notifications"
+            onClick={toggleTheme}
           >
             <span>
               <MoonIcon />
@@ -67,18 +79,32 @@ export default function Header() {
             <li>
               <Link
                 to="/services"
-                className="hover:text-blue-600 transition flex items-center"
+                onClick={() => setActiveItem("/services")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/services"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 خدمات
-                <span className="pl-2">
-                  <Category />
-                </span>
+                <span className="icon-wrapper pl-2">
+    <Category />
+  </span>
               </Link>
             </li>
             <li>
               <Link
                 to="/walet"
-                className="hover:text-blue-600 transition flex items-center"
+                onClick={() => setActiveItem("/walet")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/walet"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 کیف پول
                 <span className="pl-2">
@@ -89,7 +115,14 @@ export default function Header() {
             <li>
               <Link
                 to="/market"
-                className="hover:text-blue-600 transition flex items-center"
+                onClick={() => setActiveItem("/market")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/market"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 بازارها
                 <span className="pl-2">
@@ -100,7 +133,14 @@ export default function Header() {
             <li>
               <Link
                 to="/transaction"
-                className="hover:text-blue-600 transition flex items-center"
+                onClick={() => setActiveItem("/transaction")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/transaction"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 معامله
                 <span className="pl-2">
@@ -111,7 +151,14 @@ export default function Header() {
             <li>
               <Link
                 to="/"
-                className="hover:text-blue-600 transition flex items-center"
+                onClick={() => setActiveItem("/")}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  activeItem === "/"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 خانه
                 <span className="pl-2">
