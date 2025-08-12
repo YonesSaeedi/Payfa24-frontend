@@ -1,8 +1,10 @@
 
-const RegisterPage = () => {
-  return (
-    <div>RegisterPage</div>
-  )
-}
+import AuthLayout from "../layouts/AuthLayout";
 
-export default RegisterPage
+export default function RegisterPage() {
+  return (
+    <AuthLayout image={registerImage}>
+      <RegisterForm />
+    </AuthLayout>
+  );
+}
