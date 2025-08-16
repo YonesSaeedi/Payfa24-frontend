@@ -1,0 +1,51 @@
+
+:root {
+  --primary: #2476FF;
+  --secondary: #E9F1FF;
+  --info:#FFFFFF;
+  --third: #6CA3FF;
+  --background: #E9F1FF;
+  --border: #292929;
+  --border-primary: #D1D9F0;
+  --text-black: #131C28;
+  --text-gray:#8792AF;
+  --error:#E11D48;
+  --text: #000000;
+  --background-main:#FFFFFF;
+  --header-items:#8792AF;
+  --success: #3FB17E;
+}
+
+.dark {
+  --primary: #185BCC;
+  --secondary: #B0C6FF;
+  --third: #242F3F;
+  --background: #222935;
+  --border: #FFFFFF;
+  --border-primary: #8792AF;
+  --text: #FFFFFF;
+
+  --extra-dark-background: #080e19;
+
+  --background-main:#0A121F;
+  --header-items:#A7B2D9
+
+}
+
+
+
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--extra-dark-background) inset; 
+  -webkit-text-fill-color: var(--primary);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+
+
+
