@@ -13,7 +13,7 @@ export default function EyeIcon({ onClick, isVisible }) {
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        stroke="var(--text-gray)" // رنگ آیکون را با رنگ تم هماهنگ می‌کنیم
+        stroke="var(--text-gray)" 
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
