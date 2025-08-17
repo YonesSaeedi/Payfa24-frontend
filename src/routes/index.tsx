@@ -5,6 +5,7 @@ import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import RegisterPage from '../pages/RegisterPage';
 import HomePage from '../pages/HomePage';
 import PasswordInput from '../pages/PasswordInput';
+import InviteLogin from '../pages/InviteLogin';
 
 export default function AppRouter() {
   return (
@@ -15,6 +16,7 @@ export default function AppRouter() {
         <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
         <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
         <Route path={ROUTES.PASSWORD_INPUT} element={<PasswordInput/>}/>
+        <Route path={ROUTES.INVITE_LOGIN} element={<InviteLogin/>}/>
         {/* header only pages ==================================================================================================== */}
 
         {/* header + Footer pages ==================================================================================================== */}

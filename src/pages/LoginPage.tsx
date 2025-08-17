@@ -13,8 +13,6 @@ import IconClose from "../assets/Icons/Login/IconClose";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import OTPModal from "../Components/OTPModal";
 
-
-
 export default function LoginPage() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
@@ -57,7 +55,7 @@ export default function LoginPage() {
               ورود به پی‌فا24
             </h1>
             <p
-              className={`font-normal mb-10 text-[18px] ${
+              className={`font-normal mb-10 text-[18px] text-center ${
                 theme === "dark" ? "text-[var(--text)]" : "--primary"
               }`}
             >
@@ -224,12 +222,14 @@ export default function LoginPage() {
                 >
                   ویرایش ایمیل
                 </button>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="mt-4 w-[205px] h-[48px] font-bold bg-[var(--primary)] text-white rounded-lg"
-                >
-                  تایید
-                </button>
+                <Link to={'/Invite-Login'}>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="mt-4 w-[205px] h-[48px] font-bold bg-[var(--primary)] text-white rounded-lg"
+                  >
+                    تایید
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -52,8 +52,8 @@ export default function TextFieldPage() {
               label="رمز عبور خود را وارد کنید"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              error={submitted && !isValid} // فقط وقتی submit شد و رمز نامعتبر
-              focused={password.length > 0 || passwordFocused || submitted} // تایپ یا فوکوس یا submit
+              error={submitted && !isValid} 
+              focused={password.length > 0 || passwordFocused || submitted}
               onFocus={() => setPasswordFocused(true)}
               onBlur={() => setPasswordFocused(false)}
             />
