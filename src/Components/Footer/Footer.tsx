@@ -1,7 +1,7 @@
 
 import React from "react";
 import SocialLinks from "./SocialLinks";
-import DownloadCard from "./DownLoadCard";
+import DownloadCard from "./DownloadCard";
 import ContactInfo from "./ContactInfo";
 
 import mayket from "/images/download (1) 1.png";

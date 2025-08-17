@@ -1,12 +1,18 @@
-import Header from "../components/Header/Header"
+import Footer from "../Components/Footer/Footer";
+import Header from "../Components/Header/Header";
 
-const HeaderFooterLayout = () => {
-  return (
-    <div>
-      <Header />
-      
-    </div>
-  )
+interface HeaderFooterLayoutProps {
+  children: React.ReactNode;
 }
 
-export default HeaderFooterLayout
+const HeaderFooterLayout = ({ children }: HeaderFooterLayoutProps) => {
+  return (
+    <div className="flex flex-col justify-between">
+      <Header />
+      {children}
+      <Footer />
+    </div>
+  );
+};
+
+export default HeaderFooterLayout;

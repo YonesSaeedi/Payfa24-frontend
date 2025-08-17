@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
 
 import MoonIcon from "../Icons/header/MoonIcon";
-import Wallet from "../Icons/header/Wallet";
-import Vector from "../Icons/header/vector";
-import Home from "../Icons/header/Home";
-import Messages from "../Icons/header/Messages";
+import Wallet from "../Icons/header/WalletIcon";
+import Vector from "../Icons/header/vectorIcon";
+import Home from "../Icons/header/HomeIcon";
+import Messages from "../Icons/header/MessagesIcon";
 import Chart from "../Icons/Chart";
-import Category from "../Icons/header/Category";
-import Frame from "../Icons/header/Frame";
-import Ring from "../Icons/header/ring";
-import Bitcoin from "../Icons/header/Bitcoin";
+import Category from "../Icons/header/CategoryIcon";
+import Frame from "../Icons/header/FrameIcon";
+import Ring from "../Icons/header/ringIcon";
+import Bitcoin from "../Icons/header/BitcoinIcon";
 import { ThemeContext } from "./../../Context/ThemeContext";
 import { useContext } from "react";
 import { useState } from "react";
@@ -28,7 +28,7 @@ export default function Header() {
   const { toggleTheme } = themeContext;
 
   return (
-    <header className="bg-white shadow-md   dark:bg-gray-900 dark:text-white ">
+  <header className="bg-white shadow-md dark:bg-gray-900 dark:text-white sticky top-0 z-50">
       <nav className="container-style mx-auto  flex items-center justify-between py-4 px-6">
         <div className="flex gap-4 text-gray-600">
           <button
