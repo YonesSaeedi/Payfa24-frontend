@@ -1,6 +1,16 @@
-const HeaderLayout = () => {
+
+import Header from "../components/Header/Header"
+
+type HeaderLayoutProps = {
+  children?: React.ReactNode
+}
+
+const HeaderLayout = ({ children }: HeaderLayoutProps) => {
   return (
-    <div>HeaderLayout</div>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      {children}
+    </div>
   )
 }
 

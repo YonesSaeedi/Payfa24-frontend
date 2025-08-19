@@ -1,13 +1,15 @@
 
 import React from "react";
-import SocialLinks from "./SocialLinks";
-import DownloadCard from "./DownLoadCard";
+
+
+import DownloadCard from "./DownloadCard";
 import ContactInfo from "./ContactInfo";
 
 import mayket from "/images/download (1) 1.png";
 import bazzer from "/images/bazaar-logo-and-logotype 1 (1).png";
 import Logo from "/images/logo.png";
 import mobile from "/images/footer-mobile.png"
+import SocialLinks from "./SocialLinks";
 
 export default function Footer(): React.JSX.Element {
   return (

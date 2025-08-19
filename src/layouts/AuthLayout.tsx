@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useContext } from "react";
 import { ThemeContext } from "../Context/ThemeContext";
 
@@ -58,6 +59,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
       {/* Form Section */}
       <div className="lg:w-1/2 w-full  flex flex-col items-center justify-center  ">
         {children}
+
       </div>
     </div>
   );

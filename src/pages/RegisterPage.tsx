@@ -7,6 +7,7 @@ export default function RegisterPage() {
   return (
     <AuthLayout image={registerImage}>
       <LoginPage />
+      <RegisterForm />
     </AuthLayout>
   );
 }
