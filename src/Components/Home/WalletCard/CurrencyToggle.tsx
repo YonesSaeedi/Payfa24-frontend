@@ -1,6 +1,6 @@
 import { useState, FC } from "react";
-import TetherIcon from "../../Icons/Home/WalletCard/TetherIcon";
-import TomanIcon from "../../Icons/Home/WalletCard/TomanIcon";
+import TetherIcon from "../../../assets/icons/Home/WalletCardIcon/TetherIcon";
+import TomanIcon from "../../../assets/icons/Home/WalletCardIcon/TomanIcon";
 
 type Currency = "tether" | "toman";
 
@@ -17,7 +17,7 @@ const CurrencyToggle: FC<Props> = ({ onChange }) => {
   };
 
   return (
-    <div className="flex gap-2 rounded-xl border p-1 w-fit bg-white">
+    <div className="flex gap-2 rounded-lg border p-1 w-fit bg-backgroundMain2 border-gray19">
 
       <button
         onClick={() => handleSelect("tether")}
@@ -26,7 +26,7 @@ const CurrencyToggle: FC<Props> = ({ onChange }) => {
       >
        
         <span className="w-4 h-4 rounded-sm inline-block"><TetherIcon/></span>
-        <span>تتر</span>
+        <span className="text-gray12">تتر</span>
       </button>
 
       <button

@@ -7,27 +7,28 @@ import InvitationCard from "../Components/Home/InvitationCard";
 import CryptoTable from "./../Components/Home/CryptoTable";
 import QuestionBox from "../Components/Home/QuestionBox/QuestionBox";
 import SyncSlider from "../Components/Home/SynchronizedSliders";
-import WalletMoney from "../Components/Icons/Home/SynchronizedSliders/WalletMoneyIcon";
-import Titan from "../Components/Icons/Home/SynchronizedSliders/TitanIcon";
-import TetherTopIcon from "../Components/Icons/Home/SynchronizedSliders/TetherTopIcon";
-import TrendIcon from "../Components/Icons/Home/SynchronizedSliders/TrendIcon";
-import TrinityIcon from "../Components/Icons/Home/SynchronizedSliders/TrinityIcon";
-import TrendDownIcon from "../Components/Icons/Home/SynchronizedSliders/TrendDownIcon";
-import Fire from "../Components/Icons/Home/SynchronizedSliders/fireIcon";
-import YoYowIcon from "../Components/Icons/Home/SynchronizedSliders/YoYowIcon";
-import TokoTokenIcon from "../Components/Icons/Home/CryptoTable/TokoTokenIcon";
-import TornIcon from "../Components/Icons/Home/CryptoTable/TornIcon";
-import TravelaIcon from "../Components/Icons/Home/CryptoTable/TravelaIcon";
-import VeilIcon from "../Components/Icons/Home/CryptoTable/VeilIcon";
-import VeChain from "../Components/Icons/Home/CryptoTable/VeChainIcon";
-import Ultra from "../Components/Icons/Home/CryptoTable/UltraIconIcon";
+import WalletMoney from "../assets/icons/Home/SynchronizedSlidersIcon/WalletMoneyIcon";
+import Titan from "../assets/icons/Home/SynchronizedSlidersIcon/TitanIcon";
+import TetherTopIcon from "../../src/assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon"
+import TrendIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrendIcon";
+import TrinityIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrinityIcon";
+import TrendDownIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrendDownIcon";
+import Fire from "../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
+import YoYowIcon from "../assets/icons/Home/SynchronizedSlidersIcon/YoYowIcon";
+import TokoTokenIcon from "../assets/icons/Home/CryptoTableIcon/TokoTokenIcon";
+import TornIcon from "../assets/icons/Home/CryptoTableIcon/TornIcon";
+import TravelaIcon from "../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+import Veil from "../assets/icons/Home/CryptoTableIcon/VeilIcon";
+import VeChain from "../assets/icons/Home/CryptoTableIcon/VeChainIcon";
+import Ultra from "../assets/icons/Home/CryptoTableIcon/UltraIconIcon";
 import IdentityCard from "../Components/Home/IdentityCard";
+
 
 const boxes = [
   {
     header: "تازه های بازار",
     headerIcon: <Fire />,
-    bgShape: "../../public/images/Yoyow (Yoyow).png",
+    bgShape: "",
     slides: [
       {
         title: "یویوو",
@@ -48,7 +49,7 @@ const boxes = [
   {
     header: "بیشترین افت قیمت",
     headerIcon: <TrendDownIcon />,
-    bgShape: "../../public/images/Trinity Network Credit (Tnc).png",
+    bgShape: "",
     slides: [
       {
         title: "ترینیتی نتورک",
@@ -69,7 +70,7 @@ const boxes = [
   {
     header: "بیشترین افزایش قیمت",
     headerIcon: <TrendIcon />,
-    bgShape: "./../../public/images/TitanSwap (TITAN).png",
+    bgShape: "",
     slides: [
       {
         title: "تیتان سوآپ",
@@ -90,7 +91,7 @@ const boxes = [
   {
     header: "بیشترین معامله",
     headerIcon: <WalletMoney />,
-    bgShape: "./../../public/images/Tetherbackground (USDT).png",
+    bgShape: "",
     slides: [
       {
         title: "تتر",
@@ -115,12 +116,12 @@ function HomePage() {
   const [active, setActive] = useState(0);
   const data = [
     {
-      name: "توکو توکن",
+      name: "ننننننننننننتوکو توکن",
       symbol: "TKO",
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: -1,
+      change24h: -12,
       logo: <TokoTokenIcon />,
     },
     {
@@ -129,7 +130,7 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: +1.1,
+      change24h: +12,
       logo: <TornIcon />,
     },
     {
@@ -138,7 +139,7 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: +1.1,
+      change24h: +12,
       logo: <TravelaIcon />,
     },
     {
@@ -147,7 +148,7 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: -1,
+      change24h: -12,
       logo: <Ultra />,
     },
     {
@@ -156,7 +157,7 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: -1,
+      change24h: -12,
       logo: <VeChain />,
     },
     {
@@ -165,8 +166,8 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: -1,
-      logo: <VeilIcon />,
+      change24h: -12,
+      logo: <Veil />,
     },
   ];
 
@@ -175,7 +176,7 @@ function HomePage() {
       title: "کارمزد رایگان",
       subtitle: "بر روی معاملات بیت‌کوین",
       buttonText: "ورود به دنیای رمز ارز",
-      imageSrc: "../../public/images/Layer11.png",
+      imageSrc:  "/images/slide2.png",
     },
     {
       title: "آینده مالی خود را بسازید",
@@ -194,8 +195,9 @@ function HomePage() {
   return (
     <div>
       <HeaderFooterLayout>
-        <div className="container-style">
-          <div className="pt-8 pb-8 flex flex-col lg:flex-row-reverse justify-between gap-4">
+        <div className="bg-white1 text-text">
+          <div className="container-style" >
+          <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4 bg-backgroundMain">
             <WalletCard balance={844000} changeAmount={34000} change={12.4} />
             <IdentityCard
               title="احراز هویت سطح 1"
@@ -205,7 +207,7 @@ function HomePage() {
             />
           </div>
 
-          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4">
+          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10">
             <PosterSlider slides={slidesData} />
             <InvitationCard />
           </div>
@@ -217,10 +219,12 @@ function HomePage() {
           <div className="w-full pt-7">
             <CryptoTable data={data} active={active} setActive={setActive} />
           </div>
-          <div id="qustionBox" className="pt-12 pb-28">
+          <div id="qustionBox" className="pt-12 lg:pb-28 pb-14">
             <QuestionBox />
           </div>
         </div>
+        </div>
+        
       </HeaderFooterLayout>
     </div>
   );

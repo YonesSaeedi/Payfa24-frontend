@@ -1,15 +1,18 @@
 import { Link } from "react-router-dom";
 
-import MoonIcon from "../Icons/header/MoonIcon";
-import Wallet from "../Icons/header/WalletIcon";
-import Vector from "../Icons/header/vectorIcon";
-import Home from "../Icons/header/HomeIcon";
-import Messages from "../Icons/header/MessagesIcon";
-import Chart from "../Icons/Chart";
-import Category from "../Icons/header/CategoryIcon";
-import Frame from "../Icons/header/FrameIcon";
-import Ring from "../Icons/header/ringIcon";
-import Bitcoin from "../Icons/header/BitcoinIcon";
+import pfIcon from "../../assets/images/HeaderIcon/pf.png";
+import groupIcon from "../../assets/images/HeaderIcon/Group 71185 (1).png";
+
+import MoonIcon from "../../assets/icons/Header/MoonIcon";
+import Wallet from "../../assets/icons/Header/WalletIcon";
+import Vector from "../../assets/icons/Header/vectorIcon";
+import Home from "../../assets/icons/Header/HomeIcon";
+import Messages from "../../assets/icons/Header/MessagesIcon";
+import Chart from "../../assets/icons/Header/Chart";
+import Category from "../../assets/icons/Header/CategoryIcon";
+import Frame from "../../assets/icons/Header/FrameIcon";
+import Ring from "../../assets/icons/Header/ringIcon";
+import Bitcoin from "../../assets/icons/Header/BitcoinIcon";
 import { ThemeContext } from "./../../Context/ThemeContext";
 import { useContext } from "react";
 import { useState } from "react";
@@ -75,21 +78,21 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-6">
-          <ul className="hidden lg:flex space-x-8 text-header-items">
-            <li>
+          <ul className="hidden lg:flex space-x-8 text-gray1">
+            <li >
               <Link
                 to="/services"
                 onClick={() => setActiveItem("/services")}
                 className={`hover:text-blue-600 transition flex items-center ${
                   activeItem === "/services"
                     ? themeContext.theme === "dark"
-                      ? "text-primary"
+                      ? "text-gray1"
                       : "text-blue-600 font-semibold"
-                    : "text-header-items"
+                    : "text-gray1"
                 }`}
               >
                 خدمات
-                <span className="icon-wrapper pl-2">
+                <span className="pl-2 w-8 h-8  ">
     <Category />
   </span>
               </Link>
@@ -107,7 +110,7 @@ export default function Header() {
                 }`}
               >
                 کیف پول
-                <span className="pl-2">
+                  <span className="pl-2 w-8 h-8 ">
                   <Wallet />
                 </span>
               </Link>
@@ -125,8 +128,8 @@ export default function Header() {
                 }`}
               >
                 بازارها
-                <span className="pl-2">
-                  <Chart />
+            <span className="pl-2 w-8 h-8 ">
+                  <Chart  />
                 </span>
               </Link>
             </li>
@@ -143,7 +146,7 @@ export default function Header() {
                 }`}
               >
                 معامله
-                <span className="pl-2">
+                <span className="pl-2  w-8 h-8">
                   <Bitcoin />
                 </span>
               </Link>
@@ -161,7 +164,7 @@ export default function Header() {
                 }`}
               >
                 خانه
-                <span className="pl-2">
+                <span className="pl-2 w-8 h-8">
                   <Home />
                 </span>
               </Link>
@@ -171,12 +174,12 @@ export default function Header() {
           <div className="text-blue-600 font-bold pl-6 flex items-center gap-2 lg:gap-4">
             <Link to="/" className="flex items-center">
               <img
-                src="./../public/images/pf.png"
+                src={pfIcon}
                 alt="Logo"
                 className="w-6 h-6 lg:w-7 lg:h-7"
               />
               <img
-                src="./../../../public/images/Group 71185 (1).png"
+                src= {groupIcon}
                 alt="Logo"
                 className="w-6 h-6 lg:w-7 lg:h-7"
               />
@@ -198,13 +201,13 @@ export default function Header() {
             </button>
             <div
               onClick={() => setIsOpen(false)}
-              className={`fixed inset-0 bg-black/40 transition-opacity duration-300 md:hidden ${
+              className={`fixed inset-0 bg-black/40 transition-opacity duration-300 lg:hidden ${
                 isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
               }`}
             />
 
             <aside
-              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 md:hidden ${
+              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 lg:hidden ${
                 isOpen ? "translate-x-0" : "translate-x-full"
               }`}
               role="dialog"
