@@ -1,6 +1,8 @@
+import BuyAndSell from "../../components/trade/BuyAndSell"
+
 const Sell = () => {
   return (
-    <div>Sell</div>
+    <BuyAndSell isSell={true} />
   )
 }
 

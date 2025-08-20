@@ -1,5 +1,5 @@
 
-import GiftIcon from "../Icons/Home/WalletCard/GiftIcon";
+import GiftIcon from "../../assets/icons/Home/WalletCard/GiftIcon";
 
 function InvitationCard() {
   return (

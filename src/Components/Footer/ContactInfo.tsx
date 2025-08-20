@@ -1,6 +1,6 @@
-import TelephoneIcon from "../Icons/Footer/TelephoneIcon";
-import EmailIcon from "../Icons/Footer/EmailIcon";
-import LocationIcon from "../Icons/Footer/LocationIcon";
+import TelephoneIcon from "../../assets/icons/Footer/TelephoneIcon";
+import EmailIcon from "../../assets/icons/Footer/EmailIcon";
+import LocationIcon from "../../assets/icons/Footer/LocationIcon";
 
 export default function ContactInfo(): React.JSX.Element {
   return (

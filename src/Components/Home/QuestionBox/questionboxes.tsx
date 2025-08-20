@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import  Add from "../../Icons/Home/QuestionBox/AddIcon"
-import Mines from "../../Icons/Home/QuestionBox/MinesIcon"
+import MinesIcon from "../../../assets/icons/Home/QuestionBox/MinesIcon";
+import AddIcon from "../../../assets/icons/Home/QuestionBox/AddIcon";
+
 interface FAQItem {
   question: string;
   answer: string;
@@ -30,7 +31,7 @@ export default function FAQAccordion() {
             onClick={() => handleToggle(index)}
           >
             <span className="ml-2 font-semibold">{item.question}</span>
-            <span className="mr-2">{activeIndex === index ? <Mines/> : <Add/>}</span>
+            <span className="mr-2">{activeIndex === index ? <MinesIcon /> : <AddIcon />}</span>
           </button>
           {activeIndex === index && (
             <div className="mt-2 pt-2 border-t text-sm text-gray-600">

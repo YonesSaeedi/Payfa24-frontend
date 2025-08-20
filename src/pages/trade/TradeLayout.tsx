@@ -22,7 +22,7 @@ const TradeLayout = () => {
               <div className="lg:w-1/2">
                 <Outlet />
               </div>
-              {/* layout content */}
+              {/* layout content ==================================================================================================== */}
               <div className="lg:w-1/2 flex flex-col" dir="rtl">
                 <div className="lg:mb-4 mb-6 lg:py-6 py-4 px-4 rounded-xl lg:rounded-2xl bg-bg3 flex flex-col gap-3 lg:gap-4">
                   <div className="flex items-center gap-1">

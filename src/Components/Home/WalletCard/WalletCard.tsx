@@ -1,11 +1,12 @@
-import VisibilityIcon from "../../Icons/Home/WalletCard/VisibilityIcon";
+import ChartIcon from "../../../assets/icons/Home/WalletCard/chartIcon";
+import ReceiptText from "../../../assets/icons/Home/WalletCard/ReceiptTextIcon";
+import ReceivedIcon from "../../../assets/icons/Home/WalletCard/ReceivedIcon";
+import SendIcon from "../../../assets/icons/Home/WalletCard/SendIcon";
+import VisibilityIcon from "../../../assets/icons/Home/WalletCard/VisibilityIcon";
+import WalletAdd from "../../../assets/icons/Home/WalletCard/WalletAddIcon";
+import WalletMines from "../../../assets/icons/Home/WalletCard/WalletMinesIcon";
 import CurrencyToggle from "./CurrencyToggle";
-import ChartIcon from "../../Icons/Home/WalletCard/chartIcon";
-import ReceiptText from "../../Icons/Home/WalletCard/ReceiptTextIcon";
-import WalletAdd from "../../Icons/Home/WalletCard/WalletAddIcon";
-import SendIcon from "../../Icons/Home/WalletCard/SendIcon";
-import ReceivedIcon from "../../Icons/Home/WalletCard/ReceivedIcon";
-import WalletMines from "../../Icons/Home/WalletCard/WalletMinesIcon";
+
 
 interface WalletCardProps {
   balance: number;
@@ -46,7 +47,7 @@ const WalletCard = ({
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 shadow lg:w-[630px]">
-    
+
       <div className="flex items-center justify-between mb-7">
         <CurrencyToggle onChange={handleCurrencyChange} />
         <div className="flex items-center gap-2">
@@ -55,19 +56,18 @@ const WalletCard = ({
           </span>
           <VisibilityIcon />
         </div>
-       
+
       </div>
 
-    
+
       <div className="text-center mb-6">
         <p className="text-3xl font-bold" dir="rtl">
           {balance.toLocaleString()} {currency}
         </p>
 
         <div
-          className={`mt-2 flex items-center justify-between text-sm ${
-            isPositive ? "text-green-500" : "text-red-500"
-          }`}
+          className={`mt-2 flex items-center justify-between text-sm ${isPositive ? "text-green-500" : "text-red-500"
+            }`}
         >
           <span className="flex items-center gap-1">
             {isPositive ? <ChartIcon /> : "↓"}{" "}

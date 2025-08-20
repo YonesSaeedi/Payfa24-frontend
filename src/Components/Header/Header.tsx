@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
 
-import MoonIcon from "../Icons/header/MoonIcon";
-import Wallet from "../Icons/header/WalletIcon";
-import Vector from "../Icons/header/vectorIcon";
-import Home from "../Icons/header/HomeIcon";
-import Messages from "../Icons/header/MessagesIcon";
-import Chart from "../Icons/Chart";
-import Category from "../Icons/header/CategoryIcon";
-import Frame from "../Icons/header/FrameIcon";
-import Ring from "../Icons/header/ringIcon";
-import Bitcoin from "../Icons/header/BitcoinIcon";
+import MoonIcon from "../../assets/icons/header/MoonIcon";
 import { ThemeContext } from "./../../Context/ThemeContext";
 import { useContext } from "react";
 import { useState } from "react";
+import Frame from "../../assets/icons/header/FrameIcon";
+import Vector from "../../assets/icons/header/vectorIcon";
+import Messages from "../../assets/icons/header/MessagesIcon";
+import Ring from "../../assets/icons/header/ringIcon";
+import Category from "../../assets/icons/header/CategoryIcon";
+import Wallet from "../../assets/icons/header/WalletIcon";
+import Chart from "../../assets/icons/Chart";
+import Bitcoin from "../../assets/icons/header/BitcoinIcon";
+import Home from "../../assets/icons/header/HomeIcon";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -28,7 +28,7 @@ export default function Header() {
   const { toggleTheme } = themeContext;
 
   return (
-  <header className="bg-white shadow-md dark:bg-gray-900 dark:text-white sticky top-0 z-50">
+    <header className="bg-white shadow-md dark:bg-gray-900 dark:text-white sticky top-0 z-50">
       <nav className="container-style mx-auto  flex items-center justify-between py-4 px-6">
         <div className="flex gap-4 text-gray-600">
           <button
@@ -80,31 +80,29 @@ export default function Header() {
               <Link
                 to="/services"
                 onClick={() => setActiveItem("/services")}
-                className={`hover:text-blue-600 transition flex items-center ${
-                  activeItem === "/services"
-                    ? themeContext.theme === "dark"
-                      ? "text-primary"
-                      : "text-blue-600 font-semibold"
-                    : "text-header-items"
-                }`}
+                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/services"
+                  ? themeContext.theme === "dark"
+                    ? "text-primary"
+                    : "text-blue-600 font-semibold"
+                  : "text-header-items"
+                  }`}
               >
                 خدمات
                 <span className="icon-wrapper pl-2">
-    <Category />
-  </span>
+                  <Category />
+                </span>
               </Link>
             </li>
             <li>
               <Link
                 to="/walet"
                 onClick={() => setActiveItem("/walet")}
-                className={`hover:text-blue-600 transition flex items-center ${
-                  activeItem === "/walet"
-                    ? themeContext.theme === "dark"
-                      ? "text-primary"
-                      : "text-blue-600 font-semibold"
-                    : "text-header-items"
-                }`}
+                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/walet"
+                  ? themeContext.theme === "dark"
+                    ? "text-primary"
+                    : "text-blue-600 font-semibold"
+                  : "text-header-items"
+                  }`}
               >
                 کیف پول
                 <span className="pl-2">
@@ -116,13 +114,12 @@ export default function Header() {
               <Link
                 to="/market"
                 onClick={() => setActiveItem("/market")}
-                className={`hover:text-blue-600 transition flex items-center ${
-                  activeItem === "/market"
-                    ? themeContext.theme === "dark"
-                      ? "text-primary"
-                      : "text-blue-600 font-semibold"
-                    : "text-header-items"
-                }`}
+                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/market"
+                  ? themeContext.theme === "dark"
+                    ? "text-primary"
+                    : "text-blue-600 font-semibold"
+                  : "text-header-items"
+                  }`}
               >
                 بازارها
                 <span className="pl-2">
@@ -134,13 +131,12 @@ export default function Header() {
               <Link
                 to="/transaction"
                 onClick={() => setActiveItem("/transaction")}
-                className={`hover:text-blue-600 transition flex items-center ${
-                  activeItem === "/transaction"
-                    ? themeContext.theme === "dark"
-                      ? "text-primary"
-                      : "text-blue-600 font-semibold"
-                    : "text-header-items"
-                }`}
+                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/transaction"
+                  ? themeContext.theme === "dark"
+                    ? "text-primary"
+                    : "text-blue-600 font-semibold"
+                  : "text-header-items"
+                  }`}
               >
                 معامله
                 <span className="pl-2">
@@ -152,13 +148,12 @@ export default function Header() {
               <Link
                 to="/"
                 onClick={() => setActiveItem("/")}
-                className={`hover:text-blue-600 transition flex items-center ${
-                  activeItem === "/"
-                    ? themeContext.theme === "dark"
-                      ? "text-primary"
-                      : "text-blue-600 font-semibold"
-                    : "text-header-items"
-                }`}
+                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/"
+                  ? themeContext.theme === "dark"
+                    ? "text-primary"
+                    : "text-blue-600 font-semibold"
+                  : "text-header-items"
+                  }`}
               >
                 خانه
                 <span className="pl-2">
@@ -198,15 +193,13 @@ export default function Header() {
             </button>
             <div
               onClick={() => setIsOpen(false)}
-              className={`fixed inset-0 bg-black/40 transition-opacity duration-300 md:hidden ${
-                isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
+              className={`fixed inset-0 bg-black/40 transition-opacity duration-300 md:hidden ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
             />
 
             <aside
-              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 md:hidden ${
-                isOpen ? "translate-x-0" : "translate-x-full"
-              }`}
+              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 md:hidden ${isOpen ? "translate-x-0" : "translate-x-full"
+                }`}
               role="dialog"
               aria-hidden={!isOpen}
             ></aside>

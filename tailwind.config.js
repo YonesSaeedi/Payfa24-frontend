@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       spacing: {
-        '4.5': '18px',  
+        '4.5': '18px',
       },
       colors: {
         primary: 'var(--primary)',
@@ -16,16 +16,17 @@ export default {
         blue2: 'var(--blue2)',
         green1: 'var(--green1)',
         grey1: 'var(--grey1)',
+        grey2: 'var(--grey2)',
         background: 'var(--background)',
         backgroundMain: 'var(--background-main)',
         border: 'var(--border)',
         borderPrimary: 'var(--border-primary)',
         borderSecondary: 'var(--border-secondary)',
         text: 'var(--text)',
-        backgroundMain:'var (--background-main)',
-        headerItems:'var(--header-items)',
-        backgroundSyncSlider:'var(--backgroundSyncSlider)',
-        backgroundCard:'var(--backgroundCard)',
+        backgroundMain: 'var(--background-main)',
+        headerItems: 'var(--header-items)',
+        backgroundSyncSlider: 'var(--backgroundSyncSlider)',
+        backgroundCard: 'var(--backgroundCard)',
         text2: 'var(--text2)',
         bg2: 'var(--bg2)',
         bg3: 'var(--bg3)',

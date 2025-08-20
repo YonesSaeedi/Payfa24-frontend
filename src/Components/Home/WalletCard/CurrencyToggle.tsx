@@ -1,6 +1,7 @@
 import { useState, FC } from "react";
-import TetherIcon from "../../Icons/Home/WalletCard/TetherIcon";
-import TomanIcon from "../../Icons/Home/WalletCard/TomanIcon";
+import TetherIcon from "../../../assets/icons/Home/WalletCard/TetherIcon";
+import TomanIcon from "../../../assets/icons/Home/WalletCard/TomanIcon";
+
 
 type Currency = "tether" | "toman";
 

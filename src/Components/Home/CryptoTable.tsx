@@ -1,5 +1,5 @@
 import React from "react";
-import ArrowLeftIcon from "../Icons/Home/CryptoTable/ArrowLeftIcon"; 
+import ArrowLeftIcon from "../../assets/icons/Home/CryptoTable/ArrowLeftIcon";
 interface CryptoItem {
   name: string;
   symbol: string;

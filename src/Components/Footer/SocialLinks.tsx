@@ -1,7 +1,7 @@
-import InstagramIcon from "../Icons/Footer/InstagramIcon";
-import LinkdinIcon from "../Icons/Footer/LinkdinIcon";
-import TelegramIcon from "../Icons/Footer/TelegramIcon";
-import YoutubeIcon from "../Icons/Footer/YoutubeIcon";
+import InstagramIcon from "../../assets/icons/Footer/InstagramIcon";
+import LinkdinIcon from "../../assets/icons/Footer/LinkdinIcon";
+import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
+import YoutubeIcon from "../../assets/icons/Footer/YoutubeIcon";
 
 interface SocialLink {
   icon:  React.JSX.Element;

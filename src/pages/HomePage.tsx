@@ -1,27 +1,27 @@
 import { useState } from "react";
-
-import WalletCard from "../Components/Home/WalletCard/WalletCard";
+import Fire from "../assets/icons/Home/SynchronizedSliders/fireIcon";
+import YoYowIcon from "../assets/icons/Home/SynchronizedSliders/YoYowIcon";
+import TrendDownIcon from "../assets/icons/Home/SynchronizedSliders/TrendDownIcon";
+import TrinityIcon from "../assets/icons/Home/SynchronizedSliders/TrinityIcon";
+import TrendIcon from "../assets/icons/Home/SynchronizedSliders/TrendIcon";
+import Titan from "../assets/icons/Home/SynchronizedSliders/TitanIcon";
+import WalletMoney from "../assets/icons/Home/SynchronizedSliders/WalletMoneyIcon";
+import TetherIcon from "../assets/icons/Home/WalletCard/TetherIcon";
+import TokoTokenIcon from "../assets/icons/Home/CryptoTable/TokoTokenIcon";
+import TornIcon from "../assets/icons/Home/CryptoTable/TornIcon";
+import TravelaIcon from "../assets/icons/Home/CryptoTable/TravelaIcon";
+import Ultra from "../assets/icons/Home/CryptoTable/UltraIconIcon";
+import VeChain from "../assets/icons/Home/CryptoTable/VeChainIcon";
+import Veil from "../assets/icons/Home/CryptoTable/VeilIcon";
 import HeaderFooterLayout from "../layouts/HeaderFooterLayout";
-import PosterSlider from "../Components/Home/PosterSlider";
-import InvitationCard from "../Components/Home/InvitationCard";
-import CryptoTable from "./../Components/Home/CryptoTable";
-import QuestionBox from "../Components/Home/QuestionBox/QuestionBox";
-import SyncSlider from "../Components/Home/SynchronizedSliders";
-import WalletMoney from "../Components/Icons/Home/SynchronizedSliders/WalletMoneyIcon";
-import Titan from "../Components/Icons/Home/SynchronizedSliders/TitanIcon";
-import TetherTopIcon from "../Components/Icons/Home/SynchronizedSliders/TetherTopIcon";
-import TrendIcon from "../Components/Icons/Home/SynchronizedSliders/TrendIcon";
-import TrinityIcon from "../Components/Icons/Home/SynchronizedSliders/TrinityIcon";
-import TrendDownIcon from "../Components/Icons/Home/SynchronizedSliders/TrendDownIcon";
-import Fire from "../Components/Icons/Home/SynchronizedSliders/fireIcon";
-import YoYowIcon from "../Components/Icons/Home/SynchronizedSliders/YoYowIcon";
-import TokoTokenIcon from "../Components/Icons/Home/CryptoTable/TokoTokenIcon";
-import TornIcon from "../Components/Icons/Home/CryptoTable/TornIcon";
-import TravelaIcon from "../Components/Icons/Home/CryptoTable/TravelaIcon";
-import VeilIcon from "../Components/Icons/Home/CryptoTable/VeilIcon";
-import VeChain from "../Components/Icons/Home/CryptoTable/VeChainIcon";
-import Ultra from "../Components/Icons/Home/CryptoTable/UltraIconIcon";
-import IdentityCard from "../Components/Home/IdentityCard";
+import WalletCard from "../components/Home/WalletCard/WalletCard";
+import IdentityCard from "../components/Home/IdentityCard";
+import PosterSlider from "../components/Home/PosterSlider";
+import InvitationCard from "../components/Home/InvitationCard";
+import SyncSlider from "../components/Home/SynchronizedSliders";
+import CryptoTable from "../components/Home/CryptoTable";
+import QuestionBox from "../components/Home/QuestionBox/QuestionBox";
+
 
 const boxes = [
   {
@@ -97,14 +97,14 @@ const boxes = [
         subtitle: "USDT",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <TetherTopIcon />,
+        iconSrc: <TetherIcon />,
       },
       {
         title: "تتر",
         subtitle: "USDT",
         price: 91000,
         changePct: 24.12,
-        iconSrc: <TetherTopIcon />,
+        iconSrc: <TetherIcon />,
       },
     ],
   },
@@ -166,7 +166,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -1,
-      logo: <VeilIcon />,
+      logo: <Veil />,
     },
   ];
 
