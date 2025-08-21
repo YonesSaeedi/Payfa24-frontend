@@ -33,14 +33,14 @@ const PercentBar = ({ setSelectedPercent, selectedPercent, lastChangedRef }: Per
   return (
     <div className="w-full" dir="ltr">
       {/* Slider Track */}
-      <div ref={trackRef} className="relative h-0.5 bg-grey2 cursor-pointer touch-none" onPointerDown={handlePointerDown}>
+      <div ref={trackRef} className="relative h-0.5 bg-gray2 cursor-pointer touch-none" onPointerDown={handlePointerDown}>
         {/* Active Fill */}
-        <div className="absolute top-0 -translate-y-1/4 h-1 bg-primary" style={{ width: `${selectedPercent}%` }} />
+        <div className="absolute top-0 -translate-y-1/4 h-1 bg-blue2" style={{ width: `${selectedPercent}%` }} />
         {/* Checkpoints */}
         {[0, 25, 50, 75, 100].map((point) =>
           <div
             key={point}
-            className={`absolute top-1/2 w-0.5 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 ${selectedPercent >= point ? "bg-primary" : "bg-grey2"}`}
+            className={`absolute top-1/2 w-0.5 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 ${selectedPercent >= point ? "bg-blue2" : "bg-gray2"}`}
             style={{ left: `${point}%` }}
           >
             <span className={`absolute top-3.5 -translate-x-1/3 text-text4 text-xs font-normal select-none ${point === 100 ? '-left-1' : 'left-0'}`}>{formatPersianDigits(point)}%</span>
@@ -48,12 +48,12 @@ const PercentBar = ({ setSelectedPercent, selectedPercent, lastChangedRef }: Per
         )}
         {/* Draggable Thumb */}
         <div
-          className="absolute top-1/2 w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_11.74px_0_#5091FF] -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
+          className="absolute top-1/2 w-2.5 h-2.5 bg-blue2 rounded-full shadow-[0_0_11.74px_0_#5091FF] -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
           style={{ left: `${selectedPercent}%` }}
           onPointerDown={handlePointerDown}
         >
           {/* Value Indicator */}
-          <div className="absolute left-0 -translate-x-1/3 -top-8 bg-primary text-white text-xs font-medium px-1.5 py-0.5 rounded">{Math.round(selectedPercent)}%</div>
+          <div className="absolute left-0 -translate-x-1/3 -top-8 bg-blue2 text-white text-xs font-medium px-1.5 py-0.5 rounded">{Math.round(selectedPercent)}%</div>
         </div>
       </div>
     </div>

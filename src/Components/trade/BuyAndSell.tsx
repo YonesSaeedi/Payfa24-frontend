@@ -18,29 +18,46 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   const [countInputStr, setCountInputStr] = useState<string>("");
   const [amountValue, setAmountValue] = useState<number | ''>('')
   const [selectedPercent, setSelectedPercent] = useState<number>(0)
-  const currentCryptoPrice = 100_000 // to be removed after it is connected to the API
-  const cryptoBalance = 12 // to be removed after it is connected to the API
-  const TomanBalance = 700_000 // to be removed after it is connected to the API
+  const currentCryptoPrice = 113_720 // to be removed after it is connected to the API
+  const cryptoBalance = 12.37 // to be removed after it is connected to the API
+  const TomanBalance = 724_470 // to be removed after it is connected to the API
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
   // handles count input change ====================================================================================================
   const handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     lastChangedRef.current = 'input';
-    let val = persianToEnglish(e.target.value).replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
-    const num = Number(val);
-    if (!isNaN(num)) {
-      if (num > cryptoBalance) {
-        val = cryptoBalance.toString();
+    let val = persianToEnglish(e.target.value)
+      .replace(/[^0-9.]/g, '')      // only numbers + dot
+      .replace(/(\..*)\./g, '$1');  // prevent multiple dots
+
+    let num = Number(val);
+
+    if (!isNaN(num) && val !== '' && val !== '.') {
+      const max = isSell
+        ? cryptoBalance
+        : TomanBalance / currentCryptoPrice;
+
+      if (num > max) {
+        num = max;
+        // 🔹 force input string to match clamped max (rounded to 2 decimals)
+        val = String(Math.round(max * 100) / 100);
       }
+
+      setCountInputStr(val);
+      setAmountValue(Math.round(num * currentCryptoPrice * 100) / 100);
+    } else {
+      setCountInputStr(val);  // keep "12." etc
+      setAmountValue(0);
     }
-    setCountInputStr(val); // keep the string as user typed
-    setAmountValue(!isNaN(num) ? Math.round(Math.min(num, cryptoBalance) * currentCryptoPrice * 100) / 100 : 0);
   };
+
+
   // handles amount input change ====================================================================================================
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     lastChangedRef.current = 'input';
     const val = persianToEnglish(e.target.value).replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
     let num = val === '' ? 0 : Number(val);
-    if (num > TomanBalance) num = TomanBalance
+    if (!isSell && num > TomanBalance) num = TomanBalance
+    else if (isSell && num > cryptoBalance * currentCryptoPrice) num = cryptoBalance * currentCryptoPrice
     const rounded = Math.round(num * 100) / 100;
     setAmountValue(rounded);
     setCountInputStr(String(Math.round((rounded / currentCryptoPrice) * 100) / 100));
