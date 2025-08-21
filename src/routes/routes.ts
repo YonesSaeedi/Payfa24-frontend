@@ -4,6 +4,7 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
+  authentication:'/authentication',
   TRADE: {
     ROOT: '/trade',
     BUY: '/trade/buy',

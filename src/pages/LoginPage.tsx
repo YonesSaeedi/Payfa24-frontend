@@ -8,49 +8,81 @@ import AuthLayout from "../layouts/AuthLayout";
 import imageLoginDark from "../assets/Login ImageDark.png";
 import imageLoginLight from "../assets/Login imageLight.png";
 import TextField from "../Components/InputField/TextField";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconClose from "../assets/Icons/Login/IconClose";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import OTPModal from "../Components/OTPModal";
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+
+type LoginFormData = {
+  email: string;
+  password: string;
+};
 
 export default function LoginPage() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [emailFocused, setEmailFocused] = useState<boolean>(false);
-  const [passwordFocused, setPasswordFocused] = useState<boolean>(false);
-  const [emailError, setEmailError] = useState<boolean>(false);
-  const [passwordError, setPasswordError] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(
-    null
-  );
+  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
 
-    const emailIsEmpty = !email.trim();
-    const passwordIsEmpty = !password.trim();
 
-    setEmailError(emailIsEmpty);
-    setPasswordError(passwordIsEmpty);
+  const loginSchema = yup.object().shape({
+    email: yup
+      .string()
+      .required("ایمیل یا شماره همراه الزامی است.")
+      .test(
+        "email-or-phone",
+        "ایمیل یا شماره همراه وارد شده معتبر نیست.",
+        (value) => {
+          if (!value) return false;
+          const isPhone = /^(09|\+989)\d{9}$/.test(value);
+          const isEmail = yup.string().email().isValidSync(value);
+          return isEmail || isPhone;
+        }
+      ),
+    password: yup
+      .string()
+      .required("رمز عبور الزامی است.")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+        "رمز عبور معتبر نیست."
+      ),
+  });
 
-    if (!emailIsEmpty && !passwordIsEmpty) {
-      const isPhone = /^\d+$/.test(email);
-      setContactMethod(isPhone ? "phone" : "email");
-      setIsOpen(true);
-    }
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    getValues,
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (data: LoginFormData) => {
+    console.log("Submitted Data:", data);
+    const isPhone = /^\d+$/.test(data.email);
+    setContactMethod(isPhone ? "phone" : "email");
+    setIsOpen(true);
   };
 
   return (
     <AuthLayout image={theme === "dark" ? imageLoginDark : imageLoginLight}>
-      <div className="flex items-center justify-center py-22" dir="rtl">
+      <div className="flex items-center justify-center " dir="rtl">
         <div className="w-full max-w-md px-4">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <h1 className="text-[28px] font-bold text-primary mb-2 text-center">
               ورود به پی‌فا24
             </h1>
@@ -62,20 +94,17 @@ export default function LoginPage() {
               برای ورود ایمیل یا شماره همراه خود را وارد کنید
             </p>
 
-            <TextField
-              label="ایمیل یا شماره همراه"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (e.target.value.trim()) setEmailError(false);
-              }}
-              error={emailError}
-              focused={emailFocused}
-              onFocus={() => {
-                setEmailFocused(true);
-                setEmailError(false);
-              }}
-              onBlur={() => setEmailFocused(false)}
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="ایمیل یا شماره همراه"
+                  type="text"
+                  error={errors.email?.message}
+                  {...field}
+                />
+              )}
             />
 
             <div className="sm:text-sm text-xs text-[var(--text-gray)] font-normal pb-6 flex gap-1 items-end justify-start">
@@ -85,23 +114,19 @@ export default function LoginPage() {
               <p>توجه داشته باشید که در دامنه (panel.payfa24.com) هستید.</p>
             </div>
 
-            <TextField
-              label="رمز عبور خود را وارد کنید"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (e.target.value.trim()) setPasswordError(false);
-              }}
-              error={passwordError}
-              focused={passwordFocused}
-              onFocus={() => {
-                setPasswordFocused(true);
-                setPasswordError(false);
-              }}
-              onBlur={() => setPasswordFocused(false)}
-              icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
-              onIconClick={() => setShowPassword((prev) => !prev)}
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="رمز عبور خود را وارد کنید"
+                  type={showPassword ? "text" : "password"}
+                  error={errors.password?.message}
+                  icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
+                  onIconClick={() => setShowPassword((prev) => !prev)}
+                  {...field}
+                />
+              )}
             />
 
             <Link to={"/forgot-password"}>
@@ -125,18 +150,17 @@ export default function LoginPage() {
             <p className="text-sm font-normal text-[var(--text-gray)] pt-3 pb-10 text-start">
               هنوز ثبت نام نکرده‌اید؟
               <span className="text-primary text-sm px-1 font-normal">
-                <a href="#">ساخت حساب کاربری</a>
+                <Link to={"/register"}>ساخت حساب کاربری</Link>
               </span>
             </p>
 
             <div className="flex items-center justify-center">
-              <div className="flex-grow h-px bg-[var(--border-primary)]"></div>
+              <div className="flex-grow h-[1px] bg-[var(--border-secondary)]"></div>
               <p className="flex-none px-2 text-xs text-[var(--text-gray)]">
                 ورود با
               </p>
-              <div className="flex-grow h-px bg-[var(--border-primary)]"></div>
+              <div className="flex-grow h-[1px] bg-[var(--border-secondary)]"></div>
             </div>
-
             <button className="lg:w-full w-[343px] h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-[#8792AF] border border-[#D1D9F0]">
               <span className="icon-wrapper h-5 w-5">
                 <IconGoogle />
@@ -147,7 +171,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Modal OTP */}
       {isOpen && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
@@ -172,9 +195,7 @@ export default function LoginPage() {
                       : "text-[var(--text)]"
                   }`}
                 >
-                  {contactMethod === "phone"
-                    ? "تایید شماره همراه"
-                    : "تایید ایمیل"}
+                  {contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
                 </h2>
                 <span
                   className="icon-wrapper h-6 w-6 cursor-pointer"
@@ -194,8 +215,8 @@ export default function LoginPage() {
               >
                 لطفا کد ارسالی به{" "}
                 {contactMethod === "phone"
-                  ? `شماره ${email}`
-                  : `ایمیل ${email}`}{" "}
+                  ? `شماره ${getValues("email")}`
+                  : `ایمیل ${getValues("email")}`}{" "}
                 را وارد کنید.
               </p>
 
@@ -222,7 +243,7 @@ export default function LoginPage() {
                 >
                   ویرایش ایمیل
                 </button>
-                <Link to={'/Invite-Login'}>
+                <Link to={""}>
                   <button
                     onClick={() => setIsOpen(false)}
                     className="mt-4 w-[205px] h-[48px] font-bold bg-[var(--primary)] text-white rounded-lg"
@@ -235,7 +256,6 @@ export default function LoginPage() {
           </div>
         </>
       )}
-
     </AuthLayout>
   );
 }

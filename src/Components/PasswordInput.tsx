@@ -1,91 +1,113 @@
-import { useState, useContext } from "react";
-import AuthLayout from "../layouts/AuthLayout";
-import createPasswordLight from "../assets/CreatePasswordLight.png";
-import createPasswordDark from "../assets/CreatePasswordDark.png";
+import { useState, useContext, useEffect } from "react";
 import { ThemeContext } from "../Context/ThemeContext";
 import TextField from "../Components/InputField/TextField";
 import PasswordConditionItem from "../Components/InputField/PasswordConditionitem/PasswordConditionItem";
+import IconEyeOpen from "../assets/Icons/Login/IconEyeOpen";
+import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-export default function TextFieldPage() {
+type PasswordFormData = {
+  password: string;
+};
+
+const passwordSchema = yup.object().shape({
+  password: yup
+    .string()
+    .required("رمز عبور الزامی است.")
+    .min(8, "حداقل ۸ کاراکتر.")
+    .matches(/[a-z]/, "حداقل یک حرف کوچک.")
+    .matches(/[A-Z]/, "حداقل یک حرف بزرگ.")
+    .matches(/\d/, "حداقل یک عدد."),
+});
+
+export default function StepPassword() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
 
-  const [passwordFocused, setPasswordFocused] = useState(false);
-  const [password, setPassword] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // if 
-  const hasMinLength = password.length >= 8;
-  const hasLower = /[a-z]/.test(password);
-  const hasUpper = /[A-Z]/.test(password);
-  const hasNumber = /\d/.test(password);
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    watch,
+  } = useForm<PasswordFormData>({
+    resolver: yupResolver(passwordSchema),
+    mode: "onChange",
+    defaultValues: {
+      password: "",
+    },
+  });
 
-  const isValid = hasMinLength && hasLower && hasUpper && hasNumber;
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    if (isValid) {
-      console.log("Password is valid!");
-    }
+  const passwordValue = watch("password");
+
+  const hasMinLength = passwordValue.length >= 8;
+  const hasLowerAndUpper = /[a-z]/.test(passwordValue) && /[A-Z]/.test(passwordValue);
+  const hasNumber = /\d/.test(passwordValue);
+
+  const onSubmit = (data: PasswordFormData) => {
+    console.log("Submitted Data:", data);
+ 
   };
 
   return (
-    <AuthLayout
-      image={theme === "dark" ? createPasswordDark : createPasswordLight}
-    >
-      <div className="flex items-center justify-center" dir="rtl">
-        <div className="w-full max-w-md py-10">
-          <form onSubmit={handleSubmit}>
-            <h1 className="lg:text-[28px] text-[22px] font-bold text-primary mb-3 text-center">
-              ایجاد رمز عبور
-            </h1>
-            <p
-              className={`font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-center text-[var(--text)] 
-                // theme === "dark" ? "text-[var(--text)]" : "text-primary"
-              `}
-            >
-              رمز عبور برای حساب کاربری خود وارد کنید.
-            </p>
+    <div className="flex items-center justify-center" dir="rtl">
+      <div className="w-full max-w-md py-10">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <h1 className="lg:text-[28px] text-[22px] font-bold text-primary mb-3 text-center">
+            ایجاد رمز عبور
+          </h1>
+          <p
+            className={`font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-center text-[var(--text)]`}
+          >
+            رمز عبور برای حساب کاربری خود وارد کنید.
+          </p>
 
-            <TextField
-              label="رمز عبور خود را وارد کنید"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={submitted && !isValid} 
-              focused={password.length > 0 || passwordFocused || submitted}
-              onFocus={() => setPasswordFocused(true)}
-              onBlur={() => setPasswordFocused(false)}
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="رمز عبور خود را وارد کنید"
+                type={showPassword ? "text" : "password"}
+                error={errors.password?.message}
+                // error={errors.password && touchedFields.password ? errors.password.message : undefined}
+                icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
+                onIconClick={() => setShowPassword((prev) => !prev)}
+                {...field}
+              />
+            )}
+          />
+
+          <div className="mt-3 space-y-1 text-xs font-normal">
+            <PasswordConditionItem
+              ok={hasMinLength}
+              text="حداقل دارای ۸ کاراکتر"
+              password={passwordValue}
             />
+            <PasswordConditionItem
+              ok={hasLowerAndUpper}
+              text="حداقل یک حرف کوچک و بزرگ"
+              password={passwordValue}
+            />
+            <PasswordConditionItem
+              ok={hasNumber}
+              text="حداقل یک عدد"
+              password={passwordValue}
+            />
+          </div>
 
-            {/* لیست شرط‌ها */}
-            <div className="mt-3 space-y-1 text-xs font-normal">
-              <PasswordConditionItem
-                ok={hasMinLength}
-                text="حداقل دارای ۸ کاراکتر"
-                password={password}
-              />
-              <PasswordConditionItem
-                ok={hasLower && hasUpper}
-                text="حداقل یک حرف کوچک و بزرگ"
-                password={password}
-              />
-              <PasswordConditionItem
-                ok={hasNumber}
-                text="حداقل یک عدد"
-                password={password}
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full h-[48px] rounded-xl bg-primary lg:mt-14 mt-12 text-white font-bold text-lg"
-            >
-              ثبت
-            </button>
-          </form>
-        </div>
+          <button
+            type="submit"
+            className="w-full h-[48px] rounded-xl bg-primary lg:mt-14 mt-12 text-white font-bold text-lg"
+          >
+            ثبت
+          </button>
+        </form>
       </div>
-    </AuthLayout>
+    </div>
   );
 }

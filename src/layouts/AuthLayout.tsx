@@ -1,33 +1,33 @@
-<<<<<<< HEAD
 import { useContext } from "react";
 import { ThemeContext } from "../Context/ThemeContext";
-
 import Logo from "/pf.png";
 import MoonIcon from "../assets/Icons/HeaderLogin/MoonIcon";
 import SupportIcon from "../assets/Icons/HeaderLogin/SupportIcon";
 
-interface AuthLayoutProps {
-  children: React.ReactNode;
-  image?: string;
-}
+
 
 export default function AuthLayout({ children, image }: AuthLayoutProps) {
+  interface AuthLayoutProps {
+    children: React.ReactNode;
+    image?: string;
+  }
+
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { toggleTheme } = context;
 
   return (
-    <div className=" flex lg:flex-row flex-col dark:bg-[var(--extra-dark-background)]">
+    <div className="w-screen flex flex-col lg:flex-row dark:bg-[var(--extra-dark-background)]">
       {/* image section */}
-      <div className="lg:w-1/2 lg:h-screen">
+      <div className="w-full">
         {image && (
-          <div className="flex h-full flex-col items-center justify-between  px-4 dark:bg-[var(--background)] md:bg-secondary light:bg-[var(--background)]  rounded-e-2xl  ">
-            {/* logo && button (Icon) */}
+          <div className="flex h-full flex-col items-center justify-around  px-4 dark:bg-[var(--background)] md:bg-secondary light:bg-[var(--background)]  rounded-e-2xl  ">
+            {/* logo && button (Icon)*/}
             <div className="flex justify-between items-center w-full lg:px-8 px-2 py-6 flex-row-reverse">
               <div>
                 <img src={Logo} alt="Logo" className="h-10" />
               </div>
-              <div className="flex  flex-row-reverse gap-4 items-center ">
+              <div className="flex flex-row-reverse gap-4 items-center ">
                 <button
                   onClick={toggleTheme}
                   className=" rounded-full "
@@ -49,7 +49,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
             <img
               src={image}
               alt="Authentication Visual"
-              className="w-full h-full object-contain"
+              className=" object-contain"
               onError={(e) => console.error("Failed to load image:", image, e)}
             />
           </div>
@@ -57,9 +57,8 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
       </div>
 
       {/* Form Section */}
-      <div className="lg:w-1/2 w-full  flex flex-col items-center justify-center  ">
+      <div className=" w-full lg:h-screen lg:pt-8 pt-10  flex flex-col items-center justify-center ">
         {children}
-
       </div>
     </div>
   );
