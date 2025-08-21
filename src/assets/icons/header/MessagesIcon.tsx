@@ -2,7 +2,7 @@ import React from 'react'
 
 
 
-function Messages() {
+function MessagesIcon() {
   
 
     return (
@@ -16,4 +16,4 @@ function Messages() {
     )
 }
 
-export default Messages
+export default MessagesIcon

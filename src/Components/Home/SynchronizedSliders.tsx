@@ -28,23 +28,49 @@ const SyncSlider: React.FC<Props> = ({ boxes }) => {
   const [index, setIndex] = useState(0);
   const slidesCount = boxes[0].slides.length;
 
+  // swipe state
+  let startX = 0;
+
+  const handleStart = (clientX: number) => {
+    startX = clientX;
+  };
+
+  const handleEnd = (clientX: number) => {
+    const diff = clientX - startX;
+    if (Math.abs(diff) > 20) {
+      if (diff > 0) {
+       
+        setIndex((prev) => clamp(prev - 1, slidesCount));
+      } else {
+        
+        setIndex((prev) => clamp(prev + 1, slidesCount));
+      }
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       {boxes.map((box, bIndex) => (
         <div
           key={bIndex}
-          className="relative overflow-hidden rounded-2xl bg-backgroundCard shadow px-4 pt-4 pb-5"
+          className="relative overflow-hidden rounded-2xl bg-gray27 shadow px-4 pt-4 pb-5 border border-gray21"
         >
           {/* Header */}
           <div className="flex flex-row-reverse items-center gap-1 mb-4 pr-2 ">
             <div className="h-5 w-5">{box.headerIcon}</div>
-            <span className="flex items-center translate-y-[4px] text-sm font-medium text-gray-600">
+            <span className="flex items-center translate-y-[4px]  text-black1">
               {box.header}
             </span>
           </div>
 
           {/* Slider (all slides inside) */}
-          <div className="overflow-hidden">
+          <div
+            className="overflow-hidden"
+            onMouseDown={(e) => handleStart(e.clientX)}
+            onMouseUp={(e) => handleEnd(e.clientX)}
+            onTouchStart={(e) => handleStart(e.touches[0].clientX)}
+            onTouchEnd={(e) => handleEnd(e.changedTouches[0].clientX)}
+          >
             <div
               className="flex transition-all duration-300"
               style={{ transform: `translateX(-${index * 100}%)` }}
@@ -57,8 +83,12 @@ const SyncSlider: React.FC<Props> = ({ boxes }) => {
                       {slide.iconSrc}
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold text-gray-800">{slide.title}</div>
-                      <div className="text-xs uppercase text-gray-400">{slide.subtitle}</div>
+                      <div className="text-2xl font-bold text-black1">
+                        {slide.title}
+                      </div>
+                      <div className="text-xs uppercase text-gray3 pt-2">
+                        {slide.subtitle}
+                      </div>
                     </div>
                   </div>
 
@@ -66,17 +96,15 @@ const SyncSlider: React.FC<Props> = ({ boxes }) => {
                   <div className="flex items-center justify-between text-sm font-medium mt-1 mb-5">
                     <span
                       className={
-                        slide.changePct >= 0
-                          ? "text-emerald-600"
-                          : "text-rose-600"
+                        slide.changePct >= 0 ? "text-green1" : "text-rose-600"
                       }
                     >
                       {slide.changePct >= 0 ? "+" : ""}
                       {slide.changePct.toFixed(2)}%
                     </span>
-                    <div className="text-gray-900 tabular-nums">
-                      {slide.price}{" "}
-                      <span className="text-gray-500">تومان</span>
+                    <div className="text-text tabular-nums">
+                      {slide.price}
+                      <span className="text-gray-500 pl-2">تومان</span>
                     </div>
                   </div>
                 </div>
@@ -91,7 +119,9 @@ const SyncSlider: React.FC<Props> = ({ boxes }) => {
                 key={i}
                 onClick={() => setIndex(i)}
                 className={`h-2 w-2 rounded-full transition-all ${
-                  i === clamp(index, slidesCount) ? "  w-5 bg-blue-500" : "w-2 bg-gray-300"
+                  i === clamp(index, slidesCount)
+                    ? "w-5 bg-blue-500"
+                    : "w-2 bg-gray-300"
                 }`}
               />
             ))}

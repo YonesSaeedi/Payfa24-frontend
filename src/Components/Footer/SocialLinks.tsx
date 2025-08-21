@@ -10,10 +10,14 @@ interface SocialLink {
 
 export default function SocialLinks(): React.JSX.Element {
   const socialLinks: SocialLink[] = [
-    { icon: <InstagramIcon />, href: "#" },
-    { icon: <LinkdinIcon />, href: "#" },
-    { icon: <YoutubeIcon />, href: "#" },
-    { icon: <TelegramIcon />, href: "#" },
+    { icon: <span className="w-[22px] h-[22px]">
+      <InstagramIcon />
+    </span>, href: "#" },
+    { icon: <span className="w-[18px] h-[18px]">
+      <LinkdinIcon />
+    </span>, href: "#" },
+    { icon: <span className="w-[22px] h-[22px]"><YoutubeIcon /></span>, href: "#" },
+    { icon: <span className="w-[18px] h-[15px]"><TelegramIcon /></span>, href: "#" },
   ];
 
   return (

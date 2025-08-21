@@ -8,7 +8,7 @@ interface DownloadCardProps {
 
 export default function DownloadCard({ title, img }: DownloadCardProps): React.JSX.Element {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 ">
       <div className="text-end">
         <span>دریافت برنامه از</span>
         <p className="font-bold">{title}</p>

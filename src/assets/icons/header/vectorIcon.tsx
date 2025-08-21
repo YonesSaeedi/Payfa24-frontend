@@ -1,7 +1,7 @@
 import React from 'react'
 
 
-function Vector() {
+function VectorIcon() {
 
 
     return (
@@ -11,4 +11,4 @@ function Vector() {
     )
 }
 
-export default Vector
+export default VectorIcon

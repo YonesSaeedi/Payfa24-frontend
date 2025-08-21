@@ -1,7 +1,11 @@
 
 
  import React from "react";
- import Validation from "./../../../public/images/validation.png"
+ import ValidationlightIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2 (1).png"
+ import ValidationDarkIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2.png"
+ import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
+
+
 interface IdentityCardProps {
   title: string;
   items: string[];
@@ -11,29 +15,39 @@ interface IdentityCardProps {
 
 const IdentityCard: React.FC<IdentityCardProps> = ({ title, items, accesses, onClick }) => {
   return (
-    <div className="border rounded-xl p-6 flex items-center justify-between">
+    <div className="border rounded-xl p-6 flex items-center justify-between  border-gray21 shadow">
       {/* Image placeholder */}
-      <div className=" rounded-lg flex items-center justify-center">
-        <span><img src={Validation}/></span>
-      </div>
+      <div className=" rounded-lg flex items-center justify-center ">
+        <img src={ValidationlightIcon} className="block dark:hidden"/>
+  
+ 
+        <img src={ValidationDarkIcon} className="hidden dark:block"/>
+        </div>
 
       <div className="w-1/2 flex flex-col gap-2 text-right">
         {/* <img/> */}
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <ul className="list-disc pr-4">
+        <h2 className="text-xl font-semibold text-blue2 pb-4">{title}</h2>
+        <ul className="list-disc pr-4 text-black1">
           {items.map((item, index) => (
             <li key={index} className="list-none">{item}</li>
           ))}
         </ul>
-        <span className="mt-2 font-medium">دسترسی‌  ها :</span>
-        <ul  dir="rtl" className="list-disc list-inside pr-4">
+        <span className="mt-2 font-medium text-gray5">: دسترسی‌  ها </span>
+        <ul  dir="rtl" className="list-disc list-inside pr-4 text-black1">
           {accesses.map((a, index) => (
             <li key={index}>{a}</li>
           ))}
         </ul>
-        <button onClick={onClick} className="mt-4 bg-blue-500 text-white rounded-lg py-2 px-12 w-fit self-end">
-          احراز هویت
-        </button>
+       <button 
+  onClick={onClick} 
+  className="mt-4 bg-blue-500 text-white rounded-lg w-[198px] h-[40px] self-end flex items-center justify-center"
+>
+  <span className="pr-2 flex  w-8 h-8 ">
+    <ArrowLeftIcon/>
+  </span>
+  احراز هویت
+</button>
+
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import LocationIcon from "../../assets/icons/Footer/LocationIcon";
 
 export default function ContactInfo(): React.JSX.Element {
   return (
-    <div className="order-1 lg:order-2 flex flex-col text-right space-y-5 justify-center">
+    <div className="order-1 lg:order-2 flex flex-col text-right space-y-5 justify-center pt-8 lg:pt-0">
       <h2 className="text-lg font-bold">ارتباط با ما</h2>
 
       
@@ -14,7 +14,10 @@ export default function ContactInfo(): React.JSX.Element {
          <div className="flex flex-col items-end gap-1">
           <div className="flex items-center">
             <span className="mr-2">تماس</span>
-            <TelephoneIcon />
+             <span className="w-[22px] h-[22px] icon-wrapper">
+              <TelephoneIcon />
+             </span>
+            
           </div>
           <span>۰۲۱-۱۲۳۴۵۶۷۸۹</span>
         </div>
@@ -22,7 +25,10 @@ export default function ContactInfo(): React.JSX.Element {
         <div className="flex flex-col items-end gap-1">
           <div className="flex items-center">
             <span className="mr-2">ایمیل</span>
-            <EmailIcon />
+            <span className="w-[22px] h-[22px] icon-wrapper">
+              <EmailIcon />
+            </span>
+            
           </div>
           <div className="flex">
             <span>support@payfa24.com</span>
@@ -39,7 +45,10 @@ export default function ContactInfo(): React.JSX.Element {
       <div className="flex flex-col items-end gap-1">
         <div className="flex items-center">
           <span className="mr-2">آدرس</span>
-          <LocationIcon />
+          <span className="w-[22px] h-[22px] icon-wrapper">
+            <LocationIcon />
+          </span>
+          
         </div>
         <span>
         ارومیه شهرک شهریار خیابان حیدربابا 16 متری دوم نبش کوچه 8 پلاک 82

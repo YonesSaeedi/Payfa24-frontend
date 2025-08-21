@@ -2,7 +2,7 @@ import React from 'react'
 
 
 
-function Frame() {
+function FrameIcon() {
    
 
     return (
@@ -15,4 +15,4 @@ function Frame() {
     )
 }
 
-export default Frame
+export default FrameIcon
