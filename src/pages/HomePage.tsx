@@ -22,13 +22,15 @@ import Veil from "../assets/icons/Home/CryptoTableIcon/VeilIcon";
 import VeChain from "../assets/icons/Home/CryptoTableIcon/VeChainIcon";
 import Ultra from "../assets/icons/Home/CryptoTableIcon/UltraIconIcon";
 import IdentityCard from "../Components/Home/IdentityCard";
+import img1 from "../assets/images/Home/image copy (1).jpg";
+
 
 
 const boxes = [
   {
     header: "تازه های بازار",
     headerIcon: <Fire />,
-    bgShape: "",
+    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Yoyow (Yoyow).png",
     slides: [
       {
         title: "یویوو",
@@ -49,7 +51,7 @@ const boxes = [
   {
     header: "بیشترین افت قیمت",
     headerIcon: <TrendDownIcon />,
-    bgShape: "",
+    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Trinity Network Credit (Tnc).png",
     slides: [
       {
         title: "ترینیتی نتورک",
@@ -70,7 +72,7 @@ const boxes = [
   {
     header: "بیشترین افزایش قیمت",
     headerIcon: <TrendIcon />,
-    bgShape: "",
+    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/TitanSwap (TITAN).png",
     slides: [
       {
         title: "تیتان سوآپ",
@@ -91,7 +93,7 @@ const boxes = [
   {
     header: "بیشترین معامله",
     headerIcon: <WalletMoney />,
-    bgShape: "",
+    bgShape:  "../../src/assets/images/Home/SynchronizedSlidersIcon/Tetherbackground (USDT).png",
     slides: [
       {
         title: "تتر",
@@ -176,19 +178,19 @@ function HomePage() {
       title: "کارمزد رایگان",
       subtitle: "بر روی معاملات بیت‌کوین",
       buttonText: "ورود به دنیای رمز ارز",
-      imageSrc:  "/images/slide2.png",
+      imageSrc: img1,
     },
     {
       title: "آینده مالی خود را بسازید",
       subtitle: "با سرمایه‌گذاری روی ارزهای دیجیتال",
       buttonText: "شروع کنید",
-      imageSrc: "/images/slide2.png",
+      imageSrc: "../assets/images/Home/Screenshot 2025-08-20 141154.png",
     },
     {
       title: "سریع و امن",
       subtitle: "انتقال ارز در کمترین زمان",
       buttonText: "ثبت‌نام",
-      imageSrc: "/images/slide3.png",
+      imageSrc: "../assets/images/Home/Screenshot 2025-08-20 141154.png",
     },
   ];
 
@@ -207,7 +209,7 @@ function HomePage() {
             />
           </div>
 
-          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10">
+          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
             <PosterSlider slides={slidesData} />
             <InvitationCard />
           </div>

@@ -2,7 +2,7 @@ import React from 'react'
 
 
 
-function Ring() {
+function RingIcon() {
    
 
     return (
@@ -16,4 +16,4 @@ function Ring() {
     )
 }
 
-export default Ring
+export default RingIcon

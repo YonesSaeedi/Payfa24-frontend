@@ -1,6 +1,6 @@
 // import FAQAccordion from "./questionboxes";
 import TradeLayoutFAQ from "../../trade/TradeLayoutFAQ";
-import question from "./../../../assets/images/HomeIcon/QuestionBoxIcon/question.png";
+import question from "./../../../assets/images/Home/QuestionBoxIcon/question.png";
 import ArrowLeftIcon from "../../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 
 function QuestionBox() {
@@ -38,8 +38,11 @@ function QuestionBox() {
   return (
 <div className="flex flex-col-reverse lg:flex-row justify-between lg:gap-x-[40px] bg-backgroundMain2 text-text">
 
-  <button className="flex lg:hidden px-4 py-2 rounded-lg text-primary items-center justify-center gap-2 font-bold pt-8 ">
-  <ArrowLeftIcon />
+  <button className="flex lg:hidden px-4 py-2 rounded-lg text-primary items-center justify-center gap-2 font-bold pt-8 w-8 h-8">
+    <span className="w-8 h-8 inline-flex items-center justify-center icon-wrapper">
+        <ArrowLeftIcon />
+    </span>
+
   مشاهده همه سوالات
 </button>
 
@@ -57,8 +60,9 @@ function QuestionBox() {
     <span className="text-base">تماس با پشتیبانی</span>
     <p className="text-blue-600">۰۲۱-۱۲۳۴۵۶۷۸۹</p>
   </div>
-  <button className="hidden lg:flex px-4 py-2 rounded-lg bg-blue-500 text-white items-center justify-center gap-2 font-bold">
-  <ArrowLeftIcon />
+  <button className="hidden lg:flex px-3 py-2 rounded-lg bg-blue-500 text-white items-center justify-center gap-2 font-bold">
+    <span  className="w-8 h-8 "> <ArrowLeftIcon /></span>
+ 
   مشاهده همه سوالات
 </button>
 

@@ -2,7 +2,7 @@ import React from 'react'
 
 
 
-function Home() {
+function HomeIcon() {
    
 
     return (
@@ -15,4 +15,4 @@ function Home() {
     )
 }
 
-export default Home
+export default HomeIcon

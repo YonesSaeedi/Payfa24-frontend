@@ -2,11 +2,11 @@ import React from 'react'
 
 
 
-function Fire() {
+function FireIcon() {
 
 
     return (
-        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="100%" height="100%" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M21.9586 12.0416C15.3159 7.81445 13.3067 4.10214 12.8586 3.09917C12.8082 2.98637 12.6518 2.96556 12.5809 3.06677C11.5732 4.50619 6.68159 12.2446 14.8753 16.2916C24.4018 20.9969 25.0774 28.7298 25.089 30.699C25.0899 30.8482 25.2878 30.9225 25.3846 30.8089C29.7772 25.6503 33.2906 19.2529 21.9586 12.0416Z" stroke="#FF9518" stroke-width="2.31522" stroke-linecap="round"/>
 <path opacity="0.3" d="M13.6696 22.0595C10.5483 20.1422 9.02547 18.0025 8.56325 17.2659C8.49562 17.1581 8.33206 17.1625 8.28206 17.2795C7.70727 18.6244 5.48161 24.4368 9.12692 26.1748C13.0755 28.0573 13.985 29.847 14.1879 30.6795C14.2237 30.8264 14.4696 30.9127 14.5704 30.8C16.7381 28.3783 19.112 25.4026 13.6696 22.0595Z" stroke="#FF9518" stroke-width="2.31522" stroke-linecap="round"/>
 </svg>
@@ -14,4 +14,4 @@ function Fire() {
     )
 }
 
-export default Fire
+export default FireIcon

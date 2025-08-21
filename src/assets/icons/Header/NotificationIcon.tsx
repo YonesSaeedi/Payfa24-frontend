@@ -2,7 +2,7 @@ import React from 'react'
 
 
 
-function Notification() {
+function NotificationIcon() {
 
 
     return (
@@ -15,4 +15,4 @@ function Notification() {
     )
 }
 
-export default Notification
+export default NotificationIcon

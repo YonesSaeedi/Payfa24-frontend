@@ -1,6 +1,6 @@
 
 
-function Category() {
+function CategoryIcon() {
 
 
     return (
@@ -14,4 +14,4 @@ function Category() {
     )
 }
 
-export default Category
+export default CategoryIcon

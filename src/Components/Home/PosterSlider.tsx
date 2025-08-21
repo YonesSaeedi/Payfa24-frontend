@@ -38,18 +38,18 @@ const PosterSlider: React.FC<PosterSliderProps> = ({ slides }) => {
     <div className="relative w-full max-w-5xl mx-auto pb-8 lg:pb-0">
     
       <div
-        className="flex items-center bg-[#0B0D17] rounded-2xl overflow-hidden h-[300px]"
+        className="flex items-center bg-[#0B0D17] rounded-2xl overflow-hidden h-full"
         onMouseDown={(e) => handleStart(e.clientX)}
         onMouseUp={(e) => handleEnd(e.clientX)}
         onTouchStart={(e) => handleStart(e.touches[0].clientX)}
         onTouchEnd={(e) => handleEnd(e.changedTouches[0].clientX)}
       >
      
-        <div className="w-1/2 bg-[#0B0D17]">
+        <div className="w-1/2 h-full bg-[#0B0D17] pl-2">
           <img
             src={slides[current].imageSrc}
             alt={slides[current].title}
-            className="w-full object-cover"
+            className="max-w-full max-h-full object-contain"
           />
         </div>
 

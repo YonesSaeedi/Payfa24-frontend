@@ -34,11 +34,11 @@ const WalletCard = ({
   const isPositive = change >= 0;
 
   const actionButtons = [
-    { label: "تاریخچه", onClick: onHistory, icon: <ReceiptText /> },
-    { label: "برداشت", onClick: onWithdraw, icon: <WalletMines /> },
-    { label: "واریز", onClick: onDeposit, icon: <WalletAdd /> },
-    { label: "فروش", onClick: onSell, icon: <SendIcon /> },
-    { label: "خرید", onClick: onBuy, icon: <ReceivedIcon /> },
+    { label: "تاریخچه", onClick: onHistory, icon: <span className="text-blue1"><ReceiptText /></span> },
+    { label: "برداشت", onClick: onWithdraw, icon: <span className="text-blue1"><WalletMines /></span> },
+    { label: "واریز", onClick: onDeposit, icon: <span className="text-blue1"><WalletAdd /></span> },
+    { label: "فروش", onClick: onSell, icon: <span className="text-blue1"> <SendIcon /></span> },
+    { label: "خرید", onClick: onBuy, icon: <span className="text-blue1"><ReceivedIcon /></span> },
   ];
 
   const handleCurrencyChange = (value: "tether" | "toman") => {
@@ -52,13 +52,23 @@ const WalletCard = ({
     
       <div className="flex items-center justify-between mb-7">
         <CurrencyToggle onChange={handleCurrencyChange} />
-        <div className="flex items-center gap-2" onClick={()=>setStateBlure(stateBlure=>!stateBlure)}>
-          <VisibilityIcon />
-          <span className="text-black1 text-base font-semibold">
-            موجودی کیف پول شما
-          </span>
-          
-        </div>
+    <div 
+  className="flex items-center gap-2 cursor-pointer 
+             transition-all duration-300 
+            
+             rounded-xl px-2 py-1"
+  onClick={() => setStateBlure(stateBlure => !stateBlure)}
+>
+  <span className="w-[22px] h-[22px] text-gray-500 group-hover:text-gray-800">
+    <VisibilityIcon />
+  </span>
+
+  <span className="text-black1 text-base font-semibold">
+    موجودی کیف پول شما
+  </span>
+</div>
+
+
        
       </div>
 
@@ -75,7 +85,7 @@ const WalletCard = ({
           }`}
         >
           <span className="flex items-center gap-1 pt-10 text-green4">
-            {isPositive ? <ChartIcon /> : "↓"}{" "}
+            {isPositive ? <span className="w-5 h-5"><ChartIcon /></span> : "↓"}{" "}
             {Math.abs(change).toFixed(1)}%
           </span>
 

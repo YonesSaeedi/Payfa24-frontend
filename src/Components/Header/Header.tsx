@@ -8,7 +8,7 @@ import Wallet from "../../assets/icons/Header/WalletIcon";
 import Vector from "../../assets/icons/Header/vectorIcon";
 import Home from "../../assets/icons/Header/HomeIcon";
 import Messages from "../../assets/icons/Header/MessagesIcon";
-import Chart from "../../assets/icons/Header/Chart";
+import Chart from "../../assets/icons/Header/ChartIcon";
 import Category from "../../assets/icons/Header/CategoryIcon";
 import Frame from "../../assets/icons/Header/FrameIcon";
 import Ring from "../../assets/icons/Header/ringIcon";

@@ -1,6 +1,6 @@
-const BGChart = () => {
+const BGChartIcon = () => {
   return (
-    <svg width="100%" height="50%" viewBox="0 0 1440 494" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="100%" height="100%" viewBox="0 0 1440 494" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g opacity="0.16">
         <path d="M-2.92896 61.1252V296.369" stroke="#3AB67A" stroke-width="5.94479" stroke-miterlimit="10" stroke-linecap="round" />
         <path fill-rule="evenodd" clip-rule="evenodd" d="M4.27928 247.257H-9.89716C-11.6104 247.257 -13 244.522 -13 241.151V112.998C-13 109.627 -11.6104 106.892 -9.89716 106.892H4.27928C5.99253 106.892 7.38212 109.627 7.38212 112.998V241.151C7.38212 244.522 5.99253 247.257 4.27928 247.257Z" fill="#3AB67A" />
@@ -74,4 +74,4 @@ const BGChart = () => {
   )
 }
 
-export default BGChart
+export default BGChartIcon

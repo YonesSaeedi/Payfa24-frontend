@@ -1,8 +1,8 @@
 
 
  import React from "react";
- import ValidationlightIcon from "./../../assets/images/HomeIcon/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2 (1).png"
- import ValidationDarkIcon from "./../../assets/images/HomeIcon/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2.png"
+ import ValidationlightIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2 (1).png"
+ import ValidationDarkIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2.png"
  import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 
 
@@ -38,14 +38,16 @@ const IdentityCard: React.FC<IdentityCardProps> = ({ title, items, accesses, onC
             <li key={index}>{a}</li>
           ))}
         </ul>
-        <button onClick={onClick} className="mt-4 bg-blue-500 text-white rounded-lg py-2 px-16 w-fit self-end flex">
-          <span className="icon-wrapper pr-2">
-             <ArrowLeftIcon/>
-          </span>
-         
-          احراز هویت
-  
-        </button>
+       <button 
+  onClick={onClick} 
+  className="mt-4 bg-blue-500 text-white rounded-lg w-[198px] h-[40px] self-end flex items-center justify-center"
+>
+  <span className="pr-2 flex  w-8 h-8 ">
+    <ArrowLeftIcon/>
+  </span>
+  احراز هویت
+</button>
+
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 import React from 'react'
 
-function Veil() {
+function VeilIcon() {
   return (
-    <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="100%" height="100%" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="21" cy="21" r="21" fill="black"/>
       <path d="M24.3799 23.7408V23.6615" stroke="#ABABAB" strokeWidth="0.3333"/>
       <path d="M30.6409 16.302L35 8.75C33.9131 8.88587 32.8488 9.21421 31.8637 9.70107C31.0259 11.3428 31.0032 12.9959 29.9956 14.4678C26.4517 19.676 20.4962 21.2951 15.2766 17.8758C12.2762 15.917 10.4759 10.8446 10.1363 9.70107C9.15123 9.21421 8.08694 8.88587 7 8.75C8.44925 11.2635 9.90983 13.7884 11.3591 16.302C16.6692 18.1701 20.2018 24.6125 20.9717 29.549C21.651 23.8539 25.6704 18.5098 30.6409 16.302Z" fill="url(#paint0_linear_13771_64543)"/>
@@ -34,4 +34,4 @@ function Veil() {
   )
 }
 
-export default Veil
+export default VeilIcon

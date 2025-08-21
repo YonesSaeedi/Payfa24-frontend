@@ -31,14 +31,14 @@ const CryptoTable: React.FC<Props> = ({ data, active, setActive }) => {
     <div className="w-full bg-backgroundMain rounded-2xl p-4 shadow border border-gray21 overflow-hidden">
       {/* Header */}
       <div className="flex justify-between items-center border-gray21 mb-6">
-        <button className="flex items-center gap-2 px-3 py-1 rounded-xl text-sm text-primary ml-2">
-          <span className="w-4 h-4 text-primary mr-2 rounded">
+        <button className="flex items-center gap-2 px-3 py-1 rounded-xl text-sm text-blue2 ml-2 text-center">
+          <span className="w-4 h-4 text-blue2  rounded">
             <ArrowLeftIcon />
           </span>
           همه ارزها
         </button>
 
-        <h2 className="text-xl font-bold flex items-center gap-2 text-text">
+        <h2 className="text-xl font-bold flex items-center gap-2 text- text-black1">
           بازار پی‌فا ۲۴
         </h2>
       </div>
@@ -49,7 +49,7 @@ const CryptoTable: React.FC<Props> = ({ data, active, setActive }) => {
           <span
             key={index}
             onClick={() => setActive(index)}
-            className={`cursor-pointer pb-1 ${
+            className={`cursor-pointer pb-1  text-black1 ${
               active === index
                 ? "text-blue-600 border-b-2 border-blue-600"
                 : "text-grey1"
@@ -82,8 +82,11 @@ const CryptoTable: React.FC<Props> = ({ data, active, setActive }) => {
               key={index}
               className="border-b border-gray21 last:border-b-0 hover:bg-background text-right"
             >
-              <td className="py-3 px-4 flex items-start gap-2 justify-start">
-                {item.logo}
+              <td className="py-3 px-4 flex items-start gap-2 justify-start ">
+                <span className="h-[42px] w-[42px]">
+                        {item.logo}
+                </span>
+          
                 <div>
                   {/* اسم ارز با ellipsis */}
                   <div
@@ -92,9 +95,9 @@ const CryptoTable: React.FC<Props> = ({ data, active, setActive }) => {
                   >
                     {item.name}
                   </div>
-                  <div className="text-xs text-gray12 text-center p-2">
+                  <span className="text-xs text-gray12 text-center p-2 ">
                     {item.symbol}
-                  </div>
+                  </span>
                 </div>
               </td>
 
