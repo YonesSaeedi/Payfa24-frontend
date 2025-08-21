@@ -12,9 +12,9 @@ import MessagesIcon from "../../assets/icons/header/MessagesIcon";
 import RingIcon from "../../assets/icons/header/ringIcon";
 import CategoryIcon from "../../assets/icons/header/CategoryIcon";
 import WalletIcon from "../../assets/icons/header/WalletIcon";
-import Chart from "../../assets/icons/Chart";
 import BitcoinIcon from "../../assets/icons/header/BitcoinIcon";
 import HomeIcon from "../../assets/icons/header/HomeIcon";
+import ChartIcon from "../../assets/icons/header/ChartIcon";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -126,7 +126,7 @@ export default function Header() {
               >
                 بازارها
                 <span className="pl-2 w-8 h-8 ">
-                  <Chart />
+                  <ChartIcon />
                 </span>
               </Link>
             </li>

@@ -14,14 +14,15 @@ import VeChain from "../assets/icons/Home/CryptoTable/VeChainIcon";
 import Veil from "../assets/icons/Home/CryptoTable/VeilIcon";
 import HeaderFooterLayout from "../layouts/HeaderFooterLayout";
 import img1 from "../assets/images/Home/image copy (1).jpg";
-import WalletCard from "../components/Home/WalletCard/WalletCard";
-import IdentityCard from "../components/Home/IdentityCard";
-import PosterSlider from "../components/Home/PosterSlider";
-import InvitationCard from "../components/Home/InvitationCard";
-import SyncSlider from "../components/Home/SynchronizedSliders";
-import CryptoTable from "../components/Home/CryptoTable";
-import QuestionBox from "../components/Home/QuestionBox/QuestionBox";
+
 import TravelaIcon from "../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+import WalletCard from "../Components/Home/WalletCard/WalletCard";
+import IdentityCard from "../Components/Home/IdentityCard";
+import PosterSlider from "../Components/Home/PosterSlider";
+import InvitationCard from "../Components/Home/InvitationCard";
+import SyncSlider from "../Components/Home/SynchronizedSliders";
+import CryptoTable from "../Components/Home/CryptoTable";
+import QuestionBox from "../Components/Home/QuestionBox/QuestionBox";
 
 const boxes = [
   {
@@ -208,7 +209,7 @@ function HomePage() {
 
             <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
               <PosterSlider slides={slidesData} />
-              <InvitationCard />
+              <InvitationCard/>
             </div>
 
             <div id="SyncSlider" className="pt-12 pb-12">
