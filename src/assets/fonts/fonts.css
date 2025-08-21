@@ -2,7 +2,8 @@
 @font-face {
   font-family: 'IRANSansX';
   src: url('./woff2/IRANSansX-UltraLight.woff2') format('woff2'),
-    url('./woff/IRANSansX-UltraLight.woff') format('woff');
+    url('./woff/IRANSansX-UltraLight.woff') format('woff'),
+    url('./ttf/IRANSansX-UltraLight.ttf') format('ttf');
   font-weight: 100;
   font-style: normal;
   font-display: swap;
