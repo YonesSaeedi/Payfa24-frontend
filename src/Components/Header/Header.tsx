@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+
+import ServicesBox from "../ServicesBox/ServicesBox"; 
 import pfIcon from "../../assets/images/HeaderIcon/pf.png";
 import groupIcon from "../../assets/images/HeaderIcon/Group 71185 (1).png";
 
@@ -17,6 +19,7 @@ import HomeIcon from "../../assets/icons/header/HomeIcon";
 import ChartIcon from "../../assets/icons/header/ChartIcon";
 
 export default function Header() {
+   const [showServices, setShowServices] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeItem, setActiveItem] = useState<string>("/");
   const themeContext = useContext(ThemeContext);
@@ -33,7 +36,17 @@ export default function Header() {
     <header className="bg-white shadow-md dark:bg-gray-900 dark:text-white sticky top-0 z-50">
       <nav className="container-style mx-auto  flex items-center justify-between py-4 px-6">
         <div className="flex gap-4 text-gray-600">
-          <button
+           <Link
+                to="/login"
+                onClick={() => setActiveItem("/login")}
+                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/login"
+                  ? themeContext.theme === "dark"
+                    ? "text-primary"
+                    : "text-blue-600 font-semibold"
+                  : "text-header-items"
+                  }`}
+              >
+                 <button
             className="hover:text-blue-600 transition"
             aria-label="Profile"
           >
@@ -41,6 +54,8 @@ export default function Header() {
               <FrameIcon />
             </span>
           </button>
+              </Link>
+         
           <button
             className="hover:text-blue-600 transition"
             aria-label="Profile"
@@ -78,24 +93,21 @@ export default function Header() {
 
         <div className="flex items-center space-x-6">
           <ul className="hidden lg:flex space-x-8 text-gray1">
-            <li >
-              <Link
-                to="/services"
-                onClick={() => setActiveItem("/services")}
+           <li className="relative">
+      <button
+        onClick={() => setShowServices(!showServices)}
+        className={`hover:text-blue-600 transition flex items-center`}
+      >
+        خدمات
+        <span className="pl-2 w-8 h-8">
+          <CategoryIcon />
+        </span>
+      </button>
 
-                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/services"
-                  ? themeContext.theme === "dark"
-                    ? "text-gray1"
-                    : "text-blue-600 font-semibold"
-                  : "text-gray1"
-                  }`}
-              >
-                خدمات
-                <span className="pl-2 w-8 h-8  ">
-                  <CategoryIcon />
-                </span>
-              </Link>
-            </li>
+      {showServices && (
+        <ServicesBox onClose={() => setShowServices(false)} />
+      )}
+    </li>
             <li>
               <Link
                 to="/walet"
