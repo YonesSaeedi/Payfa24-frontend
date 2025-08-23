@@ -1,33 +1,22 @@
 
 import { useState } from "react";
-import Fire from "../assets/icons/Home/SynchronizedSliders/fireIcon";
-import YoYowIcon from "../assets/icons/Home/SynchronizedSliders/YoYowIcon";
-import TrendDownIcon from "../assets/icons/Home/SynchronizedSliders/TrendDownIcon";
-import TrinityIcon from "../assets/icons/Home/SynchronizedSliders/TrinityIcon";
-import TrendIcon from "../assets/icons/Home/SynchronizedSliders/TrendIcon";
-import Titan from "../assets/icons/Home/SynchronizedSliders/TitanIcon";
-import WalletMoney from "../assets/icons/Home/SynchronizedSliders/WalletMoneyIcon";
-import TetherIcon from "../assets/icons/Home/WalletCard/TetherIcon";
-import TokoTokenIcon from "../assets/icons/Home/CryptoTable/TokoTokenIcon";
-import TornIcon from "../assets/icons/Home/CryptoTable/TornIcon";
-import Ultra from "../assets/icons/Home/CryptoTable/UltraIconIcon";
-import VeChain from "../assets/icons/Home/CryptoTable/VeChainIcon";
-import Veil from "../assets/icons/Home/CryptoTable/VeilIcon";
+
 import HeaderFooterLayout from "../layouts/HeaderFooterLayout";
 import img1 from "../assets/images/Home/image copy (1).jpg";
-import WalletCard from "../components/Home/WalletCard/WalletCard";
-import IdentityCard from "../components/Home/IdentityCard";
-import PosterSlider from "../components/Home/PosterSlider";
-import InvitationCard from "../components/Home/InvitationCard";
-import SyncSlider from "../components/Home/SynchronizedSliders";
-import CryptoTable from "../components/Home/CryptoTable";
-import QuestionBox from "../components/Home/QuestionBox/QuestionBox";
-import TravelaIcon from "../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+
+import WalletCard from "../Components/Home/WalletCard/WalletCard";
+import IdentityCard from "../Components/Home/IdentityCard";
+import PosterSlider from "../Components/Home/PosterSlider";
+import InvitationCard from "../Components/Home/InvitationCard";
+import SyncSlider from "../Components/Home/SynchronizedSliders";
+import CryptoTable from "../Components/Home/CryptoTable";
+import QuestionBox from "../Components/Home/QuestionBox/QuestionBox";
+import FireIcon from "../assets/Icons/Home/SynchronizedSliders/fireIcon";
 
 const boxes = [
   {
     header: "تازه های بازار",
-    headerIcon: <Fire />,
+    headerIcon: <FireIcon/>,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Yoyow (Yoyow).png",
     slides: [
       {
@@ -35,7 +24,7 @@ const boxes = [
         subtitle: "YOYOW",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <YoYowIcon />,
+        iconSrc: <YoYowIconIcon/>,
       },
       {
         title: "یویوو",
@@ -209,7 +198,7 @@ function HomePage() {
 
             <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
               <PosterSlider slides={slidesData} />
-              <InvitationCard />
+              <InvitationCard/>
             </div>
 
             <div id="SyncSlider" className="pt-12 pb-12">

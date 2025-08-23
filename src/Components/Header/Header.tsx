@@ -1,21 +1,18 @@
 import { Link } from "react-router-dom";
 import pfIcon from "../../assets/images/HeaderIcon/pf.png";
 import groupIcon from "../../assets/images/HeaderIcon/Group 71185 (1).png";
-
-
-
 import { ThemeContext } from "./../../Context/ThemeContext";
 import { useContext, useState } from "react";
-import FrameIcon from "../../assets/icons/header/FrameIcon";
-import VectorIcon from "../../assets/icons/header/vectorIcon";
-import MoonIcon from "../../assets/icons/header/MoonIcon";
-import MessagesIcon from "../../assets/icons/header/MessagesIcon";
-import RingIcon from "../../assets/icons/header/ringIcon";
-import CategoryIcon from "../../assets/icons/header/CategoryIcon";
-import WalletIcon from "../../assets/icons/header/WalletIcon";
-import Chart from "../../assets/icons/Chart";
-import BitcoinIcon from "../../assets/icons/header/BitcoinIcon";
-import HomeIcon from "../../assets/icons/header/HomeIcon";
+import FrameIcon from "../../assets/Icons/header/FrameIcon";
+import VectorIcon from "../../assets/Icons/header/vectorIcon";
+import MoonIcon from "../../assets/Icons/HeaderLogin/MoonIcon";
+import MessagesIcon from "../../assets/Icons/header/MessagesIcon";
+import RingIcon from "../../assets/Icons/header/ringIcon";
+import CategoryIcon from "../../assets/Icons/header/CategoryIcon";
+import WalletIcon from "../../assets/Icons/header/WalletIcon";
+import ChartIcon from "../../assets/Icons/header/ChartIcon";
+import BitcoinIcon from "../../assets/Icons/header/BitcoinIcon";
+import HomeIcon from "../../assets/Icons/header/HomeIcon";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -40,7 +37,7 @@ export default function Header() {
             aria-label="Profile"
           >
             <span>
-              <FrameIcon />
+              <FrameIcon/>
             </span>
           </button>
           <button
@@ -48,7 +45,7 @@ export default function Header() {
             aria-label="Profile"
           >
             <span>
-              <VectorIcon />
+              <VectorIcon/>
             </span>
           </button>
           <button
@@ -57,7 +54,7 @@ export default function Header() {
             onClick={toggleTheme}
           >
             <span>
-              <MoonIcon />
+              <MoonIcon/>
             </span>
           </button>
           <button
@@ -65,7 +62,7 @@ export default function Header() {
             aria-label="Messages"
           >
             <span>
-              <MessagesIcon />
+              <MessagesIcon/>
             </span>
           </button>
           <button
@@ -73,7 +70,7 @@ export default function Header() {
             aria-label="Night Mode"
           >
             <span>
-              <RingIcon />
+              <RingIcon/>
             </span>
           </button>
         </div>
@@ -94,7 +91,7 @@ export default function Header() {
               >
                 خدمات
                 <span className="pl-2 w-8 h-8  ">
-                  <CategoryIcon />
+                  <CategoryIcon/>
                 </span>
               </Link>
             </li>
@@ -111,7 +108,7 @@ export default function Header() {
               >
                 کیف پول
                 <span className="pl-2 w-8 h-8 ">
-                  <WalletIcon />
+                  <WalletIcon/>
                 </span>
               </Link>
             </li>
@@ -128,7 +125,7 @@ export default function Header() {
               >
                 بازارها
                 <span className="pl-2 w-8 h-8 ">
-                  <Chart />
+                  <ChartIcon/>
                 </span>
               </Link>
             </li>
@@ -145,7 +142,7 @@ export default function Header() {
               >
                 معامله
                 <span className="pl-2  w-8 h-8">
-                  <BitcoinIcon />
+                  <BitcoinIcon/>
                 </span>
               </Link>
             </li>
@@ -162,7 +159,7 @@ export default function Header() {
               >
                 خانه
                 <span className="pl-2 w-8 h-8">
-                  <HomeIcon />
+                  <HomeIcon/>
                 </span>
               </Link>
             </li>

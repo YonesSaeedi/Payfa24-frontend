@@ -3,6 +3,8 @@ import ValidationlightIcon from "./../../assets/images/Home/ValidationIcon/40238
 import ValidationDarkIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2.png";
 import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 
+import { Link } from "react-router";
+
 interface IdentityCardProps {
   title: string;
   items: string[];
@@ -14,7 +16,8 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
   title,
   items,
   accesses,
-  onClick,
+
+
 }) => {
   return (
     <div className="border rounded-xl p-6 flex items-center justify-between  border-gray21 shadow">
@@ -44,15 +47,14 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
           ))}
         </ul>
 
-        <button
-          onClick={onClick}
-          className="mt-4 bg-blue-500 text-white rounded-lg w-[198px] h-[40px] self-end flex items-center justify-center"
-        >
+     
+
+        <Link to="/authentication" className="font-sans mt-4 bg-blue-500 text-white rounded-lg w-[198px] h-[40px] self-end flex items-center justify-center">
           <span className="pr-2 flex  w-8 h-8 ">
             <ArrowLeftIcon />
           </span>
           احراز هویت
-        </button>
+        </Link>
       </div>
     </div>
   );
