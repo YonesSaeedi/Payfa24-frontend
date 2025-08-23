@@ -61,14 +61,14 @@ export default function ForgotPasswordPage() {
             onSubmit={handleSubmit(onSubmit)}
             className="flex items-center flex-col"
           >
-            <h1 className="lg:text-[28px] text-[20px] font-bold text-primary mb-3 text-center">
+            <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
               فراموشی رمز عبور
             </h1>
             <p
               className={`font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] ${
                 theme === "dark"
-                  ? "text-[var(--text)]"
-                  : "text-[var(--text-black)]"
+                  ? "text-black1"
+                  : "text-black1"
               }`}
             >
               برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
 
             <button
               type="submit"
-              className="h-[48px] lg:w-[392px] w-[343px] rounded-xl bg-primary lg:mt-14 mt-12 text-white font-bold text-lg"
+              className="h-[48px] lg:w-[392px] w-[343px] rounded-xl bg-blue2 lg:mt-14 mt-12 text-white font-bold text-lg"
             >
               ادامه
             </button>

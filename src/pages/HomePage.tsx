@@ -1,34 +1,34 @@
 
 import { useState } from "react";
-
-import WalletCard from "../Components/Home/WalletCard/WalletCard";
+import Fire from "../assets/icons/Home/SynchronizedSliders/fireIcon";
+import YoYowIcon from "../assets/icons/Home/SynchronizedSliders/YoYowIcon";
+import TrendDownIcon from "../assets/icons/Home/SynchronizedSliders/TrendDownIcon";
+import TrinityIcon from "../assets/icons/Home/SynchronizedSliders/TrinityIcon";
+import TrendIcon from "../assets/icons/Home/SynchronizedSliders/TrendIcon";
+import Titan from "../assets/icons/Home/SynchronizedSliders/TitanIcon";
+import WalletMoney from "../assets/icons/Home/SynchronizedSliders/WalletMoneyIcon";
+import TetherIcon from "../assets/icons/Home/WalletCard/TetherIcon";
+import TokoTokenIcon from "../assets/icons/Home/CryptoTable/TokoTokenIcon";
+import TornIcon from "../assets/icons/Home/CryptoTable/TornIcon";
+import Ultra from "../assets/icons/Home/CryptoTable/UltraIconIcon";
+import VeChain from "../assets/icons/Home/CryptoTable/VeChainIcon";
+import Veil from "../assets/icons/Home/CryptoTable/VeilIcon";
 import HeaderFooterLayout from "../layouts/HeaderFooterLayout";
-import PosterSlider from "../Components/Home/PosterSlider";
-import InvitationCard from "../Components/Home/InvitationCard";
-import CryptoTable from "./../Components/Home/CryptoTable";
-import QuestionBox from "../Components/Home/QuestionBox/QuestionBox";
-import SyncSlider from "../Components/Home/SynchronizedSliders";
-import WalletMoney from "../Components/Icons/Home/SynchronizedSliders/WalletMoneyIcon";
-import Titan from "../Components/Icons/Home/SynchronizedSliders/TitanIcon";
-import TetherTopIcon from "../Components/Icons/Home/SynchronizedSliders/TetherTopIcon";
-import TrendIcon from "../Components/Icons/Home/SynchronizedSliders/TrendIcon";
-import TrinityIcon from "../Components/Icons/Home/SynchronizedSliders/TrinityIcon";
-import TrendDownIcon from "../Components/Icons/Home/SynchronizedSliders/TrendDownIcon";
-import Fire from "../Components/Icons/Home/SynchronizedSliders/fireIcon";
-import YoYowIcon from "../Components/Icons/Home/SynchronizedSliders/YoYowIcon";
-import TokoTokenIcon from "../Components/Icons/Home/CryptoTable/TokoTokenIcon";
-import TornIcon from "../Components/Icons/Home/CryptoTable/TornIcon";
-import TravelaIcon from "../Components/Icons/Home/CryptoTable/TravelaIcon";
-import VeilIcon from "../Components/Icons/Home/CryptoTable/VeilIcon";
-import VeChain from "../Components/Icons/Home/CryptoTable/VeChainIcon";
-import Ultra from "../Components/Icons/Home/CryptoTable/UltraIconIcon";
-import IdentityCard from "../Components/Home/IdentityCard";
+import img1 from "../assets/images/Home/image copy (1).jpg";
+import WalletCard from "../components/Home/WalletCard/WalletCard";
+import IdentityCard from "../components/Home/IdentityCard";
+import PosterSlider from "../components/Home/PosterSlider";
+import InvitationCard from "../components/Home/InvitationCard";
+import SyncSlider from "../components/Home/SynchronizedSliders";
+import CryptoTable from "../components/Home/CryptoTable";
+import QuestionBox from "../components/Home/QuestionBox/QuestionBox";
+import TravelaIcon from "../assets/icons/Home/CryptoTableIcon/TravelaIcon";
 
 const boxes = [
   {
     header: "تازه های بازار",
     headerIcon: <Fire />,
-    bgShape: "../../public/images/Yoyow (Yoyow).png",
+    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Yoyow (Yoyow).png",
     slides: [
       {
         title: "یویوو",
@@ -49,7 +49,7 @@ const boxes = [
   {
     header: "بیشترین افت قیمت",
     headerIcon: <TrendDownIcon />,
-    bgShape: "../../public/images/Trinity Network Credit (Tnc).png",
+    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Trinity Network Credit (Tnc).png",
     slides: [
       {
         title: "ترینیتی نتورک",
@@ -70,7 +70,7 @@ const boxes = [
   {
     header: "بیشترین افزایش قیمت",
     headerIcon: <TrendIcon />,
-    bgShape: "./../../public/images/TitanSwap (TITAN).png",
+    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/TitanSwap (TITAN).png",
     slides: [
       {
         title: "تیتان سوآپ",
@@ -91,21 +91,21 @@ const boxes = [
   {
     header: "بیشترین معامله",
     headerIcon: <WalletMoney />,
-    bgShape: "./../../public/images/Tetherbackground (USDT).png",
+    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Tetherbackground (USDT).png",
     slides: [
       {
         title: "تتر",
         subtitle: "USDT",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <TetherTopIcon />,
+        iconSrc: <TetherIcon />,
       },
       {
         title: "تتر",
         subtitle: "USDT",
         price: 91000,
         changePct: 24.12,
-        iconSrc: <TetherTopIcon />,
+        iconSrc: <TetherIcon />,
       },
     ],
   },
@@ -116,12 +116,12 @@ function HomePage() {
   const [active, setActive] = useState(0);
   const data = [
     {
-      name: "توکو توکن",
+      name: "ننننننننننننتوکو توکن",
       symbol: "TKO",
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: -1,
+      change24h: -12,
       logo: <TokoTokenIcon />,
     },
     {
@@ -130,7 +130,7 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: +1.1,
+      change24h: +12,
       logo: <TornIcon />,
     },
     {
@@ -139,7 +139,7 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: +1.1,
+      change24h: +12,
       logo: <TravelaIcon />,
     },
     {
@@ -148,7 +148,7 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: -1,
+      change24h: -12,
       logo: <Ultra />,
     },
     {
@@ -157,7 +157,7 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: -1,
+      change24h: -12,
       logo: <VeChain />,
     },
     {
@@ -166,8 +166,8 @@ function HomePage() {
       priceUSDT: 489.7,
       sellPrice: 489700,
       buyPrice: 485000,
-      change24h: -1,
-      logo: <VeilIcon />,
+      change24h: -12,
+      logo: <Veil />,
     },
   ];
 
@@ -176,52 +176,55 @@ function HomePage() {
       title: "کارمزد رایگان",
       subtitle: "بر روی معاملات بیت‌کوین",
       buttonText: "ورود به دنیای رمز ارز",
-      imageSrc: "../../public/images/Layer11.png",
+      imageSrc: img1,
     },
     {
       title: "آینده مالی خود را بسازید",
       subtitle: "با سرمایه‌گذاری روی ارزهای دیجیتال",
       buttonText: "شروع کنید",
-      imageSrc: "/images/slide2.png",
+      imageSrc: "../assets/images/Home/Screenshot 2025-08-20 141154.png",
     },
     {
       title: "سریع و امن",
       subtitle: "انتقال ارز در کمترین زمان",
       buttonText: "ثبت‌نام",
-      imageSrc: "/images/slide3.png",
+      imageSrc: "../assets/images/Home/Screenshot 2025-08-20 141154.png",
     },
   ];
 
   return (
     <div>
       <HeaderFooterLayout>
-        <div className="container-style">
-          <div className="pt-8 pb-8 flex flex-col lg:flex-row-reverse justify-between gap-4">
-            <WalletCard balance={844000} changeAmount={34000} change={12.4} />
-            <IdentityCard
-              title="احراز هویت سطح 1"
-              items={["مشخصات فردی", "تصویر مدرک شناسایی"]}
-              accesses={["مشاهده قیمت‌ها", "خرید و فروش رمز ارزها"]}
-              onClick={() => console.log("start identity")}
-            />
-          </div>
+        <div className="bg-white1 text-text">
+          <div className="container-style" >
+            <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4 bg-backgroundMain">
+              <WalletCard balance={844000} changeAmount={34000} change={12.4} />
+              <IdentityCard
+                title="احراز هویت سطح 1"
+                items={["مشخصات فردی", "تصویر مدرک شناسایی"]}
+                accesses={["مشاهده قیمت‌ها", "خرید و فروش رمز ارزها"]}
+                onClick={() => console.log("start identity")}
+              />
+            </div>
 
-          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4">
-            <PosterSlider slides={slidesData} />
-            <InvitationCard />
-          </div>
+            <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
+              <PosterSlider slides={slidesData} />
+              <InvitationCard />
+            </div>
 
-          <div id="SyncSlider" className="pt-12 pb-12">
-            <SyncSlider boxes={boxes} />
-          </div>
+            <div id="SyncSlider" className="pt-12 pb-12">
+              <SyncSlider boxes={boxes} />
+            </div>
 
-          <div className="w-full pt-7">
-            <CryptoTable data={data} active={active} setActive={setActive} />
-          </div>
-          <div id="qustionBox" className="pt-12 pb-28">
-            <QuestionBox />
+            <div className="w-full pt-7">
+              <CryptoTable data={data} active={active} setActive={setActive} />
+            </div>
+            <div id="qustionBox" className="pt-12 lg:pb-28 pb-14">
+              <QuestionBox />
+            </div>
           </div>
         </div>
+
       </HeaderFooterLayout>
     </div>
   );

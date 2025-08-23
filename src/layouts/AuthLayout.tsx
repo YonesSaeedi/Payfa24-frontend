@@ -15,13 +15,14 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { toggleTheme } = context;
+  const {theme} = context;
 
   return (
-    <div className="w-screen flex flex-col lg:flex-row dark:bg-[var(--extra-dark-background)]">
+    <div className="w-screen flex flex-col lg:flex-row dark:bg-white4">
       {/* image section */}
       <div className="w-full">
         {image && (
-          <div className="flex h-full flex-col items-center justify-around  px-4 dark:bg-[var(--background)] md:bg-secondary light:bg-[var(--background)]  rounded-e-2xl  ">
+          <div className={`flex h-full flex-col items-center justify-around  px-4   rounded-e-2xl  ${theme === "dark" ? "bg-gray0" : "lg:bg-gray0 bg-none"} `}>
             {/* logo && button (Icon)*/}
             <div className="flex justify-between items-center w-full lg:px-8 px-2 py-6 flex-row-reverse">
               <div>
@@ -33,12 +34,12 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
                   className=" rounded-full "
                   aria-label="Toggle theme"
                 >
-                  <span className="icon-wrapper h-8 w-8 text-primary">
+                  <span className="icon-wrapper h-8 w-8 text-blue2">
                     <MoonIcon />
                   </span>
                 </button>
                 <button className="rounded-full" aria-label="Support">
-                  <span className="icon-wrapper h-8 w-8 text-primary">
+                  <span className="icon-wrapper h-8 w-8 text-blue2">
                     <SupportIcon />
                   </span>
                 </button>

@@ -16,7 +16,6 @@ import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-
 type LoginFormData = {
   email: string;
   password: string;
@@ -31,9 +30,9 @@ export default function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null);
-
-
+  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(
+    null
+  );
 
   const loginSchema = yup.object().shape({
     email: yup
@@ -83,12 +82,12 @@ export default function LoginPage() {
       <div className="flex items-center justify-center " dir="rtl">
         <div className="w-full max-w-md px-4">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <h1 className="text-[28px] font-bold text-primary mb-2 text-center">
+            <h1 className="text-[28px] font-bold text-blue2 mb-2 text-center">
               ورود به پی‌فا24
             </h1>
             <p
-              className={`font-normal mb-10 text-[18px] text-center ${
-                theme === "dark" ? "text-[var(--text)]" : "--primary"
+              className={`font-normal mb-10 lg:text-lg text-sm text-center ${
+                theme === "dark" ? "text-black1" : "text-black1"
               }`}
             >
               برای ورود ایمیل یا شماره همراه خود را وارد کنید
@@ -107,7 +106,11 @@ export default function LoginPage() {
               )}
             />
 
-            <div className="sm:text-sm text-xs text-[var(--text-gray)] font-normal pb-6 flex gap-1 items-end justify-start">
+            <div
+              className={`sm:text-sm text-xs  font-normal pb-6 flex gap-1 items-end justify-start ${
+                theme === "dark" ? "text-gray12" : "text-gray12"
+              }`}
+            >
               <span className="icon-wrapper h-4 w-4">
                 <IconAlert />
               </span>
@@ -131,10 +134,10 @@ export default function LoginPage() {
 
             <Link to={"/forgot-password"}>
               <div className="flex justify-between items-center mb-10">
-                <p className="text-[var(--text-gray)] text-sm font-normal">
+                <p className="text-gray12 text-sm font-normal">
                   رمز عبور خود را فراموش کرده‌اید؟
                 </p>
-                <span className="font-normal text-primary cursor-pointer text-[14px]">
+                <span className="font-normal text-blue2 cursor-pointer text-[14px]">
                   بازیابی رمز عبور
                 </span>
               </div>
@@ -142,26 +145,30 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="lg:w-full w-[343px] h-[48px] rounded-xl bg-primary text-white font-bold text-lg"
+              className={`lg:w-full w-[343px] h-[48px] rounded-xl bg-primary
+                bg-blue2
+              text-white font-bold text-lg
+              ${theme === "dark" ? "lg:bg-gray19" : "lg:bg-gray19"}
+              `}
             >
               ادامه
             </button>
 
-            <p className="text-sm font-normal text-[var(--text-gray)] pt-3 pb-10 text-start">
+            <p className="text-sm font-normal text-gray12 pt-3 pb-10 text-start">
               هنوز ثبت نام نکرده‌اید؟
-              <span className="text-primary text-sm px-1 font-normal">
+              <span className="text-blue2 text-sm px-1 font-normal">
                 <Link to={"/register"}>ساخت حساب کاربری</Link>
               </span>
             </p>
 
-            <div className="flex items-center justify-center">
-              <div className="flex-grow h-[1px] bg-[var(--border-secondary)]"></div>
-              <p className="flex-none px-2 text-xs text-[var(--text-gray)]">
+            <div className="flex items-center justify-center ">
+              <div className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}></div>
+              <p className="flex-none px-2 text-xs text-gray12">
                 ورود با
               </p>
-              <div className="flex-grow h-[1px] bg-[var(--border-secondary)]"></div>
+              <div className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}></div>
             </div>
-            <button className="lg:w-full w-[343px] h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-[#8792AF] border border-[#D1D9F0]">
+            <button className="lg:w-full w-[343px] h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-gray12 border border-gray12">
               <span className="icon-wrapper h-5 w-5">
                 <IconGoogle />
               </span>
@@ -183,7 +190,7 @@ export default function LoginPage() {
           >
             <div
               className={`lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative ${
-                theme === "dark" ? "bg-[var(--background)]" : "bg-[var(--info)]"
+                theme === "dark" ? "bg-white8" : "bg-white8"
               }`}
               onClick={(e) => e.stopPropagation()}
             >
@@ -191,11 +198,13 @@ export default function LoginPage() {
                 <h2
                   className={`lg:text-lg text-sm lg:font-bold font-normal ${
                     theme === "dark"
-                      ? "text-[var(--info)]"
-                      : "text-[var(--text)]"
+                      ? "text-black0"
+                      : "text-black0"
                   }`}
                 >
-                  {contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
+                  {contactMethod === "phone"
+                    ? "تایید شماره همراه"
+                    : "تایید ایمیل"}
                 </h2>
                 <span
                   className="icon-wrapper h-6 w-6 cursor-pointer"
@@ -208,8 +217,8 @@ export default function LoginPage() {
               <p
                 className={`lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center ${
                   theme === "dark"
-                    ? "text-[var(--text-gray)]"
-                    : "text-[var(--forth)]"
+                    ? "text-gray24"
+                    : "text-gray24"
                 }`}
                 dir="rtl"
               >
@@ -229,24 +238,24 @@ export default function LoginPage() {
 
               <div className="flex justify-between flex-row-reverse mb-4">
                 <div className="flex gap-2 items-center ">
-                  <span className="text-[var(--text-gray)]">ارسال مجدد</span>
+                  <span className="text-gray12">ارسال مجدد</span>
                   <span className="icon-wrapper h-5 w-5 cursor-pointer">
                     <IconAgain />
                   </span>
                 </div>
-                <p className="text-[var(--text-gray)]">ارسال مجدد کد تا 2:30</p>
+                <p className="text-gray12">ارسال مجدد کد تا 2:30</p>
               </div>
               <div className="flex gap-2 mb-8">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="mt-4 w-[171px] h-[48px] border border-[var(--primary)] rounded-lg text-[var(--primary)]"
+                  className="mt-4 w-[171px] h-[48px] border border-blue2 rounded-lg text-blue2"
                 >
                   ویرایش ایمیل
                 </button>
                 <Link to={""}>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="mt-4 w-[205px] h-[48px] font-bold bg-[var(--primary)] text-white rounded-lg"
+                    className="mt-4 w-[205px] h-[48px] font-bold bg-blue2 text-white1 rounded-lg"
                   >
                     تایید
                   </button>

@@ -10,7 +10,7 @@ interface PasswordConditionItemProps {
 }
 
 export default function PasswordConditionItem({ ok, text, password }: PasswordConditionItemProps) {
-  const color = password.length > 0 ? (ok ? "text-[var(--success)]" : "text-[var(--error)]") : "text-[var(--text-gray)]";
+  const color = password.length > 0 ? (ok ? "text-green2" : "text-red1") : "text-gray12";
   const Icon = password.length > 0 ? (ok ? AlertTrue : AlertFalse) : IconAlert;
 
   return (

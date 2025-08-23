@@ -49,8 +49,8 @@ export default function OTPModal({ length = 5, onChange }: OTPInputProps) {
           onChange={(e) => handleChange(e, idx)}
           onKeyDown={(e) => handleKeyDown(e, idx)}
           maxLength={1}
-          className={`lg:w-[67px] lg:h-[71px] w-[44px] h-[46px] text-center flex justify-center items-center border border-[var(--border-primary)] rounded-lg text-lg ${
-            theme === "dark" ? "bg-[var(--background)]" : "bg-[var(--info)]"
+          className={`lg:w-[67px] lg:h-[71px] w-[44px] h-[46px] text-center flex justify-center items-center border border-gray12 rounded-lg text-lg ${
+            theme === "dark" ? "bg-white8 text-black0" : "bg-white8 text-gray12 "
           }`}
         />
       ))}

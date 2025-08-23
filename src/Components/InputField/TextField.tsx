@@ -40,19 +40,19 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     const inputId = name;
 
     const borderColorClass = hasError
-      ? "border-[var(--error)]"
+      ? "border-red1"
       : isFocused || value
-      ? "border-[var(--primary)]"
+      ? "border-blue2"
       : "border-[var(--border-primary)]";
 
     const labelStyleClass =
       isFocused || value
         ? `top-[-12px] text-sm ${
-            hasError ? "text-[var(--error)]" : "text-primary"
+            hasError ? "text-red1" : "text-blue2"
           } ${
-            theme === "dark" ? "bg-[var(--extra-dark-background)]" : "bg-white"
+            theme === "dark" ? "bg-white4" : "bg-white2"
           }`
-        : "top-1/2 -translate-y-1/2 text-[14px] text-[var(--text-gray)] bg-transparent";
+        : "top-1/2 -translate-y-1/2 text-[14px] text-gray12 bg-transparent";
 
     return (
       <div
@@ -62,10 +62,8 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           id={inputId}
           type={type}
           className={`w-full h-[56px] rounded-xl border px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none ${
-            theme === "dark" ? "bg-[var(--extra-dark-background)]" : "bg-white"
-          } ${borderColorClass} ${
-            theme === "dark" ? "text-white" : "text-black"
-          }`}
+            theme === "dark" ? "bg-white4 text-black2" : "bg-white4 text-gray12"
+          } ${borderColorClass} border-gray12`}
           style={{ paddingLeft: icon ? "2rem" : "1rem" }}
           ref={ref}
           value={value}
