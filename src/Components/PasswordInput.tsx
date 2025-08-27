@@ -54,14 +54,14 @@ export default function StepPassword() {
   };
 
   return (
-    <div className="flex items-center justify-center" dir="rtl">
-      <div className="w-full max-w-md py-10">
+    <div className="flex items-center justify-center w-full " dir="rtl">
+      <div className="w-full max-w-md py-10 px-6">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="lg:text-[28px] text-[22px] font-bold text-blue2 mb-3 text-center">
             ایجاد رمز عبور
           </h1>
           <p
-            className={`font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-center ${theme === "dark" ? "text-black1" : "text-black1"}`}
+            className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-center text-black1"
           >
             رمز عبور برای حساب کاربری خود وارد کنید.
           </p>
@@ -74,7 +74,6 @@ export default function StepPassword() {
                 label="رمز عبور خود را وارد کنید"
                 type={showPassword ? "text" : "password"}
                 error={errors.password?.message}
-                // error={errors.password && touchedFields.password ? errors.password.message : undefined}
                 icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
                 onIconClick={() => setShowPassword((prev) => !prev)}
                 {...field}
@@ -102,7 +101,7 @@ export default function StepPassword() {
 
           <button
             type="submit"
-            className="w-full h-[48px] rounded-xl bg-blue2 lg:mt-14 mt-12 text-white font-bold text-lg"
+            className="w-full h-[48px] rounded-xl bg-blue2 lg:mt-14 mt-12 text-white2 font-bold text-lg"
           >
             تایید
           </button>

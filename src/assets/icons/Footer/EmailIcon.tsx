@@ -28,5 +28,6 @@ function EmailIcon() {
   );
 }
 
+
 export default EmailIcon;
 

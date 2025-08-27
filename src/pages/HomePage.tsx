@@ -12,6 +12,18 @@ import SyncSlider from "../Components/Home/SynchronizedSliders";
 import CryptoTable from "../Components/Home/CryptoTable";
 import QuestionBox from "../Components/Home/QuestionBox/QuestionBox";
 import FireIcon from "../assets/Icons/Home/SynchronizedSliders/fireIcon";
+import TrendDownIcon from "../assets/Icons/Home/SynchronizedSliders/TrendDownIcon";
+import YoYowIcon from "../assets/Icons/Home/SynchronizedSlidersIcon/YoYowIcon";
+import TrinityIcon from "../assets/Icons/Home/SynchronizedSlidersIcon/TrinityIcon";
+import TitanIcon from "../assets/Icons/Home/SynchronizedSlidersIcon/TitanIcon";
+import WalletIcon from "../assets/Icons/header/WalletIcon";
+import TetherIcon from "../assets/icons/Home/WalletCardIcon/TetherIcon";
+import TokoTokenIcon from "../assets/Icons/Home/CryptoTable/TokoTokenIcon";
+import TornIcon from "../assets/Icons/Home/CryptoTable/TornIcon";
+import TravelaIcon from "../assets/Icons/Home/CryptoTableIcon/TravelaIcon";
+import UltraIcon from "../assets/Icons/Home/CryptoTable/UltraIconIcon";
+import VeChainIcon from "../assets/Icons/Home/CryptoTable/VeChainIcon";
+import VeilIcon from "../assets/Icons/Home/CryptoTable/VeilIcon";
 
 const boxes = [
   {
@@ -24,7 +36,7 @@ const boxes = [
         subtitle: "YOYOW",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <YoYowIconIcon/>,
+        iconSrc: <YoYowIcon/>,
       },
       {
         title: "یویوو",
@@ -45,7 +57,7 @@ const boxes = [
         subtitle: "TNC",
         price: 88901,
         changePct: -23.54,
-        iconSrc: <TrinityIcon />,
+        iconSrc: <TrinityIcon/>,
       },
       {
         title: "ترینیتی نتورک",
@@ -58,7 +70,7 @@ const boxes = [
   },
   {
     header: "بیشترین افزایش قیمت",
-    headerIcon: <TrendIcon />,
+    headerIcon: <TrendDownIcon/>,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/TitanSwap (TITAN).png",
     slides: [
       {
@@ -66,20 +78,20 @@ const boxes = [
         subtitle: "TITAN",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <Titan />,
+        iconSrc: <TitanIcon />,
       },
       {
         title: "یویوو",
         subtitle: "YOYOW",
         price: 91000,
         changePct: 24.12,
-        iconSrc: <Titan />,
+        iconSrc: <TitanIcon />,
       },
     ],
   },
   {
     header: "بیشترین معامله",
-    headerIcon: <WalletMoney />,
+    headerIcon: <WalletIcon/>,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Tetherbackground (USDT).png",
     slides: [
       {
@@ -111,7 +123,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <TokoTokenIcon />,
+      logo: <TokoTokenIcon/>,
     },
     {
       name: "تورِن",
@@ -138,7 +150,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <Ultra />,
+      logo: <UltraIcon/>,
     },
     {
       name: "وی چین",
@@ -147,7 +159,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <VeChain />,
+      logo: <VeChainIcon/>,
     },
     {
       name: "ولی",
@@ -156,7 +168,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <Veil />,
+      logo: <VeilIcon />,
     },
   ];
 

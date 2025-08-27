@@ -85,11 +85,7 @@ export default function LoginPage() {
             <h1 className="text-[28px] font-bold text-blue2 mb-2 text-center">
               ورود به پی‌فا24
             </h1>
-            <p
-              className={`font-normal mb-10 lg:text-lg text-sm text-center ${
-                theme === "dark" ? "text-black1" : "text-black1"
-              }`}
-            >
+            <p className="font-normal mb-10 lg:text-lg text-sm text-center text-black1">
               برای ورود ایمیل یا شماره همراه خود را وارد کنید
             </p>
 
@@ -106,11 +102,7 @@ export default function LoginPage() {
               )}
             />
 
-            <div
-              className={`sm:text-sm text-xs  font-normal pb-6 flex gap-1 items-end justify-start ${
-                theme === "dark" ? "text-gray12" : "text-gray12"
-              }`}
-            >
+            <div className="sm:text-sm text-xs  font-normal pb-6 flex gap-1 items-end justify-start text-gray12 ">
               <span className="icon-wrapper h-4 w-4">
                 <IconAlert />
               </span>
@@ -145,11 +137,8 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className={`lg:w-full w-[343px] h-[48px] rounded-xl bg-primary
-                bg-blue2
-              text-white font-bold text-lg
-              ${theme === "dark" ? "lg:bg-gray19" : "lg:bg-gray19"}
-              `}
+              className="w-full  h-[48px] rounded-xl bg-blue2
+              text-white font-bold text-lg lg:bg-gray19"
             >
               ادامه
             </button>
@@ -162,13 +151,17 @@ export default function LoginPage() {
             </p>
 
             <div className="flex items-center justify-center ">
-              <div className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}></div>
-              <p className="flex-none px-2 text-xs text-gray12">
-                ورود با
-              </p>
-              <div className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}></div>
+              <div
+                className={`flex-grow h-[1px] ${
+                  theme === "dark" ? "bg-gray19" : "bg-gray19"
+                }`}
+              ></div>
+              <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
+              <div
+                className="flex-grow h-[1px] bg-gray19"
+              ></div>
             </div>
-            <button className="lg:w-full w-[343px] h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-gray12 border border-gray12">
+            <button className="w-full  h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-gray12 border border-gray12">
               <span className="icon-wrapper h-5 w-5">
                 <IconGoogle />
               </span>
@@ -189,18 +182,13 @@ export default function LoginPage() {
             }}
           >
             <div
-              className={`lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative ${
-                theme === "dark" ? "bg-white8" : "bg-white8"
-              }`}
+              className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center flex-row-reverse justify-between">
                 <h2
-                  className={`lg:text-lg text-sm lg:font-bold font-normal ${
-                    theme === "dark"
-                      ? "text-black0"
-                      : "text-black0"
-                  }`}
+                  className="lg:text-lg text-sm lg:font-bold font-normal text-black0"
+                 
                 >
                   {contactMethod === "phone"
                     ? "تایید شماره همراه"
@@ -215,11 +203,7 @@ export default function LoginPage() {
               </div>
 
               <p
-                className={`lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center ${
-                  theme === "dark"
-                    ? "text-gray24"
-                    : "text-gray24"
-                }`}
+                className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24"
                 dir="rtl"
               >
                 لطفا کد ارسالی به{" "}
@@ -248,14 +232,14 @@ export default function LoginPage() {
               <div className="flex gap-2 mb-8">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="mt-4 w-[171px] h-[48px] border border-blue2 rounded-lg text-blue2"
+                  className="mt-4 w-[180px] h-[48px] border border-blue2 rounded-lg text-blue2 text-sm lg:text-medium"
                 >
                   ویرایش ایمیل
                 </button>
                 <Link to={""}>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="mt-4 w-[205px] h-[48px] font-bold bg-blue2 text-white1 rounded-lg"
+                    className="mt-4 w-[200px] h-[48px] font-bold bg-blue2 text-white1 rounded-lg"
                   >
                     تایید
                   </button>

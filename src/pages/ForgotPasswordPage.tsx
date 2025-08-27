@@ -55,21 +55,17 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthLayout image={theme === "dark" ? imageForgetDark : imageForgetLight}>
-      <div className="flex items-center justify-center pb-8 " dir="rtl">
-        <div className="w-full ">
+      <div className="flex items-center justify-center pb-8 w-full" dir="rtl">
+        <div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex items-center flex-col"
+            className="w-full flex items-center flex-col px-10"
           >
             <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
               فراموشی رمز عبور
             </h1>
             <p
-              className={`font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] ${
-                theme === "dark"
-                  ? "text-black1"
-                  : "text-black1"
-              }`}
+              className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1 "
             >
               برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید
             </p>
@@ -89,7 +85,7 @@ export default function ForgotPasswordPage() {
 
             <button
               type="submit"
-              className="h-[48px] lg:w-[392px] w-[343px] rounded-xl bg-blue2 lg:mt-14 mt-12 text-white font-bold text-lg"
+              className="h-[48px]  w-full rounded-xl bg-blue2 lg:mt-14 mt-12 text-white font-bold text-lg"
             >
               ادامه
             </button>

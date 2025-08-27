@@ -36,7 +36,7 @@ export default function Header() {
             className="hover:text-blue-600 transition"
             aria-label="Profile"
           >
-            <span>
+            <span className="icon-wrapper h-8 w-8">
               <FrameIcon/>
             </span>
           </button>
@@ -44,16 +44,15 @@ export default function Header() {
             className="hover:text-blue-600 transition"
             aria-label="Profile"
           >
-            <span>
+            <span className="icon-wrapper h-8 w-8">
               <VectorIcon/>
             </span>
           </button>
           <button
-            className="hover:text-blue-600 transition hidden lg:block"
             aria-label="Notifications"
             onClick={toggleTheme}
           >
-            <span>
+            <span className="icon-wrapper h-6 w-6 text-blue2">
               <MoonIcon/>
             </span>
           </button>
@@ -61,7 +60,7 @@ export default function Header() {
             className="hover:text-blue-600 transition"
             aria-label="Messages"
           >
-            <span>
+            <span className="icon-wrapper h-6 w-6">
               <MessagesIcon/>
             </span>
           </button>
@@ -69,8 +68,8 @@ export default function Header() {
             className="hover:text-blue-600 transition"
             aria-label="Night Mode"
           >
-            <span>
-              <RingIcon/>
+            <span className="icon-wrapper h-6 w-6">
+              <RingIcon/> 
             </span>
           </button>
         </div>

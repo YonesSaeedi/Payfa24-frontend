@@ -35,7 +35,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
                   aria-label="Toggle theme"
                 >
                   <span className="icon-wrapper h-8 w-8 text-blue2">
-                    <MoonIcon />
+                    <MoonIcon/>
                   </span>
                 </button>
                 <button className="rounded-full" aria-label="Support">

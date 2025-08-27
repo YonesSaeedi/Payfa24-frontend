@@ -19,7 +19,6 @@ export default function RegisterPage() {
   const { theme } = context;
   const [step, setStep] = useState(1);
 
-  // تنظیم ایندکس برای دسترسی به steps
   const currentStepIndex = step - 1;
   const StepComponent = steps[currentStepIndex]?.component;
   const currentImage =
@@ -27,7 +26,6 @@ export default function RegisterPage() {
       ? steps[currentStepIndex]?.dark
       : steps[currentStepIndex]?.light;
 
-  // بررسی وجود StepComponent
   if (!StepComponent) {
     return <div>Invalid step</div>;
   }

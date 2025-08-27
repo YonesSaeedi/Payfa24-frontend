@@ -7,7 +7,7 @@ import HomePage from '../pages/HomePage';
 import TradeLayout from '../pages/trade/TradeLayout';
 import Buy from '../pages/trade/Buy';
 import Sell from '../pages/trade/Sell';
-import Authentication from '../pages/Authentication';
+import Authentication from '../pages/authentication/basic';
 
 export default function AppRouter() {
   return (

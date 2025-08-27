@@ -1,4 +1,5 @@
 import React, { forwardRef, useContext, useState } from "react";
+
 import { ThemeContext } from "../../Context/ThemeContext";
 
 interface TextFieldProps {
@@ -12,8 +13,9 @@ interface TextFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   name: string;
+  labelClassName?: string;
+  labelStyle?: React.CSSProperties;
 }
-
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   (
     {
@@ -43,27 +45,25 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       ? "border-red1"
       : isFocused || value
       ? "border-blue2"
-      : "border-[var(--border-primary)]";
+      : "border-gray12";
 
     const labelStyleClass =
       isFocused || value
-        ? `top-[-12px] text-sm ${
-            hasError ? "text-red1" : "text-blue2"
-          } ${
+        ? `top-[-12px] text-sm ${hasError ? "text-red1" : "text-blue2 "} ${
             theme === "dark" ? "bg-white4" : "bg-white2"
           }`
-        : "top-1/2 -translate-y-1/2 text-[14px] text-gray12 bg-transparent";
+        : "top-1/2 -translate-y-1/2 text-xs text-gray12 bg-transparent";
 
     return (
-      <div
-        className={`relative mb-2 lg:w-[392px] w-[343px] box-border ${className}`}
-      >
+      <div className={`relative mb-2  box-border w-full ${className}`}>
         <input
           id={inputId}
           type={type}
-          className={`w-full h-[56px] rounded-xl border px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none ${
-            theme === "dark" ? "bg-white4 text-black2" : "bg-white4 text-gray12"
-          } ${borderColorClass} border-gray12`}
+          className={`w-full lg:h-[56px] h-[48px] rounded-xl border  px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none ${
+            theme === "dark"
+              ? "bg-transparent text-black2"
+              : "bg-white4 text-gray12"
+          } ${borderColorClass} border-blue2`}
           style={{ paddingLeft: icon ? "2rem" : "1rem" }}
           ref={ref}
           value={value}
