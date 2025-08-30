@@ -7,6 +7,8 @@ import HomePage from '../pages/HomePage';
 import TradeLayout from '../pages/trade/TradeLayout';
 import Buy from '../pages/trade/Buy';
 import Sell from '../pages/trade/Sell';
+import MarketPage from '../pages/MarketPage';
+import TicketPage from '../pages/TicketPage';
 
 export default function AppRouter() {
   return (
@@ -22,9 +24,11 @@ export default function AppRouter() {
           <Route path='buy' element={<Buy />} />
           <Route path='sell' element={<Sell />} />
         </Route>
+          <Route path={ROUTES.Ticket} element={<TicketPage />} />
 
         {/* header + Footer pages ==================================================================================================== */}
         <Route path={ROUTES.HOME} element={<HomePage />} />
+        <Route path={ROUTES.MARKET} element={<MarketPage />} />
 
         {/* protected pages ==================================================================================================== */}
         <Route path="*" element={<Navigate to="/login" replace />} />

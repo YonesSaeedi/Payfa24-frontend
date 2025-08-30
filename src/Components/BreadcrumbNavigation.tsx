@@ -7,7 +7,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   buy: "خرید",
   sell: "فروش",
   options: "حدمات",
-  ticket: "تیکت",
+  ticket: " تیکت ها",
 };
 
 const BreadcrumbNavigation = () => {
@@ -26,7 +26,7 @@ const BreadcrumbNavigation = () => {
             {isLast ?
               <span className="text-primary">{BREADCRUMB_LABELS[value]}</span>
               :
-              <Link className="text-text2 hover:text-primary" to={to}>{BREADCRUMB_LABELS[value]}</Link>
+              <Link className="text-black1 hover:text-primary" to={to}>{BREADCRUMB_LABELS[value]}</Link>
             }
           </React.Fragment>
         );

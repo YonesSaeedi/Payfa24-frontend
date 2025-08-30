@@ -64,7 +64,7 @@ const WalletCard = ({
             <VisibilityIcon />
           </span>
 
-          <span className="text-black1 text-base font-semibold">
+          <span className="font-sans text-black1 text-base font-semibold">
             موجودی کیف پول شما
           </span>
         </div>
