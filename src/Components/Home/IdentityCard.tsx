@@ -2,6 +2,7 @@ import React from "react";
 import ValidationlightIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2 (1).png";
 import ValidationDarkIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2.png";
 import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
+
 import { Link } from "react-router";
 import IdentyfyCardIcon from "../../assets/icons/Home/IdentyfyCardIcon/identyfyCardIcon";
 
@@ -17,9 +18,11 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
   items,
   accesses,
 
+
 }) => {
   return (
     <div className="border rounded-xl p-6 flex items-center justify-between  border-gray21 shadow">
+
 
       <div className=" rounded-lg flex items-center justify-center ">
         <img src={ValidationlightIcon} className="block dark:hidden" />
@@ -40,6 +43,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
             </li>
           ))}
         </ul>
+
         <span className="mt-2 font-medium text-gray5">: دسترسی‌ ها </span>
         <ul dir="rtl" className="list-disc list-inside pr-4 text-black1">
           {accesses.map((a, index) => (
@@ -47,7 +51,11 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
           ))}
         </ul>
 
-        <Link to="/authentication" className=" mt-4 bg-blue-500 text-white rounded-lg w-[198px] h-[40px] self-end flex items-center justify-center">
+
+     
+
+        <Link to="/authentication" className="font-sans mt-4 bg-blue-500 text-white rounded-lg w-[198px] h-[40px] self-end flex items-center justify-center">
+
           <span className="pr-2 flex  w-8 h-8 ">
             <ArrowLeftIcon />
           </span>

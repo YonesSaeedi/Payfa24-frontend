@@ -8,6 +8,8 @@ export default function ContactInfo(): React.JSX.Element {
       <h2 className="text-lg font-bold">ارتباط با ما</h2>
 
       
+
+
       <div className="flex flex-col ml-auto gap-8">
 
 
@@ -21,6 +23,7 @@ export default function ContactInfo(): React.JSX.Element {
           </div>
           <span>۰۲۱-۱۲۳۴۵۶۷۸۹</span>
         </div>
+
 
         <div className="flex flex-col items-end gap-1">
           <div className="flex items-center">
@@ -51,6 +54,7 @@ export default function ContactInfo(): React.JSX.Element {
           
         </div>
         <span>
+
         ارومیه شهرک شهریار خیابان حیدربابا 16 متری دوم نبش کوچه 8 پلاک 82
         </span>
       </div>

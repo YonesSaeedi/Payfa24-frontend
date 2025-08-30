@@ -1,20 +1,23 @@
 
 import React from "react";
-import SocialLinks from "./SocialLinks";
+
+
 import DownloadCard from "./DownloadCard";
 import ContactInfo from "./ContactInfo";
+
 
 import mayket from "./../../assets/images/FooterIcon/download (1) 1.png"
 import bazzer from "./../../assets/images/FooterIcon/bazaar-logo-and-logotype 1 (1).png";
 import Logo from "./../../assets/images/FooterIcon/logo.png";
 import mobile from "./../../assets/images/FooterIcon/footer-mobile.png"
+import SocialLinks from "./SocialLinks";
 
 export default function Footer(): React.JSX.Element {
   return (
     <footer className="bg-blue11 text-white py-5">
     
       <div className="container-style flex justify-between items-center gap-8">
-        <SocialLinks />
+        <SocialLinks/>
         <img src={Logo} alt="لوگو" />
       </div>
 

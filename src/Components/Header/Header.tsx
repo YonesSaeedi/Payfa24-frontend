@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 
@@ -24,6 +25,7 @@ import MessagesActiveIcon from "../../assets/icons/header/MessagesActiveIcon";
 
 export default function Header() {
   const [showServices, setShowServices] = useState(false);
+
   const themeContext = useContext(ThemeContext);
   const location = useLocation(); 
   const currentPath = location.pathname;
@@ -37,10 +39,12 @@ export default function Header() {
   const { toggleTheme } = themeContext;
 
   return (
+
     <header className="bg-white shadow-md dark:bg-gray-900 dark:text-white sticky top-0 z-50">
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-6">
     
         <div className="flex gap-4 text-gray-600">
+
           <Link
             to="/login"
             className={`hover:text-blue2 transition flex items-center ${
@@ -90,6 +94,8 @@ export default function Header() {
           <button className="hover:text-blue2 transition" aria-label="Night Mode">
             <span className="w-7 h-7 icon-wrapper">
               <RingIcon />
+
+
             </span>
           </button>
         </div>
@@ -97,6 +103,7 @@ export default function Header() {
        
         <div className="flex items-center space-x-6">
           <ul className="hidden lg:flex space-x-8 text-gray1">
+
             <li className="relative">
               <button
                 onClick={() => setShowServices(!showServices)}
@@ -113,6 +120,7 @@ export default function Header() {
               {showServices && <ServicesBox onClose={() => setShowServices(false)} />}
             </li>
 
+
             <li>
               <Link
                 to="/walet"
@@ -125,14 +133,17 @@ export default function Header() {
                 }`}
               >
                 کیف پول
+
                 <span className="pl-2 w-8 h-8">
                   <WalletIcon />
+
                 </span>
               </Link>
             </li>
 
             <li>
               <Link
+
   to="/market"
   className={`hover:text-blue2 transition flex items-center ${
     currentPath === "/market"
@@ -156,6 +167,7 @@ export default function Header() {
   </span>
 </Link>
 
+
             </li>
 
             <li>
@@ -170,8 +182,10 @@ export default function Header() {
                 }`}
               >
                 معامله
+
                 <span className="pl-2 w-8 h-8">
                   <BitcoinIcon />
+
                 </span>
               </Link>
             </li>
@@ -189,6 +203,7 @@ export default function Header() {
               >
                 خانه
                 <span className="pl-2 w-8 h-8">
+
                   {currentPath === "/" ? (
                     <span className="w-6 h-6">
                       <HomeActiveIcon />
@@ -198,6 +213,7 @@ export default function Header() {
                       <HomeIcon />
                     </span>
                   )}
+
                 </span>
               </Link>
             </li>
