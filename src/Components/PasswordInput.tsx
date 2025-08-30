@@ -77,6 +77,7 @@ export default function StepPassword() {
                 icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
                 onIconClick={() => setShowPassword((prev) => !prev)}
                 {...field}
+                labelBgClass="bg-white4"
               />
             )}
           />

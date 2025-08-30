@@ -179,7 +179,7 @@ const schema = yup.object().shape({
     .email("ایمیل وارد شده معتبر نیست."),
 });
 
-export default function StepEmail({ onNext }: Props) {
+export default function StepEmail({ onNext}: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -208,7 +208,7 @@ export default function StepEmail({ onNext }: Props) {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full lg:mt-0 mt-6 lg:pb-36 pb-10 lg:rounded-2xl lg:px-8 px-4 lg:border border-gray26 lg:bg-gray27"
+        className="w-full lg:mt-0 mt-6 lg:pb-36 pb-10 lg:rounded-2xl lg:px-8 px-4 lg:border border-gray26 lg:bg-gray9"
       >
         <div className="w-full flex justify-center items-center flex-col">
           <StepperComponent currentStep={1} />
@@ -226,14 +226,14 @@ export default function StepEmail({ onNext }: Props) {
                 type="text"
                 error={errors.email?.message}
                 {...field}
-                className="w-full mt-2 bg-transparent"
+                labelBgClass="bg-gray9"
               />
             )}
           />
 
           <button
             type="submit"
-            className="lg:mt-22 mt-12 w-full h-[40px] lg:h-[56px] bg-blue1 font-bold text-white2 rounded-lg"
+            className="lg:mt-22 mt-12 mb-80 w-full h-[40px] lg:h-[56px] bg-blue1 font-bold text-white2 rounded-lg"
           >
             ارسال کد تایید
           </button>
@@ -282,7 +282,7 @@ export default function StepEmail({ onNext }: Props) {
               <Link to={""}>
                 <button
                   onClick={handleCloseModal}
-                  className="mt-4 w-[200px] h-[48px] font-bold bg-blue2 text-white1 rounded-lg"
+                  className="mt-4 w-[200px] h-[48px] font-bold bg-blue2 text-white1 rounded-lg "
                 >
                   تایید
                 </button>

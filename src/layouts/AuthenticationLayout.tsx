@@ -29,16 +29,16 @@ export default function AuthenticationLayout({
         <BreadcrumbNavigation/>
       </div>
 
-      <div className="w-full lg:container-style flex flex-col lg:gap-10 gap-6  md:flex-row px-4 lg:px-8">
+      <div className="w-full lg:container-style flex flex-col lg:gap-10 gap-6 items-start  md:flex-row px-4 lg:px-8">
         {/* ستون سمت چپ */}
-        <div className="w-full  md:w-2/3 flex flex-col items-center justify-center my-4 ">
+        <div className="w-full md:w-2/3 flex flex-col items-center justify-center my-4 ">
           {left ? (
             <div className="w-full flex flex-col items-center justify-center">
               {left}
             </div>
           ) : (
             image && (
-              <div className="hidden md:flex w-full h-full flex-col items-center justify-center gap-4 p-0 bg-white4 rounded-e-2xl">
+              <div className="flex w-full h-full flex-col items-center justify-center gap-4 p-0 bg-white4 rounded-e-2xl">
                 <img
                   src={image}
                   alt="Authentication Visual"

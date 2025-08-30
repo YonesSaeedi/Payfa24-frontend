@@ -90,6 +90,7 @@ export default function StepInvite({ onNext }) {
                 type="text"
                 error={errors.email?.message}
                 {...field}
+                labelBgClass="bg-white4"
               />
             )}
           />
@@ -124,6 +125,7 @@ export default function StepInvite({ onNext }) {
                     label="کد دعوت"
                     error={errors.inviteCode?.message}
                     {...field}
+                    labelBgClass="bg-white4"
                   />
                 )}
               />

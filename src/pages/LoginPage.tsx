@@ -98,6 +98,7 @@ export default function LoginPage() {
                   type="text"
                   error={errors.email?.message}
                   {...field}
+                  labelBgClass="bg-white4"
                 />
               )}
             />
@@ -120,6 +121,7 @@ export default function LoginPage() {
                   icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
                   onIconClick={() => setShowPassword((prev) => !prev)}
                   {...field}
+                  labelBgClass="bg-white4"
                 />
               )}
             />
@@ -157,9 +159,7 @@ export default function LoginPage() {
                 }`}
               ></div>
               <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
-              <div
-                className="flex-grow h-[1px] bg-gray19"
-              ></div>
+              <div className="flex-grow h-[1px] bg-gray19"></div>
             </div>
             <button className="w-full  h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-gray12 border border-gray12">
               <span className="icon-wrapper h-5 w-5">
@@ -186,10 +186,7 @@ export default function LoginPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center flex-row-reverse justify-between">
-                <h2
-                  className="lg:text-lg text-sm lg:font-bold font-normal text-black0"
-                 
-                >
+                <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
                   {contactMethod === "phone"
                     ? "تایید شماره همراه"
                     : "تایید ایمیل"}

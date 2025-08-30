@@ -70,6 +70,7 @@ export default {
 				gray33: "var(--gray33)",
 				gray34: "var(--gray34)",
 				gray35: "var(--gray35)",
+				gray36: "var(--gray36)",
 				orange1: "var(--orange1)",
 				orange2: "var(--orange2)",
 				orange3: "var(--orange3)",

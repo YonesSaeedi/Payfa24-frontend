@@ -64,9 +64,7 @@ export default function ForgotPasswordPage() {
             <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
               فراموشی رمز عبور
             </h1>
-            <p
-              className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1 "
-            >
+            <p className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1 ">
               برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید
             </p>
 
@@ -79,6 +77,7 @@ export default function ForgotPasswordPage() {
                   type="text"
                   error={errors.email?.message}
                   {...field}
+                  labelBgClass="bg-white4"
                 />
               )}
             />
