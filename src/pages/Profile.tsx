@@ -82,11 +82,11 @@ import { useState } from "react";
 import EmailIcon from "../assets/Icons/authentication/EmailIcon";
 import IconcardBank from "../assets/Icons/authentication/IconcardBank";
 import IconUserOctagon from "../assets/Icons/authentication/IconUserOctagon";
-import BreadcrumbNavigation from "../components/BreadcrumbNavigation";
 import HeaderLayout from "../layouts/HeaderLayout";
 import profile from "../assets/images/Profile/Profile.png";
 import IdentyIcon from "../assets/Icons/authentication/IdentyIcon";
 import IconCardIdenty from "../assets/Icons/authentication/IconCardIdenty";
+import BreadcrumbNavigation from "../Components/BreadcrumbNavigation";
 
 export default function Profile() {
   // حالت برای سطح احراز هویت و ایمیل (داده‌های تست)
