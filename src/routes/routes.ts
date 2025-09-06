@@ -9,6 +9,10 @@ export const ROUTES = {
   AuthenticationBasic:'/authentication',
   AuthenticationAdvance:'/authenticationAdvance',
   Profile:'/authProfile',
+  Securitysettings :'./Security settings',
+  UserAccount:'./authProfile',
+  BankAccount:'./authProfile',
+  ConnectedDevices:'./authProfile',
   TRADE: {
     ROOT: '/trade',
     BUY: '/trade/buy',

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -55,36 +56,90 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       {/* منو دسکتاپ */}
       <div
         className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
-          open ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
+          open
+            ? "scale-100 opacity-100"
+            : "scale-95 opacity-0 pointer-events-none"
         }`}
       >
-        <div  dir="rtl"className="bg-gray27 py-4 px-3 flex items-center justify-between border border-gray21 m-4 rounded-[8px]">
+        <div
+          dir="rtl"
+          className="bg-gray27 py-4 px-3 flex items-center justify-between border border-gray21 m-4 rounded-[8px]"
+        >
           <div className="flex ">
-            <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1"><IconUser/></span>
-           <div>
-             <p className="font-semibold text-black1">کوثر محمدی</p>
-            <p className="text-xs text-gray-500 pt-1">سطح کاربری 1</p>
-           </div>
+            <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
+              <IconUser />
+            </span>
+            <div>
+              <p className="font-semibold text-black1">کوثر محمدی</p>
+              <p className="text-xs text-gray-500 pt-1">سطح کاربری 1</p>
+            </div>
           </div>
           <button className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition">
             ارتقا سطح
-            <span className="w-5 h-5 icon-wrapper mr-1"><IconArrowLeft/></span> 
+            <span className="w-5 h-5 icon-wrapper mr-1">
+              <IconArrowLeft />
+            </span>
           </button>
         </div>
 
         <ul dir="rtl" className="p-4 space-y-3 font-medium">
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-1"><span className="w-6 h-6"><IconUserAccount/></span> حساب کاربری</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2"><span className="w-6 h-6"><IconSecurity/></span>  تنظیمات امنیت</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2"><span className="w-6 h-6"><IconAuthentication/></span> احراز هویت</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2"><span className="w-6 h-6"><IconBankAccounts/></span> حساب‌های بانکی</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2"><span className="w-6 h-6"><IconTransactionhistory/></span> تاریخچه معاملات</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2"><span className="w-6 h-6"><IconConnecteddevices/></span> دستگاه‌های متصل</li>
+          <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer">
+              <span className="w-6 h-6">
+                <IconUserAccount />
+              </span>
+              حساب کاربری
+            </li>
+          </Link>
+           <Link to={"/Security settings"} className="flex items-center gap-2 w-full">
+           <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconSecurity />
+            </span>{" "}
+            تنظیمات امنیت
+          </li>
+           </Link>
+           <Link to={"/authentication"} className="flex items-center gap-2 w-full">
+             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconAuthentication />
+            </span>{" "}
+            احراز هویت
+          </li>
+           </Link>
+          <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconBankAccounts />
+            </span>{" "}
+            حساب‌های بانکی
+          </li>
+          </Link>
+        <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+         <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconTransactionhistory />
+            </span>{" "}
+            تاریخچه معاملات
+          </li>
+        </Link>
+            <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+              <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2">
+            <span className="w-6 h-6">
+              <IconConnecteddevices />
+            </span>{" "}
+            دستگاه‌های متصل
+          </li>
+          </Link>
+        
         </ul>
 
         <div className=" p-4 ">
           <button className="w-full rounded-xl border py-2 text-center border-blue2 text-blue-500 hover:bg-gray-100 transition">
             خروج از حساب کاربری
-            <span className="w-6 h-6 icon-wrapper ml-1"><IconExit/></span>
+            <span className="w-6 h-6 icon-wrapper ml-1">
+              <IconExit />
+            </span>
           </button>
         </div>
       </div>
@@ -92,7 +147,9 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       {/* منو موبایل */}
       <div
         className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
-          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          open
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         }`}
       >
         {/* بک‌گراند */}
@@ -107,35 +164,86 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >
-         <div  dir="rtl"className="bg-gray27 py-4 px-3 flex items-center justify-between border border-gray21 m-4 rounded-[8px]">
-          <div className="flex ">
-            <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1"><IconUser/></span>
-           <div>
-             <p className="font-semibold text-black1">کوثر محمدی</p>
-            <p className="text-xs text-gray-500 pt-1">سطح کاربری 1</p>
-           </div>
+          <div
+            dir="rtl"
+            className="bg-gray27 py-4 px-3 flex items-center justify-between border border-gray21 m-4 rounded-[8px]"
+          >
+            <div className="flex ">
+              <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
+                <IconUser />
+              </span>
+              <div>
+                <p className="font-semibold text-black1">کوثر محمدی</p>
+                <p className="text-xs text-gray-500 pt-1">سطح کاربری 1</p>
+              </div>
+            </div>
+            <button className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition">
+              ارتقا سطح
+              <span className="w-5 h-5 icon-wrapper mr-1">
+                <IconArrowLeft />
+              </span>
+            </button>
           </div>
-          <button className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition">
-            ارتقا سطح
-            <span className="w-5 h-5 icon-wrapper mr-1"><IconArrowLeft/></span> 
-          </button>
-        </div>
 
-        <ul dir="rtl" className="p-4 space-y-3 font-medium">
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-1"><span className="w-6 h-6"><IconUserAccount/></span> حساب کاربری</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2"><span className="w-6 h-6"><IconSecurity/></span>  تنظیمات امنیت</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2"><span className="w-6 h-6"><IconAuthentication/></span> احراز هویت</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2"><span className="w-6 h-6"><IconBankAccounts/></span> حساب‌های بانکی</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2"><span className="w-6 h-6"><IconTransactionhistory/></span> تاریخچه معاملات</li>
-          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2"><span className="w-6 h-6"><IconConnecteddevices/></span> دستگاه‌های متصل</li>
-        </ul>
+          <ul dir="rtl" className="p-4 space-y-3 font-medium">
+            <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer">
+              <span className="w-6 h-6">
+                <IconUserAccount />
+              </span>
+              حساب کاربری
+            </li>
+          </Link>
+           <Link to={"/Security settings"} className="flex items-center gap-2 w-full">
+           <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconSecurity />
+            </span>{" "}
+            تنظیمات امنیت
+          </li>
+           </Link>
+           <Link to={"/authentication"} className="flex items-center gap-2 w-full">
+             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconAuthentication />
+            </span>{" "}
+            احراز هویت
+          </li>
+           </Link>
+          <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconBankAccounts />
+            </span>{" "}
+            حساب‌های بانکی
+          </li>
+          </Link>
+        <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+         <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconTransactionhistory />
+            </span>{" "}
+            تاریخچه معاملات
+          </li>
+        </Link>
+            <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+              <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2">
+            <span className="w-6 h-6">
+              <IconConnecteddevices />
+            </span>{" "}
+            دستگاه‌های متصل
+          </li>
+          </Link>
+          </ul>
 
-        <div className=" p-4 ">
-          <button className="w-full rounded-xl border py-2 text-center border-blue2 text-blue-500 hover:bg-gray-100 transition">
-            خروج از حساب کاربری
-            <span className="w-6 h-6 icon-wrapper ml-1"><IconExit/></span>
-          </button>
-        </div>
+          <div className=" p-4 ">
+            <button className="w-full rounded-xl border py-2 text-center border-blue2 text-blue-500 hover:bg-gray-100 transition">
+              خروج از حساب کاربری
+              <span className="w-6 h-6 icon-wrapper ml-1">
+                <IconExit />
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

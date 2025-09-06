@@ -9,7 +9,7 @@ import Buy from '../pages/trade/Buy';
 import Sell from '../pages/trade/Sell';
 import AuthenticationBasic from '../pages/authentication/basic';
 import AuthenticationAdvance from '../pages/authentication/advance';
-import Profile from '../pages/Profile';
+import Profile from '../pages/Profile/Profile';
 import MarketPage from '../pages/MarketPage';
 import TicketPage from '../pages/Ticket/TicketPage';
 import TicketPanel from "./../Components/Ticket/TicketPanel"
@@ -30,6 +30,10 @@ export default function AppRouter() {
         <Route path={ROUTES.AuthenticationBasic} element={<AuthenticationBasic/>} />
         <Route path={ROUTES.AuthenticationAdvance} element={<AuthenticationAdvance/>} />
         <Route path={ROUTES.Profile} element={<Profile/>}/>
+        <Route path={ROUTES.Securitysettings} element={<Profile/>}/>
+         <Route path={ROUTES.UserAccount} element={<Profile/>}/>
+          <Route path={ROUTES.BankAccount} element={<Profile/>}/>
+            <Route path={ROUTES.ConnectedDevices} element={<Profile/>}/>
         {/* header only pages ==================================================================================================== */}
         <Route path='trade' element={<TradeLayout />}>
           <Route index element={<Navigate to='buy' replace />} />
