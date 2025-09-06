@@ -30,7 +30,7 @@ const CryptoTable: React.FC<Props> = ({ data, active, setActive }) => {
 
   return (
     <div className="w-full bg-backgroundMain rounded-2xl p-4 shadow border border-gray21 overflow-hidden">
-      {/* Header */}
+     
       <div className="flex justify-between items-center border-gray21 mb-6">
         <button className="flex items-center gap-2 px-3 py-1 rounded-xl text-sm text-blue2 ml-2 text-center">
           <span className="w-4 h-4 text-blue2  rounded">
@@ -44,7 +44,7 @@ const CryptoTable: React.FC<Props> = ({ data, active, setActive }) => {
         </h2>
       </div>
 
-      {/* Tabs */}
+    
       <div className="flex flex-row-reverse gap-4 text-sm mb-4">
         {tabs.map((tab, index) => (
           <span
@@ -61,7 +61,7 @@ const CryptoTable: React.FC<Props> = ({ data, active, setActive }) => {
         ))}
       </div>
 
-      {/* ===== Table ===== */}
+      
       <table
         dir="rtl"
         className="w-full text-right border border-gray21 border-collapse rounded-lg overflow-hidden"
@@ -89,7 +89,7 @@ const CryptoTable: React.FC<Props> = ({ data, active, setActive }) => {
                 </span>
           
                 <div>
-                  {/* اسم ارز با ellipsis */}
+                 
                   <div
                     className="font-medium text-center text-black1 truncate max-w-[120px]"
                     title={item.name}

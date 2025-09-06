@@ -1,6 +1,19 @@
 
 import { useState } from "react";
 
+import Fire from "../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
+import YoYowIcon from "../assets/icons/Home/SynchronizedSlidersIcon/YoYowIcon";
+import TrendDownIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrendDownIcon";
+import TrinityIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrinityIcon";
+import TrendIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrendIcon";
+import Titan from "../assets/icons/Home/SynchronizedSlidersIcon/TitanIcon";
+
+import TokoTokenIcon from "../assets/icons/Home/CryptoTableIcon/TokoTokenIcon";
+import TornIcon from "../assets/icons/Home/CryptoTableIcon/TornIcon";
+import Ultra from "../assets/icons/Home/CryptoTableIcon/UltraIconIcon";
+import VeChain from "../assets/icons/Home/CryptoTableIcon/VeChainIcon";
+import Veil from "../assets/icons/Home/CryptoTableIcon/VeilIcon";
+
 import HeaderFooterLayout from "../layouts/HeaderFooterLayout";
 import img1 from "../assets/images/Home/image copy (1).jpg";
 
@@ -11,24 +24,17 @@ import InvitationCard from "../Components/Home/InvitationCard";
 import SyncSlider from "../Components/Home/SynchronizedSliders";
 import CryptoTable from "../Components/Home/CryptoTable";
 import QuestionBox from "../Components/Home/QuestionBox/QuestionBox";
-import FireIcon from "../assets/Icons/Home/SynchronizedSliders/fireIcon";
-import TrendDownIcon from "../assets/Icons/Home/SynchronizedSliders/TrendDownIcon";
-import YoYowIcon from "../assets/Icons/Home/SynchronizedSlidersIcon/YoYowIcon";
-import TrinityIcon from "../assets/Icons/Home/SynchronizedSlidersIcon/TrinityIcon";
-import TitanIcon from "../assets/Icons/Home/SynchronizedSlidersIcon/TitanIcon";
-import WalletIcon from "../assets/Icons/header/WalletIcon";
-import TetherIcon from "../assets/icons/Home/WalletCardIcon/TetherIcon";
-import TokoTokenIcon from "../assets/Icons/Home/CryptoTable/TokoTokenIcon";
-import TornIcon from "../assets/Icons/Home/CryptoTable/TornIcon";
-import TravelaIcon from "../assets/Icons/Home/CryptoTableIcon/TravelaIcon";
-import UltraIcon from "../assets/Icons/Home/CryptoTable/UltraIconIcon";
-import VeChainIcon from "../assets/Icons/Home/CryptoTable/VeChainIcon";
-import VeilIcon from "../assets/Icons/Home/CryptoTable/VeilIcon";
+
+import TetherTopIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon";
+import MostDeal from "../assets/icons/Home/SynchronizedSlidersIcon/MostDeal";
+import TravelaIcon from "../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+
+
 
 const boxes = [
   {
     header: "تازه های بازار",
-    headerIcon: <FireIcon/>,
+    headerIcon: <Fire/>,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Yoyow (Yoyow).png",
     slides: [
       {
@@ -49,7 +55,7 @@ const boxes = [
   },
   {
     header: "بیشترین افت قیمت",
-    headerIcon: <TrendDownIcon />,
+    headerIcon:  <span className="w-6 h-6 icon-wrapper text-red1"><TrendDownIcon /></span>,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Trinity Network Credit (Tnc).png",
     slides: [
       {
@@ -57,7 +63,9 @@ const boxes = [
         subtitle: "TNC",
         price: 88901,
         changePct: -23.54,
-        iconSrc: <TrinityIcon/>,
+
+        iconSrc:<TrinityIcon />,
+
       },
       {
         title: "ترینیتی نتورک",
@@ -70,7 +78,9 @@ const boxes = [
   },
   {
     header: "بیشترین افزایش قیمت",
-    headerIcon: <TrendDownIcon/>,
+
+    headerIcon:<span className="text-green2 icon-wrapper"><TrendIcon /></span> ,
+
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/TitanSwap (TITAN).png",
     slides: [
       {
@@ -78,20 +88,22 @@ const boxes = [
         subtitle: "TITAN",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <TitanIcon />,
+        iconSrc: <Titan />,
       },
       {
         title: "یویوو",
         subtitle: "YOYOW",
         price: 91000,
         changePct: 24.12,
-        iconSrc: <TitanIcon />,
+        iconSrc: <Titan />,
       },
     ],
   },
   {
     header: "بیشترین معامله",
-    headerIcon: <WalletIcon/>,
+
+    headerIcon: <span className="w-6 h-6 icon-wrapper"><MostDeal/></span>,
+
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Tetherbackground (USDT).png",
     slides: [
       {
@@ -99,19 +111,19 @@ const boxes = [
         subtitle: "USDT",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <TetherIcon />,
+        iconSrc: <TetherTopIcon />,
       },
       {
         title: "تتر",
         subtitle: "USDT",
         price: 91000,
         changePct: 24.12,
-        iconSrc: <TetherIcon />,
+        iconSrc: <TetherTopIcon />,
       },
     ],
   },
 ];
-//////////////
+
 
 function HomePage() {
   const [active, setActive] = useState(0);
@@ -150,7 +162,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <UltraIcon/>,
+      logo: <Ultra/>,
     },
     {
       name: "وی چین",
@@ -159,7 +171,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <VeChainIcon/>,
+      logo: <VeChain/>,
     },
     {
       name: "ولی",
@@ -168,7 +180,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <VeilIcon />,
+      logo: <Veil/>,
     },
   ];
 

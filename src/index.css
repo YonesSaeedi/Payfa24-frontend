@@ -1,11 +1,15 @@
+
+
 @import url("/fonts/fonts.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   font-family: "IRANSansX", sans-serif;
 }
+
 
 html,
 body,

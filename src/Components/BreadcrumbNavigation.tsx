@@ -1,14 +1,21 @@
 import React from "react";
 import { Link, useLocation } from "react-router"
-import IconChevron from "../assets/Icons/trade/IconChevron";
+import IconChevron from "../assets/icons/trade/IconChevron";
 
 const BREADCRUMB_LABELS: Record<string, string> = {
   trade: "معامله",
   buy: "خرید",
   sell: "فروش",
-  options: "حدمات",
-  ticket: "تیکت",
-  authentication: 'احراز هویت'
+  options: "خدمات",
+
+
+  ticket: "تیکت‌ها",
+  create: "ایجاد تیکت", 
+  authentication: 'احراز هویت',
+  services:'خدمات',
+  transaction:'تاریخچه تراکنش ها'
+
+
 };
 
 const BreadcrumbNavigation = () => {
@@ -27,7 +34,7 @@ const BreadcrumbNavigation = () => {
             {isLast ?
               <span className="text-blue2">{BREADCRUMB_LABELS[value]}</span>
               :
-              <Link className="text-text2 hover:text-primary" to={to}>{BREADCRUMB_LABELS[value]}</Link>
+              <Link className="text-black1 hover:text-primary" to={to}>{BREADCRUMB_LABELS[value]}</Link>
             }
           </React.Fragment>
         );

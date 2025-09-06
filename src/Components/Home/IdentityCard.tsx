@@ -4,6 +4,7 @@ import ValidationDarkIcon from "./../../assets/images/Home/ValidationIcon/402384
 import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 
 import { Link } from "react-router";
+import IdentyfyCardIcon from "../../assets/icons/Home/IdentyfyCardIcon/identyfyCardIcon";
 
 interface IdentityCardProps {
   title: string;
@@ -21,7 +22,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
 }) => {
   return (
     <div className="border rounded-xl p-6 flex items-center justify-between  border-gray21 shadow">
-      {/* Image placeholder */}
+
 
       <div className=" rounded-lg flex items-center justify-center ">
         <img src={ValidationlightIcon} className="block dark:hidden" />
@@ -30,12 +31,15 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
       </div>
 
       <div className="w-1/2 flex flex-col gap-2 text-right">
-        {/* <img/> */}
+    
         <h2 className="text-xl font-semibold text-blue2 pb-4">{title}</h2>
-        <ul className="list-disc pr-4 text-black1">
+        <ul className="list-disc text-black1">
           {items.map((item, index) => (
             <li key={index} className="list-none">
               {item}
+               <span className="w-[19px] h-[19px] icon-wrapper ml-1">
+                 <IdentyfyCardIcon/>
+              </span>
             </li>
           ))}
         </ul>
@@ -47,9 +51,11 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
           ))}
         </ul>
 
+
      
 
         <Link to="/authentication" className="font-sans mt-4 bg-blue-500 text-white rounded-lg w-[198px] h-[40px] self-end flex items-center justify-center">
+
           <span className="pr-2 flex  w-8 h-8 ">
             <ArrowLeftIcon />
           </span>
