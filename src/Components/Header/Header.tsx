@@ -22,6 +22,7 @@ import HomeActiveIcon from "../../assets/icons/header/HomeActiveIcon";
 import ChartActiveIcon from "../../assets/icons/header/ChartActiveIcon";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
 import MessagesActiveIcon from "../../assets/icons/header/MessagesActiveIcon";
+import ProfileMenu from "./ProfileMenu";
 
 export default function Header() {
   const [showServices, setShowServices] = useState(false);
@@ -40,12 +41,12 @@ export default function Header() {
 
   return (
 
-    <header className="bg-white shadow-md dark:bg-gray-900 dark:text-white sticky top-0 z-50">
+    <header className="bg-white  dark:bg-gray-900 dark:text-white sticky top-0 z-50">
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-6">
     
         <div className="flex gap-4 text-gray-600">
 
-          <Link
+          {/* <Link
             to="/login"
             className={`hover:text-blue2 transition flex items-center ${
               currentPath === "/login"
@@ -60,7 +61,8 @@ export default function Header() {
                 <FrameIcon />
               </span>
             </button>
-          </Link>
+          </Link> */}
+          <ProfileMenu themeContext={themeContext} currentPath={currentPath}/>
 
           <button className="hover:text-blue2 transition" aria-label="Profile">
             <span className="w-8 h-8 icon-wrapper">
@@ -77,7 +79,7 @@ export default function Header() {
             </span>
           </button>
        <Link
-  to="/tiket"
+  to="/ticket"
   aria-label="Messages"
   className={`hover:text-blue2 transition ${
     currentPath === "/tiket"
@@ -104,7 +106,7 @@ export default function Header() {
         <div className="flex items-center space-x-6">
           <ul className="hidden lg:flex space-x-8 text-gray1">
 
-            <li className="relative">
+            <li className="relative pr-6">
               <button
                 onClick={() => setShowServices(!showServices)}
                 className="hover:text-blue-600 transition flex items-center"
@@ -121,7 +123,7 @@ export default function Header() {
             </li>
 
 
-            <li>
+            <li className=" pr-6">
               <Link
                 to="/walet"
                 className={`hover:text-blue-600 transition flex items-center ${
@@ -141,7 +143,7 @@ export default function Header() {
               </Link>
             </li>
 
-            <li>
+            <li  className=" pr-6">
               <Link
 
   to="/market"
@@ -170,9 +172,9 @@ export default function Header() {
 
             </li>
 
-            <li>
+            <li  className=" pr-6">
               <Link
-                to="/transaction"
+                to="/trade"
                 className={`hover:text-blue2 transition flex items-center ${
                   currentPath === "/transaction"
                     ? themeContext.theme === "dark"
@@ -190,7 +192,7 @@ export default function Header() {
               </Link>
             </li>
 
-            <li>
+            <li  className=" pr-6">
               <Link
                 to="/"
                 className={`hover:text-blue2 transition flex items-center ${

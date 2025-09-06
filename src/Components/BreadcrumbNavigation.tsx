@@ -6,11 +6,15 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   trade: "معامله",
   buy: "خرید",
   sell: "فروش",
-  options: "حدمات",
+  options: "خدمات",
 
-  ticket: " تیکت ها",
 
-  authentication: 'احراز هویت'
+  ticket: "تیکت‌ها",
+  create: "ایجاد تیکت", 
+  authentication: 'احراز هویت',
+  services:'خدمات',
+  transaction:'تاریخچه تراکنش ها'
+
 
 };
 

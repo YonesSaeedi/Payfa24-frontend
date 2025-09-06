@@ -155,10 +155,9 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
     </div>
   </div>
 
-  {/* فوتر صفحه‌بندی */}
-  <div className="flex justify-center items-center gap-2 mt-2 text-sm">
+  <div dir='rtl' className="flex justify-center items-center gap-2 mt-2 text-sm">
     {[1, 2, 3, "...", 12].map((num, idx) => (
-      <button
+      <button dir='rtl'
         key={idx}
         className={`px-3 py-1 rounded-md ${
           num === 1

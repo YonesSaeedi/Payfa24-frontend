@@ -1,13 +1,13 @@
 import { Outlet } from "react-router"
-import BreadcrumbNavigation from "../../components/BreadcrumbNavigation"
+import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation"
 import HeaderLayout from "../../layouts/HeaderLayout"
 import IconWarning from "../../assets/icons/trade/IconWarning"
-import TradeLayoutFAQ from "../../components/trade/TradeLayoutFAQ"
+import TradeLayoutFAQ from "../../Components/trade/TradeLayoutFAQ"
 
 
 
 
-  const FAQData= [
+  const FAQData = [
   {
     id: 1,
     question: "چگونه در پی‌فا24 ارز دیجیتال بفروشیم؟",

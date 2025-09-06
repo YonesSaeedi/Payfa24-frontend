@@ -4,7 +4,6 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   MARKET:'/market',
-  Ticket:'/tiket',
   FORGOT_PASSWORD: '/forgot-password',
   authentication:'/authentication',
   TRADE: {
@@ -12,4 +11,13 @@ export const ROUTES = {
     BUY: '/trade/buy',
     SELL: '/trade/sell',
   },
+  Ticket: {
+  ROOT: '/ticket',
+  CREATE: '/ticket/create',
+},
+Transaction:{
+  Root:'/services',
+  CREATE:'/services/transaction'
+}
+
 }
