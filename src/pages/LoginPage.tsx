@@ -26,7 +26,7 @@ export default function LoginPage() {
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
 
-  const navigate = useNavigate();
+ 
 
   const [showPassword, setShowPassword] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -140,7 +140,7 @@ export default function LoginPage() {
             <button
               type="submit"
               className="w-full  h-[48px] rounded-xl bg-blue2
-              text-white font-bold text-lg lg:bg-gray19"
+              text-white2 font-bold text-lg lg:bg-gray19"
             >
               ادامه
             </button>

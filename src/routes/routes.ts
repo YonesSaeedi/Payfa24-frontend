@@ -1,10 +1,13 @@
+
 export const ROUTES = {
 
   HOME: '/',
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
-  authentication:'/authentication',
+  AuthenticationBasic:'/authentication',
+  AuthenticationAdvance:'/authenticationAdvance',
+  Profile:'/authProfile',
   TRADE: {
     ROOT: '/trade',
     BUY: '/trade/buy',

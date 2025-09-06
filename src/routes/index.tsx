@@ -7,7 +7,9 @@ import HomePage from '../pages/HomePage';
 import TradeLayout from '../pages/trade/TradeLayout';
 import Buy from '../pages/trade/Buy';
 import Sell from '../pages/trade/Sell';
-import Authentication from '../pages/authentication/basic';
+import AuthenticationBasic from '../pages/authentication/basic';
+import AuthenticationAdvance from '../pages/authentication/advance';
+import Profile from '../pages/Profile';
 
 export default function AppRouter() {
   return (
@@ -17,7 +19,9 @@ export default function AppRouter() {
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
         <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
-        <Route path={ROUTES.authentication} element={<Authentication/>} />
+        <Route path={ROUTES.AuthenticationBasic} element={<AuthenticationBasic/>} />
+        <Route path={ROUTES.AuthenticationAdvance} element={<AuthenticationAdvance/>} />
+        <Route path={ROUTES.Profile} element={<Profile/>}/>
         {/* header only pages ==================================================================================================== */}
         <Route path='trade' element={<TradeLayout />}>
           <Route index element={<Navigate to='buy' replace />} />

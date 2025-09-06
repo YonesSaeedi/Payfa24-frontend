@@ -20,7 +20,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
   return (
     <div className="w-screen flex flex-col lg:flex-row dark:bg-white4">
       {/* image section */}
-      <div className="w-full">
+      <div className="w-full ">
         {image && (
           <div className={`flex h-full flex-col items-center justify-around  px-4   rounded-e-2xl  ${theme === "dark" ? "bg-gray0" : "lg:bg-gray0 bg-none"} `}>
             {/* logo && button (Icon)*/}
@@ -59,7 +59,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
 
       {/* Form Section */}
       <div className=" w-full lg:h-screen lg:pt-8 pt-10  flex flex-col items-center justify-center ">
-        {children}
+       {children}
       </div>
     </div>
   );
