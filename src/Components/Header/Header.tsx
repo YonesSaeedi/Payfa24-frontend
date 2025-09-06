@@ -52,9 +52,12 @@ export default function Header() {
             aria-label="Notifications"
             onClick={toggleTheme}
           >
+            <Link to={'/authProfile'}>
+            
             <span className="icon-wrapper h-6 w-6 text-blue2">
               <MoonIcon/>
             </span>
+            </Link>
           </button>
           <button
             className="hover:text-blue-600 transition"

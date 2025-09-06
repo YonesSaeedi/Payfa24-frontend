@@ -1,5 +1,6 @@
 import EmailIcon from "../../../../assets/Icons/authentication/EmailIcon";
 import IconcardBank from "../../../../assets/Icons/authentication/IconcardBank";
+import IconCardIdenty from "../../../../assets/Icons/authentication/IconCardIdenty";
 import IconDownloadPhoto from "../../../../assets/Icons/authentication/IconDownloadPhoto";
 import IconIdentyBasic from "../../../../assets/Icons/authentication/IconIdentyBasic";
 import IconUserOctagon from "../../../../assets/Icons/authentication/IconUserOctagon";
@@ -65,7 +66,7 @@ export default function AuthenticationRightAdvance({ step, onStart }: Props) {
         <div className="flex flex-row items-center justify-end mt-5">
           <span className="mr-2 text-black1">ثبت مدرک شناسایی</span>
           <span className="icon-wrapper w-7 h-7 text-blue2">
-            <IconDownloadPhoto />
+            <IconCardIdenty/>
           </span>
         </div>
         <div className="flex flex-row items-center justify-end">
