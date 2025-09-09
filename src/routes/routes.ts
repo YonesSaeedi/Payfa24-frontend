@@ -1,3 +1,4 @@
+import GoogleAuthFlow from "../pages/Profile/GoogleAuthFlow";
 
 export const ROUTES = {
 
@@ -9,10 +10,12 @@ export const ROUTES = {
   AuthenticationBasic:'/authentication',
   AuthenticationAdvance:'/authenticationAdvance',
   Profile:'/authProfile',
-  Securitysettings :'./Security settings',
-  UserAccount:'./authProfile',
-  BankAccount:'./authProfile',
-  ConnectedDevices:'./authProfile',
+  ChangePassword :'/ChangePassword',
+  VerifyGooglePage:'/verify/google',
+  MultiFactor:'/MultiFactor',
+  BankAccount:'/authProfile',
+  ConnectedDevices:'/authProfile',
+  GoogleAuthFlow:'/GoogleAuthFlow/ab',
   TRADE: {
     ROOT: '/trade',
     BUY: '/trade/buy',

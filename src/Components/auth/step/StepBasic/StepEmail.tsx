@@ -54,7 +54,7 @@ export default function StepEmail({ onNext }: Props) {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full lg:bg-gray36 lg:mt-0 mt-6 pb-36 lg:rounded-2xl lg:px-8 px-2 lg:border border-gray26 "
+        className="w-full lg:bg-gray9 lg:mt-0 mt-6 pb-36 lg:rounded-2xl lg:px-5   lg:border border-gray26 "
       >
         <div className="w-full flex justify-center items-center flex-col">
           <StepperComponent currentStep={0} />
@@ -72,7 +72,7 @@ export default function StepEmail({ onNext }: Props) {
                 type="text"
                 error={errors.email?.message}
                 {...field}
-                labelBgClass={`${theme === "dark" ? "bg-gray36"  : "bg-gray9"}`}
+                labelBgClass="bg-gray9"
               />
             )}
           />

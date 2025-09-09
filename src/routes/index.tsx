@@ -17,6 +17,9 @@ import TicketLayout from '../pages/Ticket/TicketLayout';
 import TransactionLayout from '../pages/Transaction/TransactionLayout';
 import TransactionPage from '../pages/Transaction/TransactionPage'
 import Transaction from '../Components/Transaction/Transaction';
+import ChangePassword from '../pages/Profile/ChangePassword';
+import MultiFactor from '../pages/Profile/MultiFactor';
+import GoogleAuthFlow from '../pages/Profile/GoogleAuthFlow';
 // import TransactionTable from '../Components/Transaction/Transaction';
 
 export default function AppRouter() {
@@ -30,10 +33,11 @@ export default function AppRouter() {
         <Route path={ROUTES.AuthenticationBasic} element={<AuthenticationBasic/>} />
         <Route path={ROUTES.AuthenticationAdvance} element={<AuthenticationAdvance/>} />
         <Route path={ROUTES.Profile} element={<Profile/>}/>
-        <Route path={ROUTES.Securitysettings} element={<Profile/>}/>
-         <Route path={ROUTES.UserAccount} element={<Profile/>}/>
-          <Route path={ROUTES.BankAccount} element={<Profile/>}/>
-            <Route path={ROUTES.ConnectedDevices} element={<Profile/>}/>
+        <Route path={ROUTES.ChangePassword} element={<ChangePassword/>}/>
+        <Route path={ROUTES.MultiFactor} element={<MultiFactor/>}/>
+        <Route path={ROUTES.GoogleAuthFlow} element={<GoogleAuthFlow/>}/>
+        {/* <Route path={ROUTES.BankAccount} element={<Profile/>}/> */}
+        {/* <Route path={ROUTES.ConnectedDevices} element={<Profile/>}/> */}
         {/* header only pages ==================================================================================================== */}
         <Route path='trade' element={<TradeLayout />}>
           <Route index element={<Navigate to='buy' replace />} />

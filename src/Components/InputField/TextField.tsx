@@ -13,7 +13,7 @@
 //   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 //   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
 //   name: string;
-//   labelBgClass?: string;  
+//   labelBgClass?: string;
 //   labelClassName?: string;
 //   labelStyle?: React.CSSProperties;
 // }
@@ -97,21 +97,6 @@
 
 // export default TextField;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { forwardRef, useContext, useState } from "react";
 import { ThemeContext } from "../../Context/ThemeContext";
 
@@ -144,7 +129,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       onChange,
       onBlur,
       name,
-      labelBgClass, // پراپ جدید
+      labelBgClass,
     },
     ref
   ) => {
@@ -165,13 +150,15 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 
     const labelStyleClass =
       isFocused || value
-        ? `top-[-12px] text-sm ${hasError ? "text-red1" : "text-blue2 "} ${labelBgClass || ""}`
+        ? `top-[-12px] right-[13px] text-sm ${hasError ? "text-red1" : "text-blue2 "} ${
+            labelBgClass || ""
+          }`
         : "top-1/2 -translate-y-1/2 text-xs text-gray12 bg-transparent";
 
     return (
       <div className={`relative mb-2 box-border w-full ${className}`}>
         <input
-        dir="rtl"
+          dir="rtl"
           id={inputId}
           type={type}
           className={`w-full lg:h-[56px] h-[48px] rounded-xl border px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none ${
@@ -211,10 +198,3 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 );
 
 export default TextField;
-
-
-
-
-
-
-

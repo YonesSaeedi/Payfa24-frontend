@@ -16,9 +16,10 @@ interface ProfileMenuProps {
     theme: "light" | "dark";
   };
   currentPath: string;
+
 }
 
-export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuProps) {
+export default function ProfileMenu({ themeContext, currentPath , }: ProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -91,11 +92,11 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
               حساب کاربری
             </li>
           </Link>
-           <Link to={"/Security settings"} className="flex items-center gap-2 w-full">
+           <Link to={"/ChangePassword"} className="flex items-center gap-2 w-full">
            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
             <span className="w-6 h-6">
               <IconSecurity />
-            </span>{" "}
+            </span>
             تنظیمات امنیت
           </li>
            </Link>
@@ -103,7 +104,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
              <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
             <span className="w-6 h-6">
               <IconAuthentication />
-            </span>{" "}
+            </span>
             احراز هویت
           </li>
            </Link>
@@ -111,7 +112,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
             <span className="w-6 h-6">
               <IconBankAccounts />
-            </span>{" "}
+            </span>
             حساب‌های بانکی
           </li>
           </Link>
@@ -119,7 +120,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
          <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
             <span className="w-6 h-6">
               <IconTransactionhistory />
-            </span>{" "}
+            </span>
             تاریخچه معاملات
           </li>
         </Link>
@@ -127,7 +128,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
               <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2">
             <span className="w-6 h-6">
               <IconConnecteddevices />
-            </span>{" "}
+            </span>
             دستگاه‌های متصل
           </li>
           </Link>

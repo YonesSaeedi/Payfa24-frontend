@@ -1,9 +1,10 @@
-// import EmailIcon from "../assets/Icons/authentication/EmailIcon";
-// import IconcardBank from "../assets/Icons/authentication/IconcardBank";
-// import IconUserOctagon from "../assets/Icons/authentication/IconUserOctagon";
-// import BreadcrumbNavigation from "../components/BreadcrumbNavigation";
-// import HeaderLayout from "../layouts/HeaderLayout";
-// import profile from "../assets/images/Profile/Profile.png";
+
+// import profile from "../../assets/images/Profile/Profile.png";
+// import EmailIcon from "../../assets/Icons/authentication/EmailIcon";
+// import IconUserOctagon from "../../assets/Icons/authentication/IconUserOctagon";
+// import IconcardBank from "../../assets/Icons/authentication/IconcardBank";
+// import HeaderLayout from "../../layouts/HeaderLayout";
+// import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation";
 // export default function Profile() {
 //   return (
 //     <>
@@ -76,6 +77,10 @@
 //   );
 // }
 
+
+
+
+
 // برای وقتی     api   و گرفتی
 
 import { useState } from "react";
@@ -86,7 +91,7 @@ import HeaderLayout from "../../layouts/HeaderLayout";
 import IdentyIcon from "../../assets/Icons/authentication/IdentyIcon";
 import IconCardIdenty from "../../assets/Icons/authentication/IconCardIdenty";
 import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation";
-
+import profile from "../../assets/images/Profile/Profile.png";
 export default function Profile() {
   // حالت برای سطح احراز هویت و ایمیل (داده‌های تست)
   const [verificationLevel, setVerificationLevel] = useState(0);
@@ -108,7 +113,7 @@ export default function Profile() {
               <div className="flex items-center justify-center flex-col ">
                 <img
                   className="mb-6 lg:mt-14 mt-8"
-                  src=""
+                  src={profile}
                   alt="ProfilePicture"
                 />
 
@@ -224,3 +229,7 @@ export default function Profile() {
     </>
   );
 }
+
+
+
+

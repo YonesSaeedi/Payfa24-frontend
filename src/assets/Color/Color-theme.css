@@ -75,6 +75,8 @@
   --gray39: #626e94;
   --gray40: #f0f2f5;
   --gray41: #e1e6f566;
+  --gray42:#FFFFFF;
+  --gray43:#D1D9F0;
   --orange1: #ff9518;
   --orange2: #ffead1;
   --orange3: #ff951840;
@@ -166,7 +168,6 @@
   --gray33: #0a121f33;
   --gray34: #a7b2d980;
   --gray35: #6d6d6d;
-
   --gray36: #8792af14;
 
   --gray37: #222935;
@@ -174,7 +175,8 @@
   --gray39: #626e94;
   --gray40: #242f3f;
   --gray41: #222935;
-
+  --gray42:#0F141D;
+  --gray43:#242F3F;
   --orange1: #ff9518;
   --orange2: #1d1b1c;
   --orange3: #ff95180f;
