@@ -119,7 +119,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       {/* select coin button ======================================================================================================= */}
       <div className="flex flex-col gap-3">
         <div onClick={() => null} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 flex items-center justify-between cursor-pointer relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-gray35 border-none -top-4 right-4 text-gray5 text-sm font-normal">انتخاب رمز ارز</div>
+          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43 border-none -top-4 right-4 text-gray5 text-sm font-normal">انتخاب رمز ارز</div>
           <div className="flex items-center gap-8">
             <span className="icon-wrapper"></span>
             <span className="text-text4 text-sm font-normal">مونوس</span>
@@ -136,7 +136,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       {/* choose coin count ======================================================================================================= */}
       <div className="flex flex-col gap-5 lg:gap-3">
         <div onClick={() => countInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-gray35  border-none -top-4 right-4 text-gray5 text-sm font-normal">مقدار رمز ارز</div>
+          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43  border-none -top-4 right-4 text-gray5 text-sm font-normal">مقدار رمز ارز</div>
           <input
             ref={countInputRef}
             type="text"
@@ -155,7 +155,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       {/* choose total amount ======================================================================================================= */}
       <div className="flex flex-col gap-5 lg:gap-3">
         <div onClick={() => amountInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-gray35 border-none -top-4 right-4 text-gray5 text-sm font-normal">{isSell ? 'مقدار دریافتی' : 'مقدار پرداختی'}</div>
+          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43 border-none -top-4 right-4 text-gray5 text-sm font-normal">{isSell ? 'مقدار دریافتی' : 'مقدار پرداختی'}</div>
           <div className="w-full flex items-center justify-between">
             <input
               ref={amountInputRef}

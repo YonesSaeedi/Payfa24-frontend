@@ -1,25 +1,35 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useContext, useState } from "react";
+import { ThemeContext } from "./../../Context/ThemeContext";
+
+import MessagesIcon from "../../assets/Icons/header/MessagesIcon";
+import CategoryIcon from "../../assets/Icons/header/CategoryIcon";
+import WalletIcon from "../../assets/Icons/header/WalletIcon";
+import BitcoinIcon from "../../assets/Icons/header/BitcoinIcon";
+import HomeIcon from "../../assets/Icons/header/HomeIcon";
+import MoonIcon from "../../assets/Icons/header/MoonIcon";
+import HomeActiveIcon from "../../assets/Icons/header/HomeActiveIcon";
+import ChartActiveIcon from "../../assets/Icons/header/ChartActiveIcon";
+import CategoryActiveIcon from "../../assets/Icons/header/CategoryActiveIcon";
+import MessagesActiveIcon from "../../assets/Icons/header/MessagesActiveIcon";
+import ProfileMenu from "./ProfileMenu";
+import ServicesBox from "../ServicesBox/ServicesBox";
+import VectorIcon from "../../assets/Icons/header/vectorIcon";
+import RingIcon from "../../assets/Icons/header/ringIcon";
+import ChartIcon from "../../assets/icons/header/ChartIcon";
 import pfIcon from "../../assets/images/HeaderIcon/pf.png";
 import groupIcon from "../../assets/images/HeaderIcon/Group 71185 (1).png";
-
-
-import { ThemeContext } from "./../../Context/ThemeContext";
-import { useContext, useState } from "react";
-import FrameIcon from "../../assets/icons/header/FrameIcon";
-import VectorIcon from "../../assets/icons/header/vectorIcon";
-import MoonIcon from "../../assets/icons/header/MoonIcon";
-import MessagesIcon from "../../assets/icons/header/MessagesIcon";
-import RingIcon from "../../assets/icons/header/ringIcon";
-import CategoryIcon from "../../assets/icons/header/CategoryIcon";
-import WalletIcon from "../../assets/icons/header/WalletIcon";
-import Chart from "../../assets/icons/Chart";
-import BitcoinIcon from "../../assets/icons/header/BitcoinIcon";
-import HomeIcon from "../../assets/icons/header/HomeIcon";
+import NotificationDropDown from "../Notification/NotificationDropDown";
+import IconRingActive from "../../assets/icons/header/IconRingActive";
+import IconSun from "../../assets/icons/header/IconSun";
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [activeItem, setActiveItem] = useState<string>("/");
+  const [showServices, setShowServices] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const themeContext = useContext(ThemeContext);
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   if (!themeContext) {
     throw new Error(
@@ -30,183 +40,184 @@ export default function Header() {
   const { toggleTheme } = themeContext;
 
   return (
-    <header className="bg-white shadow-md dark:bg-gray-900 dark:text-white sticky top-0 z-50">
-      <nav className="container-style mx-auto  flex items-center justify-between py-4 px-6">
-        <div className="flex gap-4 text-gray-600">
+    <header className="bg-white dark:bg-gray-900 dark:text-white sticky top-0 z-50">
+      <nav className="container-style mx-auto flex items-center justify-between py-4 px-6">
+        {/* Left Icons */}
+        <div className="flex gap-4 text-gray-600 items-center">
+          <ProfileMenu themeContext={themeContext} currentPath={currentPath} />
+
+          {/* Profile Icon */}
           <button
-            className="hover:text-blue-600 transition"
+            className="hover:text-blue2 transition flex items-center justify-center w-8 h-8"
             aria-label="Profile"
           >
-            <span>
-              <FrameIcon />
-            </span>
+            <VectorIcon />
           </button>
-          <button
-            className="hover:text-blue-600 transition"
-            aria-label="Profile"
-          >
-            <span>
-              <VectorIcon />
-            </span>
-          </button>
-          <button
-            className="hover:text-blue-600 transition hidden lg:block"
-            aria-label="Notifications"
-            onClick={toggleTheme}
-          >
-            <span>
-              <MoonIcon />
-            </span>
-          </button>
-          <button
-            className="hover:text-blue-600 transition"
+
+          {/* Moon Icon */}
+         <button
+  className="hover:text-blue2 transition hidden lg:flex items-center justify-center w-7 h-7"
+  aria-label="Toggle Theme"
+  onClick={toggleTheme}
+>
+  {themeContext.theme === "dark" ? <IconSun/> : <MoonIcon />}
+</button>
+
+
+
+
+          {/* Messages Icon */}
+          <Link
+            to="/ticket"
             aria-label="Messages"
+            className={`hover:text-blue2 transition flex items-center justify-center w-7 h-7 ${
+              currentPath === "/ticket"
+                ? themeContext.theme === "dark"
+                  ? "text-primary"
+                  : "text-blue2 font-semibold"
+                : "text-header-items"
+            }`}
           >
-            <span>
+            {currentPath === "/ticket" ? (
+              <MessagesActiveIcon />
+            ) : (
               <MessagesIcon />
-            </span>
-          </button>
-          <button
-            className="hover:text-blue-600 transition"
-            aria-label="Night Mode"
-          >
-            <span>
-              <RingIcon />
-            </span>
-          </button>
+            )}
+          </Link>
+
+<div className="relative group">
+  {/* دکمه */}
+  <button
+    className="hover:text-blue2 transition flex items-center justify-center w-7 h-7"
+    aria-label="Notifications"
+  >
+    <IconRingActive />
+  </button>
+
+  {/* پل نامرئی */}
+  <div className="absolute left-0 top-full w-full h-4 bg-transparent"></div>
+
+  {/* Dropdown */}
+  <div className="absolute left-0 top-[calc(100%+1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+    <NotificationDropDown />
+  </div>
+</div>
+
+
+
+
         </div>
 
         <div className="flex items-center space-x-6">
           <ul className="hidden lg:flex space-x-8 text-gray1">
-            <li >
-              <Link
-                to="/services"
-                onClick={() => setActiveItem("/services")}
-
-                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/services"
-                  ? themeContext.theme === "dark"
-                    ? "text-gray1"
-                    : "text-blue-600 font-semibold"
-                  : "text-gray1"
-                  }`}
+            {/* Services */}
+            <li className="relative pr-6">
+              <button
+                onClick={() => setShowServices(!showServices)}
+                className="hover:text-blue-600 transition flex items-center"
               >
                 خدمات
-                <span className="pl-2 w-8 h-8  ">
-                  <CategoryIcon />
+                <span className="pl-2 flex items-center justify-center w-8 h-8">
+                  {showServices ? <CategoryActiveIcon /> : <CategoryIcon />}
                 </span>
-              </Link>
+              </button>
+
+              {showServices && (
+                <ServicesBox onClose={() => setShowServices(false)} />
+              )}
             </li>
-            <li>
+
+            {/* Wallet */}
+            <li className="pr-6">
               <Link
                 to="/walet"
-                onClick={() => setActiveItem("/walet")}
-                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/walet"
-                  ? themeContext.theme === "dark"
-                    ? "text-primary"
-                    : "text-blue-600 font-semibold"
-                  : "text-header-items"
-                  }`}
+                className={`hover:text-blue-600 transition flex items-center ${
+                  currentPath === "/walet"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue-600 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 کیف پول
-                <span className="pl-2 w-8 h-8 ">
+                <span className="pl-2 flex items-center justify-center w-8 h-8">
                   <WalletIcon />
                 </span>
               </Link>
             </li>
-            <li>
+
+            {/* Market */}
+            <li className="pr-6">
               <Link
                 to="/market"
-                onClick={() => setActiveItem("/market")}
-                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/market"
-                  ? themeContext.theme === "dark"
-                    ? "text-primary"
-                    : "text-blue-600 font-semibold"
-                  : "text-header-items"
-                  }`}
+                className={`hover:text-blue2 transition flex items-center ${
+                  currentPath === "/market"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue2 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 بازارها
-                <span className="pl-2 w-8 h-8 ">
-                  <Chart />
+                <span className="pl-2 flex items-center justify-center w-8 h-8">
+                  {currentPath === "/market" ? (
+                    <ChartActiveIcon />
+                  ) : (
+                    <ChartIcon />
+                  )}
                 </span>
               </Link>
             </li>
-            <li>
+
+            {/* Trade */}
+            <li className="pr-6">
               <Link
-                to="/transaction"
-                onClick={() => setActiveItem("/transaction")}
-                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/transaction"
-                  ? themeContext.theme === "dark"
-                    ? "text-primary"
-                    : "text-blue-600 font-semibold"
-                  : "text-header-items"
-                  }`}
+                to="/trade"
+                className={`hover:text-blue2 transition flex items-center ${
+                  currentPath === "/transaction"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue2 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 معامله
-                <span className="pl-2  w-8 h-8">
+                <span className="pl-2 flex items-center justify-center w-8 h-8">
                   <BitcoinIcon />
                 </span>
               </Link>
             </li>
-            <li>
+
+            {/* Home */}
+            <li className="pr-6">
               <Link
                 to="/"
-                onClick={() => setActiveItem("/")}
-                className={`hover:text-blue-600 transition flex items-center ${activeItem === "/"
-                  ? themeContext.theme === "dark"
-                    ? "text-primary"
-                    : "text-blue-600 font-semibold"
-                  : "text-header-items"
-                  }`}
+                className={`hover:text-blue2 transition flex items-center ${
+                  currentPath === "/"
+                    ? themeContext.theme === "dark"
+                      ? "text-primary"
+                      : "text-blue2 font-semibold"
+                    : "text-header-items"
+                }`}
               >
                 خانه
-                <span className="pl-2 w-8 h-8">
-                  <HomeIcon />
+                <span className="pl-2 flex items-center justify-center w-8 h-8">
+                  {currentPath === "/" ? <HomeActiveIcon /> : <HomeIcon />}
                 </span>
               </Link>
             </li>
           </ul>
 
-          <div className="text-blue-600 font-bold pl-6 flex items-center gap-2 lg:gap-4">
+          {/* Logo */}
+          <div className="text-blue-600 font-bold pl-6 flex items-center gap-2 md:gap-4">
             <Link to="/" className="flex items-center">
-              <img
-                src={pfIcon}
-                alt="Logo"
-                className="w-6 h-6 lg:w-7 lg:h-7"
-              />
+              <img src={pfIcon} alt="Logo" className="w-6 h-6 lg:w-7 lg:h-7" />
               <img
                 src={groupIcon}
                 alt="Logo"
                 className="w-6 h-6 lg:w-7 lg:h-7"
               />
             </Link>
-
-            <button
-              onClick={() => setIsOpen(true)}
-              id="hamburgerBtn"
-              aria-controls="mobileMenu"
-              aria-expanded="false"
-              className="lg:hidden p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
-              title="open menu"
-            >
-              <img
-                src="./../../../public/images/menu.png"
-                alt="منوی موبایل"
-                className="w-6 h-6 object-contain"
-              />
-            </button>
-            <div
-              onClick={() => setIsOpen(false)}
-              className={`fixed inset-0 bg-black/40 transition-opacity duration-300 lg:hidden ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-                }`}
-            />
-
-            <aside
-              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 lg:hidden ${isOpen ? "translate-x-0" : "translate-x-full"
-                }`}
-
-              role="dialog"
-              aria-hidden={!isOpen}
-            ></aside>
           </div>
         </div>
       </nav>

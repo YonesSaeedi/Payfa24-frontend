@@ -1,8 +1,10 @@
 import { Outlet } from "react-router"
-import BreadcrumbNavigation from "../../components/BreadcrumbNavigation"
+import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation"
 import HeaderLayout from "../../layouts/HeaderLayout"
 import IconWarning from "../../assets/icons/trade/IconWarning"
-import TradeLayoutFAQ from "../../components/trade/TradeLayoutFAQ"
+import TradeLayoutFAQ from "../../Components/trade/TradeLayoutFAQ"
+import { FAQData } from "../../Data/faqData"
+
 
 const FAQData = [
   {
@@ -64,7 +66,7 @@ const TradeLayout = () => {
                   </ul>
                 </div>
                 <h4 className="lg:hidden text-base font-bold mb-3 text-text4">سوالات متداول</h4>
-                <TradeLayoutFAQ items={FAQData} />
+                <TradeLayoutFAQ items={FAQData.trade} />
               </div>
             </div>
           </div>

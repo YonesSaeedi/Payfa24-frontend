@@ -64,7 +64,7 @@ const WalletCard = ({
             <VisibilityIcon />
           </span>
 
-          <span className="text-black1 text-base font-semibold">
+          <span className="font-sans text-black1 text-base font-semibold">
             موجودی کیف پول شما
           </span>
         </div>
@@ -99,7 +99,7 @@ const WalletCard = ({
         </div>
       </div>
 
-      {/* Actions */}
+     
       <div className="grid grid-cols-5 gap-4">
         {actionButtons.map((btn, idx) => (
           <button

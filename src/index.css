@@ -1,11 +1,15 @@
-@import url('/fonts/fonts.css');
+
+
+@import url("/fonts/fonts.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
-  font-family: 'IRANSansX', sans-serif;
+  font-family: "IRANSansX", sans-serif;
 }
+
 
 html,
 body,
@@ -22,17 +26,23 @@ body,
 
 /* base ============================================================================================================== */
 @layer base {
-
   /* Chrome, Safari, Edge, Opera */
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
-
   /* Firefox */
   input[type="number"] {
     -moz-appearance: textfield;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--extra-dark-background) inset;
+    -webkit-text-fill-color: var(--primary);
+    transition: background-color 5000s ease-in-out 0s;
   }
 }
 
@@ -43,7 +53,7 @@ body,
   }
 
   .icon-wrapper {
-    @apply inline-block leading-none align-middle
+    @apply inline-block leading-none align-middle;
   }
 }
 
@@ -64,3 +74,4 @@ body,
 ::-webkit-scrollbar-track {
   @apply bg-transparent;
 }
+

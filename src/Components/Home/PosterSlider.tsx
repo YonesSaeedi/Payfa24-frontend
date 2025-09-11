@@ -53,7 +53,6 @@ const PosterSlider: React.FC<PosterSliderProps> = ({ slides }) => {
           />
         </div>
 
-        {/* بخش متن */}
         <div className="w-1/2 p-8 flex flex-col justify-center text-center items-center">
           <h2 className="text-3xl font-bold text-white mb-4">
             {slides[current].title}
@@ -65,7 +64,7 @@ const PosterSlider: React.FC<PosterSliderProps> = ({ slides }) => {
         </div>
       </div>
 
-      {/* دکمه‌های پایین */}
+   
       <div className="absolute lg:-bottom-5 left-1/2 -translate-x-1/2 bg-white1 rounded-full px-4 py-2 flex justify-center text-center gap-2 bottom-3">
         {slides.map((_, index) => (
           <button

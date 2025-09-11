@@ -7,6 +7,22 @@ import HomePage from '../pages/HomePage';
 import TradeLayout from '../pages/trade/TradeLayout';
 import Buy from '../pages/trade/Buy';
 import Sell from '../pages/trade/Sell';
+import AuthenticationBasic from '../pages/authentication/basic';
+import AuthenticationAdvance from '../pages/authentication/advance';
+import Profile from '../pages/Profile/Profile';
+import MarketPage from '../pages/MarketPage';
+import TicketPage from '../pages/Ticket/TicketPage';
+import TicketPanel from "./../Components/Ticket/TicketPanel"
+import TicketLayout from '../pages/Ticket/TicketLayout';
+import TransactionLayout from '../pages/Transaction/TransactionLayout';
+import Transaction from '../Components/Transaction/Transaction';
+import ConnectedDevices from '../pages/ConnectedDevices/ConnectedDevicesLayout';
+import NotificationsPage from '../pages/Notifications/NotificationsPage';
+import FaqLayout from '../pages/FAQ/FaqLayout';
+import BankCardsPage from '../pages/BankCards/BankCardsPage';
+import BankCards from '../Components/BankCards/BankCards';
+
+
 
 export default function AppRouter() {
   return (
@@ -16,19 +32,54 @@ export default function AppRouter() {
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
         <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+        <Route path={ROUTES.AuthenticationBasic} element={<AuthenticationBasic/>} />
+        <Route path={ROUTES.AuthenticationAdvance} element={<AuthenticationAdvance/>} />
+        <Route path={ROUTES.Profile} element={<Profile/>}/>
+        <Route path={ROUTES.Securitysettings} element={<Profile/>}/>
+         <Route path={ROUTES.UserAccount} element={<Profile/>}/>
+         
+            
         {/* header only pages ==================================================================================================== */}
+         <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage/>}/>
+
         <Route path='trade' element={<TradeLayout />}>
           <Route index element={<Navigate to='buy' replace />} />
           <Route path='buy' element={<Buy />} />
           <Route path='sell' element={<Sell />} />
         </Route>
 
+        <Route path="ticket" element={<TicketLayout />}>
+          <Route index element={<TicketPage />} />         
+          <Route path={ROUTES.Ticket.CREATE} element={<TicketPanel />} /> 
+        </Route>
+
+       <Route path="services" element={<TransactionLayout />}>
+       <Route index element={<Transaction/>} />
+       <Route path="transaction" element={<Transaction/>} />
+       </Route>
+
+
+      <Route path="services" element={<TransactionLayout />}>
+       <Route index element={<Transaction/>} />
+       <Route path="faq" element={<FaqLayout/>} />
+       </Route> 
+       
+       <Route path="services" element={<ConnectedDevices />}>
+       <Route path="ConnectedDevices" element={<ConnectedDevices/>} />
+       </Route>
+
+         <Route path="services" element={<BankCardsPage/>}>
+       <Route path="BankCards" element={<BankCards/>} />
+       </Route>
+
+
         {/* header + Footer pages ==================================================================================================== */}
         <Route path={ROUTES.HOME} element={<HomePage />} />
+        <Route path={ROUTES.MARKET} element={<MarketPage />} />
 
         {/* protected pages ==================================================================================================== */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );
-}
+ }
