@@ -21,7 +21,7 @@ const OptionSelector: React.FC<OptionSelectorProps> = ({
 
   const handleClick = (id: string) => {
     setActive(id);
-    onSelect?.(id); // فقط اطلاع می‌ده به والد
+    onSelect?.(id); 
   };
 
   return (

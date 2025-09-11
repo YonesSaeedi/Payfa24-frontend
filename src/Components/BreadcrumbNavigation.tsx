@@ -2,19 +2,20 @@ import React from "react";
 import { Link, useLocation } from "react-router"
 import IconChevron from "../assets/icons/trade/IconChevron";
 
+
 const BREADCRUMB_LABELS: Record<string, string> = {
   trade: "معامله",
   buy: "خرید",
   sell: "فروش",
   options: "خدمات",
-
-
   ticket: "تیکت‌ها",
   create: "ایجاد تیکت", 
   authentication: 'احراز هویت',
   services:'خدمات',
-  transaction:'تاریخچه تراکنش ها'
-
+  transaction:'تاریخچه تراکنش ها',
+  ConnectedDevices:'دستگاه های متصل',
+  faq:'سوالات متدال',
+  BankCards:'کارت های بانکی'
 
 };
 

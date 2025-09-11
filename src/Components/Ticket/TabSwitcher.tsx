@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
-// نوع تب‌ها
 type TabType = "finance" | "tech" | "identity" | "orders";
 import Icontechnical from "../../assets/icons/ticket/Icontechnical";
 
-// صفحات
+
 import TicketsDashboard from "./TicketChat/TicketsDashboard";
 
 export default function SupportPage() {
@@ -22,7 +21,7 @@ export default function SupportPage() {
 
   return (
     <div className="p-6">
-      {/* دکمه‌ها */}
+      
       <div className="flex gap-3 mb-6">
         {tabs.map((tab) => (
           <button
@@ -38,7 +37,6 @@ export default function SupportPage() {
         ))}
       </div>
 
-      {/* محتوای فعال */}
       <div className="w-full border rounded-xl p-4">
         {tabs.find((t) => t.key === activeTab)?.content}
       </div>

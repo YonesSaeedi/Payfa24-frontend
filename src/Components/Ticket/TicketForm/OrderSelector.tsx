@@ -17,7 +17,7 @@ export default function OrderSelector({ selectedOrder, setSelectedOrder, registe
 
   const handleSelectOrder = (order: Order) => {
     setSelectedOrder(order);
-    register("orderId").onChange({ target: { value: order.id } }); // react-hook-form update
+    register("orderId").onChange({ target: { value: order.id } }); 
     setIsModalOpen(false);
   };
 

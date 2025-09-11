@@ -99,7 +99,7 @@ const WalletCard = ({
         </div>
       </div>
 
-      {/* Actions */}
+     
       <div className="grid grid-cols-5 gap-4">
         {actionButtons.map((btn, idx) => (
           <button

@@ -32,7 +32,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text }) => {
       bgColor: "bg-red6",
       icon:<span className="w-4 h-4 icon-wrapper"><IconButtonReject/></span>,
     },
-    "در حال بررسی": {
+    "درحال بررسی": {
       textColor: "text-orange1",
       bgColor: "bg-orange4",
       icon: <span className="w-4 h-4 icon-wrapper"><IconButtonOnHold/></span>,

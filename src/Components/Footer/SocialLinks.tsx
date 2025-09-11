@@ -4,20 +4,50 @@ import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
 import YoutubeIcon from "../../assets/icons/Footer/YoutubeIcon";
 
 interface SocialLink {
-  icon:  React.JSX.Element;
+  icon: React.JSX.Element;
   href: string;
 }
 
-export default function SocialLinks(): React.JSX.Element {
+interface SocialLinksProps {
+  borderColor?: string; // رنگ دلخواه برای border
+}
+
+export default function SocialLinks({
+  borderColor = "border-gray-300",
+}: SocialLinksProps): React.JSX.Element {
   const socialLinks: SocialLink[] = [
-    { icon: <span className="w-[22px] h-[22px]">
-      <InstagramIcon />
-    </span>, href: "#" },
-    { icon: <span className="w-[18px] h-[18px]">
-      <LinkdinIcon />
-    </span>, href: "#" },
-    { icon: <span className="w-[22px] h-[22px]"><YoutubeIcon /></span>, href: "#" },
-    { icon: <span className="w-[18px] h-[15px]"><TelegramIcon /></span>, href: "#" },
+    {
+      icon: (
+        <span className="w-[22px] h-[22px]">
+          <InstagramIcon />
+        </span>
+      ),
+      href: "#",
+    },
+    {
+      icon: (
+        <span className="w-[18px] h-[18px]">
+          <LinkdinIcon />
+        </span>
+      ),
+      href: "#",
+    },
+    {
+      icon: (
+        <span className="w-[22px] h-[22px]">
+          <YoutubeIcon />
+        </span>
+      ),
+      href: "#",
+    },
+    {
+      icon: (
+        <span className="w-[18px] h-[15px]">
+          <TelegramIcon />
+        </span>
+      ),
+      href: "#",
+    },
   ];
 
   return (
@@ -26,7 +56,7 @@ export default function SocialLinks(): React.JSX.Element {
         <a
           key={i}
           href={href}
-          className="w-10 h-10 flex items-center justify-center rounded-full border border-white transition"
+          className={`w-10 h-10 flex items-center justify-center rounded-full border ${borderColor} transition`}
         >
           {icon}
         </a>
