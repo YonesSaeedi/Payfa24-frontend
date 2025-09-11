@@ -28,29 +28,22 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     let val = persianToEnglish(e.target.value)
       .replace(/[^0-9.]/g, '')      // only numbers + dot
       .replace(/(\..*)\./g, '$1');  // prevent multiple dots
-
     let num = Number(val);
-
     if (!isNaN(num) && val !== '' && val !== '.') {
       const max = isSell
         ? cryptoBalance
         : TomanBalance / currentCryptoPrice;
-
       if (num > max) {
         num = max;
-        // 🔹 force input string to match clamped max (rounded to 2 decimals)
         val = String(Math.round(max * 100) / 100);
       }
-
       setCountInputStr(val);
       setAmountValue(Math.round(num * currentCryptoPrice * 100) / 100);
     } else {
-      setCountInputStr(val);  // keep "12." etc
+      setCountInputStr(val);
       setAmountValue(0);
     }
   };
-
-
   // handles amount input change ====================================================================================================
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     lastChangedRef.current = 'input';
@@ -87,15 +80,15 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
         percent = TomanBalance ? (Number(amountValue) / TomanBalance) * 100 : 0;
       }
       const roundedPercent = Math.round(percent * 100) / 100;
-
       if (roundedPercent !== selectedPercent) {
         setSelectedPercent(roundedPercent);
       }
     } else if (lastChangedRef.current === 'percent') {
       // Percent changed → update inputs
-      if (selectedPercent === 0) return;
-
-      if (isSell) {
+      if (selectedPercent === 0) {
+        setCountInputStr("0");
+        setAmountValue(0);
+      } else if (isSell) {
         const newCount = Math.round((cryptoBalance * selectedPercent / 100) * 100) / 100;
         const newAmount = Math.round(newCount * currentCryptoPrice * 100) / 100;
         if (Number(countInputStr) !== newCount) setCountInputStr(String(newCount));
@@ -107,28 +100,26 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
         if (Number(countInputStr) !== newCount) setCountInputStr(String(newCount));
       }
     }
-
     // Reset the change source after applying
     lastChangedRef.current = null;
-
   }, [countInputStr, amountValue, selectedPercent, isSell, cryptoBalance, TomanBalance, currentCryptoPrice]);
 
   return (
-    <div className="w-full h-full lg:bg-bg4 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between">
+    <div className="w-full h-full lg:bg-gray30 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between">
       <div className="flex items-center gap-2">
-        <Link to='/trade/buy' className="w-1/2 py-3 flex items-center gap-1 justify-center rounded-lg text-text6 bg-green1">
+        <Link to='/trade/buy' className={`w-1/2 py-3 flex items-center gap-1 justify-center rounded-lg ${isSell ? 'bg-gray10 text-gray17' : 'bg-green2 text-white2'}`}>
           <span className="text-sm font-medium lg:text-lg lg:font-bold">خرید</span>
           <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4"><IconArrowBottomLeft /></span>
         </Link>
-        <Link to='/trade/sell' className="w-1/2 py-3 flex items-center gap-1 justify-center rounded-lg text-text6 bg-green1">
+        <Link to='/trade/sell' className={`w-1/2 py-3 flex items-center gap-1 justify-center rounded-lg text-text6 ${isSell ? 'bg-red1 text-white2' : 'bg-gray10 text-gray17'}`}>
           <span className="text-sm font-medium lg:text-lg lg:font-bold">فروش</span>
           <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4"><IconArrowTopLeft /></span>
         </Link>
       </div>
       {/* select coin button ======================================================================================================= */}
       <div className="flex flex-col gap-3">
-        <div onClick={() => null} className="border border-text2 rounded-lg px-4 py-2.5 lg:py-3.5 flex items-center justify-between cursor-pointer relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-bg4  border-none -top-4 right-4 text-text7 text-sm font-normal">انتخاب رمز ارز</div>
+        <div onClick={() => null} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 flex items-center justify-between cursor-pointer relative">
+          <div className="absolute px-1 bg-backgroundMain lg:bg-gray35 border-none -top-4 right-4 text-gray5 text-sm font-normal">انتخاب رمز ارز</div>
           <div className="flex items-center gap-8">
             <span className="icon-wrapper"></span>
             <span className="text-text4 text-sm font-normal">مونوس</span>
@@ -144,13 +135,13 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       </div>
       {/* choose coin count ======================================================================================================= */}
       <div className="flex flex-col gap-5 lg:gap-3">
-        <div onClick={() => countInputRef.current?.focus()} className="border border-text2 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-bg4  border-none -top-4 right-4 text-text7 text-sm font-normal">مقدار رمز ارز</div>
+        <div onClick={() => countInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
+          <div className="absolute px-1 bg-backgroundMain lg:bg-gray35  border-none -top-4 right-4 text-gray5 text-sm font-normal">مقدار رمز ارز</div>
           <input
             ref={countInputRef}
             type="text"
             inputMode="decimal"
-            className="bg-transparent appearance-none outline-none w-full text-text7 text-right"
+            className="bg-transparent appearance-none outline-none w-full text-gray5 text-right"
             placeholder={`مقدار ${'مونوس'} مدنظر را وارد کنید`}
             value={countInputStr}
             onChange={handleCountChange}
@@ -163,8 +154,8 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       </div>
       {/* choose total amount ======================================================================================================= */}
       <div className="flex flex-col gap-5 lg:gap-3">
-        <div onClick={() => amountInputRef.current?.focus()} className="border border-text2 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-bg4 border-none -top-4 right-4 text-text7 text-sm font-normal">{isSell ? 'مقدار دریافتی' : 'مقدار پرداختی'}</div>
+        <div onClick={() => amountInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
+          <div className="absolute px-1 bg-backgroundMain lg:bg-gray35 border-none -top-4 right-4 text-gray5 text-sm font-normal">{isSell ? 'مقدار دریافتی' : 'مقدار پرداختی'}</div>
           <div className="w-full flex items-center justify-between">
             <input
               ref={amountInputRef}
@@ -175,7 +166,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
               onChange={handleAmountChange}
               dir="ltr"
             />
-            <span className="text-sm font-normal text-text7">تومان</span>
+            <span className="text-sm font-normal text-gray5">تومان</span>
           </div>
         </div>
         <div className={`items-center justify-between text-sm font-normal ${isSell ? 'hidden' : 'flex'}`}>
@@ -189,7 +180,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       </div>
       {/* percent bar ======================================================================================================= */}
       <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
-      <button className="rounded-lg bg-primary py-2 lg:py-2.5 text-white text-base font-medium lg:text-lg lg:font-bold">{isSell ? "ثبت فروش" : "ثبت خرید"}</button>
+      <button className="rounded-lg bg-blue2 py-2 lg:py-2.5 text-white2 text-base font-medium lg:text-lg lg:font-bold">{isSell ? "ثبت فروش" : "ثبت خرید"}</button>
     </div>
   )
 }
