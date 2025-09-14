@@ -100,7 +100,7 @@ export default function IdentityVerification({ onNext }: Props) {
             </div>
             {/* نمایش پیام خطا */}
             {error && (
-              <p className="text-red-500 text-sm text-right mb-4">{error}</p>
+              <p className="text-red1 text-sm text-right mb-4">{error}</p>
             )}
             {/* ///////////////// اینپوت بارگذاری ///////////// */}
             <div

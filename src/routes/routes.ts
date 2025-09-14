@@ -1,4 +1,5 @@
-import GoogleAuthFlow from "../pages/Profile/GoogleAuthFlow";
+import AddFriend from "../pages/Addfriend/AddFriend";
+
 
 export const ROUTES = {
 
@@ -15,7 +16,8 @@ export const ROUTES = {
   MultiFactor:'/MultiFactor',
   BankAccount:'/authProfile',
   ConnectedDevices:'/authProfile',
-  GoogleAuthFlow:'/GoogleAuthFlow/ab',
+  GoogleAuthFlow:'/GoogleAuthFlow',
+  AddFriend:'/AddFriend',
   TRADE: {
     ROOT: '/trade',
     BUY: '/trade/buy',

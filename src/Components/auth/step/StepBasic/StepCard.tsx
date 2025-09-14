@@ -120,10 +120,10 @@ export default function StepCard({ onNext }: Props) {
               }}
             >
               <div
-                className="lg:w-[448px] w-[328px] rounded-lg lg:p-10 p-4 relative bg-white8"
+                className=" rounded-lg lg:p-10 p-4 relative bg-white8"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex items-center flex-col gap-1 justify-between">
+                <div className="flex items-center flex-col gap-4 justify-between">
                   <div className="w-16 h-16">
                     <img src={verify} alt="verify" />
                   </div>
@@ -136,7 +136,7 @@ export default function StepCard({ onNext }: Props) {
                   <Link to={'/authenticationAdvance'}>
                   <button
                     onClick={handleCloseModal}
-                    className="mt-4 w-full h-[48px] font-bold bg-blue2 text-white2 rounded-lg"
+                    className="w-full h-[48px] font-bold bg-blue2 text-white2 rounded-lg"
                   >
                     تکمیل فرآیند احراز هویت
                   </button>

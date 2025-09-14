@@ -1,4 +1,5 @@
-export default function Icongift() {
+
+export default function IconGiftBox() {
   return (
     <>
       <svg

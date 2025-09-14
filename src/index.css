@@ -56,6 +56,15 @@ body,
   .icon-wrapper {
     @apply inline-block leading-none align-middle;
   }
+  .custom-gradient-border {
+  border-image-source: linear-gradient(
+    90deg,
+    rgba(36, 118, 255, 0) 0%,
+    #2476FF 53.37%,
+    rgba(36, 118, 255, 0) 100%
+  );
+  border-image-slice: 1;
+}
 }
 
 /* custom scrollbar for web apps ============================================================================================================== */
