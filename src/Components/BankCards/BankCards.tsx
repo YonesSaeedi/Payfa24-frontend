@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import EmptyState from "./EmptyCards";
-import AddBankCardModal from "./AddBankCardModal";
-import BankCardList from "./BankCardList";
+import AddBankCardModal from "./BankCardModal/AddBankCardModal";
+import BankCardSection from "./BankCardSection";
 
 type Card = {
   id: number;
@@ -34,9 +34,9 @@ const BankCardsPage = () => {
     const newCard: Card = {
       id: Date.now(),
       number: cardNumber,
-      holder: "مالک کارت", // می‌تونی بعداً input اضافه کنی
-      bankName: bankName,
-      status: "pending", // حالت پیشفرض
+      holder: "مالک کارت",
+      bankName,
+      status: "pending",
     };
     setCards((prev) => [...prev, newCard]);
     setIsModalOpen(false);
@@ -47,7 +47,7 @@ const BankCardsPage = () => {
       {cards.length === 0 && !isModalOpen ? (
         <EmptyState onAddCard={() => setIsModalOpen(true)} />
       ) : cards.length > 0 ? (
-        <BankCardList cards={cards} onAddCard={() => setIsModalOpen(true)} />
+        <BankCardSection cards={cards} setCards={setCards} />
       ) : null}
 
       <AddBankCardModal

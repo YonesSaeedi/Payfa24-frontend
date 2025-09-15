@@ -3,7 +3,7 @@ import LoginPage from '../pages/LoginPage';
 import { ROUTES } from './routes';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import RegisterPage from '../pages/RegisterPage';
-import HomePage from '../pages/HomePage';
+import HomePage from '../pages/Home/HomePage';
 import TradeLayout from '../pages/trade/TradeLayout';
 import Buy from '../pages/trade/Buy';
 import Sell from '../pages/trade/Sell';
@@ -21,6 +21,8 @@ import NotificationsPage from '../pages/Notifications/NotificationsPage';
 import FaqLayout from '../pages/FAQ/FaqLayout';
 import BankCardsPage from '../pages/BankCards/BankCardsPage';
 import BankCards from '../Components/BankCards/BankCards';
+import Wallet from '../pages/Wallet/Wallet';
+import WithdrawPage from '../pages/Withdrawal/Withdrawal';
 
 
 
@@ -41,6 +43,8 @@ export default function AppRouter() {
             
         {/* header only pages ==================================================================================================== */}
          <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage/>}/>
+         <Route path={ROUTES.Wallet} element={<Wallet/>} />
+         <Route path={ROUTES.withdrawal.CREATE} element={<WithdrawPage/>} />
 
         <Route path='trade' element={<TradeLayout />}>
           <Route index element={<Navigate to='buy' replace />} />
@@ -50,7 +54,7 @@ export default function AppRouter() {
 
         <Route path="ticket" element={<TicketLayout />}>
           <Route index element={<TicketPage />} />         
-          <Route path={ROUTES.Ticket.CREATE} element={<TicketPanel />} /> 
+          <Route path="CREATE"element={<TicketPanel />} /> 
         </Route>
 
        <Route path="services" element={<TransactionLayout />}>

@@ -13,6 +13,7 @@ export const ROUTES = {
   Securitysettings :'./Security settings',
   UserAccount:'./authProfile',
   BankAccount:'./authProfile',
+  Wallet:'/wallet',
   ConnectedDevices:{
   Root:'/services',
   CREATE:'/services/ConnectedDevices'
@@ -37,6 +38,10 @@ export const ROUTES = {
     BankCards:{
     Root:'/services',
     CREATE:'/services/BankCards'
+},
+ withdrawal:{
+  Root:'/',
+  CREATE:'/withdrawal'
 }
 
 }

@@ -76,7 +76,6 @@ const FAQPage: React.FC = () => {
     <TradeLayoutFAQ items={FAQData.account} />
   </div>
 
-  {/* سمت راست در lg، ولی زیر آن در کوچکتر */}
   <div className="pt-6 lg:pt-0">
     <ContactBox />
   </div>
