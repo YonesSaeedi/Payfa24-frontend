@@ -18,6 +18,7 @@ export const ROUTES = {
   ConnectedDevices:'/authProfile',
   GoogleAuthFlow:'/GoogleAuthFlow',
   AddFriend:'/AddFriend',
+  Deposit:'/DepositPage',
   TRADE: {
     ROOT: '/trade',
     BUY: '/trade/buy',

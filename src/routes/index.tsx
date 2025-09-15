@@ -21,6 +21,7 @@ import ChangePassword from '../pages/Profile/ChangePassword';
 import MultiFactor from '../pages/Profile/MultiFactor';
 import GoogleAuthFlow from '../pages/Profile/GoogleAuthFlow';
 import AddFriend from '../pages/Addfriend/AddFriend';
+import DepositPage from '../pages/Deposit/DepositPage';
 // import TransactionTable from '../Components/Transaction/Transaction';
 
 export default function AppRouter() {
@@ -38,6 +39,7 @@ export default function AppRouter() {
         <Route path={ROUTES.MultiFactor} element={<MultiFactor/>}/>
         <Route path={ROUTES.GoogleAuthFlow} element={<GoogleAuthFlow/>}/>
         <Route path={ROUTES.AddFriend} element={<AddFriend/>} />
+        <Route path={ROUTES.Deposit} element={<DepositPage/>}/>
         {/* <Route path={ROUTES.BankAccount} element={<Profile/>}/> */}
         {/* <Route path={ROUTES.ConnectedDevices} element={<Profile/>}/> */}
         {/* header only pages ==================================================================================================== */}

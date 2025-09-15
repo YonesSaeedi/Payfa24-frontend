@@ -6,7 +6,7 @@ import inviteLeftImg from "../../assets/images/Addfriend/inviteLeft.png";
 import inviteRightImg from "../../assets/images/Addfriend/inviteRight.png";
 import addFriendLight from "../../assets/images/Addfriend/addFriendLight.png";
 import addFriendDark from "../../assets/images/Addfriend/addFriendDark.png";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { ThemeContext } from "../../Context/ThemeContext";
 import IconGiftBox from "../../assets/Icons/AddFriend/IconGiftBox";
 import Gift from "../../assets/images/Addfriend/GiftInvitImg.png";
@@ -15,14 +15,16 @@ import person from "../../assets/images/Addfriend/personimag.png";
 import gitImg from "../../assets/images/Addfriend/giftimag.png";
 import UserImg from "../../assets/images/Addfriend/User.png";
 import IconClose from "../../assets/Icons/Login/IconClose";
+import ReferralPercentBar from "../../Components/ReferralPercentBar";
 
 export default function AddFriend() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
   const [activeTab, setActiveTab] = useState("transactions");
-  const [IsModal, setIsModal] = useState<boolean>(true);
-
+  const [IsModal, setIsModal] = useState<boolean>(false);
+  const [selectedPercent, setSelectedPercent] = useState<number>(15);
+  const lastChangedRef = useRef<"percent" | "input" | null>(null);
   const LinkInvite = [
     {
       Title: "لینک دعوت شما :",
@@ -411,45 +413,68 @@ export default function AddFriend() {
         {IsModal && (
           <>
             <div
-              onClick={() => {
-                setIsModal(false);
-              }}
-              className="fixed inset-0 bg-black/25 z-45 "
+            
+              onClick={() => setIsModal(false)}
+              className="fixed inset-0 bg-black/25 z-40 cursor-pointer"
             >
               <div
                 onClick={(e) => e.stopPropagation()}
                 className="fixed inset-0 flex items-center justify-center z-50"
               >
-                <div className="bg-white8 w-2/6 px-6">
-                  <div className="flex justify-between w-full border border-b-2 border-gray21 py-4">
+                <div className="bg-white8 w-full max-w-md lg:rounded-xl shadow-lg overflow-hidden p-6">
+                  {/* هدر */}
+                  <div className="flex justify-between items-center border-b border-gray21 pb-4">
                     <span
-                      className="icon-wrapper w-6 h-6"
+                      className="icon-wrapper w-6 h-6 cursor-pointer text-gray5 hover:text-black0"
                       onClick={() => setIsModal(false)}
                     >
                       <IconClose />
                     </span>
-                    <span className="text-black0">تنظیم درصد سود</span> 
+                    <span className="text-black0 font-medium text-base">
+                      تنظیم درصد سود
+                    </span>
                   </div>
-                  <p className="text-black0">
-                    میزان سود خود و دوستتان را از کارمزد معاملات مشخص کنید.
+
+                  {/* متن راهنما */}
+                  <p className="text-black0 text-xs lg:text-sm text-end mt-6">
+                    . میزان سود خود و دوستتان را از کارمزد معاملات مشخص کنید
                   </p>
-                   {/* بخش اصلی که باید به جای حلقه map قرار بگیرد */} 
-                  <div className="flex flex-col items-center my-6">
-                    <div className="flex justify-between w-full text-black0 font-medium mb-4">
-                      <span>پورسانت شما</span>
-                      <span>پورسانت دوستان</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      defaultValue="50"
-                      className="w-full h-2 bg-gray21 rounded-lg appearance-none cursor-pointer"
+
+                  {/* اسلایدر */}
+                  <div className="mt-14">
+                    <ReferralPercentBar
+                      selectedPercent={selectedPercent}
+                      setSelectedPercent={setSelectedPercent}
+                      lastChangedRef={lastChangedRef}
                     />
                   </div>
-                  <button className="w-full font-bold text-lg text-white2 bg-blue2 py-3 rounded-lg mt-6">
-                    تایید
-                  </button>
+
+                  {/* نمایش پورسانت‌ها */}
+                  <div className="flex flex-col items-center mt-14 mb-14">
+                    <div className="grid grid-cols-2 w-full text-center gap-y-2">
+   
+                      <span className="text-gray5 lg:text-sm text-xs font-medium">
+                        پورسانت شما
+                      </span>
+                      <span className="text-gray5 lg:text-sm text-xs font-medium">
+                        پورسانت دوستان
+                      </span>
+
+                      <span className="text-black0 text-lg font-bold">
+                        {100 - selectedPercent}%
+                      </span>
+                      <div className="relative">
+                        <span className="text-black0 text-lg font-bold">
+                          {selectedPercent}%
+                        </span>
+                        <div className="absolute left-[-10px] top-1/4 w-px h-10 bg-gray2 transform -translate-y-1/2"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                    <button className="w-full font-bold text-base text-white2 bg-blue2 lg:py-3 py-2 rounded-lg">
+                      تایید
+                    </button>
                 </div>
               </div>
             </div>
