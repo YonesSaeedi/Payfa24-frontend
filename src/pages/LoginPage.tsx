@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import IconAlert from "../assets/Icons/Login/IconAlert";
 import IconGoogle from "../assets/Icons/Login/IconGoogle";
 import { ThemeContext } from "../Context/ThemeContext";
@@ -15,6 +15,7 @@ import OTPModal from "../Components/OTPModal";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 type LoginFormData = {
   email: string;
@@ -25,14 +26,23 @@ export default function LoginPage() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  useEffect(() => {
+    const handleSubmit = async () => {
+      if (!executeRecaptcha) {
+        console.log('recaptcha not ready yet!')
+        return;
+      }
+      const recaptchaToken = await executeRecaptcha('login')
+      console.log(recaptchaToken)
+    }
+    handleSubmit()
+  }, [])
 
- 
 
   const [showPassword, setShowPassword] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(
-    null
-  );
+  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null);
 
   const loginSchema = yup.object().shape({
     email: yup
@@ -154,9 +164,8 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-center ">
               <div
-                className={`flex-grow h-[1px] ${
-                  theme === "dark" ? "bg-gray19" : "bg-gray19"
-                }`}
+                className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"
+                  }`}
               ></div>
               <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
               <div className="flex-grow h-[1px] bg-gray19"></div>

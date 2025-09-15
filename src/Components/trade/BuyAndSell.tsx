@@ -6,6 +6,7 @@ import IconBorderedPlus from "../../assets/icons/trade/IconBorderedPlus";
 import IconChevron from "../../assets/icons/trade/IconChevron";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import PercentBar from "./PercentBar";
+import CryptoListModal from "./CryptoListModal";
 
 type BuyAndSellProps = {
   isSell: boolean;
@@ -18,6 +19,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   const [countInputStr, setCountInputStr] = useState<string>("");
   const [amountValue, setAmountValue] = useState<number | ''>('')
   const [selectedPercent, setSelectedPercent] = useState<number>(0)
+  const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState<boolean>(false)
   const currentCryptoPrice = 113_720 // to be removed after it is connected to the API
   const cryptoBalance = 12.37 // to be removed after it is connected to the API
   const TomanBalance = 724_470 // to be removed after it is connected to the API
@@ -118,7 +120,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       </div>
       {/* select coin button ======================================================================================================= */}
       <div className="flex flex-col gap-3">
-        <div onClick={() => null} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 flex items-center justify-between cursor-pointer relative">
+        <div onClick={() => setIsCryptoListModalOpen(true)} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 flex items-center justify-between cursor-pointer relative">
           <div className="absolute px-1 bg-backgroundMain lg:bg-gray43 border-none -top-4 right-4 text-gray5 text-sm font-normal">انتخاب رمز ارز</div>
           <div className="flex items-center gap-8">
             <span className="icon-wrapper"></span>
@@ -126,6 +128,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
           </div>
           <span className="icon-wrapper w-5 h-5 -rotate-90 text-grey1"><IconChevron /></span>
         </div>
+        {isCryptoListModalOpen && <CryptoListModal setIsCryptoListModalOpen={setIsCryptoListModalOpen} />}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1 text-text5 text-xs lg:text-sm font-medium">موجودی شما :<span className="text-text4 font-normal" dir="ltr">{'12.003 MNS'}</span></div>
           <span className="text-sm font-normal text-text4">
