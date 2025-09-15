@@ -1,33 +1,33 @@
 
 import { useState } from "react";
 
-import Fire from "../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
-import YoYowIcon from "../assets/icons/Home/SynchronizedSlidersIcon/YoYowIcon";
-import TrendDownIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrendDownIcon";
-import TrinityIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrinityIcon";
-import TrendIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TrendIcon";
-import Titan from "../assets/icons/Home/SynchronizedSlidersIcon/TitanIcon";
+import Fire from "../../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
+import YoYowIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/YoYowIcon";
+import TrendDownIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendDownIcon";
+import TrinityIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrinityIcon";
+import TrendIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendIcon";
+import Titan from "../../assets/icons/Home/SynchronizedSlidersIcon/TitanIcon";
 
-import TokoTokenIcon from "../assets/icons/Home/CryptoTableIcon/TokoTokenIcon";
-import TornIcon from "../assets/icons/Home/CryptoTableIcon/TornIcon";
-import Ultra from "../assets/icons/Home/CryptoTableIcon/UltraIconIcon";
-import VeChain from "../assets/icons/Home/CryptoTableIcon/VeChainIcon";
-import Veil from "../assets/icons/Home/CryptoTableIcon/VeilIcon";
+import TokoTokenIcon from "../../assets/icons/Home/CryptoTableIcon/TokoTokenIcon";
+import TornIcon from "../../assets/icons/Home/CryptoTableIcon/TornIcon";
+import Ultra from "../../assets/icons/Home/CryptoTableIcon/UltraIconIcon";
+import VeChain from "../../assets/icons/Home/CryptoTableIcon/VeChainIcon";
+import Veil from "../../assets/icons/Home/CryptoTableIcon/VeilIcon";
 
-import HeaderFooterLayout from "../layouts/HeaderFooterLayout";
-import img1 from "../assets/images/Home/image copy (1).jpg";
+import HeaderFooterLayout from "../../layouts/HeaderFooterLayout";
+import img1 from "../../assets/images/Home/image copy (1).jpg"
 
-import WalletCard from "../Components/Home/WalletCard/WalletCard";
-import IdentityCard from "../Components/Home/IdentityCard";
-import PosterSlider from "../Components/Home/PosterSlider";
-import InvitationCard from "../Components/Home/InvitationCard";
-import SyncSlider from "../Components/Home/SynchronizedSliders";
-import CryptoTable from "../Components/Home/CryptoTable";
-import QuestionBox from "../Components/Home/QuestionBox/QuestionBox";
+import WalletCard from "../../Components/Home/WalletCard/WalletCard";
+import IdentityCard from "../../Components/Home/IdentityCard";
+import PosterSlider from "../../Components/Home/PosterSlider";
+import InvitationCard from "../../Components/Home/InvitationCard";
+import SyncSlider from "../../Components/Home/SynchronizedSliders";
+import CryptoTable from "../../Components/Home/CryptoTable";
+import QuestionBox from "../../Components/Home/QuestionBox/QuestionBox";
 
-import TetherTopIcon from "../assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon";
-import MostDeal from "../assets/icons/Home/SynchronizedSlidersIcon/MostDeal";
-import TravelaIcon from "../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+import TetherTopIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon";
+import MostDeal from "../../assets/icons/Home/SynchronizedSlidersIcon/MostDeal";
+import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
 
 
 

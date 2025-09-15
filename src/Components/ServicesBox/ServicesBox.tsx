@@ -48,7 +48,25 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     navigate(ROUTES.FAQ.CREATE); 
   }else if (label === "کارت‌ها") {
     navigate(ROUTES.BankCards.CREATE); 
-  }
+  }else if(label === "تیکت") {
+  navigate(ROUTES.Ticket.ROOT)
+}else if(label=== "اعلانات"){
+  navigate(ROUTES.NOTIFICATIONS)
+}else if(label==="بازار"){
+  navigate(ROUTES.MARKET)
+}else if(label==="کیف پول"){
+  navigate(ROUTES.Wallet)
+}else if (label=== "برداشت"){
+  navigate(ROUTES.withdrawal.CREATE)
+}else if(label==="احراز هویت"){
+  navigate(ROUTES.AuthenticationBasic)
+}else if(label==="خرید"){
+  navigate(ROUTES.TRADE.BUY)
+}else if(label=== "فروش"){
+  navigate(ROUTES.TRADE.SELL)
+}
+
+    
   };
 
   const financeItems: ServiceItem[] = [
