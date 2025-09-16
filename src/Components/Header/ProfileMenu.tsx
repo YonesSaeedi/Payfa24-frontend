@@ -40,7 +40,7 @@ export default function ProfileMenu({
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* دکمه پروفایل */}
+
       <button
         onClick={() => setOpen(!open)}
         className={`hover:text-blue2 transition flex items-center ${
@@ -57,8 +57,8 @@ export default function ProfileMenu({
         </span>
       </button>
 
-      {/* منو دسکتاپ */}
-      <div
+       
+            <div
         className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
           open
             ? "scale-100 opacity-100"
@@ -125,21 +125,23 @@ export default function ProfileMenu({
               حساب‌های بانکی
             </li>
           </Link>
-          <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
-            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
-              <span className="w-6 h-6">
-                <IconTransactionhistory />
-              </span>
-              تاریخچه معاملات
-            </li>
-          </Link>
-          <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
-            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2">
-              <span className="w-6 h-6">
-                <IconConnecteddevices />
-              </span>
-              دستگاه‌های متصل
-            </li>
+
+        <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+         <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+            <span className="w-6 h-6">
+              <IconTransactionhistory />
+            </span>{" "}
+            تاریخچه معاملات
+          </li>
+        </Link>
+            <Link to={"/services/ConnectedDevices"} className="flex items-center gap-2 w-full">
+              <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2">
+            <span className="w-6 h-6">
+              <IconConnecteddevices />
+            </span>{" "}
+            دستگاه‌های متصل
+          </li>
+
           </Link>
         </ul>
 
@@ -158,8 +160,10 @@ export default function ProfileMenu({
           </button>
         </div>
       </div>
+      
+  
 
-      {/* منو موبایل */}
+    
       <div
         className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
           open
@@ -167,15 +171,15 @@ export default function ProfileMenu({
             : "opacity-0 pointer-events-none"
         }`}
       >
-        {/* بک‌گراند */}
+    
         <div
           onClick={() => setOpen(false)}
           className="absolute inset-0 bg-black bg-opacity-40 transition-opacity duration-300"
         ></div>
 
-        {/* خود منو */}
+      
         <div
-          className={`absolute top-0 right-0 w-72 h-full bg-white shadow-lg flex flex-col transform transition-transform duration-300 ${
+          className={`absolute top-0 left-88 w-72 h-full bg-white shadow-lg flex flex-col transform transition-transform duration-300 ${
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >

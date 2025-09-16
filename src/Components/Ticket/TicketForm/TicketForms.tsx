@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import FileUpload from "./FileUpload";
 import OrderSelector from "./OrderSelector";
-
+import { Controller } from "react-hook-form";
+import TextField from "../../InputField/TextField";
 interface TicketFormInputs {
   title: string;
   orderId: string;
@@ -17,6 +18,10 @@ interface Order {
   amount: string;
   date: string;
 }
+type LoginFormData = {
+  email: string;
+  password: string;
+}; 
 
 const orders: Order[] = [
   { id: "1", coin: "USDT", type: "برداشت", amount: "2003", date: "1403/05/05 | 13:00" },
@@ -24,43 +29,53 @@ const orders: Order[] = [
   { id: "3", coin: "USDT", type: "خرید", amount: "2003", date: "1403/05/05 | 13:00" },
 ];
 
+
+ 
+
 export default function TicketForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const { register, handleSubmit, formState: { errors } } = useForm<TicketFormInputs>();
 
+const {
+  
+    control,
+   
+  
+  } = useForm<LoginFormData>({
+  }); 
+
   const onSubmit = (data: TicketFormInputs) => {
     console.log("فرم ارسال شد:", data);
   };
 
   return (
-    <div dir="rtl" className="w-full h-full flex flex-col lg:bg-gray37 lg:shadow-md rounded-2xl p-6">
+    <div dir="rtl" className="w-full h-full flex flex-col lg:bg-gray37  lg:shadow-md rounded-2xl p-6">
       <h2 className="text-xl font-semibold text-center text-black1 mt-2  flex-shrink-0 mb-12">
         ایجاد تیکت جدید
       </h2>
 
-      <form 
+      {/* <form 
         onSubmit={handleSubmit(onSubmit)} 
         className="flex flex-col flex-1 gap-4 overflow-y-auto"
-      >
-        {/* عنوان */}
-        <div className="relative flex-shrink-0">
-          <input
-            type="text"
-            {...register("title", { required: "عنوان الزامی است" })}
-            placeholder=" "
-            className="peer w-full border rounded-lg p-5 text-sm bg-gray37 outline-none border-gray12"
-          />
-          <label className="absolute right-3 -top-[19.75px] bg-gray33 z-1 px-1 text-gray12 text-xs transition-all
-                             peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
-                             peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600">
-            عنوان تیکت
-          </label>
-          {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
-        </div>
+      > */}
 
-        {/* انتخاب سفارش */}
+        <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="عنوان"
+  
+                 
+                  {...field}
+                  labelBgClass="bg-gray37"
+                />
+              )}
+            />
+
+       
         <OrderSelector
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
@@ -68,16 +83,31 @@ export default function TicketForm() {
           orders={orders}
         />
 
-        {/* توضیحات */}
+     
 <div className="relative w-full bg-gray37">
-  <textarea
+  {/* <textarea
     {...register("description", { required: "توضیحات الزامی است" })}
     placeholder=" "
     className="peer border rounded-lg text-sm h-[180px] w-full border-gray-400 resize-none bg-gray37 outline-none p-3"
   />
   <label className="absolute right-3 -top-2.5 px-1 text-gray-500 text-xs bg-gray37 inline-block leading-none">
     توضیحات
-  </label>
+  </label> */}
+
+  <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="توضیحات"
+  
+                 
+                  {...field}
+                  labelBgClass="bg-white4"
+                />
+              )}
+            />
+
   {errors.description && (
     <p className="text-red-500 text-xs mt-1">
       {errors.description.message}
@@ -93,7 +123,7 @@ export default function TicketForm() {
 
 
 
-        {/* آپلود فایل */}
+      
         <FileUpload
           selectedFile={selectedFile}
           setSelectedFile={setSelectedFile}
@@ -106,7 +136,7 @@ export default function TicketForm() {
         >
           ارسال تیکت
         </button>
-      </form>
+      {/* </form> */}
     </div>
   );
 }

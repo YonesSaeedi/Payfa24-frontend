@@ -1,0 +1,65 @@
+import React from "react";
+import IconEmail from "../../assets/icons/FAQ/IconEmail";
+import IconCall from "../../assets/icons/FAQ/IconCall";
+import SocialLinks from "../Footer/SocialLinks";
+
+const ContactBox: React.FC = () => {
+  return (
+    <div className="flex flex-col justify-end items-end ">
+      <h2 className="text-lg font-semibold text-black1 pb-8">
+        راه‌های ارتباط با ما
+      </h2>
+
+      <div className="flex justify-between gap-5">
+        <div className="w-[190px] h-[130px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2">
+          <div className="w-12 h-12 ">
+            <IconEmail />
+          </div>{" "}
+         
+          <div className="flex justify-center flex-col">
+            <span
+              dir="rtl"
+              className="text-md text-black1 justify-center flex pb-1"
+            >
+              ایمیل
+            </span>
+            <span className="text-sm font-medium text-black1">
+              info@payfa.com
+            </span>
+          </div>
+        </div>
+
+        <div className="w-[190px] h-[130px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2">
+          <div className="w-12 h-12 ">
+            <IconCall />
+          </div>
+          <div className="flex justify-center flex-col">
+            <span
+              dir="rtl"
+              className="text-md text-black1 justify-center flex pb-1"
+            >
+              تماس
+            </span>
+            <span className="text-sm font-medium text-black1">04433721037</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-[400px] h-[110px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center mt-4">
+       <p className="text-black1 text-md ">ما را در شبکه های اجتماعی دنبال کنید </p>
+
+     
+       
+      <div className="container-style flex justify-between items-center pt-3 text-blue2">
+        <SocialLinks borderColor="border-blue2 "/>
+      </div>
+      
+     
+    
+
+      </div>
+    </div>
+  );
+};
+
+export default ContactBox;
