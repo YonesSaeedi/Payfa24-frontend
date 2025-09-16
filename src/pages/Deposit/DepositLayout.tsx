@@ -18,37 +18,28 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
 }) => {
   return (
     <div className="w-full container-style h-full flex flex-col lg:flex-row bg-green-600 items-center justify-center">
-      {/* هدر یا بخش کنترلی (اگه نیاز داری) */}
-      <div className="lg:hidden p-4 bg-gray-30">
-        <button
-          onClick={onStart}
-          className="w-full bg-blue-500 text-white p-2 rounded"
-          disabled={started}
-        >
-          {started ? "Started" : "Start"}
-        </button>
-      </div>
+
+
 
       {/* بخش اصلی (راست و چپ) */}
-      <div className="flex w-full flex-row-reverse items-center">
+      <div className="flex w-full lg:flex-row-reverse flex-col items-center ">
         {/* بخش راست - ثابت */}
-        <div className="w-1/2 bg-teal-400 p-4 overflow-y-auto h-full flex items-end  flex-col">
-          <div className="bg-orange3 flex items-end flex-col">
-            <div className="flex gap-1 text-orange1 lg:text-lg text-sm">
-              <span>توجه داشته باشید</span>
+        <div className="lg:w-1/2 w-full bg-teal-400 lg:p-4 overflow-y-auto h-full flex lg:items-end items-center flex-col">
+          <div className="bg-orange3  rounded-xl p-4 flex flex-col" dir="rtl">
+            <div className="flex gap-1 text-orange1 lg:text-lg text-sm mb-4">
               <span className="icon-wrapper w-6 h-6">
                 <IconDanger />
               </span>
+              <span>توجه داشته باشید</span>
             </div>
-            <ul className="text-end">
+            <ul className=" list-disc lg:text-base text-xs px-4 text-black0">
               <li>لطفا در صورت استفاده از فیلتر شکن آن را خاموش کنید</li>
               <li>
                 واریز تومانی تنها از طریق حساب های بانکی که متعلق به شما میباشد
-                امکان پذیر است{" "}
+                امکان پذیر است
               </li>
             </ul>
           </div>
-            <p>واریز تومان </p>
 
           {React.Children.map(children, (child, index) => {
             if (index === 0) return child; // بخش اول به عنوان راست
@@ -57,7 +48,7 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
         </div>
 
         {/* بخش چپ - متغیر */}
-        <div className="w-1/2 p-6 bg-red-300">
+        <div className="w-full lg:w-1/2 p-6 bg-red-300">
           {React.Children.map(children, (child, index) => {
             if (index === 1) return child; // بخش دوم به عنوان چپ
             return null;
