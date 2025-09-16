@@ -28,19 +28,19 @@ export const ROUTES = {
     CREATE: '/ticket/create',
 },
    Transaction:{
-    Root:'/services',
+    ROOT:'/services',
     CREATE:'/services/transaction'
 },
     FAQ:{
-    Root:'/services',
+    ROOT:'/services',
     CREATE:'/services/faq'
 },
-    BankCards:{
-    Root:'/services',
+    Bank_Cards:{
+    ROOT:'/services',
     CREATE:'/services/BankCards'
 },
  withdrawal:{
-  Root:'/',
+  ROOT:'/',
   CREATE:'/withdrawal'
 }
 

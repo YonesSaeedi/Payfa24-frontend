@@ -6,6 +6,7 @@ interface FloatingInputProps {
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   type?: string;
+  className?:string;
 }
 
 const FloatingInput: FC<FloatingInputProps> = ({ label, value, onChange, type = "text" }) => {
@@ -15,22 +16,24 @@ const FloatingInput: FC<FloatingInputProps> = ({ label, value, onChange, type = 
 
   return (
     <div dir="rtl" className="relative w-full ">
-      <input
-        dir="rtl"
-        type={type}
-        value={value}
-        onChange={onChange}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        placeholder=" " 
-        className="peer block w-full px-3 py-4 border rounded-md  border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-      />
-      <label
-        className={`absolute right-3 text-gray-400 transition-all duration-200 
-          ${shouldFloat ? "text-xs -top-2 bg-gray-50 px-1" : "text-base top-5"}`}
-      >
-        {label}
-      </label>
+     <input
+  dir="rtl"
+  type={type}
+  value={value}
+  onChange={onChange}
+  onFocus={() => setIsFocused(true)}
+  onBlur={() => setIsFocused(false)}
+  placeholder=" " 
+  className="peer block w-full px-3 py-4 border rounded-md border-gray-300 
+             focus:outline-none focus:ring-0 focus:border-blue-500 bg-gray47"
+/>
+<label
+  className={`absolute right-3 text-gray-400 duration-200 z-10
+    ${shouldFloat ? "text-xs -top-2 bg-gray47 px-1" : "text-base top-5"}`}
+>
+  {label}
+</label>
+
     </div>
   );
 };

@@ -12,11 +12,15 @@ import IconSecurity from "../../assets/icons/services/iconSecurity";
 import IconQuestionLabel from "../../assets/icons/services/IconQuestionLabel";
 import IconPieChart from "../../assets/icons/services/IconPieChart";
 import IconPersonalCard from "../../assets/icons/services/IconPersonalCard";
-import IconDocumentText from "../../assets/icons/services/IconDocumentText";
-import CategoryActiveIcon from "../../assets/Icons/header/CategoryActiveIcon";
 import IconCloseButtun from "../../assets/icons/services/IconCloseButtun";
 import ChartIcon from "../../assets/icons/header/ChartIcon";
 import { ROUTES } from "../../routes/routes";  
+import IconWalletCard from "../../assets/icons/services/IconWalletCard";
+import IconMarketView from "../../assets/icons/services/IconMarketView";
+import IconTicket from "../../assets/icons/services/IconTicket";
+import IconNotification from "../../assets/icons/services/IconNotification";
+import IconUserPlus from "../../assets/icons/services/IconUserPlus";
+import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
 
 
 interface ServiceItem {
@@ -42,60 +46,60 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   };
 
   const handleItemClick = (label: string) => {
-     if (label === "تاریخچه") {
-    navigate(ROUTES.Transaction.CREATE); 
-     }else if (label === "سوالات") {
+if (label === "تاریخچه") {
+  navigate(ROUTES.Transaction.CREATE); 
+  }else if (label === "سوالات") {
     navigate(ROUTES.FAQ.CREATE); 
-  }else if (label === "کارت‌ها") {
-    navigate(ROUTES.BankCards.CREATE); 
-  }else if(label === "تیکت") {
-  navigate(ROUTES.Ticket.ROOT)
-}else if(label=== "اعلانات"){
-  navigate(ROUTES.NOTIFICATIONS)
-}else if(label==="بازار"){
-  navigate(ROUTES.MARKET)
-}else if(label==="کیف پول"){
-  navigate(ROUTES.Wallet)
-}else if (label=== "برداشت"){
-  navigate(ROUTES.withdrawal.CREATE)
-}else if(label==="احراز هویت"){
-  navigate(ROUTES.AuthenticationBasic)
-}else if(label==="خرید"){
-  navigate(ROUTES.TRADE.BUY)
-}else if(label=== "فروش"){
-  navigate(ROUTES.TRADE.SELL)
+     }else if (label === "کارت‌ها") {
+       navigate(ROUTES.BankCards.CREATE); 
+      }else if(label === "تیکت") {
+         navigate(ROUTES.Ticket.ROOT)
+       }else if(label=== "اعلانات"){
+          navigate(ROUTES.NOTIFICATIONS)
+        }else if(label==="بازار"){
+            navigate(ROUTES.MARKET)
+         }else if(label==="کیف پول"){
+             navigate(ROUTES.Wallet)
+          }else if (label=== "برداشت"){
+              navigate(ROUTES.withdrawal.CREATE)
+            }else if(label==="احراز هویت"){
+               navigate(ROUTES.AuthenticationBasic)
+             }else if(label==="خرید"){
+                 navigate(ROUTES.TRADE.BUY)
+              }else if(label=== "فروش"){
+                  navigate(ROUTES.TRADE.SELL)
 }
 
     
   };
 
   const financeItems: ServiceItem[] = [
-    { label: "خرید", icon: <ReceivedIcon /> },
-    { label: "فروش", icon: <SendIcon /> },
-    { label: "واریز", icon: <WalletAddIcon /> },
+    { label: "خرید", icon: <span className="w-[26px] h-[26px] icon-wrapper"><ReceivedIcon /></span> },
+    { label: "فروش", icon: <span className="w-[26px] h-[26px] icon-wrapper"><SendIcon /></span> },
+    { label: "واریز", icon: <span className="w-[26px] h-[26px] icon-wrapper"><WalletAddIcon /></span> },
     { label: "برداشت", icon: <WalletMinesIcon /> },
-    { label: "کیف پول", icon: <IconPersonalCard /> },
+    { label: "کیف پول", icon: <IconWalletCard/> },
     { label: "کارت‌ها", icon: <IconCards /> },
   ];
 
   const marketItems: ServiceItem[] = [
     { label: "تاریخچه", icon: <IconReceipt /> },
     { label: "بازار", icon: <ChartIcon /> },
-    { label: "نمای بازار", icon: <IconSecurity /> },
-    { label: "پرتفوی", icon: <IconQuestionLabel /> },
+    { label: "نمای بازار", icon:<IconMarketView/>  },
+    { label: "پرتفوی", icon: <IconPieChart/>},
   ];
 
   const supportItems: ServiceItem[] = [
-    { label: "احراز هویت", icon: <IconPieChart /> },
-    { label: "امنیت", icon: <IconPersonalCard /> },
-    { label: "تیکت", icon: <IconDocumentText /> },
+    { label: "احراز هویت", icon: <IconPersonalCard/> },
+    { label: "امنیت", icon: <IconSecurity/> },
+    { label: "تیکت", icon: <IconTicket/> },
     { label: "سوالات", icon: <IconQuestionLabel/> },
   ];
 
   const otherItems: ServiceItem[] = [
-    { label: "اعلانات", icon: <IconPersonalCard /> },
+    { label: "اعلانات", icon: <IconNotification/> },
     { label: "مقالات", icon: <IconPersonalCard /> },
-    { label: "دعوت دوستان", icon: <IconPersonalCard /> },
+    { label: "دعوت دوستان", icon: <IconUserPlus/> },
   ];
 
   const renderSection = (title: string, items: ServiceItem[]) => (
@@ -106,12 +110,12 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       >
         {title}
       </h3>
-      <div className="container-style grid grid-cols-4 gap-4">
+      <div className="container-style grid grid-cols-4 gap-6">
         {items.map((item, i) => (
           <div
             key={i}
             onClick={() => handleItemClick(item.label)} 
-            className="flex flex-col items-center justify-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition border border-gray21 bg-gray27 w-[90px] h-[72px]"
+            className="flex flex-col items-center justify-center w-[84px] h-[72px] p-6 rounded-lg hover:border-blue2 d cursor-pointer transition border border-gray21 bg-gray33 "
           >
             <span className="w-6 h-6 text-blue2">{item.icon}</span>
             <span className="text-sm text-gray-700 dark:text-gray-200 text-center mt-2 whitespace-nowrap">
@@ -129,11 +133,11 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
     >
       <div
-        className={`bg-white8 rounded-xl shadow-lg p-6 w-[500px] h-[760] transform transition-all duration-300 ${
+        className={`bg-white8 rounded-xl shadow-lg p-6 w-[500px] h-[700] transform transition-all duration-300 ${
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
         } relative`}
       >
-        <div className="flex border-b border-b-gray12 pb-4">
+        <div className="flex border-b border-b-gray21 pb-4">
           <span className="w-6 h-6 icon-wrapper ml-1">
             <CategoryActiveIcon/>
           </span>
@@ -142,7 +146,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
 
         <button
           onClick={handleClose}
-          className="absolute top-5 left-4 w-7 h-7"
+          className="absolute top-5 left-4 w-7 h-7 text-gray12"
         >
           <IconCloseButtun />
         </button>

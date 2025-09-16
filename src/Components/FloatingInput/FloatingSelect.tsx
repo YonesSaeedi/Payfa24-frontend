@@ -1,11 +1,11 @@
-// components/FloatingSelect.tsx
-import { useState, FC } from "react";
-import { ChevronDown } from "lucide-react"; // آیکون فلش
 
+import { useState, FC } from "react";
+import { ChevronDown } from "lucide-react"; 
 interface Option {
   value: string;
   label: string;
   icon?: React.ReactNode;
+
 }
 
 interface FloatingSelectProps {
@@ -13,6 +13,7 @@ interface FloatingSelectProps {
   value: string;
   options: Option[];
   onChange: (value: string) => void;
+  
 }
 
 const FloatingSelect: FC<FloatingSelectProps> = ({ label, value, options, onChange }) => {
@@ -22,51 +23,59 @@ const FloatingSelect: FC<FloatingSelectProps> = ({ label, value, options, onChan
 
   return (
     <div dir="rtl" className="relative w-full">
-      {/* دکمه اصلی */}
+    
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="peer flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="peer flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray-300 bg-gray47 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-2 text-black1">
           {selected?.icon}
           {selected?.label}
         </span>
         <ChevronDown className="w-4 h-4 text-gray-500" />
       </button>
 
-      {/* لیبل شناور */}
+   
       <label
         className={`absolute right-3 text-gray-400 transition-all duration-200 pointer-events-none 
-          ${shouldFloat ? "text-xs -top-2 bg-gray-50 px-1" : "text-base top-5"}`}
+          ${shouldFloat ? `text-xs -top-2 bg-gray47 px-1` : "text-base top-5"}`}
       >
         {label}
       </label>
 
-      {/* منوی کشویی */}
-      {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-md">
-          {options.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-              }}
-              className="flex items-center justify-between w-full px-3 py-2 text-right hover:bg-gray-100"
-            >
-              <span className="flex items-center gap-2">
-                {option.icon}
-                {option.label}
-              </span>
-              {value === option.value && (
-                <span className="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
+     
+     {isOpen && (
+  <div className="absolute z-20 w-full mt-1 bg-white8 border border-gray21 rounded-lg shadow-lg overflow-hidden">
+    {options.map((option) => (
+      <button
+        key={option.value}
+        type="button"
+        onClick={() => {
+          onChange(option.value);
+          setIsOpen(false);
+        }}
+        className={`flex f items-center justify-start w-full px-3 py-2 text-right hover:text-blue2 transition 
+          ${value === option.value ? "text-blue2" : "text-blue2"}`}
+      >
+         <span
+      className={`w-4 h-4 ml-2 rounded-full border border-gray-300 flex-shrink-0 
+        ${value === option.value ? "bg-blue-500 border-blue-500" : "bg-white"}`}
+    ></span>
+        
+        <span className="flex items-center gap-3 text-black1 hover:text-blue2">
+         
+          {option.icon && <span className="w-4 h-4 icon-wrapper">{option.icon}</span>}
+          {option.label}
+        </span>
+
+   
+       
+      </button>
+    ))}
+  </div>
+)}
+
     </div>
   );
 };
