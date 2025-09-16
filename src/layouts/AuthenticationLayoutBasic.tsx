@@ -41,7 +41,7 @@ export default function AuthenticationLayout() {
         <BreadcrumbNavigation />
       </div>
 
-      <div className="w-full  lg:container-style flex flex-col  md:flex-row px-4 lg:px-8">
+      <div className="w-full  lg:container-style flex flex-col  md:flex-row px-0 lg:px-8">
         {/* ستون سمت چپ: تصویر یا فرم ها */}
         <div
           className={`w-full h-full p-4 flex items-center justify-center 

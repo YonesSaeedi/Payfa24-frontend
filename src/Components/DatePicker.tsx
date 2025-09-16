@@ -33,3 +33,6 @@ const DatePickerModal = ({ setBirthDateBtnValue, onClose }: DatePickerModalProps
 };
 
 export default DatePickerModal;
+
+
+

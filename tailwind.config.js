@@ -88,9 +88,7 @@ export default {
 				gray41: "var(--gray41)",
 				gray42: "var(--gray42)",
 
-				gray43: "var(--gray43)",
 				gray44: "var(--gray44)",
-
 				orange1: "var(--orange1)",
 				orange2: "var(--orange2)",
 				orange3: "var(--orange3)",
