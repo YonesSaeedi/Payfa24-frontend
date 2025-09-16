@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: 'https://api.payfa24.org/api/v4/',
+  baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
   timeout: 10_000, // 10 seconds default, set longer for heavier requests and set 0 to disable it.
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'X-Device': 'android' // temporarily; to be removed later when mohandes fixed allowed domains for recaptcha
   }
 })
 

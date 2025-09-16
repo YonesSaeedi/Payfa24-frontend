@@ -26,6 +26,7 @@ export default function LoginPage() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
+  // [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
   const { executeRecaptcha } = useGoogleReCaptcha();
   useEffect(() => {
     const handleSubmit = async () => {
@@ -34,11 +35,11 @@ export default function LoginPage() {
         return;
       }
       const recaptchaToken = await executeRecaptcha('login')
-      console.log(recaptchaToken)
+      console.log('recaptcha token', recaptchaToken)
     }
     handleSubmit()
-  }, [])
-
+  }, [executeRecaptcha])
+  // [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 
   const [showPassword, setShowPassword] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);

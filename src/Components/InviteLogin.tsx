@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ThemeContext } from "../Context/ThemeContext";
 import TextField from "../Components/InputField/TextField";
 import IconAlert from "../assets/Icons/Login/IconAlert";
@@ -6,6 +6,8 @@ import IconGoogle from "../assets/Icons/Login/IconGoogle";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { apiRequest } from "../utils/apiClient";
 
 type StepInviteFormData = {
   email: string;
@@ -35,12 +37,12 @@ const stepInviteSchema = yup.object().shape({
 });
 
 export default function StepInvite({ onNext }) {
+  const [hasInviteCode, setHasInviteCode] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
-
-  const [hasInviteCode, setHasInviteCode] = useState(false);
-
+  const { executeRecaptcha } = useGoogleReCaptcha()
   const {
     handleSubmit,
     control,
@@ -49,12 +51,28 @@ export default function StepInvite({ onNext }) {
     resolver: yupResolver(stepInviteSchema),
     defaultValues: {
       email: "",
-      inviteCode: "",
+      // inviteCode: "",
     },
   });
 
-  const onSubmit = (data: StepInviteFormData) => {
-    console.log("Submitted Data:", data);
+  const onSubmit = async (data: StepInviteFormData) => {
+    if (!executeRecaptcha) return;
+    setIsLoading(true)
+    try {
+      const recaptchaToken = await executeRecaptcha('register')
+      const value = data.email.trim()
+      const payload: Record<string, string> = { recaptcha: recaptchaToken }
+      if (/^\d+$/.test(value)) {
+        payload.mobile = value;
+      } else { payload.email = value }
+      const response = await apiRequest({ url: '/api/auth/register', method: "POST", data: payload })
+      console.log("Submitted Data:", payload);
+      console.log('register api response', response)
+    } catch (err: any) {
+      console.error(err)
+    } finally {
+      setIsLoading(false)
+    }
     onNext();
   };
 
@@ -135,8 +153,9 @@ export default function StepInvite({ onNext }) {
           <button
             type="submit"
             className="w-full h-[48px] rounded-xl mt-10 bg-blue2 text-white2 font-bold text-lg"
+            disabled={!executeRecaptcha || isLoading}
           >
-            ادامه
+            {isLoading ? 'در حال ارسال ...' : 'ادامه'}
           </button>
 
           <p className="text-sm font-normal text-gray12 mt-3 mb-10 text-start">
