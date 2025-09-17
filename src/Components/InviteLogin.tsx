@@ -12,7 +12,21 @@ import { Link } from "react-router-dom";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import OTPModal from "./OTPModal";
 import IconClose from "../assets/Icons/Login/IconClose";
+import { toast } from "react-toastify";
 
+interface RegisterResponse {
+  status: boolean;
+  access_token: string;
+  expires_in: number;
+  msg?: string;
+  refresh_token: string;
+  [key: string]: unknown;
+}
+interface CheckResponse {
+  status: boolean;
+  msg?: string;
+  [key: string]: unknown;
+}
 
 type StepInviteFormData = {
   email: string;
@@ -65,8 +79,7 @@ export default function StepInvite({ onNext }) {
       // inviteCode: "",
     },
   });
-
-
+  // submits the entered mobile/email; and opens the code verification modal ===========================================================================
   const onSubmit = async (data: StepInviteFormData) => {
     if (!executeRecaptcha) return;
     setIsLoading(true)
@@ -81,34 +94,39 @@ export default function StepInvite({ onNext }) {
         payload.email = value;
         setContactMethod('email');
       }
-      const response = await apiRequest({ url: '/api/auth/register', method: "POST", data: payload })
+      const response = await apiRequest<RegisterResponse, Record<string, string>>({ url: '/api/auth/register', method: "POST", data: payload })
       console.log("Submitted Data:", payload);
-      console.log('register api response', response)
+      console.log('register api response => ', response)
+      if (response?.status === true) {
+        localStorage.setItem('accessToken', response?.access_token);
+        localStorage.setItem('refreshToken', response?.refresh_token);
+        localStorage.setItem('expiresAt', response?.expires_in.toString())
+      }
       setIsOpen(true)
     } catch (err: any) {
-      console.error(err)
+      toast.error(err?.response?.data?.msg || 'در ثبت اطلاعات مشکلی پیش آمد.')
     } finally {
       setIsLoading(false)
     }
-    onNext();
-
-    const handleOtpChange = (code: string) => {
-      setOtpCode(code);
-      setIsOtpError(false); // وقتی کاربر شروع به تایپ می‌کند، خطا را پاک کن
-    };
-
-    const handleConfirm = () => {
-      if (otpCode.length === 5) {
-        // اینجا می‌توانید منطق تأیید کد از سرور را اضافه کنید
-        // برای مثال: اگر کد درست بود
-        setIsOpen(false);
-        onNext();
-      } else {
-        setIsOtpError(true);
-      }
-    };
   }
-
+  // handles otp change ===============================================================================================================================
+  const handleOtpChange = (code: string) => {
+    setOtpCode(code);
+    setIsOtpError(false); // وقتی کاربر شروع به تایپ می‌کند، خطا را پاک کن
+  };
+  // handles otp confirm ==============================================================================================================================
+  const handleConfirm = async () => {
+    if (otpCode.length === 5) {
+      const response: CheckResponse = await apiRequest<CheckResponse, Record<string, string>>({ url: '/api/auth/register/check', method: 'POST', data: { 'code': otpCode } })
+      console.log('otp check response => ', response)
+      if (response?.status === true) {
+        toast.success('حساب شما با موفقیت ایجاد شد.')
+        onNext()
+      } else {
+        toast.error(response?.msg || 'در تایید کد مشکلی به وجود آمد.')
+      }
+    }
+  };
   const switchClass = (isChecked: boolean, theme: string) =>
     `w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300
     ${isChecked ? "bg-blue2" : theme === "dark" ? "bg-gray19" : "bg-gray19"}`;
@@ -259,7 +277,6 @@ export default function StepInvite({ onNext }) {
                   <OTPModal
                     length={5}
                     onChange={handleOtpChange}
-                    isError={isOtpError}
                   />
                 </div>
 

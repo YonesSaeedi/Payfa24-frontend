@@ -28,13 +28,15 @@ import QuestionBox from "../../Components/Home/QuestionBox/QuestionBox";
 import TetherTopIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon";
 import MostDeal from "../../assets/icons/Home/SynchronizedSlidersIcon/MostDeal";
 import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+import { toast } from "react-toastify";
+import { apiRequest } from "../../utils/apiClient";
 
 
 
 const boxes = [
   {
     header: "تازه های بازار",
-    headerIcon: <Fire/>,
+    headerIcon: <Fire />,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Yoyow (Yoyow).png",
     slides: [
       {
@@ -42,7 +44,7 @@ const boxes = [
         subtitle: "YOYOW",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <YoYowIcon/>,
+        iconSrc: <YoYowIcon />,
       },
       {
         title: "یویوو",
@@ -55,7 +57,7 @@ const boxes = [
   },
   {
     header: "بیشترین افت قیمت",
-    headerIcon:  <span className="w-6 h-6 icon-wrapper text-red1"><TrendDownIcon /></span>,
+    headerIcon: <span className="w-6 h-6 icon-wrapper text-red1"><TrendDownIcon /></span>,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Trinity Network Credit (Tnc).png",
     slides: [
       {
@@ -64,7 +66,7 @@ const boxes = [
         price: 88901,
         changePct: -23.54,
 
-        iconSrc:<TrinityIcon />,
+        iconSrc: <TrinityIcon />,
 
       },
       {
@@ -79,7 +81,7 @@ const boxes = [
   {
     header: "بیشترین افزایش قیمت",
 
-    headerIcon:<span className="text-green2 icon-wrapper"><TrendIcon /></span> ,
+    headerIcon: <span className="text-green2 icon-wrapper"><TrendIcon /></span>,
 
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/TitanSwap (TITAN).png",
     slides: [
@@ -102,7 +104,7 @@ const boxes = [
   {
     header: "بیشترین معامله",
 
-    headerIcon: <span className="w-6 h-6 icon-wrapper"><MostDeal/></span>,
+    headerIcon: <span className="w-6 h-6 icon-wrapper"><MostDeal /></span>,
 
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Tetherbackground (USDT).png",
     slides: [
@@ -135,7 +137,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <TokoTokenIcon/>,
+      logo: <TokoTokenIcon />,
     },
     {
       name: "تورِن",
@@ -162,7 +164,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <Ultra/>,
+      logo: <Ultra />,
     },
     {
       name: "وی چین",
@@ -171,7 +173,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <VeChain/>,
+      logo: <VeChain />,
     },
     {
       name: "ولی",
@@ -180,7 +182,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <Veil/>,
+      logo: <Veil />,
     },
   ];
 
@@ -205,6 +207,18 @@ function HomePage() {
     },
   ];
 
+  const fetchData = async () => {
+    try {
+      const response = await apiRequest({ url: '/api/account/get-user', method: 'GET' })
+      // console.log(response)
+    } catch (err: any) {
+      toast.error(err?.response?.data?.msg || 'خطااااااا در هوم')
+    } finally {
+      // console.log('enddddd')
+    }
+  }
+  fetchData()
+
   return (
     <div>
       <HeaderFooterLayout>
@@ -222,7 +236,7 @@ function HomePage() {
 
             <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
               <PosterSlider slides={slidesData} />
-              <InvitationCard/>
+              <InvitationCard />
             </div>
 
             <div id="SyncSlider" className="pt-12 pb-12">

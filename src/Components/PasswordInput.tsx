@@ -7,10 +7,17 @@ import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { apiRequest } from "../utils/apiClient";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 type PasswordFormData = {
   password: string;
 };
+interface SetPasswordResponse {
+  status: boolean;
+  msg: string;
+}
 
 const passwordSchema = yup.object().shape({
   password: yup
@@ -23,11 +30,9 @@ const passwordSchema = yup.object().shape({
 });
 
 export default function StepPassword() {
-  const context = useContext(ThemeContext);
-  if (!context) throw new Error("ThemeContext is undefined");
-  const { theme } = context;
-
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const navigate = useNavigate()
 
   const {
     handleSubmit,
@@ -47,10 +52,24 @@ export default function StepPassword() {
   const hasMinLength = passwordValue.length >= 8;
   const hasLowerAndUpper = /[a-z]/.test(passwordValue) && /[A-Z]/.test(passwordValue);
   const hasNumber = /\d/.test(passwordValue);
-
-  const onSubmit = (data: PasswordFormData) => {
+  // submits the entered password to the api ============================================================================================================
+  const onSubmit = async (data: PasswordFormData) => {
+    try {
+      setIsLoading(true)
+      const response: SetPasswordResponse = await apiRequest({ url: '/api/auth/register/set-password', method: 'POST', data: data })
+      if (response?.status === true) {
+        toast.success('با موفقیت وارد شدید.')
+        navigate('/')
+      } else {
+        toast.error('ثبت رمز عبور با مشکل مواجه شد.')
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.msg || 'ثبت رمز عبور با مشکل مواجه شد.')
+    }
+    finally {
+      setIsLoading(false)
+    }
     console.log("Submitted Data:", data);
- 
   };
 
   return (
@@ -103,8 +122,9 @@ export default function StepPassword() {
           <button
             type="submit"
             className="w-full h-[48px] rounded-xl bg-blue2 lg:mt-14 mt-12 text-white2 font-bold text-lg"
+            disabled={isLoading}
           >
-            تایید
+            {isLoading ? 'در حال ارسال ...' : 'تایید'}
           </button>
         </form>
       </div>
