@@ -112,7 +112,7 @@ export default function StepInvite({ onNext }) {
   // handles otp change ===============================================================================================================================
   const handleOtpChange = (code: string) => {
     setOtpCode(code);
-    setIsOtpError(false); // وقتی کاربر شروع به تایپ می‌کند، خطا را پاک کن
+    setIsOtpError(false);
   };
   // handles otp confirm ==============================================================================================================================
   const handleConfirm = async () => {
@@ -300,7 +300,7 @@ export default function StepInvite({ onNext }) {
                     onClick={handleConfirm}
                     disabled={otpCode.length < 5}
                     className={`mt-4 w-[200px] h-[48px] font-bold text-white1 rounded-lg transition-colors duration-300
-                      ${otpCode.length < 5 ? "bg-gray-400 cursor-not-allowed" : "bg-blue2"}`}
+                      ${otpCode.length < 5 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"}`}
                   >
                     تایید
                   </button>

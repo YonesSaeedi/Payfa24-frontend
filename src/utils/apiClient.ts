@@ -14,7 +14,7 @@ function isTokenExpiringSoon() {
   const expiresAt = localStorage.getItem('expiresAt');
   if (!expiresAt) return false;
   const now = Math.floor(Date.now() / 1000);
-  return now >= parseInt(expiresAt, 10) - (59.7 * 60)
+  return now >= parseInt(expiresAt, 10) - (5 * 60)
 }
 
 // Refresh function

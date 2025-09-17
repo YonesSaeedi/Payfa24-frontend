@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "../../../assets/icons/Home/WalletCardIcon/VisibilityIcon";
 import CurrencyToggle from "./CurrencyToggle";
 import ChartIcon from "../../../assets/icons/Home/WalletCardIcon/chartIcon";
@@ -7,18 +9,13 @@ import WalletAdd from "../../../assets/icons/Home/WalletCardIcon/WalletAddIcon";
 import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
 import WalletMines from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 import ReceiptText from "../../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
-import WithdrawModal from "../../Withdrawal/WithdrawModal"
+import WithdrawModal from "../../Withdrawal/WithdrawModal";
 
 interface WalletCardProps {
   balance: number;
   currency?: string;
   changeAmount: number;
   change: number;
-  onHistory?: () => void;
-  onWithdraw?: () => void;
-  onDeposit?: () => void;
-  onSell?: () => void;
-  onBuy?: () => void;
   showBuySell?: boolean;
 }
 
@@ -27,64 +24,51 @@ const WalletCard = ({
   currency = "تومان",
   changeAmount,
   change,
-  onHistory,
-  onDeposit,
-  onSell,
-  onBuy,
   showBuySell = true,
 }: WalletCardProps) => {
   const [stateBlure, setStateBlure] = useState<boolean>(true);
   const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const isPositive = change >= 0;
 
   const actionButtons = [
     {
       label: "تاریخچه",
-      onClick: onHistory,
-      icon: (
-        <span className="text-blue1">
-          <ReceiptText />
-        </span>
-      ),
+      onClick: () => navigate("/services/transaction"),
+      icon: <span className="text-blue1">
+           <ReceiptText />
+         </span>,
     },
     {
       label: "برداشت",
       onClick: () => setShowWithdrawModal(true),
-      icon: (
-        <span className="text-blue1">
-          <WalletMines />
-        </span>
-      ),
+      icon:   <span className="text-blue1">
+         <WalletMines />
+        </span>,
     },
     {
       label: "واریز",
-      onClick: onDeposit,
-      icon: (
-        <span className="text-blue1">
+      onClick: () => navigate("/deposit"),
+      icon:  <span className="text-blue1">
           <WalletAdd />
-        </span>
-      ),
+         </span>,
     },
     ...(showBuySell
       ? [
           {
             label: "فروش",
-            onClick: onSell,
-            icon: (
-              <span className="text-blue1">
-                <SendIcon />
-              </span>
-            ),
+            onClick: () => navigate("/trade/sell"),
+            icon:  <span className="text-blue1">
+                 <SendIcon />
+              </span>,
           },
           {
             label: "خرید",
-            onClick: onBuy,
-            icon: (
-              <span className="text-blue1">
-                <ReceivedIcon />
-              </span>
-            ),
+            onClick: () => navigate("/trade/buy"),
+            icon: <span className="text-blue1">
+                 <ReceivedIcon />
+             </span>,
           },
         ]
       : []),
@@ -96,9 +80,8 @@ const WalletCard = ({
 
   return (
     <div>
-      {/* کارت کیف پول */}
       <div className="c border border-gray21 rounded-xl p-6 shadow lg:w-[630px]">
-        {/* بالای کارت */}
+      
         <div className="flex items-center justify-between mb-7">
           <CurrencyToggle onChange={handleCurrencyChange} />
           <div
@@ -114,7 +97,7 @@ const WalletCard = ({
           </div>
         </div>
 
-        {/* موجودی */}
+       
         <div className="text-center mb-6">
           <p
             className={`text-3xl font-bold text-black1 ${
@@ -137,7 +120,7 @@ const WalletCard = ({
                 </span>
               ) : (
                 "↓"
-              )}{" "}
+              )}
               {Math.abs(change).toFixed(1)}%
             </span>
 
@@ -150,13 +133,13 @@ const WalletCard = ({
           </div>
         </div>
 
-        {/* دکمه‌ها */}
+
         <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(100px,1fr))]">
           {actionButtons.map((btn, idx) => (
             <button
               key={idx}
               onClick={btn.onClick}
-              className="flex flex-col items-center justify-center rounded-lg border bg-gray27 border-gray21 p-[14px] text-sm text-black1 hover:bg-gray-50 hover:shadow-sm transition"
+              className="flex flex-col items-center justify-center rounded-lg border bg-gray27 border-gray21 p-[14px] text-sm text-black1 hover:border-blue2 hover:shadow-sm transition"
             >
               <div className="w-6 h-6 mb-[6px]">{btn.icon}</div>
               {btn.label}
@@ -165,7 +148,7 @@ const WalletCard = ({
         </div>
       </div>
 
-      {/* مودال برداشت */}
+
       <WithdrawModal
         isOpen={showWithdrawModal}
         onClose={() => setShowWithdrawModal(false)}
@@ -175,3 +158,18 @@ const WalletCard = ({
 };
 
 export default WalletCard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

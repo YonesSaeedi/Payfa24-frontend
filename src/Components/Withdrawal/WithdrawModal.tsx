@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom"; 
 import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 import IconClose from "../../assets/Icons/Login/IconClose";
+import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
+import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 
 interface WithdrawModalProps {
   isOpen: boolean;
@@ -24,57 +26,67 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl  p-4 shadow-lg relative"
+        className="bg-white8 rounded-2xl px-4 pb-8 pt-4 shadow-lg relative "
         onClick={(e) => e.stopPropagation()}
       >
-        <button
+        <div className="border-b border-b-gray2 mx-2  mb-4">
+           <button
           onClick={onClose}
-          className="absolute top-3 left-3 text-gray-500 hover:text-black w-6 h-6"
+          className="absolute top-4 left-5 text-gray-500 hover:text-blue2 w-6 h-6 "
         >
           <IconClose />
         </button>
 
-        <h2 className="text-lg font-bold mb-6 text-right">برداشت</h2>
+        <h2 className="text-lg font-bold text-black1  text-right px-2 pb-4">برداشت</h2>
+        </div>
+       
 
-        {/* برداشت تومانی */}
-        <div className="flex items-center justify-between rounded-xl p-4 mb-4 cursor-pointer hover:bg-gray-50">
+      
+        <div className="flex items-center justify-between rounded-xl p-2 mb-4 ">
+          <div className="flex items-center justify-center">
+            <span className="w-6 h-6 icon-wrapper mr-2"><IconArrowLeft/></span>
           <button
             onClick={handleInstantWithdraw}
-            className="text-blue-500 border border-gray21 rounded-lg px-4 py-2 font-medium"
+            className="hidden lg:block text-gray17 border border-gray21 rounded-[8px] px-2 py-2 text-sm bg-gray27 mr-10 hover:border-blue2 hover:text-blue2 cursor-pointer"
           >
             برداشت در لحظه
           </button>
+          </div>
+          
 
           <div className="flex flex-row-reverse">
-            <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded flex items-center justify-center">
-              <span className="w-6 h-6 icon-wrapper text-blue2">
+            <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
+              <span className="w-8 h-8 icon-wrapper text-blue2">
                 <WalletMinesIcon />
               </span>
             </div>
             <div className="flex flex-col text-right">
-              <span className="font-semibold">برداشت تومان</span>
-              <span className="text-sm text-gray-500">
+              <span className="font-semibold text-black1">برداشت تومان</span>
+              <span className="text-sm text-gray-500 pt-2">
                 برداشت تومانی به کارت بانکی
               </span>
             </div>
           </div>
         </div>
 
-        {/* برداشت ارز */}
-        <div className="flex items-center justify-between rounded-xl p-4 cursor-pointer hover:bg-gray-50">
-          <span className="text-blue-500 font-medium border px-4 py-2 rounded-lg">
+
+        <div className="flex items-center justify-between rounded-[8px] p-2 ">
+           <div className="flex items-center justify-center">
+            <span className="w-6 h-6 icon-wrapper mr-2 "><IconArrowLeft/></span>
+          <span className="hidden lg:block text-gray17 text-sm  border px-2 py-2 rounded-[8px] bg-gray27 border-gray21 mr-10 hover:border-blue2  hover:text-blue2 cursor-pointer">
             برداشت در ۲۰ دقیقه
           </span>
+          </div>
 
           <div className="flex flex-row-reverse">
             <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded flex items-center justify-center">
-              <span className="w-6 h-6 icon-wrapper text-blue2">
-                <WalletMinesIcon />
+              <span className="w-8 h-8 icon-wrapper text-blue2">
+                <IconCurrency/>
               </span>
             </div>
             <div className="flex flex-col text-right">
-              <span className="font-semibold">برداشت ارز</span>
-              <span className="text-sm text-gray-500">
+              <span className="font-semibold text-black1">برداشت ارز</span>
+              <span className="text-sm text-gray-500 pt-2">
                 برداشت از کیف پول از طریق شبکه بلاکچین
               </span>
             </div>

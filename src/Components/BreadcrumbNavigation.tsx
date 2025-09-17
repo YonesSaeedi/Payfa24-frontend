@@ -7,9 +7,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   buy: "خرید",
   sell: "فروش",
   options: "خدمات",
-
   Profile: "پروفایل",
-
   ticket: "تیکت‌ها",
   create: "ایجاد تیکت",
   authentication: 'احراز هویت',

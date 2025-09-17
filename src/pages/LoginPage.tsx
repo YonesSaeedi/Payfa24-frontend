@@ -232,10 +232,10 @@ export default function LoginPage() {
                 className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24"
                 dir="rtl"
               >
-                لطفا کد ارسالی به{" "}
+                لطفا کد ارسالی به
                 {contactMethod === "phone"
                   ? `شماره ${getValues("email")}`
-                  : `ایمیل ${getValues("email")}`}{" "}
+                  : `ایمیل ${getValues("email")}`}
                 را وارد کنید.
               </p>
 

@@ -65,28 +65,26 @@
   --gray30: #f0f2f5b2;
   --gray31: #a7b2d9;
   --gray32: #e1e6f566;
-
   --gray33: #f0f2f566;
   --gray34: #a7b2d980;
-
   --gray43: #F5F6F8;
-
   --gray35: #a8a8a8;
   --gray36: #8792af14;
-
   --gray37: #f0f2f566;
   --gray38: #ffffff;
   --gray39: #626e94;
   --gray40: #f0f2f5;
   --gray41: #e1e6f566;
-
-
   --gray42: #E1E6F566;
+  --gray43: #f5f6f8;
   --gray44: #F0F2F580;
-
-
-  --gray42: #FFFFFF;
+  --gray45: #586076;
   --gray46: #D1D9F0;
+  --gray47: #F0F2F5;
+  --gray48: #FFFFFF;
+  /* 48/49    درست کن تو کد     قبلش 42/43 بوده */
+  --gray49: #D1D9F0;
+
   --orange1: #ff9518;
   --orange2: #ffead1;
   --orange3: #ff951840;
@@ -133,9 +131,7 @@
   --green6: #7ec17e;
   --green7: #518651;
   --green8: #3fb17e1a;
-
   --green9: #45c38b33;
-
   --green9: #45c38b1f;
   --red1: #e11d48;
   --red2: #33212e;
@@ -181,19 +177,19 @@
   --gray34: #a7b2d980;
   --gray35: #6d6d6d;
   --gray36: #8792af14;
-
   --gray37: #222935;
   --gray38: #0a121f;
   --gray39: #626e94;
   --gray40: #242f3f;
   --gray41: #222935;
+  /* --gray42:#0F141D;
+  --gray43:#242F3F; */
   --gray42: #242f3f;
   --gray43: #222935;
   --gray44: #222935;
-
-  --gray42: #0F141D;
+  --gray45: #A8A8A8;
   --gray46: #242F3F;
-
+  --gray47: #222935;
   --orange1: #ff9518;
   --orange2: #1d1b1c;
   --orange3: #ff95180f;

@@ -9,6 +9,7 @@ export const ROUTES = {
   MARKET: '/market',
   NOTIFICATIONS: '/notifications',
   FORGOT_PASSWORD: '/forgot-password',
+
   AuthenticationBasic: '/authentication',
   AuthenticationAdvance: '/authenticationAdvance',
   Profile: '/authProfile',
@@ -37,6 +38,7 @@ export const ROUTES = {
   Ticket: {
     ROOT: '/ticket',
     CREATE: '/ticket/create',
+
   },
   Transaction: {
     Root: '/services',
@@ -53,6 +55,12 @@ export const ROUTES = {
   withdrawal: {
     Root: '/',
     CREATE: '/withdrawal'
-  }
+  },
+
+  Bank_Cards: {
+    ROOT: '/services',
+    CREATE: '/services/BankCards'
+  },
+
 
 }

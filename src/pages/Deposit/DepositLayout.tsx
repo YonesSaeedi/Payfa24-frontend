@@ -8,6 +8,7 @@ interface DepositLayoutProps {
   started: boolean;
   onStart: () => void;
   children: ReactNode; // محتوای داخل (بخش راست و چپ)
+  alertMessages: string[];
 }
 
 const DepositLayout: React.FC<DepositLayoutProps> = ({
@@ -15,51 +16,39 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
   started,
   onStart,
   children,
+  alertMessages,
 }) => {
   return (
-    <div className="w-full container-style h-full flex flex-col lg:flex-row bg-green-600 items-center justify-center">
-      {/* هدر یا بخش کنترلی (اگه نیاز داری) */}
-      <div className="lg:hidden p-4 bg-gray-30">
-        <button
-          onClick={onStart}
-          className="w-full bg-blue-500 text-white p-2 rounded"
-          disabled={started}
-        >
-          {started ? "Started" : "Start"}
-        </button>
-      </div>
+    <div className="w-full container-style h-full flex flex-col lg:flex-row  items-center justify-center">
 
       {/* بخش اصلی (راست و چپ) */}
-      <div className="flex w-full flex-row-reverse items-center">
+      <div className=" flex w-full lg:gap-7 lg:flex-row-reverse lg:p-10 flex-col items-start mt-14 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl">
         {/* بخش راست - ثابت */}
-        <div className="w-1/2 bg-teal-400 p-4 overflow-y-auto h-full flex items-end  flex-col">
-          <div className="bg-orange3 flex items-end flex-col">
-            <div className="flex gap-1 text-orange1 lg:text-lg text-sm">
-              <span>توجه داشته باشید</span>
+        <div className="lg:w-1/2 w-full lg:px-4  overflow-y-auto h-full flex items-center flex-col">
+          <div className="bg-orange3 w-full rounded-xl lg:p-6 mb-4 lg:mb-6 p-2 flex flex-col" dir="rtl">
+            <div className="flex gap-1 text-orange1 lg:text-lg text-sm mb-2">
               <span className="icon-wrapper w-6 h-6">
                 <IconDanger />
               </span>
+              <span className="lg:text-lg text-sm">توجه داشته باشید</span>
             </div>
-            <ul className="text-end">
-              <li>لطفا در صورت استفاده از فیلتر شکن آن را خاموش کنید</li>
-              <li>
-                واریز تومانی تنها از طریق حساب های بانکی که متعلق به شما میباشد
-                امکان پذیر است{" "}
-              </li>
+            <ul className=" list-disc lg:text-base text-xs px-4 text-black0">
+              {alertMessages.map((message, index) => (
+                <li key={index}>{message}</li>
+              ))}
             </ul>
           </div>
-            <p>واریز تومان </p>
 
           {React.Children.map(children, (child, index) => {
-            if (index === 0) return child; // بخش اول به عنوان راست
+            if (index === 0) return child;
             return null;
           })}
         </div>
 
         {/* بخش چپ - متغیر */}
-        <div className="w-1/2 p-6 bg-red-300">
+        <div className="w-full lg:w-1/2 lg:px-4 lg:py-8  lg:bg-gray44 rounded-2xl">
           {React.Children.map(children, (child, index) => {
-            if (index === 1) return child; // بخش دوم به عنوان چپ
+            if (index === 1) return child; 
             return null;
           })}
         </div>
