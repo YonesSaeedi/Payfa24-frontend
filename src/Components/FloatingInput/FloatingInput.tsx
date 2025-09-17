@@ -7,6 +7,7 @@ interface FloatingInputProps {
   type?: string;
   className?: string;
   placeholder?: string;
+  placeholderColor?:string;
 }
 
 const FloatingInput: FC<FloatingInputProps> = ({

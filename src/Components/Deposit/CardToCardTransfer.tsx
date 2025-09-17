@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import IconVideo from "../../assets/Icons/Deposit/IconVideo";
 import { Controller, useForm } from "react-hook-form";
 import FloatingInput from "../FloatingInput/FloatingInput";
@@ -10,6 +10,7 @@ import FloatingSelect from "../FloatingInput/FloatingSelect";
 import Accordion from "../Withdrawal/Accordion";
 
 export default function CardToCardTransfer() {
+    const[IsModal,setIsModal]=useState(false)
   const { control } = useForm({
     resolver: yupResolver(),
   });
@@ -139,7 +140,7 @@ export default function CardToCardTransfer() {
         </p>
 
         <div className="mt-40">
-          <button className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg">
+          <button onClick={()=>{setIsModal(true)}} className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg">
             ارسال فیش واریز
           </button>
 
@@ -157,6 +158,12 @@ export default function CardToCardTransfer() {
             </Accordion>
           </div>
         </div>
+
+        {IsModal && <>
+            <div>
+                <p>lorem7</p>
+            </div>
+        </>}
       </div>
     </>
   );
