@@ -4,6 +4,10 @@ import FileUpload from "./FileUpload";
 import OrderSelector from "./OrderSelector";
 import { Controller } from "react-hook-form";
 import TextField from "../../InputField/TextField";
+import IconMinus from "../../../assets/icons/trade/IconMinus";
+import IconReceipt from "../../../assets/icons/services/IconReceipt";
+import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
+import WalletMinesIcon from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 interface TicketFormInputs {
   title: string;
   orderId: string;
@@ -14,9 +18,10 @@ interface TicketFormInputs {
 interface Order {
   id: string;
   coin: string;
-  type: "خرید" | "فروش" | "برداشت";
+  type: "خرید" | "فروش" | "برداشت" | "واریز";
   amount: string;
   date: string;
+  icon: React.ReactNode;
 }
 type LoginFormData = {
   email: string;
@@ -24,9 +29,10 @@ type LoginFormData = {
 }; 
 
 const orders: Order[] = [
-  { id: "1", coin: "USDT", type: "برداشت", amount: "2003", date: "1403/05/05 | 13:00" },
-  { id: "2", coin: "BTC", type: "خرید", amount: "2003", date: "1403/05/05 | 13:00" },
-  { id: "3", coin: "USDT", type: "خرید", amount: "2003", date: "1403/05/05 | 13:00" },
+  { id: "1", coin: "بیت کوین", type: "برداشت", amount: "2003", date: "1403/05/05 | 13:00",icon:<IconMinus/> },
+  { id: "2", coin: "تتر", type: "خرید", amount: "2003", date: "1403/05/05 | 13:00",icon:<IconReceipt/> },
+  { id: "3", coin: "سولانا", type: "واریز", amount: "2003", date: "1403/05/05 | 13:00",icon:<SendIcon/> },
+   { id: "3", coin: "آلترا", type: "فروش", amount: "2003", date: "1403/05/05 | 13:00",icon:<WalletMinesIcon/> },
 ];
 
 

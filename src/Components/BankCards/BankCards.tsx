@@ -43,7 +43,7 @@ const BankCardsPage = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="">
       {cards.length === 0 && !isModalOpen ? (
         <EmptyState onAddCard={() => setIsModalOpen(true)} />
       ) : cards.length > 0 ? (

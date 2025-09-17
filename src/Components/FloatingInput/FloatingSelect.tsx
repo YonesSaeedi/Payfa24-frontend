@@ -25,7 +25,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selected = options.find((o) => o.value === value);
-  const shouldFloat = isOpen || !!value;
+  // const shouldFloat = isOpen || !!value;
 
   return (
     <div dir="rtl" className="relative w-full">
@@ -36,7 +36,9 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
       >
         <span className={`flex items-center gap-2 ${placeholderColor}`}>
           {selected?.icon}
+
           {selected?.label || placeholder}
+
         </span>
         <ChevronDown className="w-4 h-4 text-gray12" />
       </button>
@@ -54,11 +56,13 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`flex  items-center justify-start w-full px-3 py-2 text-right hover:text-blue2 transition 
+
+              className={`flex  items-center justify-start w-full px-3 py-2 text-right hover:text-blue2 transition
           ${value === option.value ? "text-blue2" : "text-blue2"}`}
             >
               <span
-                className={`w-4 h-4 ml-2 rounded-full border border-gray12 flex-shrink-0 
+                className={`w-4 h-4 ml-2 rounded-full border border-gray12 flex-shrink-0
+
         ${value === option.value ? "bg-blue2 border-blue2" : "bg-white"}`}
               ></span>
 

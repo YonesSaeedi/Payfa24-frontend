@@ -27,20 +27,18 @@ function BankCardSection({ cards, setCards }: BankCardSectionProps) {
   };
 
   return (
-    <div className="flex w-full min-h-screen p-6 gap-6">
-      {/* سمت چپ: لیست کارت‌ها */}
-      <div className="w-1/2">
+    <div className="lg:flex lg:flex-row-reverse w-full min-h-screen justify-between  gap-6">
+      <div className="">
+        <BankCardForm onSave={handleAddCard} />
+      </div>
+
+      <div className="w-full lg:w-1/2 pt-10 lg:pt-0">
         <BankCardList
           cards={cards}
           onAddCard={() => {
             console.log("اینجا میشه مودال باز بشه یا فرم سمت راست استفاده شه");
           }}
         />
-      </div>
-
-      {/* سمت راست: فرم افزودن کارت */}
-      <div className="w-1/2">
-        <BankCardForm onSave={handleAddCard} />
       </div>
     </div>
   );

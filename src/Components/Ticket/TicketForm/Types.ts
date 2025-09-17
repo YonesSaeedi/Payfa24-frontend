@@ -11,4 +11,5 @@ export interface Order {
   type: "خرید" | "فروش" | "برداشت";
   amount: string;
   date: string;
+  icon:React.ReactNode
 }

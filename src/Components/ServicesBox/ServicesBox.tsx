@@ -51,7 +51,7 @@ if (label === "تاریخچه") {
   }else if (label === "سوالات") {
     navigate(ROUTES.FAQ.CREATE); 
      }else if (label === "کارت‌ها") {
-       navigate(ROUTES.BankCards.CREATE); 
+       navigate(ROUTES.Bank_Cards.CREATE); 
       }else if(label === "تیکت") {
          navigate(ROUTES.Ticket.ROOT)
        }else if(label=== "اعلانات"){

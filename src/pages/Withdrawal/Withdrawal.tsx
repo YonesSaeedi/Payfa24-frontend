@@ -18,7 +18,7 @@ const WithdrawPage: React.FC = () => {
           <div className="container-style flex flex-col gap-8 lg:gap-12">
             <BreadcrumbNavigation />
 
-            <div className="bg-white1  rounded-[16px] lg:shadow-[0_0_12px_0_#00000029] p-6 flex flex-col lg:flex-row pt-8 mt-4">
+            <div className="bg-white1  rounded-[16px] lg:shadow-[0_0_12px_0_#00000029] p-6 flex flex-col lg:flex-row pt-8 mt-4 mb-9">
               <div className="flex-1 p-8">
                 {withdrawType === "fiat" ? (
                   <WithdrawForm />
@@ -27,7 +27,7 @@ const WithdrawPage: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex-1 flex flex-col gap-6 p-8 ">
+              <div className="lg:flex-1 flex flex-col gap-6 p-8 ">
                 <div
                   dir="rtl"
                   className="bg-orange5 rounded-xl p-4 text-sm text-left  w-[565px]"

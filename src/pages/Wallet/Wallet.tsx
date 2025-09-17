@@ -5,7 +5,7 @@ export default function Wallet() {
   return (
     <div className="h-full">
       <HeaderLayout>
-        <div className="p-6 container-style flex flex-col lg:flex-row-reverse gap-10">
+        <div className="p-6 pt-16 container-style flex flex-col lg:flex-row-reverse gap-10">
           <div className="w-full lg:w-auto text-right">
             <WalletCard
               balance={1000000}

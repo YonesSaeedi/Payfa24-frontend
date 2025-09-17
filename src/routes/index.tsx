@@ -84,7 +84,7 @@ export default function AppRouter() {
        </Route>
 
          <Route path="services" element={<BankCardsPage/>}>
-       <Route path="BankCards" element={<BankCards/>} />
+       <Route path={ROUTES.Bank_Cards.CREATE} element={<BankCards/>} />
        </Route>
 
 

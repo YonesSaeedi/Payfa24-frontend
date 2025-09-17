@@ -54,6 +54,8 @@ export default function WithdrawForm() {
                   value={field.value}
                   onChange={field.onChange}
                   type="number"
+                  placeholder="0 تومان"
+                  placeholderColor="text-black0"
                   
                 />
                 <div className="flex justify-between pt-2">
