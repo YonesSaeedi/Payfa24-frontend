@@ -20,7 +20,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   ConnectedDevices:'دستگاه های متصل',
   faq:'سوالات متدال',
   BankCards:'کارت های بانکی',
-  Withdrawal:'برداشت'
+  withdrawal:'برداشت'
 
 };
 

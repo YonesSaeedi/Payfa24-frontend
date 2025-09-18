@@ -26,7 +26,7 @@ export default function WithdrawForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="p-8 rounded-xl shadow-sm bg-gray47 flex flex-col justify-between h-[644px]"
+      className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray43 flex flex-col justify-between h-[644px] w-full"
     >
     
       <div>

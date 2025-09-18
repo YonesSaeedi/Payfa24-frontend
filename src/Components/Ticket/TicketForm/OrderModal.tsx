@@ -17,6 +17,7 @@ export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModa
           <button onClick={onClose} className="w-6 h-6 icon-wrapper"><IconClose/></button>
         </div>
         <div className="space-y-2">
+        
           {orders.map((order) => (
             <button
               key={order.id}

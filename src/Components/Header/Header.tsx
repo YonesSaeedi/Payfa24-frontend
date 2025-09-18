@@ -44,7 +44,7 @@ export default function Header() {
   const { toggleTheme } = themeContext;
 
   return (
-    <header className="bg-white dark:bg-gray-900 dark:text-white sticky top-0 z-50 shadow">
+    <header className="bg-white dark:bg-gray-900 dark:text-white sticky top-0 z-50 ">
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-4 lg:px-6">
         {/* Left Section */}
         <div className="flex gap-3 md:gap-4 text-gray-600 items-center">

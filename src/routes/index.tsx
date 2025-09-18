@@ -54,7 +54,7 @@ export default function AppRouter() {
 
         {/* header only pages ==================================================================================================== */}
          <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage/>}/>
-         {/* <Route path={ROUTES.Wa} element={<Wallet/>} /> */}
+         
          <Route path={ROUTES.withdrawal.CREATE} element={<WithdrawPage/>} />
 
         <Route path='trade' element={<TradeLayout />}>

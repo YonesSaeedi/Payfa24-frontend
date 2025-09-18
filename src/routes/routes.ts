@@ -49,9 +49,10 @@ export const ROUTES = {
     ROOT:'/services',
     CREATE:'/services/BankCards'
 },
- withdrawal:{
-  ROOT:'/',
-  CREATE:'/withdrawal'
+ withdrawal: {
+  ROOT: '/withdrawal',
+  CREATE: '/withdrawal'
 }
+
 
 }

@@ -100,7 +100,7 @@ export default function DepositPage() {
       case "trade":
         return (
           <div className="w-full">
-            {/* <h2>Trade Form</h2> */}
+           
             <input
               placeholder="Enter trade amount"
               className="w-full p-2 border"
@@ -122,7 +122,7 @@ export default function DepositPage() {
           onStart={handleStart}
           alertMessages={currentAlertMessages}
         >
-          {/* بخش راست - ثابت */}
+      
           <div
             className="w-full overflow-y-auto h-full lg:block hidden"
             dir="rtl"
