@@ -53,8 +53,11 @@ async function refreshAccessToken(): Promise<string | null> {
 apiClient.interceptors.request.use(async config => {
   if (
     config.url?.includes('/auth/login')
+    || config.url?.includes('/auth/refresh-token')
     || config.url?.includes('/auth/forget')
     || config.url?.includes('/auth/forget/reset')
+    || config.url?.includes('/auth/login/login-2fa')
+    || config.url?.includes('/auth/login/resend-2fa')
     || config.url?.includes('/auth/register')
     || config.url?.includes('/auth/google')
     // ???
