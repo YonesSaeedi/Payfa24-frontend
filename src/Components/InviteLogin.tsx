@@ -82,8 +82,8 @@ export default function StepInvite({ onNext }) {
   // submits the entered mobile/email; and opens the code verification modal ===========================================================================
   const onSubmit = async (data: StepInviteFormData) => {
     if (!executeRecaptcha) return;
-    setIsLoading(true)
     try {
+      setIsLoading(true)
       const recaptchaToken = await executeRecaptcha('register')
       const value = data.email.trim()
       const payload: Record<string, string> = { recaptcha: recaptchaToken }
@@ -104,7 +104,7 @@ export default function StepInvite({ onNext }) {
       }
       setIsOpen(true)
     } catch (err: any) {
-      toast.error(err?.response?.data?.msg || 'در ثبت اطلاعات مشکلی پیش آمد.')
+      toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت اطلاعات مشکلی پیش آمد.')
     } finally {
       setIsLoading(false)
     }

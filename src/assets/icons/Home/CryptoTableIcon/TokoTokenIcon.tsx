@@ -10,8 +10,8 @@ function TokoTokenIcon() {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M22 44C9.9 44 0 34.1002 0 21.8905C0.11 9.79071 9.9 -0.10909 22.11 0.000907874C34.21 0.110906 44 9.9007 44 22.2204C43.89 34.2102 34.1 44 22 44Z"
         fill="#EDF0F4"
       />

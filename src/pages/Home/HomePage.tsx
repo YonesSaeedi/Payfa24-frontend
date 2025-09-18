@@ -207,17 +207,18 @@ function HomePage() {
     },
   ];
 
-  const fetchData = async () => {
-    try {
-      const response = await apiRequest({ url: '/api/account/get-user', method: 'GET' })
-      // console.log(response)
-    } catch (err: any) {
-      toast.error(err?.response?.data?.msg || 'خطااااااا در هوم')
-    } finally {
-      // console.log('enddddd')
-    }
-  }
-  fetchData()
+  // example ==============================================================================
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await apiRequest({ url: '/api/account/get-usersdf' })
+  //     // console.log(response)
+  //   } catch (err: any) {
+  //     console.log(err)
+  //   } finally {
+  //     // console.log('enddddd')
+  //   }
+  // }
+  // fetchData()
 
   return (
     <div>
