@@ -25,7 +25,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selected = options.find((o) => o.value === value);
-  const shouldFloat = isOpen || !!value;
+  // const shouldFloat = isOpen || !!value;
 
   return (
     <div dir="rtl" className="relative w-full">
