@@ -13,6 +13,7 @@ import IconConvertCard from "../../assets/Icons/Deposit/IconConvertCard";
 interface TransactionDetail {
   label: string;
   value: string;
+  Icon?: React.ReactNode;
 }
 export default function CardToCardTransfer() {
   const [IsModal, setIsModal] = useState(false);
@@ -21,8 +22,16 @@ export default function CardToCardTransfer() {
   });
 
   const transactionData: TransactionDetail[] = [
-    { label: "کارت مبدا", value: "۸۳۷۸۳۷۸۳۸۸۱۴۷۷۴۶۴۷" },
-    { label: "کارت مقصد", value: "۸۳۷۸۳۷۸۳۸۸۱۴۷۷۴۶۴۷" },
+    {
+      label: "کارت مبدا",
+      value: "۸۳۷۸۳۷۸۳۸۸۱۴۷۷۴۶۴۷",
+      Icon: <BankMelliLogo />,
+    },
+    {
+      label: "کارت مقصد",
+      value: "۸۳۷۸۳۷۸۳۸۸۱۴۷۷۴۶۴۷",
+      Icon: <BankMelliLogo />,
+    },
     { label: "به نام", value: "گروه فرهنگی و هنری" },
   ];
 
@@ -182,27 +191,42 @@ export default function CardToCardTransfer() {
                 onClick={() => {
                   setIsModal(false);
                 }}
-                className="fixed inset-0 flex items-center flex-col justify-center z-50 "
+                className="fixed inset-0 flex items-center flex-col justify-center z-50 mx-3 lg:mx-1"
               >
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="rounded-lg lg:py-8 lg:px-10 p-4 relative bg-white8  flex flex-col"
+                  className="lg:w-3/12 w-full rounded-lg lg:py-8 lg:px-5 p-4 relative bg-white8  flex flex-col"
                 >
-                  <span className="icon-wrapper w-14 h-14 text-blue2">
+                  <span className="icon-wrapper lg:w-16 lg:h-16 w-12 h-12 text-blue2 mx-auto">
                     <IconConvertCard />
                   </span>
-                  <span className="text-center">جزئیات تراکنش</span>
-                  <div className="space-y-4">
+                  <span className="text-center lg:mb-12 mb-8 mt-3 lg:text-2xl text-base font-medium text-black0">
+                    جزئیات تراکنش
+                  </span>
+                  <div className="space-y-5 mb-8">
                     {transactionData.map((item) => (
                       <div
                         key={item.label}
-                        className="flex justify-between items-center"
+                        className="flex flex-row-reverse  justify-between items-center text-black0"
                       >
-                        <span className="text-gray-600">{item.label}:</span>
-                        <span className="font-medium">{item.value}</span>
+                        <div className="flex gap-1">
+                          <span>{item.value}</span>
+                          <span className="icon-wrapper w-7 h-7">
+                            {item.Icon}
+                          </span>
+                        </div>
+                        <span className="">{item.label}</span>
                       </div>
                     ))}
                   </div>
+                  <button
+                    onClick={() => {
+                      setIsModal(true);
+                    }}
+                    className="text-white2 bg-blue2 w-full py-2 font-bold text-lg rounded-lg mb-2"
+                  >
+                    تایید
+                  </button>
                 </div>
               </div>
             </div>

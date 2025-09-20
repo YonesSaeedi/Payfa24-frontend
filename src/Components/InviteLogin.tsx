@@ -92,7 +92,7 @@ export default function StepInvite({ onNext }) {
     ${isChecked ? "translate-x-6" : "translate-x-0"}`;
 
   return (
-    <div className="flex items-center justify-center w-full lg:w-3/4 lg:px-10">
+    <div className="flex items-center justify-center w-full lg:w-3/4 lg:px-16">
       <div className="w-full px-4 flex items-center justify-center">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -143,7 +143,7 @@ export default function StepInvite({ onNext }) {
             </div>
 
             {hasInviteCode && (
-              <div className="flex flex-col w-full">
+              <div className="flex flex-col w-full ">
                 <Controller
                   name="inviteCode"
                   control={control}
@@ -157,7 +157,7 @@ export default function StepInvite({ onNext }) {
                   )}
                 />
                 {errors.inviteCode && (
-                  <p className="text-sm font-normal text-red-500 mt-2 text-right">
+                  <p className="text-sm font-normal text-red1 mt-2 text-right">
                     {errors.inviteCode.message}
                   </p>
                 )}
@@ -255,7 +255,7 @@ export default function StepInvite({ onNext }) {
                   <button
                     onClick={handleConfirm}
                     disabled={otpCode.length < 5}
-                    className={`mt-4 w-[200px] h-[48px] font-bold text-white1 rounded-lg transition-colors duration-300
+                    className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300
                       ${otpCode.length < 5 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"}`}
                   >
                     تایید

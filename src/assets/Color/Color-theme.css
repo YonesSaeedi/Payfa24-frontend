@@ -84,6 +84,7 @@
 --gray48:#FFFFFF; 
    /* 48/49    درست کن تو کد     قبلش 42/43 بوده */
 --gray49:#D1D9F0;
+--gray50:#D1D9F0;
   --orange1: #ff9518;
   --orange2: #ffead1;
   --orange3: #ff951840;
@@ -191,6 +192,7 @@
   --gray44:#222935;
   --gray45:#A8A8A8;
   --gray47:#222935;
+  --gray50:#585858;
   --orange1: #ff9518;
   --orange2: #1d1b1c;
   --orange3: #ff95180f;

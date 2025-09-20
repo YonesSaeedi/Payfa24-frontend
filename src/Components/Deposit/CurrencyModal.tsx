@@ -1,7 +1,7 @@
 import { BitcoinIcon, SearchIcon } from "lucide-react";
 import React, { useState, useMemo } from "react";
 import IconClose from "../../assets/Icons/Login/IconClose";
-
+import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
 // Mock data (داده‌های تستی)
 const mockCurrencies = [
   {
@@ -15,6 +15,12 @@ const mockCurrencies = [
     symbol: "XTZ",
     price: "۴۸۹,۷۰۳",
     icon: <BitcoinIcon />,
+  },
+  {
+    name: "مونوس",
+    symbol: "MONOS",
+    price: "۴۸۹,۷۰۳",
+    icon: <IconMonnos />,
   },
   {
     name: "دتا فول",
@@ -34,13 +40,13 @@ const mockCurrencies = [
     price: "۴۸۹,۷۰۳",
     icon: <BitcoinIcon />,
   },
-   {
+  {
     name: "یونیپ رایت",
     symbol: "UBT",
     price: "۴۸۹,۷۰۳",
     icon: <BitcoinIcon />,
   },
-   {
+  {
     name: "یونیپ رایت",
     symbol: "UBT",
     price: "۴۸۹,۷۰۳",
@@ -57,9 +63,10 @@ interface Currency {
 
 interface CurrencyModalProps {
   onClose: () => void;
+  onCurrencySelect: (currency: Currency) => void; // پراپ جدید برای ارسال اطلاعات به کامپوننت والد
 }
 
-export default function CurrencyModal({ onClose }: CurrencyModalProps) {
+export default function CurrencyModal({ onClose, onCurrencySelect }: CurrencyModalProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,8 +85,7 @@ export default function CurrencyModal({ onClose }: CurrencyModalProps) {
   }, [searchTerm]);
 
   const handleCurrencyClick = (currency: Currency) => {
-    console.log("ارز انتخاب شده:", currency);
-    onClose();
+    onCurrencySelect(currency); // فراخوانی تابع با ارسال ارز انتخاب شده
   };
 
   return (
@@ -109,44 +115,43 @@ export default function CurrencyModal({ onClose }: CurrencyModalProps) {
         </div>
 
         {/* Currency List */}
-       <div className="space-y-3 max-h-96 overflow-y-auto px-5">
-  {filteredCurrencies.length > 0 ? (
-    filteredCurrencies.map((currency) => (
-      <div
-        key={currency.name}
-        className="flex items-center justify-between h-14 cursor-pointer rounded-lg"
-        onClick={() => handleCurrencyClick(currency)}
-      >
-        <div className="flex w-full items-center flex-row-reverse justify-between">
-          {/* right */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-end flex-col gap-1">
-              <span className="text-sm text-black0">{currency.name}</span>
-              <span className="text-xs text-gray3">{currency.symbol}</span>
-            </div>
-            <span className="w-9 h-9 flex items-center justify-center bg-green-500 rounded-full">
-              {currency.icon}
-            </span>
-          </div>
+        <div className="space-y-3 max-h-96 overflow-y-auto px-5">
+          {filteredCurrencies.length > 0 ? (
+            filteredCurrencies.map((currency) => (
+              <div
+                key={currency.symbol} // کلید بهتر است symbol باشد چون یکتاست
+                className="flex items-center justify-between h-14 cursor-pointer rounded-lg"
+                onClick={() => handleCurrencyClick(currency)}
+              >
+                <div className="flex w-full items-center flex-row-reverse justify-between">
+                  {/* right */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-end flex-col gap-1">
+                      <span className="text-sm text-black0">{currency.name}</span>
+                      <span className="text-xs text-gray3">{currency.symbol}</span>
+                    </div>
+                    <span className="w-9 h-9 flex items-center justify-center bg-green-500 rounded-full">
+                      {currency.icon}
+                    </span>
+                  </div>
 
-          {/* left */}
-          <div className="flex flex-col">
-            <span className="text-gray3 text-xs">قیمت خرید</span>
-            <span
-              className="text-black0"
-              style={{ direction: "rtl", unicodeBidi: "isolate" }}
-            >
-              {currency.price} تومان
-            </span>
-          </div>
+                  {/* left */}
+                  <div className="flex flex-col">
+                    <span className="text-gray3 text-xs">قیمت خرید</span>
+                    <span
+                      className="text-black0"
+                      style={{ direction: "rtl", unicodeBidi: "isolate" }}
+                    >
+                      {currency.price} تومان
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 mt-4">ارزی یافت نشد.</p>
+          )}
         </div>
-      </div>
-    ))
-  ) : (
-    <p className="text-center text-gray-500 mt-4">ارزی یافت نشد.</p>
-  )}
-</div>
-
       </div>
     </div>
   );

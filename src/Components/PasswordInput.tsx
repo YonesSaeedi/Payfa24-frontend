@@ -78,11 +78,12 @@ export default function StepPassword() {
                 onIconClick={() => setShowPassword((prev) => !prev)}
                 {...field}
                 labelBgClass="bg-white4"
+                
               />
             )}
           />
 
-          <div className="mt-3 space-y-1 text-xs font-normal">
+          <div className="mt-3 space-y-1 text-xs font-normal text-gray5">
             <PasswordConditionItem
               ok={hasMinLength}
               text="حداقل دارای ۸ کاراکتر"

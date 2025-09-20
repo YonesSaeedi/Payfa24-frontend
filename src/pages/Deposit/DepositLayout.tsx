@@ -25,6 +25,7 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
       <div className=" flex w-full lg:gap-7 lg:flex-row-reverse lg:p-10 flex-col items-start mt-14 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl">
         {/* بخش راست - ثابت */}
         <div className="lg:w-1/2 w-full lg:px-4  overflow-y-auto h-full flex items-center flex-col">
+         {alertMessages.length > 0 && (
           <div className="bg-orange3 w-full rounded-xl lg:p-6 mb-4 lg:mb-6 p-2 flex flex-col" dir="rtl">
             <div className="flex gap-1 text-orange1 lg:text-lg text-sm mb-2">
               <span className="icon-wrapper w-6 h-6">
@@ -38,7 +39,7 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
               ))}
             </ul>
           </div>
-
+         )}
           {React.Children.map(children, (child, index) => {
             if (index === 0) return child;
             return null;
