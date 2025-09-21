@@ -11,10 +11,10 @@ export default function IconArrowRight() {
         <path
           d="M12.5752 3.39961L7.14186 8.83294C6.50019 9.47461 6.50019 10.5246 7.14186 11.1663L12.5752 16.5996"
           stroke="currentColor"
-          stroke-width="1.5"
-          stroke-miterlimit="10"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.5"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </>

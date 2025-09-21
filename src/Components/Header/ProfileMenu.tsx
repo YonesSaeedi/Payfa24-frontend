@@ -10,7 +10,7 @@ import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransact
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconUser from "../../assets/icons/ProfileMenue/IconUser";
 import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
-import LogOut  from "../../assets/images/logout.png";
+import LogOut from "../../assets/images/logout.png";
 interface ProfileMenuProps {
   themeContext: {
     theme: "light" | "dark";
@@ -43,13 +43,12 @@ export default function ProfileMenu({
 
       <button
         onClick={() => setOpen(!open)}
-        className={`hover:text-blue2 transition flex items-center ${
-          currentPath === "/login"
-            ? themeContext.theme === "dark"
-              ? "text-primary"
-              : "text-blue2 font-semibold"
-            : "text-header-items"
-        }`}
+        className={`hover:text-blue2 transition flex items-center ${currentPath === "/login"
+          ? themeContext.theme === "dark"
+            ? "text-primary"
+            : "text-blue2 font-semibold"
+          : "text-header-items"
+          }`}
         aria-label="Profile"
       >
         <span className="w-9 h-9 icon-wrapper">
@@ -57,13 +56,12 @@ export default function ProfileMenu({
         </span>
       </button>
 
-       
-            <div
-        className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
-          open
-            ? "scale-100 opacity-100"
-            : "scale-95 opacity-0 pointer-events-none"
-        }`}
+
+      <div
+        className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${open
+          ? "scale-100 opacity-100"
+          : "scale-95 opacity-0 pointer-events-none"
+          }`}
       >
         <div
           dir="rtl"
@@ -126,21 +124,23 @@ export default function ProfileMenu({
             </li>
           </Link>
 
-        <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
-         <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
-            <span className="w-6 h-6">
-              <IconTransactionhistory />
-            </span>{" "}
-            تاریخچه معاملات
-          </li>
-        </Link>
-            <Link to={"/services/ConnectedDevices"} className="flex items-center gap-2 w-full">
-              <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2">
-            <span className="w-6 h-6">
-              <IconConnecteddevices />
-            </span>{" "}
-            دستگاه‌های متصل
-          </li>
+
+          <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
+              <span className="w-6 h-6">
+                <IconTransactionhistory />
+              </span>{" "}
+              تاریخچه معاملات
+            </li>
+          </Link>
+          <Link to={"/services/ConnectedDevices"} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2">
+              <span className="w-6 h-6">
+                <IconConnecteddevices />
+              </span>{" "}
+              دستگاه‌های متصل
+            </li>
+
 
           </Link>
         </ul>
@@ -160,28 +160,26 @@ export default function ProfileMenu({
           </button>
         </div>
       </div>
-      
-  
 
-    
+
+
+
       <div
-        className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
-          open
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
+        className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${open
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
+          }`}
       >
-    
+
         <div
           onClick={() => setOpen(false)}
           className="absolute inset-0 bg-black bg-opacity-40 transition-opacity duration-300"
         ></div>
 
-      
+
         <div
-          className={`absolute top-0 left-88 w-72 h-full bg-white shadow-lg flex flex-col transform transition-transform duration-300 ${
-            open ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`absolute top-0 left-88 w-72 h-full bg-white shadow-lg flex flex-col transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"
+            }`}
         >
           <div
             dir="rtl"
@@ -305,7 +303,7 @@ export default function ProfileMenu({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center gap-4 flex items-center justify-center flex-col">
-              <img src={LogOut} alt="LogOut" />
+                <img src={LogOut} alt="LogOut" />
                 <h1 className="lg:text-2xl text-lg text-black0 font-medium">
                   خروج از حساب کاربری
                 </h1>

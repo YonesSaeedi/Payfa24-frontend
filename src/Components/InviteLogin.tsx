@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ThemeContext } from "../Context/ThemeContext";
 import TextField from "../Components/InputField/TextField";
 import IconAlert from "../assets/Icons/Login/IconAlert";
@@ -6,11 +6,28 @@ import IconGoogle from "../assets/Icons/Login/IconGoogle";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { apiRequest } from "../utils/apiClient";
 import { Link } from "react-router-dom";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import OTPModal from "./OTPModal";
 import IconClose from "../assets/Icons/Login/IconClose";
 import { getStepInviteSchema } from "../utils/validationSchemas"; 
+import { toast } from "react-toastify";
+
+interface RegisterResponse {
+  status: boolean;
+  access_token: string;
+  expires_in: number;
+  msg?: string;
+  refresh_token: string;
+  [key: string]: unknown;
+}
+interface CheckResponse {
+  status: boolean;
+  msg?: string;
+  [key: string]: unknown;
+}
 
 type StepInviteFormData = {
   email: string;
@@ -18,9 +35,11 @@ type StepInviteFormData = {
 };
 
 export default function StepInvite({ onNext }) {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
+  const { executeRecaptcha } = useGoogleReCaptcha()
   const [isOpen, setIsOpen] = useState(false);
   const [hasInviteCode, setHasInviteCode] = useState(false);
   const [contactMethod, setContactMethod] = useState<'phone' | 'email' | null>(null);
@@ -36,32 +55,58 @@ export default function StepInvite({ onNext }) {
     resolver: yupResolver(getStepInviteSchema()),
     defaultValues: {
       email: "",
-      inviteCode: "",
+
+  
     },
   });
-
-  const onSubmit = (data: StepInviteFormData) => {
-    console.log("Submitted Data:", data);
-    const isPhone = /^(09|\+989)\d{9}$/.test(data.email);
-    setContactMethod(isPhone ? 'phone' : 'email');
-    setIsOpen(true);
-    // onNext();
-  };
-
+  // submits the entered mobile/email; and opens the code verification modal ===========================================================================
+  const onSubmit = async (data: StepInviteFormData) => {
+    if (!executeRecaptcha) return;
+    try {
+      setIsLoading(true)
+      const recaptchaToken = await executeRecaptcha('register')
+      const value = data.email.trim()
+      const payload: Record<string, string> = { recaptcha: recaptchaToken }
+      if (/^\d+$/.test(value)) {
+        payload.mobile = value;
+        setContactMethod('phone');
+      } else {
+        payload.email = value;
+        setContactMethod('email');
+      }
+      const response = await apiRequest<RegisterResponse, Record<string, string>>({ url: '/api/auth/register', method: "POST", data: payload })
+      console.log("Submitted Data:", payload);
+      console.log('register api response => ', response)
+      if (response?.status === true) {
+        localStorage.setItem('accessToken', response?.access_token);
+        localStorage.setItem('refreshToken', response?.refresh_token);
+        localStorage.setItem('expiresAt', response?.expires_in.toString())
+      }
+      setIsOpen(true)
+    } catch (err: any) {
+      toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت اطلاعات مشکلی پیش آمد.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  // handles otp change ===============================================================================================================================
   const handleOtpChange = (code: string) => {
     setOtpCode(code);
-    setIsOtpError(false); 
+    setIsOtpError(false);
   };
-
-  const handleConfirm = () => {
+  // handles otp confirm ==============================================================================================================================
+  const handleConfirm = async () => {
     if (otpCode.length === 5) {
-      setIsOpen(false);
-      onNext();
-    } else {
-      setIsOtpError(true);
+      const response: CheckResponse = await apiRequest<CheckResponse, Record<string, string>>({ url: '/api/auth/register/check', method: 'POST', data: { 'code': otpCode } })
+      console.log('otp check response => ', response)
+      if (response?.status === true) {
+        toast.success('حساب شما با موفقیت ایجاد شد.')
+        onNext()
+      } else {
+        toast.error(response?.msg || 'در تایید کد مشکلی به وجود آمد.')
+      }
     }
   };
-
   const switchClass = (isChecked: boolean, theme: string) =>
     `w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300
     ${isChecked ? "bg-blue2" : theme === "dark" ? "bg-gray19" : "bg-gray19"}`;
@@ -147,8 +192,9 @@ export default function StepInvite({ onNext }) {
           <button
             type="submit"
             className="w-full h-[48px] rounded-xl mt-10 bg-blue2 text-white2 font-bold text-lg"
+            disabled={!executeRecaptcha || isLoading}
           >
-            ادامه
+            {isLoading ? 'در حال ارسال ...' : 'ادامه'}
           </button>
 
           <p className="text-sm font-normal text-gray12 mt-3 mb-10 text-start">
@@ -211,7 +257,6 @@ export default function StepInvite({ onNext }) {
                   <OTPModal
                     length={5}
                     onChange={handleOtpChange}
-                    isError={isOtpError}
                   />
                 </div>
 

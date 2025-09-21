@@ -12,16 +12,16 @@ function SOLIcon() {
 <path d="M24.11 15.7452C23.9922 15.6274 23.8302 15.5587 23.6584 15.5587H8.07859C7.79389 15.5587 7.65155 15.9023 7.8528 16.1036L10.9305 19.1812C11.0483 19.299 11.2103 19.3678 11.3821 19.3678H26.9618C27.2465 19.3678 27.3889 19.0242 27.1876 18.8229L24.11 15.7452Z" fill="url(#paint2_linear_13949_89087)"/>
 <defs>
 <linearGradient id="paint0_linear_13949_89087" x1="-27.4545" y1="6.95964" x2="-27.869" y2="27.8184" gradientUnits="userSpaceOnUse">
-<stop stop-color="#00FFA3"/>
-<stop offset="1" stop-color="#DC1FFF"/>
+<stop stopColor="#00FFA3"/>
+<stop offset="1" stopColor="#DC1FFF"/>
 </linearGradient>
 <linearGradient id="paint1_linear_13949_89087" x1="-32.1692" y1="4.49816" x2="-32.5837" y2="25.3569" gradientUnits="userSpaceOnUse">
-<stop stop-color="#00FFA3"/>
-<stop offset="1" stop-color="#DC1FFF"/>
+<stop stopColor="#00FFA3"/>
+<stop offset="1" stopColor="#DC1FFF"/>
 </linearGradient>
 <linearGradient id="paint2_linear_13949_89087" x1="-29.8268" y1="5.72113" x2="-30.2414" y2="26.5799" gradientUnits="userSpaceOnUse">
-<stop stop-color="#00FFA3"/>
-<stop offset="1" stop-color="#DC1FFF"/>
+<stop stopColor="#00FFA3"/>
+<stop offset="1" stopColor="#DC1FFF"/>
 </linearGradient>
 </defs>
 </svg>
