@@ -86,7 +86,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
         setSelectedPercent(roundedPercent);
       }
     } else if (lastChangedRef.current === 'percent') {
-      // Percent changed → update inputs
+      // Percent changed => update inputs
       if (selectedPercent === 0) {
         setCountInputStr("0");
         setAmountValue(0);

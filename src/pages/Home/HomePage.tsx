@@ -28,6 +28,7 @@ import QuestionBox from "../../Components/Home/QuestionBox/QuestionBox";
 import TetherTopIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon";
 import MostDeal from "../../assets/icons/Home/SynchronizedSlidersIcon/MostDeal";
 import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+
 // import { toast } from "react-toastify";
 // import { apiRequest } from "../../utils/apiClient";
 
@@ -53,6 +54,11 @@ import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
 //  interface CryptoMetaResponse {
 //    cryptocurrency: CryptoMeta[];
 //  }
+
+import { toast } from "react-toastify";
+import { apiRequest } from "../../utils/apiClient";
+import { useQuery } from "@tanstack/react-query";
+
 
 
 
@@ -245,6 +251,16 @@ function HomePage() {
   //   }
   // }
   // fetchData()
+  const { data: cryptoData, isLoading } = useQuery({
+    queryKey: ['cryptos'],
+    queryFn: () => { return apiRequest({ url: '/api/get-general-info' }) },
+    staleTime: Infinity,         // always fresh
+    gcTime: Infinity,            // never garbage collected
+    refetchOnWindowFocus: false, // disable re-fetch on focus
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  })
+  console.log(cryptoData)
 
 
 

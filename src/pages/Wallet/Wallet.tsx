@@ -1,7 +1,20 @@
 import WalletCard from "../../Components/Home/WalletCard/WalletCard";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import WalletAssets from "../../Components/Wallet/WalletAssets"
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "../../utils/apiClient";
 export default function Wallet() {
+
+    const { data: cryptoData, isLoading } = useQuery({
+    queryKey: ['cryptos'],
+    queryFn: () => { return apiRequest({ url: '/api/get-general-info' }) },
+    staleTime: Infinity,         // always fresh
+    gcTime: Infinity,            // never garbage collected
+    refetchOnWindowFocus: false, // disable re-fetch on focus
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  })
+  console.log(cryptoData)
   return (
     <div className="h-full">
       <HeaderLayout>
