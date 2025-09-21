@@ -16,6 +16,7 @@ interface TextFieldProps {
   labelStyle?: React.CSSProperties;
   labelBgClass?: string;
   inputBgClass?: string;
+  [key: string]: any;
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
@@ -47,31 +48,33 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 
     const borderColorClass = hasError
       ? "border-red1"
-      : isFocused || value
+      : isFocused
       ? "border-blue2"
-      : "border-gray12";
+      : value
+      ? "border-blue2"
+      : "border-gray5";
 
+    // تنظیم استایل لیبل
     const labelStyleClass =
       isFocused || value
         ? `top-[-12px] right-[13px] text-sm ${
-            hasError ? "text-red1" : "text-blue2 "
+            hasError ? "text-red1" : "text-blue2"
           } ${labelBgClass || ""}`
-        : "top-1/2 -translate-y-1/2 text-xs text-gray12 bg-transparent";
+        : "top-1/2 -translate-y-1/2 text-xs text-gray5 bg-transparent";
 
     return (
-      <div className={`relative mb-2 box-border w-full ${className}`}>
+      <div className={`relative mb-4 box-border w-full ${className}`}>
         <input
           dir="rtl"
           id={inputId}
           type={type}
           className={`
-            w-full lg:h-[56px] h-[48px] rounded-xl border px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none 
-            ${inputBgClass || (theme === "dark" ? "bg-transparent text-black2" : "bg-white4 text-gray12")}
+            w-full lg:h-[56px] h-[48px] rounded-xl border px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none
+            ${inputBgClass || (theme === "dark" ? "bg-transparent text-black2" : "bg-white4 text-gray12")}
             ${borderColorClass}
-           ${isFocused ? "border-blue-500" : "border-gray-300"}
-          `}
-          style={{ paddingLeft: icon ? "2rem" : "1rem" }}
-          ref={ref} 
+          `}
+          style={{ paddingLeft: icon ? "2.5rem" : "1rem" }}
+          ref={ref}
           value={value}
           onChange={onChange}
           onBlur={(e) => {
@@ -96,6 +99,12 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         >
           {label}
         </label>
+
+        {hasError && (
+          <p className="text-red1 text-xs mt-2 pr-3" dir="rtl">
+            {error}
+          </p>
+        )}
       </div>
     );
   }

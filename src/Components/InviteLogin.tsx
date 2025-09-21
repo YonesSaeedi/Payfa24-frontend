@@ -10,33 +10,12 @@ import { Link } from "react-router-dom";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import OTPModal from "./OTPModal";
 import IconClose from "../assets/Icons/Login/IconClose";
+import { getStepInviteSchema } from "../utils/validationSchemas"; 
 
 type StepInviteFormData = {
   email: string;
   inviteCode: string;
 };
-
-const stepInviteSchema = yup.object().shape({
-  email: yup
-    .string()
-    .required("ایمیل یا شماره همراه الزامی است.")
-    .test(
-      "email-or-phone",
-      "فرمت ایمیل یا شماره همراه معتبر نیست.",
-      (value) => {
-        if (!value) return false;
-        const isEmail = yup.string().email().isValidSync(value);
-        const isPhone = /^(09|\+989)\d{9}$/.test(value);
-        return isEmail || isPhone;
-      }
-    ),
-  inviteCode: yup.string().when((val, schema) => {
-    if (val[0]) {
-      return schema.required("کد دعوت الزامی است.");
-    }
-    return schema.notRequired();
-  }),
-});
 
 export default function StepInvite({ onNext }) {
   const context = useContext(ThemeContext);
@@ -54,7 +33,7 @@ export default function StepInvite({ onNext }) {
     formState: { errors },
     getValues,
   } = useForm<StepInviteFormData>({
-    resolver: yupResolver(stepInviteSchema),
+    resolver: yupResolver(getStepInviteSchema()),
     defaultValues: {
       email: "",
       inviteCode: "",

@@ -8,13 +8,14 @@ import AuthLayout from "../layouts/AuthLayout";
 import imageLoginDark from "../assets/Login ImageDark.png";
 import imageLoginLight from "../assets/Login imageLight.png";
 import TextField from "../Components/InputField/TextField";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import IconClose from "../assets/Icons/Login/IconClose";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import OTPModal from "../Components/OTPModal";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getLoginSchema } from "../utils/validationSchemas"; 
 
 type LoginFormData = {
   email: string;
@@ -26,36 +27,11 @@ export default function LoginPage() {
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
 
- 
-
   const [showPassword, setShowPassword] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(
-    null
-  );
+  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null);
 
-  const loginSchema = yup.object().shape({
-    email: yup
-      .string()
-      .required("ایمیل یا شماره همراه الزامی است.")
-      .test(
-        "email-or-phone",
-        "ایمیل یا شماره همراه وارد شده معتبر نیست.",
-        (value) => {
-          if (!value) return false;
-          const isPhone = /^(09|\+989)\d{9}$/.test(value);
-          const isEmail = yup.string().email().isValidSync(value);
-          return isEmail || isPhone;
-        }
-      ),
-    password: yup
-      .string()
-      .required("رمز عبور الزامی است.")
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
-        "رمز عبور معتبر نیست."
-      ),
-  });
+  const loginSchema = getLoginSchema(); 
 
   const {
     handleSubmit,
@@ -79,7 +55,7 @@ export default function LoginPage() {
 
   return (
     <AuthLayout image={theme === "dark" ? imageLoginDark : imageLoginLight}>
-      <div className="flex items-center justify-center " dir="rtl">
+      <div className="flex items-center justify-center" dir="rtl">
         <div className="w-full max-w-md px-4">
           <form onSubmit={handleSubmit(onSubmit)}>
             <h1 className="text-[28px] font-bold text-blue2 mb-2 text-center">
@@ -103,7 +79,7 @@ export default function LoginPage() {
               )}
             />
 
-            <div className="sm:text-sm text-xs  font-normal pb-6 flex gap-1 items-end justify-start text-gray12 ">
+            <div className="sm:text-sm text-xs font-normal pb-6 flex gap-1 items-end justify-start text-gray12">
               <span className="icon-wrapper h-4 w-4">
                 <IconAlert />
               </span>
@@ -139,8 +115,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full  h-[48px] rounded-xl bg-blue2
-              text-white2 font-bold text-lg lg:bg-gray19"
+              className="w-full h-[48px] rounded-xl bg-blue2 text-white2 font-bold text-lg lg:bg-gray19"
             >
               ادامه
             </button>
@@ -152,7 +127,7 @@ export default function LoginPage() {
               </span>
             </p>
 
-            <div className="flex items-center justify-center ">
+            <div className="flex items-center justify-center">
               <div
                 className={`flex-grow h-[1px] ${
                   theme === "dark" ? "bg-gray19" : "bg-gray19"
@@ -161,7 +136,7 @@ export default function LoginPage() {
               <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
               <div className="flex-grow h-[1px] bg-gray19"></div>
             </div>
-            <button className="w-full  h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-gray12 border border-gray12">
+            <button className="w-full h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-gray12 border border-gray12">
               <span className="icon-wrapper h-5 w-5">
                 <IconGoogle />
               </span>
@@ -187,9 +162,7 @@ export default function LoginPage() {
             >
               <div className="flex items-center flex-row-reverse justify-between">
                 <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
-                  {contactMethod === "phone"
-                    ? "تایید شماره همراه"
-                    : "تایید ایمیل"}
+                  {contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
                 </h2>
                 <span
                   className="icon-wrapper h-6 w-6 cursor-pointer"
@@ -218,7 +191,7 @@ export default function LoginPage() {
               </div>
 
               <div className="flex justify-between flex-row-reverse mb-4">
-                <div className="flex gap-2 items-center ">
+                <div className="flex gap-2 items-center">
                   <span className="text-gray12">ارسال مجدد</span>
                   <span className="icon-wrapper h-5 w-5 cursor-pointer">
                     <IconAgain />
@@ -231,7 +204,7 @@ export default function LoginPage() {
                   onClick={() => setIsOpen(false)}
                   className="mt-4 w-[180px] h-[48px] border border-blue2 rounded-lg text-blue2 text-sm lg:text-medium"
                 >
-                  ویرایش ایمیل
+                  {contactMethod === "phone" ? "ویرایش شماره همراه" : "ویرایش ایمیل"}
                 </button>
                 <Link to={""}>
                   <button

@@ -7,20 +7,11 @@ import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getStepPasswordSchema } from "../utils/validationSchemas"; 
 
 type PasswordFormData = {
   password: string;
 };
-
-const passwordSchema = yup.object().shape({
-  password: yup
-    .string()
-    .required("رمز عبور الزامی است.")
-    .min(8, "حداقل ۸ کاراکتر.")
-    .matches(/[a-z]/, "حداقل یک حرف کوچک.")
-    .matches(/[A-Z]/, "حداقل یک حرف بزرگ.")
-    .matches(/\d/, "حداقل یک عدد."),
-});
 
 export default function StepPassword() {
   const context = useContext(ThemeContext);
@@ -35,7 +26,7 @@ export default function StepPassword() {
     formState: { errors },
     watch,
   } = useForm<PasswordFormData>({
-    resolver: yupResolver(passwordSchema),
+    resolver: yupResolver(getStepPasswordSchema()), 
     mode: "onChange",
     defaultValues: {
       password: "",
@@ -50,7 +41,6 @@ export default function StepPassword() {
 
   const onSubmit = (data: PasswordFormData) => {
     console.log("Submitted Data:", data);
- 
   };
 
   return (
@@ -78,7 +68,6 @@ export default function StepPassword() {
                 onIconClick={() => setShowPassword((prev) => !prev)}
                 {...field}
                 labelBgClass="bg-white4"
-                
               />
             )}
           />
