@@ -9,6 +9,10 @@ import CategoryIcon from "../../assets/icons/header/CategoryIcon";
 import WalletIcon from "../../assets/icons/header/WalletIcon";
 import ChartIcon from "../../assets/icons/header/ChartIcon";
 import BitcoinIcon from "../../assets/icons/header/BitcoinIcon";
+import IconUser from "../../assets/icons/ProfileMenue/IconUser";
+import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
+import IconExit from "../../assets/icons/ProfileMenue/IconExit";
+import IconProfileMenu from "../../assets/icons/Login/IconProfileMenu";
 
 type MobileMenuProps = {
   open: boolean;
@@ -42,64 +46,109 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         dir="rtl"
       >
         {/* هدر پروفایل */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-xl text-right">
-            <p className="font-bold">کوثر محمدی</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              سطح کاربری ۱
-            </p>
-            <span className="text-green-600 text-xs">احراز شده</span>
+             <div
+          dir="rtl"
+          className="bg-gray33 py-4 px-3 flex-col items-center justify-between border border-gray21 m-4 rounded-[8px]"
+        >
+          <div className="flex ">
+            <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
+              <IconUser />
+            </span>
+            <div>
+              <p className="font-semibold text-black1">کوثر محمدی</p>
+              <p className="text-xs text-gray-500 pt-1">سطح کاربری 1</p>
+            </div>
           </div>
+          <button className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition w-full mt-4">
+            ارتقا سطح
+            <span className="w-5 h-5 icon-wrapper mr-1">
+              <IconArrowLeft />
+            </span>
+          </button>
         </div>
 
         {/* منو اصلی */}
-        <nav className="p-4 space-y-3 text-right">
-          <Link to="/" className="flex items-center justify-end gap-3 hover:text-blue-600">
-            خانه <HomeIcon />
+        <nav className="flex flex-col gap-6 p-4 space-y-3 text-right">
+          <Link to="/" className="  flex items-center justify-start gap-2 hover:text-blue-600">
+           <span className=" flex items-center justify-center w-6 h-6">
+                  <HomeIcon />
+                </span>
+                 خانه 
           </Link>
-          <Link to="/services" className="flex items-center justify-end gap-3 hover:text-blue-600">
-            خدمات <CategoryIcon />
+          <Link to="/services" className=" flex items-center justify-start gap-2 hover:text-blue-600">
+           <span className=" flex items-center justify-center w-6 h-6">
+                  <CategoryIcon />
+                </span>
+                 
+            خدمات 
           </Link>
-          <Link to="/wallet" className="flex items-center justify-end gap-3 hover:text-blue-600">
-            کیف پول <WalletIcon />
+          <Link to="/wallet" className="flex items-center justify-start gap-2 hover:text-blue-600">
+           <span className=" flex items-center justify-center w-6 h-6">
+                 <WalletIcon />
+                </span>
+            کیف پول 
           </Link>
-          <Link to="/market" className="flex items-center justify-end gap-3 hover:text-blue-600">
-            بازارها <ChartIcon />
+          <Link to="/market" className=" flex items-center justify-start gap-2 hover:text-blue-600">
+          <span className=" flex items-center justify-center w-6 h-6">
+                 <ChartIcon />
+                </span>
+            بازارها 
           </Link>
-          <Link to="/trade" className="flex items-center justify-end gap-3 hover:text-blue-600">
-            معامله <BitcoinIcon />
+          <Link to="/trade" className=" flex items-center justify-start gap-2 hover:text-blue-600">
+          <span className=" flex items-center justify-center w-6 h-6">
+                <BitcoinIcon />
+                </span>
+         
+            معامله 
           </Link>
         </nav>
 
         {/* پروفایل */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 text-right">
-          <details className="w-full">
-            <summary className="cursor-pointer font-medium text-blue-600">
-              پروفایل
-            </summary>
-            <ul className="pr-4 mt-2 space-y-2 text-gray-600 dark:text-gray-300">
-              <li>تنظیمات امنیت</li>
-              <li>احراز هویت</li>
-              <li>حساب‌های بانکی</li>
-              <li>تاریخچه معاملات</li>
-              <li>دستگاه‌های متصل</li>
-              <li className="text-red-500">خروج از حساب کاربری</li>
-            </ul>
-          </details>
-        </div>
+        <div className="p-4 text-right">
+  <details className="w-full group">
+    <summary className="flex items-center justify-between cursor-pointer font-medium text-blue-600">
+      <span className="flex">
+        <span className=" flex items-center justify-center w-6 h-6 ml-2">
+                <IconProfileMenu />
+                </span>
+         پروفایل
+
+      </span>
+      <svg
+        className="w-5 h-5 transform transition-transform duration-300 group-open:rotate-180"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+      </svg>
+    </summary>
+    <ul className=" pr-4 mt-2  text-gray-600 dark:text-gray-300">
+      <li  className="mb-4">تنظیمات امنیت</li>
+      <li  className="mb-4">احراز هویت</li>
+      <li  className="mb-4">حساب‌های بانکی</li>
+      <li  className="mb-4">تاریخچه معاملات</li>
+      <li  className="mb-4">دستگاه‌های متصل</li>
+      <li className="text-red-500">خروج از حساب کاربری</li>
+    </ul>
+  </details>
+</div>
 
         {/* پایین منو */}
-        <div className="p-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
+        <div className="p-4 flex-col items-center justify-between dark:border-gray-700">
           <button
             onClick={toggleTheme}
             className="flex items-center gap-2 text-gray-700 dark:text-gray-300"
           >
             {theme === "dark" ? <Sun /> : <Moon />} حالت شب
           </button>
-          <button className="flex items-center gap-2 text-red-500">
-            خروج <LogOut />
-          </button>
+          
         </div>
+        <button className="flex items-center gap-2   p-4">
+             <span className="w-6 h-6 text-black1"><IconExit/></span>
+        خروج از حساب کاربری 
+          </button>
       </div>
     </>
   );

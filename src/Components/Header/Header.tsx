@@ -55,7 +55,7 @@ export default function Header() {
        
 
           <button
-            className="hover:text-blue2 transition flex items-center justify-center w-8 h-8"
+            className="hidden hover:text-blue2 transition lg:flex items-center justify-center w-8 h-8"
             aria-label="Profile"
           >
             <VectorIcon />
