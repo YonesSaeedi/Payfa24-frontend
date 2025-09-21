@@ -8,6 +8,8 @@ import IconMinus from "../../../assets/icons/trade/IconMinus";
 import IconReceipt from "../../../assets/icons/services/IconReceipt";
 import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
 import WalletMinesIcon from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
+import FloatingInput from "../../FloatingInput/FloatingInput";
+
 interface TicketFormInputs {
   title: string;
   orderId: string;
@@ -35,114 +37,92 @@ const orders: Order[] = [
    { id: "3", coin: "آلترا", type: "فروش", amount: "2003", date: "1403/05/05 | 13:00",icon:<WalletMinesIcon/> },
 ];
 
-
- 
-
 export default function TicketForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-
   const { register, handleSubmit, formState: { errors } } = useForm<TicketFormInputs>();
-
-const {
-  
+  const {
     control,
-   
-  
   } = useForm<LoginFormData>({
   }); 
-
   const onSubmit = (data: TicketFormInputs) => {
     console.log("فرم ارسال شد:", data);
   };
-
   return (
-    <div dir="rtl" className="w-full h-full flex flex-col lg:bg-gray37  lg:shadow-md rounded-2xl p-6">
+    <div
+      dir="rtl"
+      className="w-full h-full flex flex-col justify-between lg:bg-gray43  lg:shadow-md rounded-2xl p-6"
+    >
+      
+     <div className="flex flex-col">
       <h2 className="text-xl font-semibold text-center text-black1 mt-2  flex-shrink-0 mb-12">
         ایجاد تیکت جدید
       </h2>
+       <Controller
+      name="email"   
+            control={control}
+            rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
+            render={({ field }) => (
+                <FloatingInput
+                  label=" عنوان تیکت"
+                  value={field.value}
+                  onChange={field.onChange}
+                  type="number"
+                  placeholder=""
+                  placeholderColor="text-black0"
+                  borderClass="border-gray12"   
+                />
+            )}
+          />
+      <OrderSelector
+        selectedOrder={selectedOrder}
+        setSelectedOrder={setSelectedOrder}
+        register={register}
+        orders={orders}
+      />
 
-      {/* <form 
-        onSubmit={handleSubmit(onSubmit)} 
-        className="flex flex-col flex-1 gap-4 overflow-y-auto"
-      > */}
-
+      <div className="relative w-full bg-gray37 mt-4">
         <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label="عنوان"
-  
-                 
-                  {...field}
-                  labelBgClass="bg-gray37"
-                />
-              )}
-            />
-
-       
-        <OrderSelector
-          selectedOrder={selectedOrder}
-          setSelectedOrder={setSelectedOrder}
-          register={register}
-          orders={orders}
-        />
-
-     
-<div className="relative w-full bg-gray37">
-  {/* <textarea
-    {...register("description", { required: "توضیحات الزامی است" })}
-    placeholder=" "
-    className="peer border rounded-lg text-sm h-[180px] w-full border-gray-400 resize-none bg-gray37 outline-none p-3"
-  />
-  <label className="absolute right-3 -top-2.5 px-1 text-gray-500 text-xs bg-gray37 inline-block leading-none">
-    توضیحات
-  </label> */}
-
-  <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
+      name="email"   
+            control={control}
+            rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
+            render={({ field }) => (
+             
+                <FloatingInput
                   label="توضیحات"
-  
-                 
-                  {...field}
-                  labelBgClass="bg-white4"
+                  value={field.value}
+                  onChange={field.onChange}
+                  type="number"
+                  placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."
+                  placeholderColor="text-black0"
+                  borderClass="border-gray12"   
+                  heightClass="h-[160px]"
+                  
                 />
-              )}
-            />
+            )}
+          />
+      </div>
 
-  {errors.description && (
-    <p className="text-red-500 text-xs mt-1">
-      {errors.description.message}
-    </p>
-  )}
-</div>
+      {errors.description && (
+        <p className="text-red-500 text-xs mt-1">
+          {errors.description.message}
+        </p>
+      )}
 
+      <FileUpload
+        selectedFile={selectedFile}
+        setSelectedFile={setSelectedFile}
+        register={register}
+      />
+     </div>
+    
 
-
-{errors.description && (
-  <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
-)}
-
-
-
-      
-        <FileUpload
-          selectedFile={selectedFile}
-          setSelectedFile={setSelectedFile}
-          register={register}
-        />
-
-        <button 
-          type="submit" 
-          className="w-full bg-blue-600 text-white mb-6  py-2 px-4 rounded-lg hover:bg-blue-700 transition flex-shrink-0 mt-4"
-        >
-          ارسال تیکت
-        </button>
-      {/* </form> */}
+      <button
+        type="submit"
+        className="w-full bg-blue2 text-white mb-6  py-3 px-4 rounded-lg hover:bg-blue-700 transition flex-shrink-0 mt-4"
+      >
+        ارسال تیکت
+      </button>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,7 +20,6 @@ import IconTicket from "../../assets/icons/services/IconTicket";
 import IconNotification from "../../assets/icons/services/IconNotification";
 import IconUserPlus from "../../assets/icons/services/IconUserPlus";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
-
 
 interface ServiceItem {
   label: string;
@@ -46,31 +44,33 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   };
 
   const handleItemClick = (label: string) => {
-if (label === "تاریخچه") {
-  navigate(ROUTES.Transaction.CREATE); 
-  }else if (label === "سوالات") {
-    navigate(ROUTES.FAQ.CREATE); 
-     }else if (label === "کارت‌ها") {
-       navigate(ROUTES.Bank_Cards.CREATE); 
-      }else if(label === "تیکت") {
-         navigate(ROUTES.Ticket.ROOT)
-       }else if(label=== "اعلانات"){
-          navigate(ROUTES.NOTIFICATIONS)
-        }else if(label==="بازار"){
-            navigate(ROUTES.MARKET)
-         }else if(label==="کیف پول"){
-             navigate(ROUTES.Wallet)
-          }else if (label=== "برداشت"){
-              navigate(ROUTES.withdrawal.CREATE)
-            }else if(label==="احراز هویت"){
-               navigate(ROUTES.AuthenticationBasic)
-             }else if(label==="خرید"){
-                 navigate(ROUTES.TRADE.BUY)
-              }else if(label=== "فروش"){
-                  navigate(ROUTES.TRADE.SELL)
-}
-
-    
+    if (label === "تاریخچه") {
+      navigate(ROUTES.TRANSACTION.CREATE); 
+    } else if (label === "سوالات") {
+      navigate(ROUTES.FAQ.CREATE); 
+    } else if (label === "کارت‌ها") {
+      navigate(ROUTES.BANK_CARDS.CREATE); 
+    } else if (label === "تیکت") {
+      navigate(ROUTES.TICKET.ROOT);
+    } else if (label === "اعلانات") {
+      navigate(ROUTES.NOTIFICATIONS);
+    } else if (label === "بازار") {
+      navigate(ROUTES.MARKET);
+    } else if (label === "کیف پول") {
+      navigate(ROUTES.Wallet);
+    } else if (label === "برداشت") {
+      navigate(ROUTES.WITHDRAWAL.ROOT);
+    } else if (label === "احراز هویت") {
+      navigate(ROUTES.AuthenticationBasic);
+    } else if (label === "خرید") {
+      navigate(ROUTES.TRADE.BUY);
+    } else if (label === "فروش") {
+      navigate(ROUTES.TRADE.SELL);
+    } else if (label === "واریز") {
+      navigate(ROUTES.Deposit);
+    } else if (label === "امنیت") {
+      navigate(ROUTES.AuthenticationBasic);
+    }
   };
 
   const financeItems: ServiceItem[] = [
@@ -106,7 +106,7 @@ if (label === "تاریخچه") {
     <div dir="rtl" className=" mb-6 ">
       <h3
         dir="rtl"
-        className="text-right text-gray-700 dark:text-gray-300 font-medium mb-4 mt-5"
+        className="text-right text-black1  font-medium mb-4 mt-5"
       >
         {title}
       </h3>
@@ -115,7 +115,7 @@ if (label === "تاریخچه") {
           <div
             key={i}
             onClick={() => handleItemClick(item.label)} 
-            className="flex flex-col items-center justify-center w-[84px] h-[72px] p-6 rounded-lg hover:border-blue2 d cursor-pointer transition border border-gray21 bg-gray33 "
+            className="flex flex-col items-center justify-center px-11 h-[72px]  rounded-lg hover:border-blue2 d cursor-pointer transition border border-gray21 bg-gray33"
           >
             <span className="w-6 h-6 text-blue2">{item.icon}</span>
             <span className="text-sm text-gray-700 dark:text-gray-200 text-center mt-2 whitespace-nowrap">
@@ -131,11 +131,13 @@ if (label === "تاریخچه") {
     <div
       dir="rtl"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+      onClick={handleClose} // کلیک روی پس‌زمینه -> بستن مودال
     >
       <div
         className={`bg-white8 rounded-xl shadow-lg p-6 w-[500px] h-[700] transform transition-all duration-300 ${
           isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
         } relative`}
+        onClick={(e) => e.stopPropagation()} // جلوگیری از بسته شدن مودال با کلیک داخلش
       >
         <div className="flex border-b border-b-gray21 pb-4">
           <span className="w-6 h-6 icon-wrapper ml-1">

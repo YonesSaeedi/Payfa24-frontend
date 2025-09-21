@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import IconAlert from "../assets/Icons/Login/IconAlert";
 import IconGoogle from "../assets/Icons/Login/IconGoogle";
 import { ThemeContext } from "../Context/ThemeContext";
@@ -15,24 +15,32 @@ import OTPModal from "../Components/OTPModal";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { toast } from "react-toastify";
+import { apiRequest } from "../utils/apiClient";
+import { ROUTES } from "../routes/routes";
 
 type LoginFormData = {
   email: string;
   password: string;
 };
+interface LoginResponse {
+  access_token: string;
+  expires_in: number;
+  refresh_token: string;
+  [key: string]: unknown;
+}
 
 export default function LoginPage() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
-
- 
-
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [showPassword, setShowPassword] = useState(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(
-    null
-  );
+  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const navigate = useNavigate()
 
   const loginSchema = yup.object().shape({
     email: yup
@@ -69,12 +77,33 @@ export default function LoginPage() {
       password: "",
     },
   });
-
-  const onSubmit = (data: LoginFormData) => {
-    console.log("Submitted Data:", data);
-    const isPhone = /^\d+$/.test(data.email);
-    setContactMethod(isPhone ? "phone" : "email");
-    setIsOpen(true);
+  // submits login data to the api ===========================================================================================================================
+  const onSubmit = async (data: LoginFormData) => {
+    // console.log(data)
+    try {
+      setIsLoading(true)
+      if (!executeRecaptcha) return;
+      const recaptchaToken = await executeRecaptcha('login')
+      const payload: Record<string, string> = { recaptcha: recaptchaToken, password: data.password }
+      const isPhone = /^\d+$/.test(data.email);
+      if (isPhone) payload.mobile = data.email;
+      else payload.email = data.email;
+      // console.log('login payload => ', payload)
+      setContactMethod(isPhone ? "phone" : "email");
+      const response = await apiRequest<LoginResponse, Record<string, string>>({ url: '/api/auth/login', method: 'POST', data: payload })
+      // console.log("login response => ", response)
+      if (response?.access_token) {
+        localStorage.setItem('accessToken', response?.access_token)
+        localStorage.setItem('refreshToken', response?.refresh_token)
+        localStorage.setItem('expiresAt', response?.expires_in.toString())
+        toast.success('با موفقیت وارد شدید.')
+        navigate(ROUTES.HOME)
+      }
+    } catch (err: any) {
+      toast.error(err?.response?.data?.msg || 'ورود با مشکل مواجه شد.')
+    } finally {
+      setIsLoading(false)
+    }
   };
 
   return (
@@ -140,9 +169,10 @@ export default function LoginPage() {
             <button
               type="submit"
               className="w-full  h-[48px] rounded-xl bg-blue2
-              text-white2 font-bold text-lg lg:bg-gray19"
+              text-white2 font-bold text-lg"
+              disabled={isLoading}
             >
-              ادامه
+              {isLoading ? 'در حال ارسال ...' : 'ادامه'}
             </button>
 
             <p className="text-sm font-normal text-gray12 pt-3 pb-10 text-start">
@@ -154,9 +184,8 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-center ">
               <div
-                className={`flex-grow h-[1px] ${
-                  theme === "dark" ? "bg-gray19" : "bg-gray19"
-                }`}
+                className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"
+                  }`}
               ></div>
               <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
               <div className="flex-grow h-[1px] bg-gray19"></div>
@@ -178,7 +207,7 @@ export default function LoginPage() {
             className="fixed inset-0 flex items-center justify-center z-50"
             onClick={() => {
               setIsOpen(false);
-              console.log("Clicked outside, closing modal");
+              // console.log("Clicked outside, closing modal");
             }}
           >
             <div

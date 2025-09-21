@@ -9,7 +9,7 @@ function QuestionBox() {
   return (
     <div className="flex flex-col-reverse lg:flex-row justify-between lg:gap-x-[40px] bg-backgroundMain2 text-text">
 
-      <button className="flex lg:hidden px-4 py-2 rounded-lg text-primary items-center justify-center gap-2 font-bold pt-8 w-8 h-8">
+      <button className="flex lg:hidden px-4 py-2 rounded-lg text-primary items-center justify-center gap-2 font-bold pt-8 h-8 text-blue2">
         <span className="w-8 h-8 inline-flex items-center justify-center icon-wrapper">
           <ArrowLeftIcon />
         </span>
@@ -30,7 +30,7 @@ function QuestionBox() {
           <span className="text-base">تماس با پشتیبانی</span>
           <p className="text-blue-600">۰۲۱-۱۲۳۴۵۶۷۸۹</p>
         </div>
-        <button className="hidden lg:flex px-3 py-2 rounded-lg bg-blue-500 text-white items-center justify-center gap-2 font-bold">
+        <button className="hidden lg:flex px-3 py-2 rounded-lg bg-blue2 text-white  items-center justify-center gap-2 font-bold">
           <span className="w-8 h-8 "> <ArrowLeftIcon /></span>
           مشاهده همه سوالات
         </button>

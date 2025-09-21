@@ -49,7 +49,7 @@ const WalletCard = ({
     },
     {
       label: "واریز",
-      onClick: () => navigate("/deposit"),
+      onClick: () => navigate("/DepositPage"),
       icon:  <span className="text-blue1">
           <WalletAdd />
          </span>,
@@ -101,7 +101,7 @@ const WalletCard = ({
         <div className="text-center mb-6">
           <p
             className={`text-3xl font-bold text-black1 ${
-              !stateBlure ? "blur-sm" : ""
+              !stateBlure ? "blur-md" : ""
             }`}
             dir="rtl"
           >

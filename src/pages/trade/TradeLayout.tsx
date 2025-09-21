@@ -1,8 +1,9 @@
 import { Outlet } from "react-router"
-import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation"
 import HeaderLayout from "../../layouts/HeaderLayout"
 import IconWarning from "../../assets/icons/trade/IconWarning"
 import TradeLayoutFAQ from "../../Components/trade/TradeLayoutFAQ"
+import { FAQData } from "../../Data/faqData"
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation"
 
 
 
@@ -39,10 +40,8 @@ import TradeLayoutFAQ from "../../Components/trade/TradeLayoutFAQ"
 
 
 
+
 const TradeLayout = () => {
-
-
-
 
   return (
     <div className="h-full">
@@ -56,15 +55,15 @@ const TradeLayout = () => {
               <BreadcrumbNavigation />
             </div>
             {/* content container =========================================================================================================== */}
-            <div className="lg:bg-bg2 rounded-2xl w-full lg:shadow-[0_0_12px_0_#00000029] lg:p-16 flex flex-col lg:flex-row gap-8 lg:gap-10" dir="rtl">
+            <div className="lg:bg-gray25 rounded-2xl w-full lg:shadow-[0_0_12px_0_#00000029] lg:p-16 flex flex-col lg:flex-row gap-8 lg:gap-10" dir="rtl">
               {/* child pages will render here ==================================================================================================== */}
               <div className="lg:w-1/2">
                 <Outlet />
               </div>
               {/* layout content ==================================================================================================== */}
               <div className="lg:w-1/2 flex flex-col" dir="rtl">
-                <div className="lg:mb-4 mb-6 lg:py-6 py-4 px-4 rounded-xl lg:rounded-2xl bg-bg3 flex flex-col gap-3 lg:gap-4">
-                  <div className="flex items-center gap-1">
+                <div className="lg:mb-4 mb-6 lg:py-6 py-4 px-4 rounded-xl lg:rounded-2xl bg-orange4 flex flex-col gap-3 lg:gap-4">
+                  <div className="flex items-center gap-1 text-orange1">
                     <span className="icon-wrapper w-5 h-5 lg:w-6 lg:h-6 text-text3"><IconWarning /></span>
                     <h4 className="text-sm lg:text-lg font-medium text-text3">توجه داشته باشید</h4>
                   </div>

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState} from "react";
 
 import Fire from "../../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
 import YoYowIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/YoYowIcon";
@@ -28,13 +28,38 @@ import QuestionBox from "../../Components/Home/QuestionBox/QuestionBox";
 import TetherTopIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon";
 import MostDeal from "../../assets/icons/Home/SynchronizedSlidersIcon/MostDeal";
 import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+// import { toast } from "react-toastify";
+// import { apiRequest } from "../../utils/apiClient";
+
+
+// interface PriceItem {
+//   symbol: string;
+//   price: string;
+//   fee: string;
+//   priceChangePercent: string;
+//   quoteVolume: string;
+// }
+
+// interface PricesResponse {
+//   list: PriceItem[];
+// }
+
+// interface CryptoMeta {
+//   symbol: string;
+//   name: string;
+//   icon: string;
+// }
+
+//  interface CryptoMetaResponse {
+//    cryptocurrency: CryptoMeta[];
+//  }
 
 
 
 const boxes = [
   {
     header: "تازه های بازار",
-    headerIcon: <Fire/>,
+    headerIcon: <Fire />,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Yoyow (Yoyow).png",
     slides: [
       {
@@ -42,7 +67,7 @@ const boxes = [
         subtitle: "YOYOW",
         price: 88901,
         changePct: 23.54,
-        iconSrc: <YoYowIcon/>,
+        iconSrc: <YoYowIcon />,
       },
       {
         title: "یویوو",
@@ -55,7 +80,7 @@ const boxes = [
   },
   {
     header: "بیشترین افت قیمت",
-    headerIcon:  <span className="w-6 h-6 icon-wrapper text-red1"><TrendDownIcon /></span>,
+    headerIcon: <span className="w-6 h-6 icon-wrapper text-red1"><TrendDownIcon /></span>,
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Trinity Network Credit (Tnc).png",
     slides: [
       {
@@ -64,7 +89,7 @@ const boxes = [
         price: 88901,
         changePct: -23.54,
 
-        iconSrc:<TrinityIcon />,
+        iconSrc: <TrinityIcon />,
 
       },
       {
@@ -79,7 +104,7 @@ const boxes = [
   {
     header: "بیشترین افزایش قیمت",
 
-    headerIcon:<span className="text-green2 icon-wrapper"><TrendIcon /></span> ,
+    headerIcon: <span className="text-green2 icon-wrapper"><TrendIcon /></span>,
 
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/TitanSwap (TITAN).png",
     slides: [
@@ -102,7 +127,7 @@ const boxes = [
   {
     header: "بیشترین معامله",
 
-    headerIcon: <span className="w-6 h-6 icon-wrapper"><MostDeal/></span>,
+    headerIcon: <span className="w-6 h-6 icon-wrapper"><MostDeal /></span>,
 
     bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Tetherbackground (USDT).png",
     slides: [
@@ -127,6 +152,9 @@ const boxes = [
 
 function HomePage() {
   const [active, setActive] = useState(0);
+  // const [tableData, setTableData] = useState<any[]>([]);
+// const [loading, setLoading] = useState(true);
+
   const data = [
     {
       name: "ننننننننننننتوکو توکن",
@@ -135,7 +163,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <TokoTokenIcon/>,
+      logo: <TokoTokenIcon />,
     },
     {
       name: "تورِن",
@@ -162,7 +190,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <Ultra/>,
+      logo: <Ultra />,
     },
     {
       name: "وی چین",
@@ -171,7 +199,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <VeChain/>,
+      logo: <VeChain />,
     },
     {
       name: "ولی",
@@ -180,7 +208,7 @@ function HomePage() {
       sellPrice: 489700,
       buyPrice: 485000,
       change24h: -12,
-      logo: <Veil/>,
+      logo: <Veil />,
     },
   ];
 
@@ -205,6 +233,69 @@ function HomePage() {
     },
   ];
 
+  // example ==============================================================================
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await apiRequest({ url: '/api/account/get-usersdf' })
+  //     // console.log(response)
+  //   } catch (err: any) {
+  //     console.log(err)
+  //   } finally {
+  //     // console.log('enddddd')
+  //   }
+  // }
+  // fetchData()
+
+
+
+  
+//   useEffect(() => {
+//     const fetchCryptoData = async () => {
+//       try {
+//        const [prices, meta] = await Promise.all([
+//   apiRequest<PricesResponse>({ url: '/api/get-general-info' }),
+//   apiRequest<CryptoMetaResponse>({ url: '/api/list-cryptocurrencies' })
+// ]);
+
+// console.log("=== Prices API ===");
+// console.log(prices);
+
+// console.log("=== Meta API ===");
+// console.log(meta);
+
+
+// const merged = prices.list.map(item => {
+//   const info = meta.cryptocurrency.find(
+//     c => c.symbol.toLowerCase() === item.symbol.toLowerCase()
+//   );
+//   return {
+//     symbol: item.symbol,
+//     name: info?.name || item.symbol,
+//     logo: info?.icon ? <img src={info.icon} alt={item.symbol} className="h-8 w-8" /> : <TokoTokenIcon />,
+//     priceUSDT: Number(item.price),
+//     buyPrice: Number(item.price) + Number(item.fee),
+//     sellPrice: Number(item.price) - Number(item.fee),
+//     change24h: Number(item.priceChangePercent),
+//     volume: Number(item.quoteVolume),
+//   };
+// });
+
+// console.log("prices:", prices);
+// console.log("meta:", meta);
+
+
+//         setTableData(merged);
+//       } catch (err) {
+//         console.error(err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchCryptoData();
+//   }, []);
+
+
   return (
     <div>
       <HeaderFooterLayout>
@@ -222,7 +313,7 @@ function HomePage() {
 
             <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
               <PosterSlider slides={slidesData} />
-              <InvitationCard/>
+              <InvitationCard />
             </div>
 
             <div id="SyncSlider" className="pt-12 pb-12">
@@ -232,6 +323,14 @@ function HomePage() {
             <div className="w-full pt-7">
               <CryptoTable data={data} active={active} setActive={setActive} />
             </div>
+            {/* <div className="w-full pt-7">
+  {loading ? (
+    <div className="text-center py-10">در حال بارگذاری...</div>
+  ) : (
+    <CryptoTable data={tableData} active={active} setActive={setActive} />
+  )}
+</div> */}
+
             <div id="qustionBox" className="pt-12 lg:pb-28 pb-14">
               <QuestionBox />
             </div>

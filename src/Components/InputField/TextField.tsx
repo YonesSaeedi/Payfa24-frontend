@@ -16,6 +16,8 @@ interface TextFieldProps {
   labelClassName?: string;
   labelStyle?: React.CSSProperties;
   labelBgClass?: string; // ✅ رنگ بک‌گراند لیبل از بیرون
+   inputBgClass?: string;   // ✅  داخل اضافه کردن برای بک‌گراند input
+   labelStyleClass?: string
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
@@ -32,6 +34,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       onBlur,
       name,
       labelBgClass,
+      inputBgClass,
     },
     ref
   ) => {
@@ -63,11 +66,11 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           dir="rtl"
           id={inputId}
           type={type}
-          className={`w-full lg:h-[56px] h-[48px] rounded-xl border px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none ${
-            theme === "dark"
-              ? "bg-transparent text-black2"
-              : "bg-white4 text-gray12"
-          } ${borderColorClass}`}
+          className={`w-full lg:h-[56px] h-[48px] rounded-xl border px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none 
+    ${theme === "dark" ? "bg-transparent text-black2" : " text-gray12"} 
+    ${borderColorClass} 
+    ${inputBgClass || ""}   // ✅ اضافه کردن کلاس بک‌گراند
+  `}
           style={{ paddingLeft: icon ? "2rem" : "1rem" }}
           ref={ref}
           value={value}

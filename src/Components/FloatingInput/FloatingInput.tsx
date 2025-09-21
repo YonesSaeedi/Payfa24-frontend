@@ -5,11 +5,11 @@ interface FloatingInputProps {
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   type?: string;
-  className?: string;
+  className?: string;         // کلاس اضافی برای input
   placeholder?: string;
-
-  placeholderColor?:string;
-
+  placeholderColor?: string;
+  borderClass?: string;       // ✅ رنگ و استایل border
+  heightClass?: string;       // ✅ ارتفاع سفارشی
 }
 
 const FloatingInput: FC<FloatingInputProps> = ({
@@ -18,6 +18,9 @@ const FloatingInput: FC<FloatingInputProps> = ({
   onChange,
   type = "text",
   placeholder = "گزینه‌ای را انتخاب کنید",
+  className = "",
+  borderClass = "border-gray-300",   // پیشفرض
+  heightClass = "py-4"              // پیشفرض ارتفاع
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -25,9 +28,9 @@ const FloatingInput: FC<FloatingInputProps> = ({
     <div dir="rtl" className="relative w-full">
       <label
         className={`
-        absolute right-3 text-xs -top-2 px-1 duration-200 z-40 lg:bg-gray43 bg-gray38
-        ${isFocused ? "text-blue2" : "text-gray12"}
-      `}
+          absolute right-3 text-xs -top-2 px-1 duration-200 z-40 lg:bg-gray43 bg-gray38
+          ${isFocused ? "text-blue2" : "text-gray12"}
+        `}
       >
         {label}
       </label>
@@ -39,8 +42,11 @@ const FloatingInput: FC<FloatingInputProps> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
-        className="block w-full px-3 py-4 border rounded-md z-10
-         focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 "
+        className={`
+          block w-full px-3 ${heightClass} border rounded-md z-10
+          focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 
+          ${borderClass} ${className}
+        `}
       />
     </div>
   );

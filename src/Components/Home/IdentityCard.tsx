@@ -21,7 +21,10 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
 
 }) => {
   return (
-    <div className="border rounded-xl p-6 flex items-center justify-between  border-gray21 shadow">
+ <div className="border rounded-xl p-6 flex flex-col lg:flex-row items-right lg:justify-between border-gray21 shadow ">
+
+
+
 
 
       <div className="hidden rounded-lg lg:flex items-center justify-center ">
@@ -54,7 +57,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
 
      
 
-        <Link to="/authentication" className=" mt-4 bg-blue-500 text-white rounded-lg w-[198px] h-[40px] self-end flex items-center justify-center">
+        <Link to="/authentication" className=" mt-4 bg-blue-500 text-white rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full">
 
           <span className="pr-2 flex  w-8 h-8 ">
             <ArrowLeftIcon />

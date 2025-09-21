@@ -31,7 +31,7 @@ export default function OrderSelector({ selectedOrder, setSelectedOrder, registe
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="w-full border rounded-lg p-5 text-sm text-right bg-gray37 flex items-center justify-between border-gray12 mt-3 mb-3"
+        className="w-full border rounded-lg p-5 text-sm text-right bg-gray37 flex items-center justify-between border-gray12 mt-4 mb-3"
       >
         <span className="text-gray12">انتخاب سفارش (اختیاری)</span>
         <span className="w-4 h-4"><IconOrderSelection/></span>

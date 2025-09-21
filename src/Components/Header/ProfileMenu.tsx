@@ -10,7 +10,7 @@ import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransact
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconUser from "../../assets/icons/ProfileMenue/IconUser";
 import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
-import LogOut  from "../../assets/images/logout.png";
+// import LogOut from "../../assets/images/logout.png";
 interface ProfileMenuProps {
   themeContext: {
     theme: "light" | "dark";
@@ -43,19 +43,19 @@ export default function ProfileMenu({
 
       <button
         onClick={() => setOpen(!open)}
-        className={`hover:text-blue2 transition flex items-center ${
-          currentPath === "/login"
-            ? themeContext.theme === "dark"
-              ? "text-primary"
-              : "text-blue2 font-semibold"
-            : "text-header-items"
-        }`}
+        className={`hover:text-blue2 transition flex items-center ${currentPath === "/login"
+          ? themeContext.theme === "dark"
+            ? "text-primary"
+            : "text-blue2 font-semibold"
+          : "text-header-items"
+          }`}
         aria-label="Profile"
       >
         <span className="w-9 h-9 icon-wrapper">
           <FrameIcon />
         </span>
       </button>
+
 
        
             <div
@@ -64,6 +64,7 @@ export default function ProfileMenu({
             ? "scale-100 opacity-100"
             : "scale-95 opacity-0 pointer-events-none"
         }`}
+
       >
         <div
           dir="rtl"
@@ -138,6 +139,7 @@ export default function ProfileMenu({
             دستگاه‌های متصل
           </li>
 
+
           </Link>
         </ul>
 
@@ -156,28 +158,26 @@ export default function ProfileMenu({
           </button>
         </div>
       </div>
-      
-  
 
-    
-      <div
-        className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
-          open
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
+
+
+
+      {/* <div
+        className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${open
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
+          }`}
       >
-    
+
         <div
           onClick={() => setOpen(false)}
           className="absolute inset-0 bg-black bg-opacity-40 transition-opacity duration-300"
         ></div>
 
-      
+
         <div
-          className={`absolute top-0 left-88 w-72 h-full bg-white shadow-lg flex flex-col transform transition-transform duration-300 ${
-            open ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`absolute top-0 left-88 w-72 h-full bg-white shadow-lg flex flex-col transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"
+            }`}
         >
           <div
             dir="rtl"
@@ -284,7 +284,7 @@ export default function ProfileMenu({
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {IsModal && (
         <>
@@ -301,7 +301,7 @@ export default function ProfileMenu({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center gap-4 flex items-center justify-center flex-col">
-              <img src={LogOut} alt="LogOut" />
+                {/* <img src={LogOut} alt="LogOut" /> */}
                 <h1 className="lg:text-2xl text-lg text-black0 font-medium">
                   خروج از حساب کاربری
                 </h1>
