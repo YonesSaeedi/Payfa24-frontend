@@ -69,8 +69,8 @@ export const getLoginSchema = () => {
       .string()
       .required("رمز عبور الزامی است.")
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/,
-        "رمز عبور باید حداقل ۸ کاراکتر، شامل حروف بزرگ، کوچک، عدد و کاراکتر ویژه باشد."
+        /^.{8,}$/,
+        "رمز عبور باید حداقل ۸ کاراکتر باشد."
       ),
   });
 };
@@ -107,8 +107,11 @@ export const getStepInviteSchema = () => {
   });
 };
 
-// schema برای صفحه StepPassword
-export const getStepPasswordSchema = () => {
+
+
+
+// schema برای صفحه changePasswordSchema
+export const getChangePasswordSchema = () => {
   return yup.object().shape({
     password: yup
       .string()
@@ -119,3 +122,11 @@ export const getStepPasswordSchema = () => {
       .matches(/\d/, "رمز عبور باید حداقل یک عدد داشته باشد."),
   });
 };
+
+
+
+
+
+
+
+

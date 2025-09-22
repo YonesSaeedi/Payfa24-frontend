@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import OTPModal from "./OTPModal";
 import IconClose from "../assets/Icons/Login/IconClose";
-import { getStepInviteSchema } from "../utils/validationSchemas"; 
+import { getStepInviteSchema } from "../utils/validationSchemas";
 import { toast } from "react-toastify";
 
 interface RegisterResponse {
@@ -23,6 +23,7 @@ interface RegisterResponse {
   refresh_token: string;
   [key: string]: unknown;
 }
+
 interface CheckResponse {
   status: boolean;
   msg?: string;
@@ -35,14 +36,14 @@ type StepInviteFormData = {
 };
 
 export default function StepInvite({ onNext }) {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
-  const { executeRecaptcha } = useGoogleReCaptcha()
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [isOpen, setIsOpen] = useState(false);
   const [hasInviteCode, setHasInviteCode] = useState(false);
-  const [contactMethod, setContactMethod] = useState<'phone' | 'email' | null>(null);
+  const [contactMethod, setContactMethod] = useState<"phone" | "email" | null>(null);
   const [otpCode, setOtpCode] = useState<string>("");
   const [isOtpError, setIsOtpError] = useState<boolean>(false);
 
@@ -55,77 +56,81 @@ export default function StepInvite({ onNext }) {
     resolver: yupResolver(getStepInviteSchema()),
     defaultValues: {
       email: "",
-
-  
+      inviteCode: "", // اضافه کردن defaultValue برای inviteCode
     },
   });
-  // submits the entered mobile/email; and opens the code verification modal ===========================================================================
+
   const onSubmit = async (data: StepInviteFormData) => {
     if (!executeRecaptcha) return;
     try {
-      setIsLoading(true)
-      const recaptchaToken = await executeRecaptcha('register')
-      const value = data.email.trim()
-      const payload: Record<string, string> = { recaptcha: recaptchaToken }
+      setIsLoading(true);
+      const recaptchaToken = await executeRecaptcha("register");
+      const value = data.email.trim();
+      const payload: Record<string, string> = { recaptcha: recaptchaToken };
       if (/^\d+$/.test(value)) {
         payload.mobile = value;
-        setContactMethod('phone');
+        setContactMethod("phone");
       } else {
         payload.email = value;
-        setContactMethod('email');
+        setContactMethod("email");
       }
-      const response = await apiRequest<RegisterResponse, Record<string, string>>({ url: '/api/auth/register', method: "POST", data: payload })
+      const response = await apiRequest<RegisterResponse, Record<string, string>>(
+        { url: "/api/auth/register", method: "POST", data: payload }
+      );
       console.log("Submitted Data:", payload);
-      console.log('register api response => ', response)
+      console.log("register api response => ", response);
       if (response?.status === true) {
-        localStorage.setItem('accessToken', response?.access_token);
-        localStorage.setItem('refreshToken', response?.refresh_token);
-        localStorage.setItem('expiresAt', response?.expires_in.toString())
+        localStorage.setItem("accessToken", response?.access_token);
+        localStorage.setItem("refreshToken", response?.refresh_token);
+        localStorage.setItem("expiresAt", response?.expires_in.toString());
       }
-      setIsOpen(true)
+      setIsOpen(true);
     } catch (err: any) {
-      toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت اطلاعات مشکلی پیش آمد.')
+      toast.error(
+        err?.response?.data?.msg ||
+          err?.response?.data?.message ||
+          "در ثبت اطلاعات مشکلی پیش آمد."
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-  // handles otp change ===============================================================================================================================
+  };
+
   const handleOtpChange = (code: string) => {
     setOtpCode(code);
     setIsOtpError(false);
   };
-  // handles otp confirm ==============================================================================================================================
+
   const handleConfirm = async () => {
     if (otpCode.length === 5) {
-      const response: CheckResponse = await apiRequest<CheckResponse, Record<string, string>>({ url: '/api/auth/register/check', method: 'POST', data: { 'code': otpCode } })
-      console.log('otp check response => ', response)
+      const response: CheckResponse = await apiRequest<CheckResponse, Record<string, string>>(
+        { url: "/api/auth/register/check", method: "POST", data: { code: otpCode } }
+      );
+      console.log("otp check response => ", response);
       if (response?.status === true) {
-        toast.success('حساب شما با موفقیت ایجاد شد.')
-        onNext()
+        toast.success("حساب شما با موفقیت ایجاد شد.");
+        onNext();
       } else {
-        toast.error(response?.msg || 'در تایید کد مشکلی به وجود آمد.')
+        toast.error(response?.msg || "در تایید کد مشکلی به وجود آمد.");
       }
     }
   };
+
   const switchClass = (isChecked: boolean, theme: string) =>
-    `w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300
-    ${isChecked ? "bg-blue2" : theme === "dark" ? "bg-gray19" : "bg-gray19"}`;
+    `w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${
+      isChecked ? "bg-blue2" : theme === "dark" ? "bg-gray19" : "bg-gray19"
+    }`;
 
   const knobClass = (isChecked: boolean) =>
-    `bg-white1 w-4 h-4 rounded-full shadow-md transform transition-transform duration-300
-    ${isChecked ? "translate-x-6" : "translate-x-0"}`;
+    `bg-white1 w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+      isChecked ? "translate-x-6" : "translate-x-0"
+    }`;
 
   return (
     <div className="flex items-center justify-center w-full lg:w-3/4 lg:px-16">
       <div className="w-full px-4 flex items-center justify-center">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          dir="rtl"
-          className="w-full mx-auto"
-        >
-          <h1 className="text-[28px] font-bold text-blue2 mb-2 text-center">
-            ثبت نام در پی‌فا24
-          </h1>
+        <form onSubmit={handleSubmit(onSubmit)} dir="rtl" className="w-full mx-auto">
+          <h1 className="text-[28px] font-bold text-blue2 mb-2 text-center">ثبت نام در پی‌فا24</h1>
           <p className="font-normal mb-10 lg:text-lg text-sm text-center text-black1">
             برای ثبت نام ایمیل یا شماره همراه خود را وارد کنید
           </p>
@@ -140,6 +145,7 @@ export default function StepInvite({ onNext }) {
                 error={errors.email?.message}
                 {...field}
                 labelBgClass="bg-white4"
+                showError={true} 
               />
             )}
           />
@@ -151,10 +157,7 @@ export default function StepInvite({ onNext }) {
             </span>
           </div>
 
-          <div
-            className="text-blue2 flex flex-col gap-2 w-full items-center"
-            dir="rtl"
-          >
+          <div className="text-blue2 flex flex-col gap-2 w-full items-center" dir="rtl">
             <div className="flex justify-between w-full text-sm font-normal mb-3">
               <span>کد دعوت دارید؟</span>
               <div
@@ -167,7 +170,7 @@ export default function StepInvite({ onNext }) {
             </div>
 
             {hasInviteCode && (
-              <div className="flex flex-col w-full ">
+              <div className="flex flex-col w-full">
                 <Controller
                   name="inviteCode"
                   control={control}
@@ -177,14 +180,10 @@ export default function StepInvite({ onNext }) {
                       error={errors.inviteCode?.message}
                       {...field}
                       labelBgClass="bg-white4"
+                      showError={true} 
                     />
                   )}
                 />
-                {errors.inviteCode && (
-                  <p className="text-sm font-normal text-red1 mt-2 text-right">
-                    {errors.inviteCode.message}
-                  </p>
-                )}
               </div>
             )}
           </div>
@@ -194,7 +193,7 @@ export default function StepInvite({ onNext }) {
             className="w-full h-[48px] rounded-xl mt-10 bg-blue2 text-white2 font-bold text-lg"
             disabled={!executeRecaptcha || isLoading}
           >
-            {isLoading ? 'در حال ارسال ...' : 'ادامه'}
+            {isLoading ? "در حال ارسال ..." : "ادامه"}
           </button>
 
           <p className="text-sm font-normal text-gray12 mt-3 mb-10 text-start">
@@ -230,9 +229,7 @@ export default function StepInvite({ onNext }) {
               >
                 <div className="flex items-center flex-row-reverse justify-between">
                   <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
-                    {contactMethod === "phone"
-                      ? "تایید شماره همراه"
-                      : "تایید ایمیل"}
+                    {contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
                   </h2>
                   <span
                     className="icon-wrapper h-6 w-6 cursor-pointer"
@@ -254,10 +251,7 @@ export default function StepInvite({ onNext }) {
                 </p>
 
                 <div className="mt-[32px] mb-[48px]">
-                  <OTPModal
-                    length={5}
-                    onChange={handleOtpChange}
-                  />
+                  <OTPModal length={5} onChange={handleOtpChange} />
                 </div>
 
                 <div className="flex justify-between flex-row-reverse mb-4">
@@ -279,8 +273,9 @@ export default function StepInvite({ onNext }) {
                   <button
                     onClick={handleConfirm}
                     disabled={otpCode.length < 5}
-                    className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300
-                      ${otpCode.length < 5 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"}`}
+                    className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${
+                      otpCode.length < 5 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
+                    }`}
                   >
                     تایید
                   </button>

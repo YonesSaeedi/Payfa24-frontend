@@ -1,14 +1,14 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import IconAlert from "../assets/Icons/Login/IconAlert";
 import IconGoogle from "../assets/Icons/Login/IconGoogle";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext } from "../Context/ThemeContext"; 
 import IconEyeOpen from "../assets/Icons/Login/IconEyeOpen";
 import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
 import AuthLayout from "../layouts/AuthLayout";
 import imageLoginDark from "../assets/Login ImageDark.png";
 import imageLoginLight from "../assets/Login imageLight.png";
 import TextField from "../Components/InputField/TextField";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; 
 import IconClose from "../assets/Icons/Login/IconClose";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import OTPModal from "../Components/OTPModal";
@@ -33,19 +33,15 @@ interface LoginResponse {
 }
 
 export default function LoginPage() {
-  const context = useContext(ThemeContext);
+const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null);
+  const [showPassword, setShowPassword] = useState<boolean>(false); // فقط یه بار تعریف
+  const [isOpen, setIsOpen] = useState<boolean>(false); // فقط یه بار تعریف
+  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null); // فقط یه بار تعریف
   const { executeRecaptcha } = useGoogleReCaptcha();
-  const [showPassword, setShowPassword] = useState(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const loginSchema = getLoginSchema(); 
 
@@ -63,30 +59,27 @@ export default function LoginPage() {
   });
   // submits login data to the api ===========================================================================================================================
   const onSubmit = async (data: LoginFormData) => {
-    // console.log(data)
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       if (!executeRecaptcha) return;
-      const recaptchaToken = await executeRecaptcha('login')
-      const payload: Record<string, string> = { recaptcha: recaptchaToken, password: data.password }
+      const recaptchaToken = await executeRecaptcha('login');
+      const payload: Record<string, string> = { recaptcha: recaptchaToken, password: data.password };
       const isPhone = /^\d+$/.test(data.email);
       if (isPhone) payload.mobile = data.email;
       else payload.email = data.email;
-      // console.log('login payload => ', payload)
       setContactMethod(isPhone ? "phone" : "email");
-      const response = await apiRequest<LoginResponse, Record<string, string>>({ url: '/api/auth/login', method: 'POST', data: payload })
-      // console.log("login response => ", response)
+      const response = await apiRequest<LoginResponse, Record<string, string>>({ url: '/api/auth/login', method: 'POST', data: payload });
       if (response?.access_token) {
-        localStorage.setItem('accessToken', response?.access_token)
-        localStorage.setItem('refreshToken', response?.refresh_token)
-        localStorage.setItem('expiresAt', response?.expires_in.toString())
-        toast.success('با موفقیت وارد شدید.')
-        navigate(ROUTES.HOME)
+        localStorage.setItem('accessToken', response?.access_token);
+        localStorage.setItem('refreshToken', response?.refresh_token);
+        localStorage.setItem('expiresAt', response?.expires_in.toString());
+        toast.success('با موفقیت وارد شدید.');
+        navigate(ROUTES.HOME); 
       }
     } catch (err: any) {
-      toast.error(err?.response?.data?.msg || 'ورود با مشکل مواجه شد.')
+      toast.error(err?.response?.data?.msg || 'ورود با مشکل مواجه شد.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -112,6 +105,7 @@ export default function LoginPage() {
                   error={errors.email?.message}
                   {...field}
                   labelBgClass="bg-white4"
+                  showError=" "
                 />
               )}
             />
@@ -135,6 +129,7 @@ export default function LoginPage() {
                   onIconClick={() => setShowPassword((prev) => !prev)}
                   {...field}
                   labelBgClass="bg-white4"
+                 
                 />
               )}
             />
@@ -152,9 +147,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-
-              className="w-full  h-[48px] rounded-xl bg-blue2
-              text-white2 font-bold text-lg"
+              className="w-full h-[48px] rounded-xl bg-blue2 text-white2 font-bold text-lg"
               disabled={isLoading}
             >
               {isLoading ? 'در حال ارسال ...' : 'ادامه'}
@@ -169,8 +162,7 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-center">
               <div
-                className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"
-                  }`}
+                className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}
               ></div>
               <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
               <div className="flex-grow h-[1px] bg-gray19"></div>
@@ -192,7 +184,6 @@ export default function LoginPage() {
             className="fixed inset-0 flex items-center justify-center z-50"
             onClick={() => {
               setIsOpen(false);
-              // console.log("Clicked outside, closing modal");
             }}
           >
             <div

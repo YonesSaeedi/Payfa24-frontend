@@ -64,6 +64,7 @@ export default function ForgotPasswordPage() {
                   error={errors.email?.message}
                   {...field}
                   labelBgClass="bg-white4"
+                  showError=" "
                 />
               )}
             />

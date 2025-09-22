@@ -72,7 +72,7 @@ export default function StepEmail({ onNext }: Props) {
                 type="text"
                 error={errors.email?.message}
                 {...field}
-                labelBgClass="bg-gray9"
+                labelBgClass="lg:bg-gray9 bg-white1"
               />
             )}
           />
