@@ -1,19 +1,7 @@
 import React, { useState, useMemo } from "react";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
-
-interface CryptoItem {
-  name: string;
-  symbol: string;
-  priceUSDT: number;
-  buyPrice: number;
-  sellPrice: number;
-  change24h: number;
-  logo: React.ReactElement;
-  favorite?: boolean; // ⭐ برای مورد علاقه‌ها
-  volume?: number;    // برای بیشترین معامله
-  isNew?: boolean;    // برای تازه‌های بازار
-}
+import { ICryptoItem } from "../Market/types";
 
 type TabType =
   | "همه"
@@ -24,14 +12,15 @@ type TabType =
   | "پرسودترین";
 
 interface Props {
-  data: CryptoItem[];
+  data: ICryptoItem[];
   active: number;
   setActive: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
+  console.log("cryptodaata", data);
   const [search, setSearch] = useState("");
-  const [cryptoList, setCryptoList] = useState<CryptoItem[]>(data); // ✅ state برای مدیریت علاقه‌مندی
+  const [cryptoList, setCryptoList] = useState<ICryptoItem[]>(data); // ✅ state برای مدیریت علاقه‌مندی
 
   const tabs: TabType[] = [
     "همه",
@@ -50,6 +39,8 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
       )
     );
   };
+
+   console.log("cryptoList",cryptoList);
 
   // داده‌های فیلتر شده
   const filteredData = useMemo(() => {
@@ -91,6 +82,9 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
 
     return filtered;
   }, [cryptoList, active, search]);
+
+  console.log("filteredData",filteredData);
+  
 
   return (
     <div className="w-full flex flex-col gap-6 lg:mt-16">
@@ -148,6 +142,8 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
             </thead>
             <tbody>
               {filteredData.map((item, index) => (
+          
+                
                 <tr
                   key={index}
                   className="border-b border-gray21 hover:bg-gray0 text-sm last:border-b-0"
@@ -163,9 +159,38 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
                       <IconStar />
                     </button>
 
-                    <span className="h-9 w-9 rounded-full flex items-center justify-center">
-                      {item.logo}
-                    </span>
+                   <span className="h-9 w-9 flex items-center justify-center ">
+  {item.isFont ? (
+    <i
+      className={`cf cf-${item.symbol.toLowerCase()}`}
+      style={{ color: item.color, fontSize: "36px" }}
+    ></i>
+  ) : (
+    <>
+      {console.log(
+        "icon url:",
+        item.symbol,
+        item.icon,
+        item.icon
+          ? `https://app.arz3.com/api/images/currency/${item.icon}`
+          : "/default-coin.png"
+      )}
+      <img
+        src={
+          item.icon
+            ? `https://app.arz3.com/api/images/currency/${item.icon}`
+            : "/default-coin.png"
+        }
+        alt={item.symbol}
+        className="w-8 h-8 rounded-full"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = "/default-coin.png";
+        }}
+      />
+    </>
+  )}
+</span>
+
                     <div>
                       <div className="font-medium text-black1">{item.name}</div>
                       <span className="text-xs text-gray-500">
@@ -179,7 +204,8 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
                   </td>
 
                   <td className="py-3 px-4 text-black1">
-                    تومان {item.buyPrice.toLocaleString()}
+                    {item.buyPrice != null ? `تومان ${item.buyPrice.toLocaleString()}` : "-"}
+
                   </td>
 
                   <td className="py-3 px-4 text-black1 hidden lg:table-cell">
