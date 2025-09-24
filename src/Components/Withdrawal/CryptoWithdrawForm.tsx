@@ -3,13 +3,49 @@ import FloatingSelect from "../FloatingInput/FloatingSelect";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
 import Accordion from "../Withdrawal/Accordion";
+import { apiRequest } from "../../utils/apiClient";
+
 
 const CryptoWithdrawForm: FC = () => {
   const [network, setNetwork] = useState("");
   const [crypto, setCrypto] = useState("");
+  const [address, setAddress] = useState("");
+const [amount, setAmount] = useState("");
+const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+
+ 
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const response = await apiRequest({
+      url: `api/wallets/crypto/withdraw/${crypto}`,
+      method: "POST",
+      data: {
+        network,
+        withdrawAmount: parseFloat(amount),
+        withdrawAddressWallet: address,
+        withdrawAddressWalletTag: "", // اگر شبکه نیاز داشت مقدار بده
+        // codeOtp: 123456, // اگر نیاز به تایید دو مرحله‌ای هست
+      },
+    });
+
+    console.log("برداشت موفق:", response);
+    alert("برداشت با موفقیت ثبت شد!");
+  } catch (err: any) {
+    console.error(err);
+    setError(err.response?.data?.msg || "خطا در برداشت!");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
-    <form className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between h-[644px] overflow-y-auto">
+    <form className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between h-[644px] overflow-y-auto" onSubmit={handleSubmit}>
       <div>
         {/* ویدیو آموزشی */}
         <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2">
@@ -50,16 +86,16 @@ const CryptoWithdrawForm: FC = () => {
             <div className="mt-4 relative z-10 flex flex-col gap-4">
               <FloatingInput
                 label="آدرس تتر مقصد"
-                value=""
-                onChange={() => {}}
+                value={address}
+               onChange={(e) => setAddress(e.target.value)}
                 type="text"
               />
 
               <div>
                 <FloatingInput
                   label="مقدار برداشت"
-                  value=""
-                  onChange={() => {}}
+                  value={amount}
+               onChange={(e) => setAmount(e.target.value)}
                   type="number"
                 />
                 <div className="flex justify-between pt-2 text-xs text-gray-500">
@@ -81,11 +117,13 @@ const CryptoWithdrawForm: FC = () => {
       {/* دکمه تایید */}
       <div>
         <button
-          type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg"
-        >
-          تایید
-        </button>
+  type="submit"
+  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg"
+  disabled={isLoading}
+>
+  {isLoading ? "در حال ارسال..." : "تایید"}
+</button>
+
 
         {/* راهنمای برداشت */}
         <div className="mt-6">

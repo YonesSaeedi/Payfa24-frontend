@@ -172,13 +172,13 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
         item.symbol,
         item.icon,
         item.icon
-          ? `https://app.arz3.com/api/images/currency/${item.icon}`
+          ? `https://api.payfa24.org/images/currency/${item.icon}`
           : "/default-coin.png"
       )}
       <img
         src={
           item.icon
-            ? `https://app.arz3.com/api/images/currency/${item.icon}`
+            ? `https://api.payfa24.org/images/currency/${item.icon}`
             : "/default-coin.png"
         }
         alt={item.symbol}
