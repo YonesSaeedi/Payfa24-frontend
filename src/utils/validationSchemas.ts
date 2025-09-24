@@ -88,6 +88,7 @@ export const getForgotPasswordSchema = () => {
   });
 };
 
+
 // schema برای صفحه StepInvite
 export const getStepInviteSchema = () => {
   return yup.object().shape({
@@ -127,6 +128,22 @@ export const getChangePasswordSchema = () => {
 
 
 
+
+// schema برای صفحه Contact
+export const getContactSchema = () => {
+  return yup.object().shape({
+    contactType: yup.string().required("نوع تماس الزامی است."),
+    contactValue: yup
+      .string()
+      .required("مقدار تماس الزامی است.")
+      .when("contactType", {
+        is: "email",
+        then: (schema) => schema.email("ایمیل معتبر نیست."),
+        otherwise: (schema) =>
+          schema.matches(/^09\d{9}$/, "شماره موبایل معتبر نیست."),
+      }),
+  });
+};
 
 
 

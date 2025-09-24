@@ -7,7 +7,7 @@ import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getStepPasswordSchema } from "../utils/validationSchemas"; 
+import { getChangePasswordSchema } from "../utils/validationSchemas"; 
 import { apiRequest } from "../utils/apiClient";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
@@ -31,7 +31,7 @@ export default function StepPassword() {
     formState: { errors },
     watch,
   } = useForm<PasswordFormData>({
-    resolver: yupResolver(getStepPasswordSchema()), 
+    resolver: yupResolver(getChangePasswordSchema()), 
     mode: "onChange",
     defaultValues: {
       password: "",
