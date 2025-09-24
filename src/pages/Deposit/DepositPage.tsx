@@ -10,9 +10,11 @@ import IconArrowRight from "../../assets/Icons/Deposit/IconArrowRight";
 
 import DepositForm from "../../Components/Deposit/DepositForm";
 import CardToCardTransfer from "../../Components/Deposit/CardToCardTransfer";
+import WalletDeposit from "../../Components/Deposit/WalletDeposit";
+import DepositWithTxID from "../../Components/Deposit/DepositWithTxID";
 export default function DepositPage() {
-  const [step, setStep] = useState<number>(1); // گام فعلی
-  const [selectedOption, setSelectedOption] = useState<string>(""); // گزینه انتخاب‌شده از بخش راست
+  const [step, setStep] = useState<number>(1); 
+  const [selectedOption, setSelectedOption] = useState<string>("");
   const [started, setStarted] = useState<boolean>(false);
 
   const handleStart = () => {
@@ -27,10 +29,12 @@ export default function DepositPage() {
     "کارت به کارت فقط از مبداهای بالا امکان پذیر است",
   ];
 
-  let currentAlertMessages = depositFormMessages;
-  if (selectedOption === "goodTrip") {
-    currentAlertMessages = cardTransferMessages;
-  }
+ let currentAlertMessages = [];
+if (selectedOption === "closeDeal") {
+  currentAlertMessages = depositFormMessages;
+} else if (selectedOption === "goodTrip") {
+  currentAlertMessages = cardTransferMessages;
+}
   // می‌توانید برای گزینه‌های دیگر هم شرط اضافه کنید
   // else if (selectedOption === "goto") {
   //   currentAlertMessages = [...];
@@ -87,29 +91,12 @@ export default function DepositPage() {
       case "goodTrip":
         return <CardToCardTransfer />;
       case "goto":
-        return (
-          <div className="w-full">
-            <h2>Goto Form</h2>
-            <input
-              placeholder="Enter destination"
-              className="w-full p-2 border"
-            />
-            <button className="mt-2 bg-blue-500 text-white p-2">Submit</button>
-          </div>
-        );
+        return <></>;
       case "trade":
-        return (
-          <div className="w-full">
-           
-            <input
-              placeholder="Enter trade amount"
-              className="w-full p-2 border"
-            />
-            <button className="mt-2 bg-blue-500 text-whit p-2">Submit</button>
-          </div>
-        );
+
+        return <WalletDeposit />;
       default:
-        return <DepositForm />;
+        return <DepositWithTxID />;
     }
   };
 
@@ -131,10 +118,16 @@ export default function DepositPage() {
             {rightOptions.slice(0, 3).map((option) => (
               <div
                 key={option.id}
-                className="p-2 cursor-pointer"
+                className="p-2 cursor-pointer "
                 onClick={() => setSelectedOption(option.id)}
               >
-                <div className="flex items-center rounded-lg gap-2 justify-between border p-3 border-gray-19">
+                <div className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200
+                    ${
+                      selectedOption === option.id
+                        ? "border-blue2"
+                        : "border-gray50"
+                    }
+                  `}>
                   <div>
                     <div className="flex items-center gap-1">
                       <div className="bg-blue14 p-3 rounded-lg bg">
@@ -166,14 +159,21 @@ export default function DepositPage() {
 
             <p className="mt-8 mb-4 text-black0 font-medium">واریز ارز</p>
 
-
             {rightOptions.slice(3, 5).map((option) => (
               <div
                 key={option.id}
                 className="p-2 cursor-pointer"
                 onClick={() => setSelectedOption(option.id)}
               >
-                <div className="flex items-center rounded-lg gap-2 justify-between border p-3 border-gray-19">
+                    <div
+                  className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200
+                    ${
+                      selectedOption === option.id
+                        ? "border-blue2"
+                        : "border-gray50"
+                    }
+                  `}
+                >
                   <div>
                     <div className="flex items-center gap-1">
                       <div className="bg-blue14 p-3 rounded-lg bg">

@@ -38,11 +38,11 @@ export default function RegisterPage() {
             setStep(step + 1);
           }
         }}
-        onBack={() => {
-          if (step > 1) {
-            setStep(step - 1);
-          }
-        }}
+        // onBack={() => {
+        //   if (step > 1) {
+        //     setStep(step - 1);
+        //   }
+        // }}
       />
     </AuthLayout>
   );

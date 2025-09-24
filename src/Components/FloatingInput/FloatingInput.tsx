@@ -10,6 +10,7 @@ interface FloatingInputProps {
   placeholderColor?: string;
   borderClass?: string;       // ✅ رنگ و استایل border
   heightClass?: string;       // ✅ ارتفاع سفارشی
+
 }
 
 const FloatingInput: FC<FloatingInputProps> = ({

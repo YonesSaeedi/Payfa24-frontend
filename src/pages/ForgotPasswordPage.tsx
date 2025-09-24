@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getForgotPasswordSchema } from "../utils/validationSchemas"; // ایمپورت schema
 
 type FormData = {
   email: string;
@@ -20,22 +21,7 @@ export default function ForgotPasswordPage() {
 
   const navigate = useNavigate();
 
-  const schema = yup.object().shape({
-    email: yup
-      .string()
-      .required("لطفا ایمیل یا شماره همراه خود را وارد کنید.")
-      .test(
-        "email-or-phone",
-        "ایمیل یا شماره همراه وارد شده معتبر نیست.",
-        (value) => {
-          if (!value) return false;
-
-          const isPhone = /^(09|\+989)\d{9}$/.test(value);
-          const isEmail = yup.string().email().isValidSync(value);
-          return isEmail || isPhone;
-        }
-      ),
-  });
+  const schema = getForgotPasswordSchema();
 
   const {
     handleSubmit,
@@ -78,13 +64,14 @@ export default function ForgotPasswordPage() {
                   error={errors.email?.message}
                   {...field}
                   labelBgClass="bg-white4"
+                  showError=" "
                 />
               )}
             />
 
             <button
               type="submit"
-              className="h-[48px]  w-full rounded-xl bg-blue2 lg:mt-14 mt-12 text-white font-bold text-lg"
+              className="h-[48px] w-full rounded-xl bg-blue2 lg:mt-14 mt-12 text-white font-bold text-lg"
             >
               ادامه
             </button>

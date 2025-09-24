@@ -111,6 +111,7 @@ import { ChevronDown } from "lucide-react";
 interface Option<T> {
   value: T;
   label: React.ReactNode;
+
   icon?: React.ReactNode;
 }
 
@@ -121,6 +122,9 @@ interface FloatingSelectProps<T> {
   onChange: (value: T) => void;
   placeholder?: string;
   placeholderColor?: string;
+  onOpen?: () => void;
+  placeholderIcon?: React.ReactNode; // پراپ جدید برای آیکون
+  placeholderClasses?: string; // پراپ جدید برای استایل
 }
 
 function FloatingSelect<T extends { card?: string }>({
@@ -130,6 +134,7 @@ function FloatingSelect<T extends { card?: string }>({
   onChange,
   placeholder = "گزینه‌ای را انتخاب کنید",
   placeholderColor = "text-gray12",
+
 }: FloatingSelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -147,15 +152,22 @@ function FloatingSelect<T extends { card?: string }>({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+
   return (
     <div ref={containerRef} dir="rtl" className="relative w-full">
       <button
         type="button"
+
         onClick={() => setIsOpen(!isOpen)}
         className="peer flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray12 lg:bg-gray43 focus:outline-none focus:ring-1 focus:ring-blue2"
+
       >
-        <span className={`flex items-center gap-2 ${placeholderColor}`}>
-          {selected?.icon}
+        <span className={`flex items-center gap-2 ${placeholderClasses || placeholderColor}`}>
+          {/* نمایش آیکون و متن placeholder */}
+          {!selected && placeholderIcon && (
+            <span className="w-6 h-6">{placeholderIcon}</span>
+          )}
+          {/* نمایش مقدار انتخاب شده یا placeholder */}
           {selected?.label || placeholder}
         </span>
         <ChevronDown className="w-4 h-4 text-gray12" />
@@ -164,6 +176,7 @@ function FloatingSelect<T extends { card?: string }>({
       <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">
         {label}
       </label>
+
 
       {isOpen && (
         <div className="absolute z-20 w-full mt-1 bg-white8 border border-gray21 rounded-lg shadow-lg overflow-hidden">
@@ -193,6 +206,7 @@ function FloatingSelect<T extends { card?: string }>({
               </button>
             );
           })}
+
         </div>
       )}
     </div>
@@ -200,4 +214,5 @@ function FloatingSelect<T extends { card?: string }>({
 }
 
 export default FloatingSelect;
+
 

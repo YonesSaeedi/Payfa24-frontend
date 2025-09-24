@@ -7,6 +7,7 @@ import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getChangePasswordSchema } from "../utils/validationSchemas"; 
 import { apiRequest } from "../utils/apiClient";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
@@ -19,16 +20,6 @@ interface SetPasswordResponse {
   msg: string;
 }
 
-const passwordSchema = yup.object().shape({
-  password: yup
-    .string()
-    .required("رمز عبور الزامی است.")
-    .min(8, "حداقل ۸ کاراکتر.")
-    .matches(/[a-z]/, "حداقل یک حرف کوچک.")
-    .matches(/[A-Z]/, "حداقل یک حرف بزرگ.")
-    .matches(/\d/, "حداقل یک عدد."),
-});
-
 export default function StepPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -40,7 +31,7 @@ export default function StepPassword() {
     formState: { errors },
     watch,
   } = useForm<PasswordFormData>({
-    resolver: yupResolver(passwordSchema),
+    resolver: yupResolver(getChangePasswordSchema()), 
     mode: "onChange",
     defaultValues: {
       password: "",
@@ -101,7 +92,7 @@ export default function StepPassword() {
             )}
           />
 
-          <div className="mt-3 space-y-1 text-xs font-normal">
+          <div className="mt-3 space-y-1 text-xs font-normal text-gray5">
             <PasswordConditionItem
               ok={hasMinLength}
               text="حداقل دارای ۸ کاراکتر"
