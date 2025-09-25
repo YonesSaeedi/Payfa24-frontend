@@ -3,6 +3,7 @@ import EmptyState from "./EmptyCards";
 import AddBankCardModal from "./BankCardModal/AddBankCardModal";
 import BankCardSection from "./BankCardSection";
 import { apiRequest } from "../../utils/apiClient";
+import { toast } from "react-toastify";
 
 interface RegisterCardResponse {
   status: boolean;
@@ -56,8 +57,14 @@ const BankCardsPage = () => {
       }
     } catch (err) {
       console.error("خطا در دریافت کارت‌ها:", err);
+
     }
   };
+
+toast.error("hello")
+toast.success("")
+
+
 
   useEffect(() => {
     fetchCards();
@@ -118,9 +125,9 @@ const BankCardsPage = () => {
       }
     } catch (err: any) {
       console.error("خطا در ثبت کارت:", err);
-      alert(
-        err?.response?.data?.msg ||
-          "ثبت کارت موفقیت‌آمیز نبود. دوباره امتحان کنید."
+      toast.error(
+        err?.response?.data?.msg ||err?.response?.data?.message ||
+          "ثبت کارت با مشکل مواجه شد."
       );
     }
   };

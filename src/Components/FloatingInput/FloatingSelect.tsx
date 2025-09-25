@@ -134,6 +134,7 @@ function FloatingSelect<T extends { card?: string }>({
   onChange,
   placeholder = "گزینه‌ای را انتخاب کنید",
   placeholderColor = "text-gray12",
+  placeholderIcon
 
 }: FloatingSelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
@@ -162,7 +163,7 @@ function FloatingSelect<T extends { card?: string }>({
         className="peer flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray12 lg:bg-gray43 focus:outline-none focus:ring-1 focus:ring-blue2"
 
       >
-        <span className={`flex items-center gap-2 ${placeholderClasses || placeholderColor}`}>
+        <span className={`flex items-center gap-2 ${  placeholderColor}`}>
           {/* نمایش آیکون و متن placeholder */}
           {!selected && placeholderIcon && (
             <span className="w-6 h-6">{placeholderIcon}</span>

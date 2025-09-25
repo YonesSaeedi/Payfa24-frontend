@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
 import { ICryptoItem } from "../Market/types";
-
+import Pagination from "../../Components/Transaction/Pagination"; 
 type TabType =
   | "همه"
   | "بیشترین معامله"
@@ -18,9 +18,12 @@ interface Props {
 }
 
 const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
-  console.log("cryptodaata", data);
   const [search, setSearch] = useState("");
-  const [cryptoList, setCryptoList] = useState<ICryptoItem[]>(data); // ✅ state برای مدیریت علاقه‌مندی
+  const [cryptoList, setCryptoList] = useState<ICryptoItem[]>(data);
+
+  // 🟢 pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12; // تعداد آیتم در هر صفحه
 
   const tabs: TabType[] = [
     "همه",
@@ -31,7 +34,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
     "تازه‌های بازار",
   ];
 
-  // تغییر وضعیت علاقه‌مندی
   const toggleFavorite = (symbol: string) => {
     setCryptoList((prev) =>
       prev.map((item) =>
@@ -40,9 +42,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
     );
   };
 
-   console.log("cryptoList",cryptoList);
-
-  // داده‌های فیلتر شده
   const filteredData = useMemo(() => {
     let filtered = [...cryptoList];
 
@@ -83,26 +82,37 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
     return filtered;
   }, [cryptoList, active, search]);
 
-  console.log("filteredData",filteredData);
-  
+  // 🟢 داده‌های صفحه فعلی
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredData.slice(start, end);
+  }, [filteredData, currentPage]);
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   return (
     <div className="w-full flex flex-col gap-6 lg:mt-16">
-      {/* سرچ */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="w-full lg:w-1/3 relative">
-          <input
-            type="text"
-            placeholder="...جستجو"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg px-4 lg:py-2 pr-11 text-sm outline-none focus:ring-2 focus:ring-blue-400 text-right bg-white1"
-          />
-          <span className="absolute inset-y-0 lg:right-[125px] flex items-center pointer-events-none w-5 h-5 text-gray-400 top-[8px] right-[20px]">
-            <IconSearch />
-          </span>
-        </div>
-      </div>
+      {/*باکس سرچ */}
+     <div className="items-center gap-4">
+  <div className="w-full flex justify-between">
+    <div className="flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 px-3">
+      <span className=" w-5 h-5 ml-2 text-gray-400"><IconSearch  /></span>
+      
+      <input
+        type="text"
+        placeholder="...جستجو"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setCurrentPage(1);
+        }}
+        className="flex-1 text-sm outline-none text-right bg-transparent"
+      />
+    </div>
+  </div>
+</div>
+
 
       {/* تب‌ها */}
       <div className="bg-white1 rounded-2xl shadow border border-gray21 overflow-hidden">
@@ -110,7 +120,10 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
           {tabs.map((tab, index) => (
             <span
               key={index}
-              onClick={() => setActive(index)}
+              onClick={() => {
+                setActive(index);
+                setCurrentPage(1);
+              }}
               className={`cursor-pointer pb-2 mr-4 ${
                 active === index
                   ? "text-blue-600 border-b-2 border-blue-600"
@@ -141,15 +154,12 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((item, index) => (
-          
-                
+              {paginatedData.map((item, index) => (
                 <tr
                   key={index}
                   className="border-b border-gray21 hover:bg-gray0 text-sm last:border-b-0"
                 >
                   <td className="py-3 px-4 flex items-center gap-3 pr-8">
-                    {/* ⭐ ستاره علاقه‌مندی */}
                     <button
                       onClick={() => toggleFavorite(item.symbol)}
                       className={`w-[22px] h-[22px] ${
@@ -159,40 +169,18 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
                       <IconStar />
                     </button>
 
-                   <span className="h-9 w-9 flex items-center justify-center ">
-  {item.isFont ? (
-    <i
-      className={`cf cf-${item.symbol.toLowerCase()}`}
-      style={{ color: item.color, fontSize: "36px" }}
-    ></i>
-  ) : (
-    <>
-      {console.log(
-        "icon url:",
-        item.symbol,
-        item.icon,
-        item.icon
-          ? `https://api.payfa24.org/images/currency/${item.icon}`
-          : "/default-coin.png"
-      )}
-      <img
-        src={
-          item.icon
-            ? `https://api.payfa24.org/images/currency/${item.icon}`
-            : "/default-coin.png"
-        }
-        alt={item.symbol}
-        className="w-8 h-8 rounded-full"
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).src = "/default-coin.png";
-        }}
-      />
-    </>
-  )}
+           <span className="h-9 w-9 flex items-center justify-center">
+  {item.renderIcon}
 </span>
 
+
                     <div>
-                      <div className="font-medium text-black1">{item.name}</div>
+                      <div className="font-medium text-black1">
+  {(item.locale?.fa?.name || item.name).length > 10
+    ? (item.locale?.fa?.name || item.name).slice(0, 10) + "..."
+    : (item.locale?.fa?.name || item.name)}
+</div>
+
                       <span className="text-xs text-gray-500">
                         {item.symbol}
                       </span>
@@ -204,8 +192,9 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
                   </td>
 
                   <td className="py-3 px-4 text-black1">
-                    {item.buyPrice != null ? `تومان ${item.buyPrice.toLocaleString()}` : "-"}
-
+                    {item.buyPrice != null
+                      ? `تومان ${item.buyPrice.toLocaleString()}`
+                      : "-"}
                   </td>
 
                   <td className="py-3 px-4 text-black1 hidden lg:table-cell">
@@ -231,7 +220,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
                 </tr>
               ))}
 
-              {filteredData.length === 0 && (
+              {paginatedData.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center py-6 text-gray-500">
                     هیچ نتیجه‌ای یافت نشد
@@ -241,7 +230,15 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
             </tbody>
           </table>
         </div>
+
+        
       </div>
+      {/* 🟢 استفاده از کامپوننت Pagination خودت */}
+        <Pagination
+          current={currentPage}
+          total={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
     </div>
   );
 };

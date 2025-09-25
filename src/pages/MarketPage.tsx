@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import  {ICryptoItem} from "../Components/Market/CryptoBox";
+import { ICryptoItem } from "../Components/Market/types"; 
 import HeaderFooterLayout from "../layouts/HeaderFooterLayout";
 import CryptoBox from "../Components/Market/CryptoBox";
 import CryptoMarketTable from "../Components/Market/CryptoMarketTable";
-
 import VectorDown from "../assets/icons/market/CryptoBox/VectorDownIcon";
 import VectorUp from "../assets/icons/market/CryptoBox/VectorUpIcon";
 import FireTopIcon from "../assets/icons/market/CryptoBox/FireTopIcon";
@@ -25,6 +23,11 @@ interface ApiCrypto {
   buy_status: boolean;
   isFont: boolean;
   isDisable: boolean;
+  locale?: {
+    fa?: { name: string };
+    en?: { name: string };
+  };
+  
 }
 interface ApiResponseGeneral {
   cryptocurrency: ApiCrypto[];
@@ -59,7 +62,6 @@ function MarketPage() {
       return res.json();
     },
   });
-  console.log('general info =>', generalData)
 
   const { data: listData, isLoading: loadingList } = useQuery<ApiResponseList>({
     queryKey: ["list-cryptos"],
@@ -70,23 +72,65 @@ function MarketPage() {
     },
   });
 
-  // 📌 ترکیب داده‌ها
- const cryptoData: ICryptoItem[] =
+  // 📌 ترکیب داده‌ها با استفاده از ICryptoItem
+  const cryptoData: ICryptoItem[] =
   generalData?.cryptocurrency.map((item) => {
     const match = listData?.list.find((c) => c.symbol === item.symbol);
 
+    const renderIcon = item.isFont ? (
+      <i
+        className={`cf cf-${item.symbol.toLowerCase()}`}
+        style={{ color: item.color, fontSize: "24px" }}
+      ></i>
+    ) : (
+      <img
+        src={
+          item.icon
+            ? `https://api.payfa24.org/images/currency/${item.icon}`
+            : "/default-coin.png"
+        }
+        alt={item.symbol}
+        className="w-6 h-6 rounded-full"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = "/default-coin.png";
+        }}
+      />
+    );
+
     return {
-      name: item.name,
+      name: item.locale?.fa?.name || item.name,
       symbol: item.symbol,
       icon: item.icon || undefined,
-      priceUSDT: match ? parseFloat(match.price) : 0, // مقدار پیش‌فرض
+      color: item.color,
+      isFont: item.isFont,
+      locale: item.locale,
+      renderIcon, // 🟢 اضافه شد
+      priceUSDT: match ? parseFloat(match.price) : 0,
       buyPrice: match ? parseFloat(match.price) : 0,
       sellPrice: match ? parseFloat(match.price) : 0,
       change24h: match ? parseFloat(match.priceChangePercent) : item.percent ?? 0,
       volume: match ? parseFloat(match.quoteVolume) : 0,
       isNew: false,
+      change: match ? `${parseFloat(match.priceChangePercent).toFixed(2)}%` : `${item.percent ?? 0}%`,
+      isPositive: (match ? parseFloat(match.priceChangePercent) : item.percent ?? 0) >= 0,
+      sort: item.sort,
+
     };
   }) || [];
+
+
+  // ✅ آماده‌سازی دیتا برای باکس‌های بالا
+  const losers = [...cryptoData]
+    .sort((a, b) => a.change24h - b.change24h)
+    .slice(0, 5);
+
+  const gainers = [...cryptoData]
+    .sort((a, b) => b.change24h - a.change24h)
+    .slice(0, 5);
+
+ const newest = [...cryptoData]
+  .sort((a, b) => b.sort - a.sort) // جدیدترین بر اساس sort
+  .slice(0, 5);
 
 
   return (
@@ -103,15 +147,15 @@ function MarketPage() {
             </h1>
           </div>
 
-          {/* باکس‌های بالای صفحه */}
+          {/* 📊 باکس‌های بالای صفحه */}
           <div className="hidden lg:flex gap-6 justify-start flex-row-reverse">
-            <CryptoBox title="بیشترین افت" iconTop={<VectorDown />} items={[]} />
-            <CryptoBox title="بیشترین رشد" iconTop={<VectorUp />} items={[]} />
-            <CryptoBox title="جدیدترین‌ها" iconTop={<FireTopIcon />} items={[]} />
+            <CryptoBox title="بیشترین افت" iconTop={<VectorDown />} items={losers} />
+            <CryptoBox title="بیشترین رشد" iconTop={<VectorUp />} items={gainers} />
+            <CryptoBox title="جدیدترین‌ها" iconTop={<FireTopIcon />} items={newest} />
           </div>
 
-          {/* جدول اصلی */}
-          <div className="pb-[126px]">
+          {/* 📋 جدول اصلی */}
+          <div className="pb-[87px]">
             {loadingGeneral || loadingList ? (
               <p className="text-center text-gray-500">در حال بارگذاری...</p>
             ) : (

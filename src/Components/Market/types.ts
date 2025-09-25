@@ -1,8 +1,7 @@
-// types.ts
 export interface ICryptoItem {
   name: string;
   symbol: string;
-  icon?: string;          // url
+  icon?: string;
   priceUSDT: number;
   buyPrice: number;
   sellPrice: number;
@@ -12,4 +11,9 @@ export interface ICryptoItem {
   isNew?: boolean;
   isFont?: boolean;
   color?: string;
+  locale?: {
+    fa?: { name: string };
+    en?: { name: string };
+  };
+  renderIcon?: React.ReactNode; // 🟢 اضافه شد
 }

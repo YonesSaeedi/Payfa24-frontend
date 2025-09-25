@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Ticket } from "./types";
 import bgChat from "../../../assets/images/Ticket/bgchat.jpg";
 import supportAvatar from "../../../assets/images/Ticket/avator.jpg";
-import { Paperclip, FileText, RefreshCw, CheckCircle, Clock, XCircle } from "lucide-react";
+import { FileText, RefreshCw } from "lucide-react";
+import { CheckCircle, Clock, XCircle } from "lucide-react";
 import IconSendMessage from "../../../assets/icons/ticket/IconSendMessage";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
+import { apiRequest } from "../../../utils/apiClient";
 
 interface ChatPanelProps {
   ticket: Ticket | null;
@@ -17,14 +19,11 @@ interface Message {
   timestamp: string;
   senderName?: string;
   senderRole?: string;
-  attachment?: {
-    type: "pdf";
-    name: string;
-    size: string;
-  };
+  attachment?: { type: "pdf"; name: string; size: string };
   system?: boolean;
 }
 
+// ---- ChatHeader همانند قبل بدون تغییر ----
 const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
   const renderStatus = (status: Ticket["status"]) => {
     switch (status) {
@@ -60,7 +59,6 @@ const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
 
   return (
     <div className="border-b border-b-gray21 bg-gray37  rounded-t-[16px] px-4 py-3">
-    
       <div className="flex items-center justify-between flex-row-reverse">
         <div dir="rtl" className="flex flex-col">
           <span className="text-gray5 text-sm">شماره تیکت: #{ticket.id}</span>
@@ -68,81 +66,87 @@ const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
         </div>
         <div>{renderStatus(ticket.status)}</div>
       </div>
-
-      
     </div>
   );
 };
 
-
-
-
- const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
+// ---- ChatPanel با منطق API ----
+const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: "چرا بعضی از خرید هایی که میخواهم انجام بدهم به مشکلات مختلفی از جمله خرید و فروش اشتباه میشود؟",
-      isUser: true,
-      timestamp: "12:03 | 12 اردیبهشت 1404",
-    },
-    {
-      id: 2,
-      text: "چرا بعضی از خرید هایی که میخواهم انجام بدهم به مشکلات مختلفی از جمله خرید و فروش اشتباه میشود؟",
-      isUser: false,
-      senderName: "محمد رضوی",
-      senderRole: "پشتیبانی",
-      timestamp: "12:03 | 12 اردیبهشت 1404",
-    },
-    {
-      id: 3,
-      text: "تیکت شما بروز رسانی شد",
-      isUser: false,
-      timestamp: "12:04 | 12 اردیبهشت 1404",
-      system: true,
-    },
-    {
-      id: 4,
-      isUser: false,
-      senderName: "محمد رضوی",
-      senderRole: "پشتیبانی",
-      timestamp: "12:05 | 12 اردیبهشت 1404",
-      attachment: {
-        type: "pdf",
-        name: "پیش فاکتور",
-        size: "2MB",
-      },
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
-  const handleSend = () => {
-    if (!newMessage.trim()) return;
+  const fetchMessages = async () => {
+    if (!ticket) return;
+    try {
+      const response = await apiRequest<{
+        ticket: { id: number; status: string; title: string };
+        ticket_message: { message: string; time: string; file?: string }[];
+      }>({
+        url: `/api/ticket/${ticket.id}/get-info`,
+        method: "GET",
+      });
 
-    const message: Message = {
-      id: Date.now(),
-      text: newMessage,
-      isUser: true,
-      timestamp: new Date().toLocaleString("fa-IR", {
-        hour: "2-digit",
-        minute: "2-digit",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }),
-    };
+      const serverMessages = response.ticket_message.map((msg, index) => ({
+        id: index + 1,
+        text: msg.message,
+        isUser: false,
+        timestamp: msg.time,
+        attachment: msg.file
+          ? { type: "pdf", name: msg.file, size: "؟MB" }
+          : undefined,
+      }));
 
-    setMessages([...messages, message]);
-    setNewMessage("");
+      setMessages(serverMessages);
+    } catch (err) {
+      console.error("خطا در دریافت پیام‌ها:", err);
+    }
   };
 
+  useEffect(() => {
+    fetchMessages();
+  }, [ticket]);
 
-const currentTicket: Ticket = ticket || {
-  id: 0,
-  title: "تیکت پیش‌فرض",
-  status: "pending",
-  date: new Date().toISOString(),
-};
+  const handleSend = async () => {
+    if (!newMessage.trim() || !ticket) return;
 
+    try {
+      const payload = { message: newMessage };
+
+      await apiRequest({
+        url: `/api/ticket/${ticket.id}/new`,
+        method: "POST",
+        data: payload,
+        isFormData: false,
+      });
+
+      const message: Message = {
+        id: Date.now(),
+        text: newMessage,
+        isUser: true,
+        timestamp: new Date().toLocaleString("fa-IR", {
+          hour: "2-digit",
+          minute: "2-digit",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }),
+      };
+
+      setMessages([...messages, message]);
+      setNewMessage("");
+
+      fetchMessages(); // آپدیت مجدد لیست پیام‌ها
+    } catch (err) {
+      console.error("خطا در ارسال پیام:", err);
+    }
+  };
+
+  const currentTicket: Ticket = ticket || {
+    id: 0,
+    title: "تیکت پیش‌فرض",
+    status: "pending",
+    date: new Date().toISOString(),
+  };
 
   return (
     <div className="flex-1">
@@ -154,7 +158,6 @@ const currentTicket: Ticket = ticket || {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${bgChat})`, opacity: 0.1 }}
           />
-
           <div className="relative z-10 flex flex-col gap-4">
             {messages.map((msg) =>
               msg.system ? (
@@ -176,7 +179,7 @@ const currentTicket: Ticket = ticket || {
                       <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
                         <img src={supportAvatar} alt="پشتیبانی" className="w-6 h-6 rounded-full" />
                         <span className="text-xs text-black1">
-                          {msg.senderName} ({msg.senderRole})
+                          {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
                         </span>
                       </div>
                     )}
@@ -229,4 +232,5 @@ const currentTicket: Ticket = ticket || {
     </div>
   );
 };
- export default ChatPanel;
+
+export default ChatPanel;

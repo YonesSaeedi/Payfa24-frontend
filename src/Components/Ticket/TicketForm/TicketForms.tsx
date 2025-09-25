@@ -9,6 +9,9 @@ import IconReceipt from "../../../assets/icons/services/IconReceipt";
 import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
 import WalletMinesIcon from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 
+import { apiRequest } from "../../../utils/apiClient";
+
+
 interface TicketFormInputs {
   title: string;
   orderId: string;
@@ -38,9 +41,35 @@ export default function TicketForm() {
 
   const { register, handleSubmit, control, formState: { errors } } = useForm<TicketFormInputs>();
 
-  const onSubmit = (data: TicketFormInputs) => {
-    console.log("فرم ارسال شد:", data);
-  };
+ const onSubmit = async (data: TicketFormInputs) => {
+  try {
+    // ساخت payload مطابق با API
+    const payload: Record<string, any> = {
+      subject: data.title,           // title -> subject
+      message: data.description,     // description -> message
+    };
+
+    // order فقط در صورت وجود، و به صورت عدد
+    if (selectedOrder?.id) payload.order = Number(selectedOrder.id); 
+
+    // فایل فقط در صورت وجود
+    if (selectedFile) payload.file = selectedFile;
+
+    const response = await apiRequest({
+      url: "/api/ticket/new",        // مسیر صحیح
+      method: "POST",
+      data: payload,
+      isFormData: !!selectedFile,  // اگر فایل وجود دارد، FormData می‌شود
+    });
+
+    console.log("تیکت ساخته شد:", response);
+    // اینجا می‌تونید toast یا redirect انجام دهید
+  } catch (err: any) {
+    console.error("خطا در ساخت تیکت:", err);
+    // اینجا می‌تونید toast خطا بزنید
+  }
+};
+
 
   return (
     <form
