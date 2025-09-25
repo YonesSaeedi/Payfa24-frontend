@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { ThemeContext } from "./../../Context/ThemeContext";
 
@@ -23,13 +23,18 @@ import NotificationDropDown from "../Notification/NotificationDropDown";
 import IconRingActive from "../../assets/icons/header/IconRingActive";
 import IconSun from "../../assets/icons/header/IconSun";
 
-export default function Header() {
-  const [showServices, setShowServices] = useState(false);
-  const [open, setOpen] = useState(false);
+import { Menu, X } from "lucide-react";
+import MobileMenu from "./MobileMenu";
 
+export default function Header() {
   const themeContext = useContext(ThemeContext);
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
+
+  const [showServices, setShowServices] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (!themeContext) {
     throw new Error(
@@ -40,18 +45,23 @@ export default function Header() {
   const { toggleTheme } = themeContext;
 
   return (
-    <header className="bg-white dark:bg-gray-900 dark:text-white sticky top-0 z-50">
-      <nav className="container-style mx-auto flex items-center justify-between py-4 px-6">
-        <div className="flex gap-4 text-gray-600 items-center">
-          <ProfileMenu themeContext={themeContext} currentPath={currentPath} />
+    <header className="bg-white dark:bg-gray-900 dark:text-white sticky top-0 z-50 ">
+      <nav className="container-style mx-auto flex items-center justify-between py-4 px-4 lg:px-6">
+        {/* Left Section */}
+        <div className="flex gap-3 md:gap-4 text-gray-600 items-center">
+          <div className="hidden lg:flex">
+               <ProfileMenu themeContext={themeContext} currentPath={currentPath} />
+          </div>
+       
 
           <button
-            className="hover:text-blue2 transition flex items-center justify-center w-8 h-8"
+            className="hidden hover:text-blue2 transition lg:flex items-center justify-center w-8 h-8"
             aria-label="Profile"
           >
             <VectorIcon />
           </button>
 
+          {/* Theme Toggle */}
           <button
             className="hover:text-blue2 transition hidden lg:flex items-center justify-center w-7 h-7"
             aria-label="Toggle Theme"
@@ -60,6 +70,7 @@ export default function Header() {
             {themeContext.theme === "dark" ? <IconSun /> : <MoonIcon />}
           </button>
 
+          {/* Messages */}
           <Link
             to="/ticket"
             aria-label="Messages"
@@ -71,32 +82,41 @@ export default function Header() {
                 : "text-header-items"
             }`}
           >
-            {currentPath === "/ticket" ? (
-              <MessagesActiveIcon />
-            ) : (
-              <MessagesIcon />
-            )}
+            {currentPath === "/ticket" ? <MessagesActiveIcon /> : <MessagesIcon />}
           </Link>
 
-          <div className="relative group">
+          {/* Notifications */}
+          <div className="relative">
             <button
+              onClick={() => setShowNotifications(!showNotifications)}
               className="hover:text-blue2 transition flex items-center justify-center w-7 h-7"
               aria-label="Notifications"
             >
-              <IconRingActive />
+              {showNotifications ? <IconRingActive /> : <RingIcon />}
             </button>
 
-            <div className="absolute left-0 top-full w-full h-4 bg-transparent"></div>
-
-            <div className="absolute left-0 top-[calc(100%+1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-              <NotificationDropDown />
-            </div>
+            {showNotifications && (
+              <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
+                <NotificationDropDown />
+              </div>
+            )}
           </div>
+
+          {/* Mobile Theme Toggle */}
+          <button
+            className="hover:text-blue2 transition flex lg:hidden items-center justify-center w-7 h-7"
+            aria-label="Toggle Theme"
+            onClick={toggleTheme}
+          >
+            {themeContext.theme === "dark" ? <IconSun /> : <MoonIcon />}
+          </button>
         </div>
 
-        <div className="flex items-center space-x-6">
-          <ul className="hidden lg:flex space-x-8 text-gray1">
-            <li className="relative pr-6">
+        {/* Right Section */}
+        <div className="flex items-center gap-4 lg:gap-6">
+          {/* Desktop Menu */}
+          <ul className="hidden lg:flex space-x-6 xl:space-x-8 text-gray1">
+            <li className="relative pr-4">
               <button
                 onClick={() => setShowServices(!showServices)}
                 className="hover:text-blue-600 transition flex items-center"
@@ -106,13 +126,12 @@ export default function Header() {
                   {showServices ? <CategoryActiveIcon /> : <CategoryIcon />}
                 </span>
               </button>
-
               {showServices && (
                 <ServicesBox onClose={() => setShowServices(false)} />
               )}
             </li>
 
-            <li className="pr-6">
+            <li className="pr-4">
               <Link
                 to="/wallet"
                 className={`hover:text-blue-600 transition flex items-center ${
@@ -130,7 +149,7 @@ export default function Header() {
               </Link>
             </li>
 
-            <li className="pr-6">
+            <li className="pr-4">
               <Link
                 to="/market"
                 className={`hover:text-blue2 transition flex items-center ${
@@ -143,16 +162,12 @@ export default function Header() {
               >
                 بازارها
                 <span className="pl-2 flex items-center justify-center w-8 h-8">
-                  {currentPath === "/market" ? (
-                    <ChartActiveIcon />
-                  ) : (
-                    <ChartIcon />
-                  )}
+                  {currentPath === "/market" ? <ChartActiveIcon /> : <ChartIcon />}
                 </span>
               </Link>
             </li>
 
-            <li className="pr-6">
+            <li className="pr-4">
               <Link
                 to="/trade"
                 className={`hover:text-blue2 transition flex items-center ${
@@ -170,7 +185,7 @@ export default function Header() {
               </Link>
             </li>
 
-            <li className="pr-6">
+            <li className="pr-4">
               <Link
                 to="/"
                 className={`hover:text-blue2 transition flex items-center ${
@@ -189,18 +204,80 @@ export default function Header() {
             </li>
           </ul>
 
-          <div className="text-blue-600 font-bold pl-6 flex items-center gap-2 md:gap-4">
+          {/* Logo */}
+          <div className="text-blue-600 font-bold flex items-center gap-2 md:gap-3">
             <Link to="/" className="flex items-center">
-              <img src={pfIcon} alt="Logo" className="w-6 h-6 lg:w-7 lg:h-7" />
+              <img
+                src={pfIcon}
+                alt="Logo"
+                className="w-6 h-6 md:w-7 md:h-7"
+              />
               <img
                 src={groupIcon}
                 alt="Logo"
-                className="w-6 h-6 lg:w-7 lg:h-7"
+                className="w-6 h-6 md:w-7 md:h-7"
               />
             </Link>
           </div>
+
+          {/* Mobile Hamburger */}
+          <button
+            className="lg:hidden flex items-center justify-center w-8 h-8"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          <MobileMenu open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
         </div>
-      </nav>
+     </nav>
     </header>
   );
 }
+
+
+
+
+
+ {/* </nav> */}
+
+      {/* Mobile Menu Drawer */}
+      {/* // {mobileMenuOpen && ( */}
+      //   <div className="lg:hidden absolute top-full left-0 w-full max-w-full overflow-x-hidden bg-white dark:bg-gray-800 shadow-md z-40">
+      //     <Link
+      //       to="/"
+      //       onClick={() => setMobileMenuOpen(false)}
+      //       className="block text-gray-700 dark:text-gray-200"
+      //     >
+      //       خانه
+      //     </Link>
+      //     <Link
+      //       to="/market"
+      //       onClick={() => setMobileMenuOpen(false)}
+      //       className="block text-gray-700 dark:text-gray-200"
+      //     >
+      //       بازارها
+      //     </Link>
+      //     <Link
+      //       to="/wallet"
+      //       onClick={() => setMobileMenuOpen(false)}
+      //       className="block text-gray-700 dark:text-gray-200"
+      //     >
+      //       کیف پول
+      //     </Link>
+      //     <Link
+      //       to="/trade"
+      //       onClick={() => setMobileMenuOpen(false)}
+      //       className="block text-gray-700 dark:text-gray-200"
+      //     >
+      //       معامله
+      //     </Link>
+      //     <button
+      //       onClick={() => setShowServices(!showServices)}
+      //       className="block w-full text-left text-gray-700 dark:text-gray-200"
+      //     >
+      //       خدمات
+      //     </button>
+      //     {showServices && <ServicesBox onClose={() => setShowServices(false)} />}
+      //   </div>
+      // )}

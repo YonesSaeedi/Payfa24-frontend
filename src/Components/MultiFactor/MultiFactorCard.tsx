@@ -18,7 +18,7 @@ export default function MultiFactorCard({
 
   return (
     <>
-      <div className="w-full rounded-xl lg:p-6 p-4 border border-gray43">
+      <div className="w-full rounded-xl lg:p-6 p-4 border border-gray21">
         {/* بخش بالایی کارت */}
         <div className="flex items-center justify-between flex-row-reverse mb-5">
           <button

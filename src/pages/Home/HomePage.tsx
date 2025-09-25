@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState} from "react";
 
 import Fire from "../../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
 import YoYowIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/YoYowIcon";
@@ -28,9 +28,37 @@ import QuestionBox from "../../Components/Home/QuestionBox/QuestionBox";
 import TetherTopIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon";
 import MostDeal from "../../assets/icons/Home/SynchronizedSlidersIcon/MostDeal";
 import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
+
+// import { toast } from "react-toastify";
+// import { apiRequest } from "../../utils/apiClient";
+
+
+// interface PriceItem {
+//   symbol: string;
+//   price: string;
+//   fee: string;
+//   priceChangePercent: string;
+//   quoteVolume: string;
+// }
+
+// interface PricesResponse {
+//   list: PriceItem[];
+// }
+
+// interface CryptoMeta {
+//   symbol: string;
+//   name: string;
+//   icon: string;
+// }
+
+//  interface CryptoMetaResponse {
+//    cryptocurrency: CryptoMeta[];
+//  }
+
 import { toast } from "react-toastify";
 import { apiRequest } from "../../utils/apiClient";
 import { useQuery } from "@tanstack/react-query";
+
 
 
 
@@ -130,6 +158,9 @@ const boxes = [
 
 function HomePage() {
   const [active, setActive] = useState(0);
+  // const [tableData, setTableData] = useState<any[]>([]);
+// const [loading, setLoading] = useState(true);
+
   const data = [
     {
       name: "ننننننننننننتوکو توکن",
@@ -231,6 +262,56 @@ function HomePage() {
   })
   console.log(cryptoData)
 
+
+
+  
+//   useEffect(() => {
+//     const fetchCryptoData = async () => {
+//       try {
+//        const [prices, meta] = await Promise.all([
+//   apiRequest<PricesResponse>({ url: '/api/get-general-info' }),
+//   apiRequest<CryptoMetaResponse>({ url: '/api/list-cryptocurrencies' })
+// ]);
+
+// console.log("=== Prices API ===");
+// console.log(prices);
+
+// console.log("=== Meta API ===");
+// console.log(meta);
+
+
+// const merged = prices.list.map(item => {
+//   const info = meta.cryptocurrency.find(
+//     c => c.symbol.toLowerCase() === item.symbol.toLowerCase()
+//   );
+//   return {
+//     symbol: item.symbol,
+//     name: info?.name || item.symbol,
+//     logo: info?.icon ? <img src={info.icon} alt={item.symbol} className="h-8 w-8" /> : <TokoTokenIcon />,
+//     priceUSDT: Number(item.price),
+//     buyPrice: Number(item.price) + Number(item.fee),
+//     sellPrice: Number(item.price) - Number(item.fee),
+//     change24h: Number(item.priceChangePercent),
+//     volume: Number(item.quoteVolume),
+//   };
+// });
+
+// console.log("prices:", prices);
+// console.log("meta:", meta);
+
+
+//         setTableData(merged);
+//       } catch (err) {
+//         console.error(err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchCryptoData();
+//   }, []);
+
+
   return (
     <div>
       <HeaderFooterLayout>
@@ -258,6 +339,14 @@ function HomePage() {
             <div className="w-full pt-7">
               <CryptoTable data={data} active={active} setActive={setActive} />
             </div>
+            {/* <div className="w-full pt-7">
+  {loading ? (
+    <div className="text-center py-10">در حال بارگذاری...</div>
+  ) : (
+    <CryptoTable data={tableData} active={active} setActive={setActive} />
+  )}
+</div> */}
+
             <div id="qustionBox" className="pt-12 lg:pb-28 pb-14">
               <QuestionBox />
             </div>

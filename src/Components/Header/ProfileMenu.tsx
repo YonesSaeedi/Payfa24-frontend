@@ -10,7 +10,7 @@ import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransact
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconUser from "../../assets/icons/ProfileMenue/IconUser";
 import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
-import LogOut from "../../assets/images/logout.png";
+// import LogOut from "../../assets/images/logout.png";
 interface ProfileMenuProps {
   themeContext: {
     theme: "light" | "dark";
@@ -57,15 +57,18 @@ export default function ProfileMenu({
       </button>
 
 
-      <div
-        className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${open
-          ? "scale-100 opacity-100"
-          : "scale-95 opacity-0 pointer-events-none"
-          }`}
+       
+            <div
+        className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
+          open
+            ? "scale-100 opacity-100"
+            : "scale-95 opacity-0 pointer-events-none"
+        }`}
+
       >
         <div
           dir="rtl"
-          className="bg-gray27 py-4 px-3 flex items-center justify-between border border-gray21 m-4 rounded-[8px]"
+          className="bg-gray33 py-4 px-3 flex items-center justify-between border border-gray21 m-4 rounded-[8px]"
         >
           <div className="flex ">
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
@@ -86,60 +89,55 @@ export default function ProfileMenu({
 
         <ul dir="rtl" className="p-4 space-y-3 font-medium">
           <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
-            <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer">
+            <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer text-black1">
               <span className="w-6 h-6">
                 <IconUserAccount />
               </span>
               حساب کاربری
             </li>
           </Link>
-          <Link
-            to={"/ChangePassword"}
-            className="flex items-center gap-2 w-full"
-          >
-            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
-              <span className="w-6 h-6">
-                <IconSecurity />
-              </span>
-              تنظیمات امنیت
-            </li>
-          </Link>
-          <Link
-            to={"/authentication"}
-            className="flex items-center gap-2 w-full"
-          >
-            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
-              <span className="w-6 h-6">
-                <IconAuthentication />
-              </span>
-              احراز هویت
-            </li>
-          </Link>
+
+           <Link to={"/Security settings"} className="flex items-center gap-2 w-full">
+           <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
+            <span className="w-6 h-6">
+              <IconSecurity />
+            </span>{" "}
+            تنظیمات امنیت
+          </li>
+           </Link>
+           <Link to={"/authentication"} className="flex items-center gap-2 w-full">
+             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
+            <span className="w-6 h-6">
+              <IconAuthentication />
+            </span>{" "}
+            احراز هویت
+          </li>
+           </Link>
           <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
-            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
-              <span className="w-6 h-6">
-                <IconBankAccounts />
-              </span>
-              حساب‌های بانکی
-            </li>
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
+            <span className="w-6 h-6">
+              <IconBankAccounts />
+            </span>{" "}
+            حساب‌های بانکی
+          </li>
+
           </Link>
 
-
-          <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
-            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2">
-              <span className="w-6 h-6">
-                <IconTransactionhistory />
-              </span>{" "}
-              تاریخچه معاملات
-            </li>
-          </Link>
-          <Link to={"/services/ConnectedDevices"} className="flex items-center gap-2 w-full">
-            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2">
-              <span className="w-6 h-6">
-                <IconConnecteddevices />
-              </span>{" "}
-              دستگاه‌های متصل
-            </li>
+        <Link to={"/authProfile"} className="flex items-center gap-2 w-full">
+         <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
+            <span className="w-6 h-6">
+              <IconTransactionhistory />
+            </span>{" "}
+            تاریخچه معاملات
+          </li>
+        </Link>
+            <Link to={"/services/ConnectedDevices"} className="flex items-center gap-2 w-full">
+              <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2 text-black1">
+            <span className="w-6 h-6">
+              <IconConnecteddevices />
+            </span>{" "}
+            دستگاه‌های متصل
+          </li>
 
 
           </Link>
@@ -164,7 +162,7 @@ export default function ProfileMenu({
 
 
 
-      <div
+      {/* <div
         className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${open
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -286,7 +284,7 @@ export default function ProfileMenu({
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {IsModal && (
         <>
@@ -303,7 +301,7 @@ export default function ProfileMenu({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center gap-4 flex items-center justify-center flex-col">
-                <img src={LogOut} alt="LogOut" />
+                {/* <img src={LogOut} alt="LogOut" /> */}
                 <h1 className="lg:text-2xl text-lg text-black0 font-medium">
                   خروج از حساب کاربری
                 </h1>

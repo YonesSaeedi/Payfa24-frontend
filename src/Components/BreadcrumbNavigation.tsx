@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router"
-import IconChevron from "../assets/icons/trade/IconChevron";
+import IconChevron from "../assets/Icons/trade/IconChevron";
 
 const BREADCRUMB_LABELS: Record<string, string> = {
   trade: "معامله",
@@ -11,12 +11,13 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   ticket: "تیکت‌ها",
   create: "ایجاد تیکت",
   authentication: 'احراز هویت',
-  services: 'خدمات',
-  transaction: 'تاریخچه تراکنش ها',
-  ConnectedDevices: 'دستگاه های متصل',
-  faq: 'سوالات متدال',
-  BankCards: 'کارت های بانکی',
-  Withdrawal: 'برداشت'
+  services:'خدمات',
+  transaction:'تاریخچه تراکنش ها',
+  ConnectedDevices:'دستگاه های متصل',
+  faq:'سوالات متدال',
+  BankCards:'کارت های بانکی',
+  withdrawal:'برداشت'
+
 
 };
 

@@ -10,6 +10,7 @@ import IconEyeClosed from "../../assets/Icons/Login/IconEyeClosed";
 import PasswordConditionItem from "../../Components/InputField/PasswordConditionitem/PasswordConditionItem";
 import { useState } from "react";
 import { Link } from "react-router";
+import { getChangePasswordSchema } from "../../utils/validationSchemas";
 
 type ChangePasswordFormData = {
   currentPassword: string;
@@ -17,28 +18,12 @@ type ChangePasswordFormData = {
   confirmPassword: string;
 };
 
-const changePasswordSchema = yup.object().shape({
-  currentPassword: yup
-    .string()
-    .required("رمز عبور فعلی الزامی است.")
-    .min(8, "حداقل ۸ کاراکتر."),
-  newPassword: yup
-    .string()
-    .required("رمز عبور جدید الزامی است.")
-    .min(8, "حداقل ۸ کاراکتر.")
-    .matches(/[a-z]/, "حداقل یک حرف کوچک.")
-    .matches(/[A-Z]/, "حداقل یک حرف بزرگ.")
-    .matches(/\d/, "حداقل یک عدد."),
-  confirmPassword: yup
-    .string()
-    .required("تکرار رمز عبور الزامی است.")
-    .oneOf([yup.ref("newPassword")], "رمزها باید یکسان باشند."),
-});
 
 export default function ChangePassword() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const schema = getChangePasswordSchema();
 
   const {
     handleSubmit,
@@ -46,7 +31,7 @@ export default function ChangePassword() {
     formState: { errors },
     watch,
   } = useForm<ChangePasswordFormData>({
-    resolver: yupResolver(changePasswordSchema),
+    resolver: yupResolver(schema),
     mode: "onChange",
     defaultValues: {
       currentPassword: "",
@@ -71,7 +56,7 @@ export default function ChangePassword() {
       <HeaderLayout>
         <div className="container-style w-full pt-7 flex gap-10 flex-col">
           <BreadcrumbNavigation />
-          <div className="lg:bg-gray42 w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl pb-10">
+          <div className="lg:bg-gray9 bg-white1 w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl pb-10">
             <div className="flex items-center justify-center w-full " dir="rtl">
               <div className="w-full max-w-lg lg:px-8  ">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -101,7 +86,7 @@ export default function ChangePassword() {
                             setShowCurrentPassword((prev) => !prev)
                           }
                           {...field}
-                          labelBgClass="bg-gray42"
+                          labelBgClass="lg:bg-gray9 bg-white1"
                         />
                       )}
                     />
@@ -125,7 +110,7 @@ export default function ChangePassword() {
                             setShowNewPassword((prev) => !prev)
                           }
                           {...field}
-                          labelBgClass="bg-gray42"
+                          labelBgClass="lg:bg-gray9 bg-white1"
                         />
                       )}
                     />
@@ -149,7 +134,7 @@ export default function ChangePassword() {
                             setShowConfirmPassword((prev) => !prev)
                           }
                           {...field}
-                          labelBgClass="bg-gray42"
+                          labelBgClass="lg:bg-gray9 bg-white1"
                         />
                       )}
                     />

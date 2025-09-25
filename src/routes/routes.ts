@@ -2,65 +2,57 @@
 
 
 export const ROUTES = {
+  HOME: "/",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  MARKET: "/market",
+  NOTIFICATIONS: "/notifications",
+  FORGOT_PASSWORD: "/forgot-password",
 
-  HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
-  MARKET: '/market',
-  NOTIFICATIONS: '/notifications',
-  FORGOT_PASSWORD: '/forgot-password',
+  AuthenticationBasic: "/authentication",
+  AuthenticationAdvance: "/authenticationAdvance",
+  Profile: "/authProfile",
 
-  AuthenticationBasic: '/authentication',
-  AuthenticationAdvance: '/authenticationAdvance',
-  Profile: '/authProfile',
-
-  Securitysettings: './Security settings',
-  UserAccount: './authProfile',
-  BankAccount: './authProfile',
-  Wallet: '/wallet',
+  Securitysettings: "./Security settings",
+  UserAccount: "./authProfile",
+  BankAccount: "./authProfile",
+  Wallet: "/wallet",
   ConnectedDevices: {
-    Root: '/services',
-    CREATE: '/services/ConnectedDevices'
+    Root: "/services",
+    CREATE: "/services/ConnectedDevices",
   },
 
-  ChangePassword: '/ChangePassword',
-  VerifyGooglePage: '/verify/google',
-  MultiFactor: '/MultiFactor',
-  GoogleAuthFlow: '/GoogleAuthFlow',
-  AddFriend: '/AddFriend',
-  Deposit: '/DepositPage',
+  ChangePassword: "/ChangePassword",
+  VerifyGooglePage: "/verify/google",
+  MultiFactor: "/MultiFactor",
+  GoogleAuthFlow: "/GoogleAuthFlow",
+  AddFriend: "/AddFriend",
+  Deposit: "/DepositPage",
 
   TRADE: {
-    ROOT: '/trade',
-    BUY: '/trade/buy',
-    SELL: '/trade/sell',
+    ROOT: "/trade",
+    BUY: "/trade/buy",
+    SELL: "/trade/sell",
   },
-  Ticket: {
-    ROOT: '/ticket',
-    CREATE: '/ticket/create',
-
+  TICKET: {
+    ROOT: "/ticket",
+    CREATE: "/ticket/create",
   },
-  Transaction: {
-    Root: '/services',
-    CREATE: '/services/transaction'
+  TRANSACTION: {
+    ROOT: "/services",
+    CREATE: "/services/transaction",
   },
   FAQ: {
-    Root: '/services',
-    CREATE: '/services/faq'
+    ROOT: "/services",
+    CREATE: "/services/faq",
   },
-  BankCards: {
-    Root: '/services',
-    CREATE: '/services/BankCards'
+  BANK_CARDS: {
+    ROOT: "/services",
+    CREATE: "/services/BankCards",
   },
-  withdrawal: {
-    Root: '/',
-    CREATE: '/withdrawal'
+  WITHDRAWAL: {
+    ROOT: "/withdrawal",
+    CREATE: "/withdrawal",
   },
+};
 
-  Bank_Cards: {
-    ROOT: '/services',
-    CREATE: '/services/BankCards'
-  },
-
-
-}
