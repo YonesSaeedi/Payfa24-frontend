@@ -61,8 +61,6 @@ const BankCardsPage = () => {
     }
   };
 
-toast.error("hello")
-toast.success("")
 
 
 
@@ -94,10 +92,11 @@ toast.success("")
       .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
       .replace(/\D/g, "");
 
-    if (parsedCardNumber.length !== 16) {
-      alert("شماره کارت باید دقیقاً ۱۶ رقم باشد.");
-      return;
-    }
+   if (parsedCardNumber.length !== 16) {
+    toast.error("شماره کارت باید دقیقاً ۱۶ رقم باشد.");
+    return;
+  }
+
 
     try {
       const response = await apiRequest<
@@ -119,9 +118,9 @@ toast.success("")
         };
         setCards((prev) => [...prev, newCard]);
         setIsModalOpen(false);
-        alert(response.msg);
+        toast.success(response.msg);
       } else {
-        alert(response.msg);
+         toast.success(response.msg);
       }
     } catch (err: any) {
       console.error("خطا در ثبت کارت:", err);
