@@ -69,7 +69,7 @@ export const getLoginSchema = () => {
       .string()
       .required("رمز عبور الزامی است.")
       .matches(
-        /^.{8,}$/,
+        /^.{6,}$/,
         "رمز عبور باید حداقل ۸ کاراکتر باشد."
       ),
   });
