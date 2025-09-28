@@ -114,7 +114,7 @@ interface ApiRequestParams<
 export async function apiRequest<
   TResponse = unknown,
   TData extends Record<string, FormDataValue> | undefined = undefined,
-  TParams extends Record<string, unknown> | undefined = undefined
+  TParams extends Record<string, unknown> = Record<string, unknown>
 >({
   url,
   method = "GET",
