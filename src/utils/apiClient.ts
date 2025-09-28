@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ROUTES } from "../routes/routes";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
@@ -38,7 +39,7 @@ async function refreshAccessToken(): Promise<string | null> {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('expiresAt');
-        window.location.href = '/login';
+        window.location.href = ROUTES.LOGIN;
         return null;
       } finally {
         // always clear so the next call can retry if needed
@@ -113,7 +114,7 @@ interface ApiRequestParams<
 export async function apiRequest<
   TResponse = unknown,
   TData extends Record<string, FormDataValue> | undefined = undefined,
-  TParams extends Record<string, unknown> | undefined = undefined
+  TParams extends Record<string, unknown> = Record<string, unknown>
 >({
   url,
   method = "GET",

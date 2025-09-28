@@ -3,10 +3,12 @@ import { Link } from "react-router";
 import IconArrowBottomLeft from "../../assets/icons/trade/IconArrowBottomLeft";
 import IconArrowTopLeft from "../../assets/icons/trade/IconArrowTopLeft";
 import IconBorderedPlus from "../../assets/icons/trade/IconBorderedPlus";
-import IconChevron from "../../assets/icons/trade/IconChevron";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
-import PercentBar from "./PercentBar";
+
+import IconChevron from "../../assets/Icons/trade/IconChevron";
 import CryptoListModal from "./CryptoListModal";
+import PercentBar from "./PercentBar";
+import CurrencyModal from "../Deposit/CurrencyModal";
 
 type BuyAndSellProps = {
   isSell: boolean;
@@ -184,6 +186,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       {/* percent bar ======================================================================================================= */}
       <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
       <button className="rounded-lg bg-blue2 py-2 lg:py-2.5 text-white2 text-base font-medium lg:text-lg lg:font-bold">{isSell ? "ثبت فروش" : "ثبت خرید"}</button>
+      <CurrencyModal />
     </div>
   )
 }
