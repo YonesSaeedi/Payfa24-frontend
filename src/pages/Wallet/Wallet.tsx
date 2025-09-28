@@ -1,27 +1,49 @@
 import WalletCard from "../../Components/Home/WalletCard/WalletCard";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import WalletAssets from "../../Components/Wallet/WalletAssets"
-import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "../../utils/apiClient";
-export default function Wallet() {
+import { useEffect, useState } from "react";
 
-    const { data: cryptoData, isLoading } = useQuery({
-    queryKey: ['cryptos'],
-    queryFn: () => { return apiRequest({ url: '/api/get-general-info' }) },
-    staleTime: Infinity,         // always fresh
-    gcTime: Infinity,            // never garbage collected
-    refetchOnWindowFocus: false, // disable re-fetch on focus
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-  })
-  console.log(cryptoData)
+interface BalanceResponse {
+  balance: number;
+  balance_available: number;
+  internal: {
+    id: number;
+    title: string;
+    symbol: string;
+    percent: number;
+    status: "active" | "inactive" | string; // می‌تونی دقیق‌تر محدود کنی
+  };
+}
+
+
+
+export default function Wallet() {
+  const [balance, setBalance] = useState<BalanceResponse | null>(null)
+
+  async function getBalance() {
+    try {
+      const response = await apiRequest<BalanceResponse>({
+        url: "/wallet/balance",
+        method: "GET",
+      });
+      setBalance(response); // مقدار رو داخل state ذخیره کن
+      console.log("Balance:", response.balance);
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+    }
+  }
+
+  useEffect(() => {
+    getBalance();
+  }, []);
   return (
     <div className="h-full">
       <HeaderLayout>
         <div className="p-6 pt-16 container-style flex flex-col lg:flex-row-reverse gap-10">
           <div className="w-full lg:w-auto text-right">
             <WalletCard
-              balance={1000000}
+                balance={balance?.balance ?? 0}
               changeAmount={5000}
               change={2.3}
               showBuySell={false}
