@@ -13,6 +13,7 @@ interface BankOption {
   bank: string;
   card: string;
    id: number;
+   
 }
 
 interface WithdrawFormValues {
@@ -78,11 +79,15 @@ export default function WithdrawForm() {
   };
 
 const bankOptions = listCards.map(card => ({
-  value: card,   // ← کل کارت
+  value:  {
+    ...card,
+    bankName: card.bank, // ← اضافه کردن بانک داخل value
+  },
   label: (
-    <div className="flex flex-row-reverse justify-between items-center w-full">
-      <span>{card.bank}</span>
-      <span className="text-sm text-gray-700">{card.card}</span>
+   <div className="flex  justify-between items-center w-full">
+        <span>{card.bank}</span>
+      <span className="text-sm text-gray-700">{card.card.replace(/(\d{4})(?=\d)/g, "$1-")}</span>
+    
     </div>
   ),
 }));
@@ -129,6 +134,7 @@ const bankOptions = listCards.map(card => ({
                 value={field.value}
                 onChange={field.onChange}
                 options={bankOptions}
+                isBankSelect={true}
               />
             )}
           />
