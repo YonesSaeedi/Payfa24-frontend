@@ -1,5 +1,32 @@
-import React, { FC, useEffect, useState } from "react"; import FloatingSelect from "../FloatingInput/FloatingSelect"; import FloatingInput from "../FloatingInput/FloatingInput"; import IconVideo from "../../assets/icons/Withdrawal/IconVideo"; import Accordion from "../Withdrawal/Accordion"; import { apiRequest } from "../../utils/apiClient"; interface CoinNetworkRef { id: number; withdraw_min?: string; withdraw_fee?: string; } interface Coin { id: number; symbol: string; balance?: string; balance_available?: string; network?: CoinNetworkRef[]; } interface FullNetwork { id: number; name?: string; symbol?: string; tag?: any; addressRegex?: string; memoRegex?: string; locale?: any; }
+import React, { FC, useEffect, useState } from "react";
+import FloatingSelect from "../FloatingInput/FloatingSelect";
+import FloatingInput from "../FloatingInput/FloatingInput";
+import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
+import Accordion from "../Withdrawal/Accordion";
+import { apiRequest } from "../../utils/apiClient";
+import CurrencyWithdrawModal from "../Withdrawal/CurrencyWithdrawModal"; // 👈 اضافه شد
 
+interface CoinNetworkRef {
+  id: number;
+  withdraw_min?: string;
+  withdraw_fee?: string;
+}
+interface Coin {
+  id: number;
+  symbol: string;
+  balance?: string;
+  balance_available?: string;
+  network?: CoinNetworkRef[];
+}
+interface FullNetwork {
+  id: number;
+  name?: string;
+  symbol?: string;
+  tag?: any;
+  addressRegex?: string;
+  memoRegex?: string;
+  locale?: any;
+}
 
 const CryptoWithdrawForm: FC = () => {
   const [crypto, setCrypto] = useState<string>("");
@@ -18,6 +45,9 @@ const CryptoWithdrawForm: FC = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<
     (FullNetwork & CoinNetworkRef & { displayName?: string }) | undefined
   >(undefined);
+
+  // 👇 state برای کنترل باز/بسته بودن مودال
+  const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -124,21 +154,30 @@ const CryptoWithdrawForm: FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between h-[644px] overflow-y-auto">
+    <form
+      onSubmit={handleSubmit}
+      className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between h-[644px] overflow-y-auto"
+    >
       <div>
-        <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2">
-          <span className="w-6 h-6 icon-wrapper"><IconVideo /></span>
+        <div
+          dir="rtl"
+          className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2"
+        >
+          <span className="w-6 h-6 icon-wrapper">
+            <IconVideo />
+          </span>
           <h2 className="font-normal text-blue2">ویدیو آموزشی برداشت رمز ارز</h2>
         </div>
 
+        {/* 👇 تغییر داده شد: به جای FloatingSelect، یک div قابل کلیک و مودال */}
         <div dir="rtl" className="mb-6 relative">
-          <FloatingSelect
-            label="انتخاب رمز ارز"
-            value={crypto || undefined}
-            onChange={(v) => setCrypto(String(v))}
-            options={coins.map((c) => ({ value: c.symbol, label: c.symbol }))}
-            placeholder="نمونه: USDT, BTC"
-          />
+          <label className="block text-sm text-gray-600 mb-1">انتخاب رمز ارز</label>
+          <div
+            className="p-3 border rounded-lg cursor-pointer bg-white"
+            onClick={() => setIsCurrencyModalOpen(true)}
+          >
+            {crypto || "انتخاب کنید"}
+          </div>
         </div>
 
         <div dir="rtl" className="mb-6 relative">
@@ -148,7 +187,9 @@ const CryptoWithdrawForm: FC = () => {
             onChange={handleNetworkChange}
             options={availableNetworks.map((n) => ({
               value: String(n.id),
-              label: `${n.displayName || n.name || n.symbol || n.id} (${n.name || n.symbol || n.id})`,
+              label: `${n.displayName || n.name || n.symbol || n.id} (${
+                n.name || n.symbol || n.id
+              })`,
             }))}
           />
 
@@ -180,7 +221,11 @@ const CryptoWithdrawForm: FC = () => {
                 />
                 <div className="flex justify-between pt-2 text-xs text-gray-500">
                   <p>کل موجودی: 34.000 MOS</p>
-                  <button type="button" className="text-blue-500" onClick={() => setAmount("34.000")}>
+                  <button
+                    type="button"
+                    className="text-blue-500"
+                    onClick={() => setAmount("34.000")}
+                  >
                     همه موجودی
                   </button>
                 </div>
@@ -191,11 +236,22 @@ const CryptoWithdrawForm: FC = () => {
       </div>
 
       <div>
-        <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg" disabled={isLoading}>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg"
+          disabled={isLoading}
+        >
           {isLoading ? "در حال ارسال..." : "تایید"}
         </button>
         {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
       </div>
+
+      {/* 👇 مودال انتخاب ارز */}
+      <CurrencyWithdrawModal
+        open={isCurrencyModalOpen}
+        onClose={() => setIsCurrencyModalOpen(false)}
+        onSelect={(symbol) => setCrypto(symbol)}
+      />
     </form>
   );
 };

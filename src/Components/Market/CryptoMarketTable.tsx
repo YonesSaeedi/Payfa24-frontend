@@ -170,7 +170,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive }) => {
                     </button>
 
            <span className="h-9 w-9 flex items-center justify-center">
-  {item.renderIcon}
+  {item.icon}
 </span>
 
 
