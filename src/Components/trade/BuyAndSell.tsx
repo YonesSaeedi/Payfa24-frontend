@@ -4,11 +4,11 @@ import IconArrowBottomLeft from "../../assets/icons/trade/IconArrowBottomLeft";
 import IconArrowTopLeft from "../../assets/icons/trade/IconArrowTopLeft";
 import IconBorderedPlus from "../../assets/icons/trade/IconBorderedPlus";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
-
 import IconChevron from "../../assets/Icons/trade/IconChevron";
 import CryptoListModal from "./CryptoListModal";
 import PercentBar from "./PercentBar";
-import CurrencyModal from "../Deposit/CurrencyModal";
+import { toast } from "react-toastify";
+import { apiRequest } from "../../utils/apiClient";
 
 type BuyAndSellProps = {
   isSell: boolean;
@@ -22,11 +22,13 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   const [amountValue, setAmountValue] = useState<number | ''>('')
   const [selectedPercent, setSelectedPercent] = useState<number>(0)
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [TomanBalance, setTomanBalance] = useState<number>(0)
   const currentCryptoPrice = 113_720 // to be removed after it is connected to the API
   const cryptoBalance = 12.37 // to be removed after it is connected to the API
-  const TomanBalance = 724_470 // to be removed after it is connected to the API
+  // const TomanBalance = 724_470 // to be removed after it is connected to the API
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
-  // handles count input change ====================================================================================================
+  // handles count input change ============================================================================================================================
   const handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     lastChangedRef.current = 'input';
     let val = persianToEnglish(e.target.value)
@@ -48,7 +50,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       setAmountValue(0);
     }
   };
-  // handles amount input change ====================================================================================================
+  // handles amount input change =============================================================================================================================
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     lastChangedRef.current = 'input';
     const val = persianToEnglish(e.target.value).replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
@@ -73,7 +75,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     setCountInputStr(String(Math.round((roundedAmount / currentCryptoPrice) * 100) / 100));
     setSelectedPercent(100)
   };
-  // syncing the percent bar and inputs together ====================================================================================================
+  // syncing the percent bar and inputs together =============================================================================================================
   useEffect(() => {
     if (lastChangedRef.current === 'input') {
       // User typed → update percent only
@@ -107,6 +109,21 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     // Reset the change source after applying
     lastChangedRef.current = null;
   }, [countInputStr, amountValue, selectedPercent, isSell, cryptoBalance, TomanBalance, currentCryptoPrice]);
+  // fetch balance and cryptocurrency info at first ================================================================================================================
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        setIsLoading(true)
+        const response = await apiRequest({ url: '/api/wallets/fiat/balance' })
+
+      } catch (err) {
+        toast.error(err?.response?.data?.msg || err?.response?.data?.message || "دریافت موجودی کاربر با مشکل مواجه شد!");
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchBalance()
+  }, [])
 
   return (
     <div className="w-full h-full lg:bg-gray30 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between">
@@ -186,7 +203,6 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       {/* percent bar ======================================================================================================= */}
       <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
       <button className="rounded-lg bg-blue2 py-2 lg:py-2.5 text-white2 text-base font-medium lg:text-lg lg:font-bold">{isSell ? "ثبت فروش" : "ثبت خرید"}</button>
-      <CurrencyModal />
     </div>
   )
 }
