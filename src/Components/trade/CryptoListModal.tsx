@@ -1,47 +1,17 @@
-import React, { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import IconClose from "../../assets/Icons/Login/IconClose";
-import useGetCryptoData from "../../hooks/useGetCryptoData";
-import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
-import { CryptoDataMap } from "../../types/crypto";
+import { CryptoItem } from "../../types/crypto";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import CurrenciesVirtualizedList from "./CurrenciesVirtualizedList";
 
 type CryptoListModalProps = {
   setIsCryptoListModalOpen: Dispatch<SetStateAction<boolean>>;
+  cryptoListData: CryptoItem[]
 }
 
-const CryptoListModal = ({ setIsCryptoListModalOpen }: CryptoListModalProps) => {
+const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData }: CryptoListModalProps) => {
   const [isDollarCurrencies, setIsDollarCurrencies] = useState<boolean>(false)
   const searchInputRef = useRef<HTMLInputElement | null>(null)
-  const { data: generalData, isLoading: isGeneralInfoLoading } = useGetGeneralInfo()
-  const { data: cryptocurrenciesData, isLoading: isCryptocurrenciesLoading } = useGetCryptoData()
-  const isLoading = isGeneralInfoLoading || isCryptocurrenciesLoading
-  // computes an object with keys of crypto symbols and memoize it =======================================================================================
-  const mappedGeneralData: CryptoDataMap = useMemo(() => {
-    return generalData?.cryptocurrency?.reduce((acc, item) => {
-      acc[item.symbol] = item
-      return acc
-    }, {} as CryptoDataMap) ?? {}
-  }, [generalData]) // only recalculates when generalData changes  
-  // function that returns merged data (general info + list-cryptocurrencies) about crypto currencies; and memoizing ======================================
-  function mergeCryptoData(cryptosConstantInfo: CryptoDataMap, cryptosVariableInfo: CryptoDataMap) {
-    const result: CryptoDataMap = {}
-    for (const key of Object.keys(cryptosVariableInfo)) {
-      if (cryptosConstantInfo[key]) result[key] = { ...cryptosConstantInfo[key], ...cryptosVariableInfo[key] }
-    }
-    return result
-  }
-  const mergedCryptosData = useMemo(() => {
-    if (
-      mappedGeneralData &&
-      Object.keys(mappedGeneralData).length > 0 &&
-      cryptocurrenciesData &&
-      typeof cryptocurrenciesData === "object"
-    ) {
-      return mergeCryptoData(mappedGeneralData, cryptocurrenciesData)
-    }
-    return {}
-  }, [mappedGeneralData, cryptocurrenciesData])
   // =======================================================================================================================================================
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
@@ -78,7 +48,7 @@ const CryptoListModal = ({ setIsCryptoListModalOpen }: CryptoListModalProps) => 
             </button>
           </div>
           {/* crypto currencies list */}
-          <CurrenciesVirtualizedList items={Object.values(mergedCryptosData)} height={400} itemHeight={60} width='100%' />
+          <CurrenciesVirtualizedList items={cryptoListData} height={400} itemHeight={60} width='100%' />
         </div>
       </div>
     </div>

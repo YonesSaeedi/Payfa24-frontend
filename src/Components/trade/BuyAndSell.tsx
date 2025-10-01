@@ -12,7 +12,7 @@ import { apiRequest } from "../../utils/apiClient";
 import { FiatBalance, TradeSymbolResponse } from "../../types/apiResponses";
 import useGetCryptoData from "../../hooks/useGetCryptoData";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
-import { CryptoDataMap } from "../../types/crypto";
+import { CryptoDataMap, CryptoItem } from "../../types/crypto";
 
 type BuyAndSellProps = {
   isSell: boolean;
@@ -30,6 +30,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   const [TomanBalance, setTomanBalance] = useState<number | null>(null)
   const [currentCryptoPrice, setCurrentCryptoPrice] = useState<number | null>(null)
   const [cryptoBalance, setCryptoBalance] = useState<number | null>(null)
+  const [currentCryptocurrency, setCurrentCryptocurrency] = useState<CryptoItem | null>(null)
   // const currentCryptoPrice = 113_720 // to be removed after it is connected to the API
   // const cryptoBalance = 12.37 // to be removed after it is connected to the API
   // const TomanBalance = 724_470 // to be removed after it is connected to the API
@@ -130,20 +131,21 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     }
     fetchTomanBalance()
     const fetchCryptoPrice = async () => {
-      try {
-        setIsLoading(true)
-        const response = await apiRequest<TradeSymbolResponse>({ url: `/api/order/get-info/${'XRP'}` })
-        console.log(response);
-        setCryptoBalance(response?.balance)
-        setCurrentCryptoPrice(isSell ? response?.price?.sell : response?.price?.buy)
-      } catch (err) {
-        toast.error(err?.response?.data?.msg || err?.response?.data?.message || `دریافت اطلاعات ${"ripple"} با مشکل مواجه شد`);
-      } finally {
-        setIsLoading(false)
+      if (currentCryptocurrency) {
+        try {
+          setIsLoading(true)
+          const response = await apiRequest<TradeSymbolResponse>({ url: `/api/order/get-info/${currentCryptocurrency?.symbol}` })
+          setCryptoBalance(response?.balance)
+          setCurrentCryptoPrice(isSell ? response?.price?.sell : response?.price?.buy)
+        } catch (err) {
+          toast.error(err?.response?.data?.msg || err?.response?.data?.message || `دریافت اطلاعات ${currentCryptocurrency?.fa?.name} با مشکل مواجه شد`);
+        } finally {
+          setIsLoading(false)
+        }
       }
     }
     fetchCryptoPrice()
-  }, [])
+  }, [isSell, currentCryptocurrency])
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
@@ -176,6 +178,10 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     }
     return {}
   }, [mappedGeneralData, cryptocurrenciesData])
+  // assign BTC to the current cryptocurrency at first
+  useEffect(() => {
+    if (mergedCryptosData['BTC']) setCurrentCryptocurrency(mergedCryptosData['BTC'])
+  }, [mergedCryptosData])
 
   return (
     <div className="w-full h-full lg:bg-gray30 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between">
@@ -201,7 +207,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
         </div>
         {isCryptoListModalOpen && <CryptoListModal setIsCryptoListModalOpen={setIsCryptoListModalOpen} cryptoListData={Object.values(mergedCryptosData)} />}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-text5 text-xs lg:text-sm font-medium">موجودی شما :<span className="text-text4 font-normal" dir="ltr">{`${cryptoBalance} ${'XRP'}`}</span></div>
+          <div className="flex items-center gap-1 text-text5 text-xs lg:text-sm font-medium">موجودی شما :<span className="text-text4 font-normal" dir="ltr">{`${cryptoBalance} ${currentCryptocurrency?.symbol}`}</span></div>
           <span className="text-sm font-normal text-text4">
             {isSell ? 'قیمت فروش' : 'قیمت خرید'} :{formatPersianDigits(currentCryptoPrice) + 'تومان'}
           </span>
