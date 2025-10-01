@@ -31,6 +31,7 @@ const WalletCard = ({
   const navigate = useNavigate();
 
   const isPositive = change >= 0;
+  
 
   const actionButtons = [
     {
