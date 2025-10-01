@@ -1,20 +1,17 @@
-import { Controller, useForm } from "react-hook-form";
-import BankAnsarLogo from "../../assets/Icons/BankCards/IconBankAnsarLogo";
-import BankMellatLogo from "../../assets/Icons/BankCards/IconBankMellatLogo";
-import BankMelliLogo from "../../assets/Icons/BankCards/IconBankMelliLogo";
-import Accordion from "../Withdrawal/Accordion";
-import FloatingSelect from "../FloatingInput/FloatingSelect";
-import FloatingInput from "../FloatingInput/FloatingInput";
+import React from "react";
 import IconVideo from "../../assets/Icons/Deposit/IconVideo";
+import { Controller, useForm } from "react-hook-form";
+import FloatingSelect from "../FloatingInput/FloatingSelect";
+import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
+import BankMellatLogo from "../../assets/icons/BankCards/IconBankMellatLogo";
+import BankAnsarLogo from "../../assets/icons/BankCards/IconBankAnsarLogo";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Accordion from "../Withdrawal/Accordion";
 
-export default function DepositForm() {
-  const amounts = [5, 10, 20, 50];
-
+export default function DepositwithIdentifier() {
   const { control } = useForm({
     resolver: yupResolver(),
   });
-
   return (
     <>
       <div className="w-full lg:px-7 " dir="rtl">
@@ -25,50 +22,17 @@ export default function DepositForm() {
           <span>ویدیو آموزشی واریز با درگاه پرداخت</span>
         </div>
 
-        <div dir="rtl" className="mb-1.5">
-          <Controller
-            name="amount"
-            control={control}
-            rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
-            render={({ field }) => (
-              <>
-                <FloatingInput
-                  label="مقدار واریزی"
-                  value={field.value}
-                  onChange={field.onChange}
-                  type="number"
-                  placeholder="0 تومان "
-                  placeholderColor="text-black0"
-                />
-              </>
-            )}
-          />
-        </div>
+        {/* =================== */}
 
-        <p className="text-gray12 text-sm mb-5">
-          میزان واریزی حداقل 25 هزار تومان و حداکثر تا سقف 25 میلیون تومان{" "}
-        </p>
-        <div className="flex gap-2 items-center mb-12 flex-wrap justify-center">
-          {amounts.map((amount, index) => (
-            <button
-              key={index}
-              className="border border-gray12 rounded-lg px-7 py-2 text-gray12 text-sm"
-            >
-              {amount} میلیون
-            </button>
-          ))}
-        </div>
-
-        <div className="mb-3">
+        <div className="mb-12 ">
           <Controller
             name="bank"
             control={control}
-            rules={{ required: "لطفا بانک را انتخاب کنید" }}
+            // rules={{ required: "زلا" }}
             render={({ field }) => (
               <FloatingSelect
-                placeholder="بانک خود را انتخاب کنید"
-                placeholderColor="text-sm text-gray12"
-                label="انتخاب بانک"
+                placeholder="حساب بانکی را انتخاب کنید "
+                label="حساب بانکی "
                 value={field.value}
                 onChange={field.onChange}
                 options={[
@@ -114,24 +78,20 @@ export default function DepositForm() {
           />
         </div>
 
-        <div className="flex items-center flex-col mt-3">
-          <div className="flex w-full justify-between items-center">
-            <span className="text-gray5">کارمزد</span>
-            <span className="text-black0">۵۰.۰۰۰ تومان</span>
-          </div>
-          <div className="flex w-full justify-between items-center">
-            <span className="text-gray5">مبلغ نهایی واریز به کیف پول</span>
-            <span className="text-black0">۹۹۵.۰۰۰.۰۰۰ تومان</span>
-          </div>
-        </div>
+        {/* =================== */}
 
-        <div className="mt-16">
-          <button className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg">
-            واریز
+        <div className="mt-80">
+          <button
+            onClick={() => {
+              setIsModal(true);
+            }}
+            className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg"
+          >
+            ارسال فیش واریز
           </button>
 
           <div className="mt-4" dir="ltr">
-            <Accordion title="راهنمای واریز با درگاه پرداخت ">
+            <Accordion title="راهنمای واریز با شناسه">
               <ul className="list-disc pr-5 space-y-2 text-black1">
                 <li>
                   از صحت آدرس صفحه‌ پرداخت و بودن در یکی از سایت‌های سامانه‌ی
@@ -144,6 +104,7 @@ export default function DepositForm() {
             </Accordion>
           </div>
         </div>
+        {/* ========== */}
       </div>
     </>
   );

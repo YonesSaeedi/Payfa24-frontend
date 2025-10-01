@@ -64,7 +64,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
       </label>
 
       {!onOpen && isOpen && (
-        <div className="absolute z-20 w-full mt-1 bg-gray43 border border-gray21 rounded-lg shadow-lg overflow-hidden">
+        <div className="absolute z-50 w-full mt-1 bg-gray43 border border-gray21 rounded-lg shadow-lg overflow-hidden">
           {options.map((option) => (
             <button
               key={option.value}

@@ -16,6 +16,7 @@ interface TransactionDetail {
   Icon?: React.ReactNode;
 }
 export default function CardToCardTransfer() {
+   const amounts = [5, 10, 20, 50];
   const [IsModal, setIsModal] = useState(false);
   const { control } = useForm({
     resolver: yupResolver(),
@@ -50,7 +51,7 @@ export default function CardToCardTransfer() {
           <Controller
             name="bank"
             control={control}
-            rules={{ required: "زلا" }}
+            // rules={{ required: "زلا" }}
             render={({ field }) => (
               <FloatingSelect
                 placeholder="بانک مبدا را انتخاب کنید"
@@ -62,7 +63,7 @@ export default function CardToCardTransfer() {
                     value: "meli",
                     label: "بانک ملی ایران",
                     icon: (
-                      <span className="w-6 h-6 icon-wrapper">
+                      <span className="w-6 h-6 icon-wrapper ">
                         <BankMelliLogo />
                       </span>
                     ),
@@ -99,65 +100,38 @@ export default function CardToCardTransfer() {
             )}
           />
         </div>
-        {/* ======= بانک مقصد ====== */}
-        <div className="mb-2">
+        {/* =======   ====== */}
+        <div dir="rtl" className="mb-1.5 z-0">
           <Controller
-            name="bank"
+            name="amount"
             control={control}
-            rules={{ required: "زلا" }}
+            rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
             render={({ field }) => (
-              <FloatingSelect
-                placeholder="بانک مقصد را انتخاب کنید"
-                label="انتخاب بانک مقصد"
-                value={field.value}
-                onChange={field.onChange}
-                options={[
-                  {
-                    value: "meli",
-                    label: "بانک ملی ایران",
-                    icon: (
-                      <span className="w-6 h-6 icon-wrapper">
-                        <BankMelliLogo />
-                      </span>
-                    ),
-                  },
-                  {
-                    value: "mellat",
-                    label: "بانک ملت ایران",
-                    icon: (
-                      <span className="w-6 h-6 icon-wrapper">
-                        <BankMellatLogo />
-                      </span>
-                    ),
-                  },
-                  {
-                    value: "noor",
-                    label: "بانک انصار",
-                    icon: (
-                      <span className="w-6 h-6 icon-wrapper">
-                        <BankAnsarLogo />
-                      </span>
-                    ),
-                  },
-                  {
-                    value: "melal",
-                    label: "مؤسسه اعتباری ملل",
-                    icon: (
-                      <span className="w-6 h-6 icon-wrapper">
-                        <BankAnsarLogo />
-                      </span>
-                    ),
-                  },
-                ]}
-              />
+              <>
+                <FloatingInput
+                  label="مقدار واریزی"
+                  value={field.value}
+                  onChange={field.onChange}
+                  type="number"
+                  placeholder="0 تومان "
+                  placeholderColor="text-black0"
+                />
+              </>
             )}
           />
         </div>
 
-        <p className="lg:text-sm text-xs text-gray5 ">
-          حالا با اپلیکیشن بانکی و یا دستگاه خودپرداز ATM مراجعه کنید و با
-          استفاده از اطلاعات زیر مبلغ دلخواه را کارت به کارت کنید.
-        </p>
+      
+        <div className="flex gap-2 items-center mb-12 mt-5 flex-wrap justify-center">
+          {amounts.map((amount, index) => (
+            <button
+              key={index}
+              className="border border-gray12 rounded-lg px-7 py-2 text-gray12 text-sm"
+            >
+              {amount} میلیون
+            </button>
+          ))}
+        </div>
 
         <div className="mt-40">
           <button
@@ -166,11 +140,11 @@ export default function CardToCardTransfer() {
             }}
             className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg"
           >
-            ارسال فیش واریز
+         درخواست کارت به کارت
           </button>
 
           <div className="mt-4" dir="ltr">
-            <Accordion title="راهنمای واریز با درگاه پرداخت">
+            <Accordion title="راهنمای واریز کارت به کارت ">
               <ul className="list-disc pr-5 space-y-2 text-black1">
                 <li>
                   از صحت آدرس صفحه‌ پرداخت و بودن در یکی از سایت‌های سامانه‌ی
@@ -182,11 +156,13 @@ export default function CardToCardTransfer() {
               </ul>
             </Accordion>
           </div>
+
+    
         </div>
 
         {IsModal && (
           <>
-            <div className="bg-black bg-opacity-20 fixed inset-0  z-45">
+            <div className="bg-black bg-opacity-20 fixed inset-0  z-50">
               <div
                 onClick={() => {
                   setIsModal(false);

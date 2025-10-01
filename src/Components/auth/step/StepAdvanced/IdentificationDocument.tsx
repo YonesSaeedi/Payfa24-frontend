@@ -137,7 +137,7 @@ type FormData = {
 
 export default function IdentificationDocument({
   onNext,
-  onFileChange, // ⬅️ دریافت صحیح پراپ
+  onFileChange, 
   initialPreviewUrl,
 }: Props) {
   const { handleSubmit, setValue } = useForm<FormData>();
@@ -147,7 +147,6 @@ export default function IdentificationDocument({
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // مدیریت پاکسازی Object URL
   useEffect(() => {
     setPreviewURL(initialPreviewUrl);
     return () => {

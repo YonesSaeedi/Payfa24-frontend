@@ -647,7 +647,7 @@ export default function AddFriend() {
                 onClick={(e) => e.stopPropagation()}
                 className="fixed inset-0 flex items-center justify-center z-50"
               >
-                <div className="bg-white8 w-full max-w-md lg:rounded-xl shadow-lg overflow-hidden p-6">
+                <div className="bg-white8 w-full max-w-md rounded-xl shadow-lg overflow-hidden p-6">
                   {/* هدر */}
                   <div className="flex justify-between items-center border-b border-gray21 pb-4">
                     <span

@@ -3,7 +3,6 @@ import HeaderLayout from "../../layouts/HeaderLayout";
 import DepositLayout from "./DepositLayout";
 import IconBank from "../../assets/Icons/Deposit/IconBank";
 import IconConvertCard from "../../assets/Icons/Deposit/IconConvertCard";
-import IconMoneyTime from "../../assets/Icons/Deposit/IconMoneyTime";
 import IconWallet from "../../assets/Icons/Deposit/IconWallet";
 import IconLink from "../../assets/Icons/Deposit/IconLink";
 import IconArrowRight from "../../assets/Icons/Deposit/IconArrowRight";
@@ -12,8 +11,13 @@ import DepositForm from "../../Components/Deposit/DepositForm";
 import CardToCardTransfer from "../../Components/Deposit/CardToCardTransfer";
 import WalletDeposit from "../../Components/Deposit/WalletDeposit";
 import DepositWithTxID from "../../Components/Deposit/DepositWithTxID";
+import IconIDentifier from "../../assets/Icons/Deposit/IconIDentifier";
+import IconReceipt from "../../assets/Icons/Deposit/Iconreceipt";
+import DepositwithIdentifier from "../../Components/Deposit/DepositwithIdentifier";
+import BankReceipt from "../../Components/Deposit/BankReceipt";
+
 export default function DepositPage() {
-  const [step, setStep] = useState<number>(1); 
+  const [step, setStep] = useState<number>(1);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [started, setStarted] = useState<boolean>(false);
 
@@ -22,25 +26,24 @@ export default function DepositPage() {
   };
 
   const depositFormMessages = [
-    " سقف خرید و فروش از این بخش 5 میلیون تومان است",
-    " کارمزد پی‌فا 24 برای معاملات آسان همیشه 0 است",
+    "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید، چراکه درصورت بروز هرگونه مشکل احتمالی، مسئولیت قضایی ناشی از این امر به عهده کاربر است و ارز هشت مسئولیتی در این زمینه ندارد.",
+    "جهت واریز وجه، حتما باید از کارت‌های بانکی به نام خودتان که در بخش کاربری ثبت و تایید شده است، استفاده نمایید.",
   ];
-  const cardTransferMessages = [
-    "کارت به کارت فقط از مبداهای بالا امکان پذیر است",
+  const DepositWithIdentifier = [
+    "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید، چراکه درصورت بروز هرگونه مشکل احتمالی، مسئولیت قضایی ناشی از این امر به عهده کاربر است و ارز هشت مسئولیتی در این زمینه ندارد.",
+    "کارمزد واریز با شناسه: %0.05 مبلغ واریزی میباشد.برای مثال اگر مبلغ واریزی، صد میلیون تومان باشد، کارمزد 0.05 درصد آن معادل 50 هزار تومان خواهد بود",
   ];
 
- let currentAlertMessages = [];
-if (selectedOption === "closeDeal") {
-  currentAlertMessages = depositFormMessages;
-} else if (selectedOption === "goodTrip") {
-  currentAlertMessages = cardTransferMessages;
-}
-  // می‌توانید برای گزینه‌های دیگر هم شرط اضافه کنید
-  // else if (selectedOption === "goto") {
-  //   currentAlertMessages = [...];
-  // }
+  let currentAlertMessages: string[] = [];
 
-  // گزینه‌های ثابت بخش راست
+  if (selectedOption === "closeDeal") {
+    currentAlertMessages = depositFormMessages;
+  } else if (selectedOption === "Identifier") {
+    currentAlertMessages = DepositWithIdentifier;
+  } else if (selectedOption === "goodTrip") {
+    // currentAlertMessages = cardTransferMessages;
+  }
+
   const rightOptions = [
     {
       id: "closeDeal",
@@ -51,19 +54,27 @@ if (selectedOption === "closeDeal") {
       IconMore: <IconArrowRight />,
     },
     {
-      id: "goodTrip",
+      id: "Identifier",
+      Icon: <IconIDentifier />,
+      Title: "واریز با شناسه",
+      description: "واریز وجه به صورت نامحدود",
+      button: " پرداخت در 20 دقیقه",
+      IconMore: <IconArrowRight />,
+    },
+    {
+      id: "CardToCard",
       Icon: <IconConvertCard />,
-      Title: "واریز با فیش کارت به کارت  ",
+      Title: "واریز  کارت به کارت  ",
       description: "واریز تا سقف 10 ملیون تومان",
       button: "پرداخت در 20 دقیقه",
       IconMore: <IconArrowRight />,
     },
     {
-      id: "goto",
-      Icon: <IconMoneyTime />,
-      Title: "واریز خودکار",
-      description: "واریز مداوم با دسترسی تا 25 ملیون تومان",
-      button: "پرداخت در لحظه",
+      id: "Bank Receipt:",
+      Icon: <IconReceipt />,
+      Title: "فیش بانکی ",
+      description: "واریز وجه به صورت نامحدود",
+      button: " پرداخت در 20 دقیقه",
       IconMore: <IconArrowRight />,
     },
     {
@@ -88,10 +99,12 @@ if (selectedOption === "closeDeal") {
     switch (selectedOption) {
       case "closeDeal":
         return <DepositForm />;
-      case "goodTrip":
+      case "Identifier":
+        return <DepositwithIdentifier />;
+      case "CardToCard":
         return <CardToCardTransfer />;
-      case "goto":
-        return <></>;
+      case "Bank Receipt:":
+        return <BankReceipt />;
       case "trade":
         return <WalletDeposit />;
       default:
@@ -113,20 +126,22 @@ if (selectedOption === "closeDeal") {
             className="w-full overflow-y-auto h-full lg:block hidden"
             dir="rtl"
           >
-            <span className="text-base text-black0  mb-4">واریز تومان</span>
-            {rightOptions.slice(0, 3).map((option) => (
+            <span className="text-base text-black0 mb-4">واریز تومان</span>
+            {rightOptions.slice(0, 4).map((option) => (
               <div
                 key={option.id}
-                className="p-2 cursor-pointer "
+                className="p-2 cursor-pointer"
                 onClick={() => setSelectedOption(option.id)}
               >
-                <div className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200
+                <div
+                  className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200
                     ${
                       selectedOption === option.id
                         ? "border-blue2"
                         : "border-gray50"
                     }
-                  `}>
+                  `}
+                >
                   <div>
                     <div className="flex items-center gap-1">
                       <div className="bg-blue14 p-3 rounded-lg bg">
@@ -158,13 +173,13 @@ if (selectedOption === "closeDeal") {
 
             <p className="mt-8 mb-4 text-black0 font-medium">واریز ارز</p>
 
-            {rightOptions.slice(3, 5).map((option) => (
+            {rightOptions.slice(4, 6).map((option) => (
               <div
                 key={option.id}
                 className="p-2 cursor-pointer"
                 onClick={() => setSelectedOption(option.id)}
               >
-                    <div
+                <div
                   className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200
                     ${
                       selectedOption === option.id
@@ -200,7 +215,7 @@ if (selectedOption === "closeDeal") {
             ))}
           </div>
           {/* بخش چپ - متغیر */}
-          <div className="w-full">{renderStep()}</div>
+          <div className="w-full ">{renderStep()}</div>
         </DepositLayout>
       </HeaderLayout>
     </>
