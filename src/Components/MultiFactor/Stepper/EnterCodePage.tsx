@@ -1,23 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import OTPModal from "../../OTPModal";
+import { apiRequest } from "../../../utils/apiClient";
+import { UseTwoStepVerification } from "../../../hooks/UseTwoStepVerification";
 
-export default function EnterCodePage({ onPrev }) {
+interface EnterCodePageProps {
+  onPrev: () => void;
+}
+
+export default function EnterCodePage({ onPrev }: EnterCodePageProps) {
+  const { data } = UseTwoStepVerification();
+  const type = data?.twofa?.type; // مقدار type برای URL
+  const [code, setCode] = useState("");
+
+  const onClick = async () => {
+    if (!code || !type) return; // اعتبارسنجی اولیه
+
+    try {
+      const res = await apiRequest({
+        url: `/api/account/2fa/verify/google`, // جایگزینی type
+        method: "POST",
+        data: { code }, // ارسال کد در body
+      });
+      console.log("Verify response:", res);
+      // اینجا می‌تونید بعد از موفقیت onPrev یا هر چیزی که لازمه اجرا کنید
+      onPrev();
+    } catch (error) {
+      console.error("Error verifying code:", error);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center gap-6">
       <p className="lg:text-lg mt-8 text-sm font-normal text-gray5 text-center">
-        لطفا کد ارسال شده به Google Authenticatior را وارد کنید.
+        لطفا کد ارسال شده به Google Authenticator را وارد کنید.
       </p>
       <div>
-        <OTPModal length={6} />
+        <OTPModal length={6} onChange={setCode} />
       </div>
       <div className="w-full flex gap-4 mt-8">
-        <button className="w-full py-3 font-bold text-lg bg-blue2 rounded-lg text-white2">
+        <button
+          onClick={onClick}
+          className="w-full py-3 font-bold text-lg bg-blue2 rounded-lg text-white2"
+        >
           تأیید کد
         </button>
       </div>
     </div>
   );
 }
-
-
-

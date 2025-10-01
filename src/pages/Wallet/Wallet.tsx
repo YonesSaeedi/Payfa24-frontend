@@ -24,11 +24,10 @@ export default function Wallet() {
   async function getBalance() {
     try {
       const response = await apiRequest<BalanceResponse>({
-        url: "/wallet/balance",
+        url: "/api/wallets/fiat/balance",
         method: "GET",
       });
       setBalance(response); // مقدار رو داخل state ذخیره کن
-      console.log("Balance:", response.balance);
     } catch (error) {
       console.error("Error fetching balance:", error);
     }
@@ -37,6 +36,7 @@ export default function Wallet() {
   useEffect(() => {
     getBalance();
   }, []);
+  
   return (
     <div className="h-full">
       <HeaderLayout>

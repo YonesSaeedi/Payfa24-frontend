@@ -29,6 +29,7 @@ import MultiFactor from "../pages/Profile/MultiFactor";
 import GoogleAuthFlow from "../pages/Profile/GoogleAuthFlow";
 import AddFriend from "../pages/Addfriend/AddFriend";
 import DepositPage from "../pages/Deposit/DepositPage";
+import ForgotPasswordPageSetPasswordPage from "../pages/ForgotPasswordPageSetPasswordPage";
 // import TransactionTable from '../Components/Transaction/Transaction';
 
 export default function AppRouter() {
@@ -60,6 +61,10 @@ export default function AppRouter() {
           <Route
             path={ROUTES.FORGOT_PASSWORD}
             element={<ForgotPasswordPage />}
+          />
+           <Route
+            path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD}
+            element={<ForgotPasswordPageSetPasswordPage />}
           />
           <Route
             path={ROUTES.AuthenticationBasic}

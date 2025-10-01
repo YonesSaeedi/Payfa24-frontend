@@ -8,6 +8,7 @@ export const ROUTES = {
   MARKET: "/market",
   NOTIFICATIONS: "/notifications",
   FORGOT_PASSWORD: "/forgot-password",
+  FORGOT_PASSWORD_SET_PASSWORD: "/forgot-password-set-password",
 
   AuthenticationBasic: "/authentication",
   AuthenticationAdvance: "/authenticationAdvance",

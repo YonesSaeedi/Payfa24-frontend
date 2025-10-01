@@ -9,12 +9,23 @@ import Google from "../../assets/Icons/MultiFactor/Google.png";
 import MessagesIcon from "../../assets/Icons/MultiFactor/Iconmessages";
 import TwoFactorModal from "../../Components/MultiFactor/TwoFactorModal";
 import VerifyGooglePage from "./GoogleAuthFlow";
+import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
+import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
+import { toast } from "react-toastify";
+import useGetUser from "../../hooks/useGetUser";
+import { useMemo } from "react";
+
 
 export default function MultiFactor() {
-  const [modalType, setModalType] = useState(null);
-  const navigate = useNavigate(); // این خط جدید است
+  const { data: twoFAData } = UseTwoStepVerification()
+  const { data: userData } = useGetUser();
 
-  const MultiInfo = [
+
+  const [modalType, setModalType] = useState(null);
+  const navigate = useNavigate();
+
+
+  const MultiInfo = useMemo(() => [
     {
       type: "google",
       img: Google,
@@ -27,24 +38,59 @@ export default function MultiFactor() {
       icon: <MessagesIcon />,
       button: "فعال کردن",
       Title: "تایید دو مرحله‌ای پیامک",
-      text: "فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به شماره 049893993*** ارسال شده است.",
+      text: `فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به شماره ${userData?.user?.mobile ?? "..."} ارسال شده است.`,
     },
     {
       type: "email",
       icon: <EmailIcon />,
       button: "فعال کردن",
       Title: "تایید دو مرحله‌ای ایمیل",
-      text: "فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به ایمیل ko.mo.ko***@gmail.com  ارسال شده است.",
+      text: `فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به ایمیل ${userData?.user?.email ?? "..."} ارسال شده است.`,
     },
-  ];
+    {
+      type: "telegram",
+      icon: <TelegramIcon />,
+      button: "فعال کردن",
+      Title: "تایید دو مرحله‌ای تلگرام",
+      text: "فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به تلگرام شما ارسال شده است.",
+    },
+  ], [twoFAData, userData]);
 
-  const handleCardClick = (type) => {
-    if (type === "google") {
-      navigate('/GoogleAuthFlow');
-    } else {
+
+  const handleCardClick = (type: string, isActive: boolean) => {
+    // چک کردن وجود اطلاعات لازم قبل از ارسال درخواست
+    if (type === "sms" && !userData?.user?.mobile) {
+      toast.info("شماره موبایل شما ثبت نشده است.");
+      return;
+    }
+
+    if (type === "email" && !userData?.user?.email) {
+      toast.info("ایمیل شما ثبت نشده است.");
+      return;
+    }
+
+    if (twoFAData?.twofa?.status && twoFAData.twofa.type !== type) {
+      // یک روش دیگر فعال است → اجازه فعال سازی بقیه را نمی‌دهیم
+      toast.info("یک روش دو مرحله‌ای قبلا فعال شده است. ابتدا آن را غیرفعال کنید.");
+      return;
+    }
+
+    if (isActive) {
+      // یعنی کارت فعال است → مودال غیرفعال‌سازی باز شود
       setModalType(type);
+    } else {
+      // هنوز فعال نشده
+      if (type === "google") {
+        navigate('/GoogleAuthFlow');
+      } else if (type === "telegram") {
+        navigate('/TelegramAuthFlow');
+      } else {
+        setModalType(type);
+      }
     }
   };
+
+
 
   return (
     <>
@@ -52,22 +98,29 @@ export default function MultiFactor() {
         <div className="container-style w-full pt-7 flex gap-10 flex-col">
           <BreadcrumbNavigation />
           <div className="lg:bg-gray25 lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl pb-10">
-            <div className="flex items-center justify-center " dir="rtl">
-              <div className=" ">
+            <div className="flex items-center justify-center" dir="rtl">
+              <div>
                 <form className="w-full text-black1 text-center lg:pt-20 lg:text-xl text-sm font-medium">
                   <h1>ورود دو مرحله‌ای</h1>
                   <p className="pt-3 text-gray5 lg:text-base font-normal text-xs">
-                    برای امنیت بیشتر یکی از مراحل زیر را فعال کنید (تنها یک روش
-                    را میتوانید فعال کنید)
+                    برای امنیت بیشتر یکی از مراحل زیر را فعال کنید (تنها یک روش را میتوانید فعال کنید)
                   </p>
                   <div className="w-full flex gap-4 flex-col lg:mt-10 mt-6 mb-20">
-                    {MultiInfo.map((item, index) => (
-                      <MultiFactorCard
-                        dataCard={item}
-                        key={index}
-                        onClick={() => handleCardClick(item.type)} 
-                      />
-                    ))}
+                    {MultiInfo.map((item) => {
+                      const isActive = !!(twoFAData?.twofa?.status && twoFAData?.twofa?.type === item.type);
+                      return (
+                        <MultiFactorCard
+                          key={item.type}
+                          dataCard={{
+                            ...item,
+                            button: isActive ? "غیرفعال کردن" : "فعال کردن"
+                          }}
+                          onClick={() => handleCardClick(item.type, isActive)}
+                        />
+                      );
+                    })}
+
+
                   </div>
                 </form>
               </div>
@@ -75,6 +128,7 @@ export default function MultiFactor() {
           </div>
         </div>
       </HeaderLayout>
+
       {modalType && (
         <TwoFactorModal
           type={modalType}
