@@ -4,17 +4,17 @@ const apiClient = axios.create({
   baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
   timeout: 10_000, // 10 seconds default, set longer for heavier requests and set 0 to disable it.
   headers: {
-    'Content-Type': 'application/json',
-    'X-Device': 'android' // temporarily; to be removed later when mohandes fixed allowed domains for recaptcha !!!!!!!!!!!!!!!!!!!!!!!!!$%^&!%#^@$#%^$#%$^&*$#^&%*(^*^#$#$!#$@%$#^%*)
-  }
-})
+    "Content-Type": "application/json",
+    "X-Device": "android", // temporarily; to be removed later when mohandes fixed allowed domains for recaptcha !!!!!!!!!!!!!!!!!!!!!!!!!$%^&!%#^@$#%^$#%$^&*$#^&%*(^*^#$#$!#$@%$#^%*)
+  },
+});
 
 // helper to check expiry
 function isTokenExpiringSoon() {
-  const expiresAt = localStorage.getItem('expiresAt');
+  const expiresAt = localStorage.getItem("expiresAt");
   if (!expiresAt) return false;
   const now = Math.floor(Date.now() / 1000);
-  return now >= parseInt(expiresAt, 10) - (5 * 60)
+  return now >= parseInt(expiresAt, 10) - 5 * 60;
 }
 
 // Refresh function
@@ -26,19 +26,22 @@ async function refreshAccessToken(): Promise<string | null> {
   if (!refreshingPromise) {
     refreshingPromise = (async () => {
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        const res = await axios.post(apiClient.defaults.baseURL + '/api/auth/refresh-token', { refreshToken });
+        const refreshToken = localStorage.getItem("refreshToken");
+        const res = await axios.post(
+          apiClient.defaults.baseURL + "/api/auth/refresh-token",
+          { refreshToken }
+        );
         if (res?.data?.access_token) {
-          localStorage.setItem('accessToken', res.data.access_token);
-          localStorage.setItem('expiresAt', res.data.expires_in.toString());
-          localStorage.setItem('refreshToken', res.data.refresh_token);
+          localStorage.setItem("accessToken", res.data.access_token);
+          localStorage.setItem("expiresAt", res.data.expires_in.toString());
+          localStorage.setItem("refreshToken", res.data.refresh_token);
           return res.data.access_token;
         } else return null;
       } catch (err) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('expiresAt');
-        window.location.href = '/login';
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("expiresAt");
+        window.location.href = "/login";
         return null;
       } finally {
         // always clear so the next call can retry if needed
@@ -50,26 +53,27 @@ async function refreshAccessToken(): Promise<string | null> {
 }
 
 // Request interceptor: attach token, refresh if needed
-apiClient.interceptors.request.use(async config => {
+apiClient.interceptors.request.use(async (config) => {
   if (
-    config.url?.includes('/auth/login')
-    || config.url?.includes('/auth/refresh-token')
-    || config.url?.includes('/auth/forget')
-    || config.url?.includes('/auth/forget/reset')
-    || config.url?.includes('/auth/login/login-2fa')
-    || config.url?.includes('/auth/login/resend-2fa')
-    || config.url?.includes('/auth/register')
-    || config.url?.includes('/auth/google')
+    config.url?.includes("/auth/login") ||
+    config.url?.includes("/auth/refresh-token") ||
+    config.url?.includes("/auth/forget") ||
+    config.url?.includes("/auth/forget/reset") ||
+    config.url?.includes("/auth/login/login-2fa") ||
+    config.url?.includes("/auth/login/resend-2fa") ||
+    config.url?.includes("/auth/register") ||
+    config.url?.includes("/auth/google")
     // ???
-  ) return config;
-  let token = localStorage.getItem('accessToken');
+  )
+    return config;
+  let token = localStorage.getItem("accessToken");
   if (isTokenExpiringSoon()) token = await refreshAccessToken();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   else {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('expiresAt');
-    window.location.href = '/login';
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("expiresAt");
+    window.location.href = "/login";
   }
   return config;
 });
@@ -77,8 +81,8 @@ apiClient.interceptors.request.use(async config => {
 // Response interceptor: retry once on 401
 // sends the error so you can display it wherever the api is called. ==========================================================================
 apiClient.interceptors.response.use(
-  res => res,
-  async error => {
+  (res) => res,
+  async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -151,3 +155,5 @@ function buildFormData(data: Record<string, FormDataValue>): FormData {
   });
   return formData;
 }
+
+

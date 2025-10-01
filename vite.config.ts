@@ -4,14 +4,14 @@ import react from '@vitejs/plugin-react-swc'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    proxy: {
-      '/api': {
-        target: 'https://api.payfa24.org',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api/v4'),
-      },
+ server: {
+  proxy: {
+    "/api": {
+      target: "https://api.payfa24.org/api/v4",
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/api/, ""),
     },
   },
+},
+
 })
