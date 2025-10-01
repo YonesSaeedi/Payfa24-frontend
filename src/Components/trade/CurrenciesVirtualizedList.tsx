@@ -8,9 +8,11 @@ interface CurrenciesVirtualizedListProps {
   height: number;
   itemHeight: number;
   width: number | string;
+  setCurrentCryptoCurrency: (cryptocurrency: CryptoItem) => void
+  closeModal: () => void
 }
 
-const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ height, itemHeight, items, width, }) => {
+const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ height, itemHeight, items, width, setCurrentCryptoCurrency, closeModal }) => {
   const Row: React.FC<ListChildComponentProps<(CryptoItem | null)[]>> = ({ index, style, data, }) => {
     const item = data[index];
 
@@ -22,7 +24,10 @@ const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ h
     )
     return (
       <div style={{ ...style, top: (style.top as number) + 4, paddingRight: 6 }}>
-        <button dir="rtl" className="w-full px-3 lg:px-4 py-1 lg:py-2 rounded-lg border border-gray26 bg-gray33 flex items-center hover:bg-gray6">
+        <button onClick={() => {
+          setCurrentCryptoCurrency(item)
+          closeModal()
+        }} dir="rtl" className="w-full px-3 lg:px-4 py-1 lg:py-2 rounded-lg border border-gray26 bg-gray33 flex items-center hover:bg-gray6">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-1">
               <div className="w-8 h-8 rounded-full">
