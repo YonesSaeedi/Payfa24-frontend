@@ -495,24 +495,17 @@
 // }
 
 
-
-
-
-
-
-
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { sendContact, verifyOtp } from "../../../../utils/api/authBasic";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import OTPModal from "../../../OTPModal";
 import IconClose from "../../../../assets/Icons/Login/IconClose";
 import StepperComponent from "../Stepper";
 import TextField from "../../../InputField/TextField";
-import { apiRequest } from "../../../../utils/apiClient";
 import { getContactSchema } from "../../../../utils/validationSchemas";
 
 type Props = {
@@ -522,26 +515,6 @@ type Props = {
 type FormValues = {
   contactType: "email" | "mobile";
   contactValue: string;
-};
-
-type UserInfo = {
-  level_kyc: string;
-  kyc: {
-    basic?: {
-      name?: string;
-      family?: string;
-      mobile?: string | null;
-      email?: string | null;
-      father?: string;
-      national_code?: string;
-      date_birth?: string;
-      cardbank?: number;
-    };
-    advanced?: {
-      status: "pending" | "success" | "reject";
-      reason_reject: string | null;
-    };
-  };
 };
 
 const getSchema = getContactSchema();
@@ -570,6 +543,7 @@ export default function StepEmail({ onNext }: Props) {
     mutationFn: sendContact,
     onSuccess: (data) => {
       console.log("SendContact response:", data);
+
       if (data.status) {
         setIsCodeSent(true);
         setIsModalOpen(true);
@@ -595,7 +569,7 @@ export default function StepEmail({ onNext }: Props) {
         toast.success("تأیید با موفقیت انجام شد! به مرحله بعدی می‌روید.");
         setIsModalOpen(false);
         localStorage.setItem("kycStepCompleted", "level1");
-        onNext();
+        onNext(); // This is the correct place to call onNext
       } else {
         const errorMsg = data.msg || `کد تأیید نامعتبر است.`;
         setErrorMessage(errorMsg);
@@ -608,48 +582,6 @@ export default function StepEmail({ onNext }: Props) {
       toast.error(errorMsg);
     },
   });
-
-  useEffect(() => {
-    const completedStep = localStorage.getItem("kycStepCompleted");
-    if (completedStep === "level1") {
-      onNext();
-      return;
-    }
-
-    const fetchUserData = async () => {
-      try {
-        const response = await apiRequest<UserInfo>({ url: "/api/kyc/get-info" });
-        
-        if (response.level_kyc === "level1_completed") {
-          localStorage.setItem("kycStepCompleted", "level1");
-          onNext();
-          return;
-        }
-
-        const emailRegistered = !!response.kyc?.basic?.email;
-        const mobileRegistered = !!response.kyc?.basic?.mobile;
-
-        if (emailRegistered && !mobileRegistered) {
-          setValue("contactType", "mobile");
-        } else if (mobileRegistered && !emailRegistered) {
-          setValue("contactType", "email");
-        // } else if (emailRegistered && mobileRegistered) {
-        //   const bothRegisteredMsg = "هر دو ایمیل و موبایل قبلا ثبت شده‌اند. لطفا برای ادامه با پشتیبانی تماس بگیرید.";
-        //   setErrorMessage(bothRegisteredMsg);
-        //   toast.info(bothRegisteredMsg);
-        } 
-        else {
-          setValue("contactType", "email");
-        }
-        setValue("contactValue", "");
-      } catch (error) {
-        console.error("Error fetching user info:", error);
-        setErrorMessage("خطا در دریافت اطلاعات کاربر. لطفا مجددا تلاش کنید.");
-        toast.error("خطا در دریافت اطلاعات کاربر. لطفا مجددا تلاش کنید.");
-      }
-    };
-    fetchUserData();
-  }, [setValue, onNext]);
 
   const onSubmitContact = (data: FormValues) => {
     const payload = {
@@ -668,7 +600,6 @@ export default function StepEmail({ onNext }: Props) {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    if (verifyOtpMutation.isSuccess) onNext();
   };
 
   if (sendContactMutation.isLoading || verifyOtpMutation.isLoading) {
