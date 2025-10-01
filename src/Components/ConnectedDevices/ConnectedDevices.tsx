@@ -62,7 +62,7 @@ const DeviceList: React.FC = () => {
               <th className="py-2 px-4 text-gray-500">مدل دستگاه</th>
               <th className="py-2 px-4 text-gray-500">آخرین زمان اتصال</th>
               <th className="py-2 px-4 text-gray-500">IP</th>
-              <th className="py-2 px-4 text-gray-500 rounded-tr-lg rounded-br-lg"></th>
+              <th className="py-2 px-4 text-gray-500 rounded-br-lg"></th>
             </tr>
           </thead>
           <tbody>

@@ -5,6 +5,9 @@ import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
 import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";
 import CurrencyWithdrawModal from "../Withdrawal/CurrencyWithdrawModal"; // 👈 اضافه شد
+import { toast } from "react-toastify";
+
+
 
 interface CoinNetworkRef {
   id: number;
@@ -36,7 +39,6 @@ const CryptoWithdrawForm: FC = () => {
   const [amount, setAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const [coins, setCoins] = useState<Coin[]>([]);
   const [allNetworks, setAllNetworks] = useState<FullNetwork[]>([]);
   const [availableNetworks, setAvailableNetworks] = useState<
@@ -111,47 +113,46 @@ const CryptoWithdrawForm: FC = () => {
     setTag(""); // پاک کردن مقدار قبلی Tag/Memo
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    if (!amount || isNaN(parseFloat(amount))) {
-      setError("لطفاً مقدار برداشت را وارد کنید");
+  if (!amount || isNaN(parseFloat(amount))) {
+    toast.error("لطفاً مقدار برداشت را وارد کنید");
+    setIsLoading(false);
+    return;
+  }
+
+  if (selectedNetwork?.tag === 1 && selectedNetwork?.memoRegex) {
+    const regex = new RegExp(selectedNetwork.memoRegex);
+    if (!regex.test(tag)) {
+      toast.error("مقدار Tag/Memo معتبر نیست");
       setIsLoading(false);
       return;
     }
+  }
 
-    // اعتبارسنجی Tag/Memo بر اساس memoRegex
-    if (selectedNetwork?.tag === 1 && selectedNetwork?.memoRegex) {
-      const regex = new RegExp(selectedNetwork.memoRegex);
-      if (!regex.test(tag)) {
-        setError("مقدار Tag/Memo معتبر نیست");
-        setIsLoading(false);
-        return;
-      }
-    }
+  try {
+    await apiRequest({
+      url: `/api/wallets/crypto/withdraw/${crypto}`,
+      method: "POST",
+      data: {
+        network: selectedNetwork?.symbol || selectedNetworkId,
+        withdrawAmount: parseFloat(amount),
+        withdrawAddressWallet: address,
+        withdrawAddressWalletTag: tag,
+      },
+    });
 
-    try {
-      await apiRequest({
-        url: `/api/wallets/crypto/withdraw/${crypto}`,
-        method: "POST",
-        data: {
-          network: selectedNetworkId ? Number(selectedNetworkId) : undefined,
-          withdrawAmount: parseFloat(amount),
-          withdrawAddressWallet: address,
-          withdrawAddressWalletTag: tag,
-        },
-      });
+    toast.success("برداشت با موفقیت ثبت شد!");
+  } catch (err: any) {
+    console.error(err);
+    toast.error(err?.response?.data?.msg || "خطا در برداشت!");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-      alert("برداشت با موفقیت ثبت شد!");
-    } catch (err: any) {
-      console.error(err);
-      setError(err?.response?.data?.msg || "خطا در برداشت!");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <form
@@ -180,59 +181,66 @@ const CryptoWithdrawForm: FC = () => {
           </div>
         </div>
 
-        <div dir="rtl" className="mb-6 relative">
-          <FloatingSelect
-            label="شبکه برداشت"
-            value={selectedNetworkId || undefined}
-            onChange={handleNetworkChange}
-            options={availableNetworks.map((n) => ({
-              value: String(n.id),
-              label: `${n.displayName || n.name || n.symbol || n.id} (${
-                n.name || n.symbol || n.id
-              })`,
-            }))}
-          />
+      <div dir="rtl" className="mb-6 relative">
+  {crypto ? (
+    <FloatingSelect
+      label="شبکه برداشت"
+      value={selectedNetworkId || undefined}
+      onChange={handleNetworkChange}
+      options={availableNetworks.map((n) => ({
+        value: String(n.id),
+        label: `${n.displayName || n.name || n.symbol || n.id} (${
+          n.name || n.symbol || n.id
+        })`,
+      }))}
+    />
+  ) : (
+    <div className="w-full border rounded-lg p-3 text-center text-gray-500 bg-gray-100">
+      ابتدا رمز ارز مورد نظر را انتخاب کنید
+    </div>
+  )}
 
-          {selectedNetworkId && (
-            <div className="mt-4 relative z-10 flex flex-col gap-4">
-              <FloatingInput
-                label="آدرس تتر مقصد"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                type="text"
-              />
+  {selectedNetworkId && (
+    <div className="mt-4 relative z-10 flex flex-col gap-4">
+      <FloatingInput
+        label="آدرس مقصد"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        type="text"
+      />
 
-              {/* فقط اگر شبکه نیاز به tag دارد */}
-              {selectedNetwork?.tag === 1 && (
-                <FloatingInput
-                  label="Tag / Memo (در صورت نیاز)"
-                  value={tag}
-                  onChange={(e) => setTag(e.target.value)}
-                  type="text"
-                />
-              )}
+      {/* فقط اگر شبکه نیاز به Tag/Memo دارد */}
+      {selectedNetwork?.tag === 1 && (
+        <FloatingInput
+          label="Tag / Memo (در صورت نیاز)"
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+          type="text"
+        />
+      )}
 
-              <div>
-                <FloatingInput
-                  label="مقدار برداشت"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  type="number"
-                />
-                <div className="flex justify-between pt-2 text-xs text-gray-500">
-                  <p>کل موجودی: 34.000 MOS</p>
-                  <button
-                    type="button"
-                    className="text-blue-500"
-                    onClick={() => setAmount("34.000")}
-                  >
-                    همه موجودی
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+      <div>
+        <FloatingInput
+          label="مقدار برداشت"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          type="number"
+        />
+        <div className="flex justify-between pt-2 text-xs text-gray-500">
+          <p>کل موجودی: 34.000 MOS</p>
+          <button
+            type="button"
+            className="text-blue-500"
+            onClick={() => setAmount("34.000")}
+          >
+            همه موجودی
+          </button>
         </div>
+      </div>
+    </div>
+  )}
+</div>
+
       </div>
 
       <div>
@@ -243,7 +251,7 @@ const CryptoWithdrawForm: FC = () => {
         >
           {isLoading ? "در حال ارسال..." : "تایید"}
         </button>
-        {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
+      
       </div>
 
       {/* 👇 مودال انتخاب ارز */}

@@ -1,6 +1,8 @@
 import React from "react";
 import { Ticket } from "./types";
 import StatusBadge from "../../UI/Button/StatusBadge";
+import { ticketStatusMap } from "../../../utils/statusMap"; 
+
 
 interface TicketItemProps {
   ticket: Ticket;
@@ -9,27 +11,8 @@ interface TicketItemProps {
 }
 
 const TicketItem: React.FC<TicketItemProps> = ({ ticket, active, onClick }) => {
-  const renderStatus = (status: Ticket["status"]) => {
-    switch (status) {
-      case "answered":
-        return <div className="flex items-center justify-center h-full w-full">
-               <StatusBadge text="پاسخ داده شده"/>
-              </div>
+ const statusText = ticketStatusMap[ticket.status] || "نامشخص";
 
-      case "pending":
-        return (
-          <div className="flex items-center justify-center h-full w-full">
-            <StatusBadge text="در حال بررسی" />
-            </div>
-        );
-
-      case "closed":
-        return <div className="flex items-center justify-center h-full w-full">
-        <StatusBadge text="بسته شده"/>
-       </div>
-
-    }
-  };
 
   return (
     <div
@@ -40,15 +23,16 @@ const TicketItem: React.FC<TicketItemProps> = ({ ticket, active, onClick }) => {
     >
       <div className="flex justify-between mt-2 mb-3">
         <div className="font-medium text-black1 text-base">{ticket.title}</div>
-         <div className="mt-1 text-sm">{renderStatus(ticket.status)}</div>
+        <div className="mt-1 text-sm">
+          <StatusBadge text={statusText} /> {/* ✅ جایگزین renderStatus */}
+        </div>
       </div>
       <div dir="rtl" className="flex justify-between mt-3 ">
-        <div dir="rtl" className="font-medium text-black1 text-sm text-gray5">شماره پیگیری : #{ticket.id}</div>
-         <div className="text-sm text-gray-500 mt-1n text-gray5">{ticket.date}</div>
+        <div dir="rtl" className="font-medium text-black1 text-sm text-gray5">
+          شماره پیگیری : #{ticket.id}
+        </div>
+        <div className="text-sm text-gray-500 mt-1n text-gray5">{ticket.date}</div>
       </div>
-      
-     
-     
     </div>
   );
 };

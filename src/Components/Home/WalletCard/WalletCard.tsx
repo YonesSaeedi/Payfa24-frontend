@@ -134,12 +134,12 @@ const WalletCard = ({
         </div>
 
 
-        <div className="grid gap-4 grid-cols-5 ">
+       <div className="flex gap-4 m-2">
   {actionButtons.map((btn, idx) => (
     <button
       key={idx}
       onClick={btn.onClick}
-      className="flex flex-col items-center justify-center rounded-lg border bg-gray27 border-gray21 p-3 text-sm text-black1 hover:border-blue2 hover:shadow-sm transition"
+      className="flex-1 flex flex-col items-center justify-center rounded-lg border bg-gray27 border-gray21 p-3 text-sm text-black1 hover:border-blue2 hover:shadow-sm transition"
     >
       <div className="w-6 h-6 mb-1.5">{btn.icon}</div>
       {btn.label}

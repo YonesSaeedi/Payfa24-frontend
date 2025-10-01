@@ -107,7 +107,7 @@ const cryptoData: ICryptoItem[] =
 
     return {
       symbol: item.symbol,
-      name: generalItem?.name || item.symbol,
+      name:generalItem?.locale?.fa?.name || generalItem?.name ,
       locale: {
         fa: generalItem?.locale?.fa?.name,
         en: generalItem?.locale?.en?.name,
@@ -164,18 +164,15 @@ const cryptoData: ICryptoItem[] =
           </div>
 
           {/* 📋 جدول اصلی */}
-          <div className="pb-[87px]">
-            {loadingGeneral || loadingList ? (
-              <p className="text-center text-gray-500">در حال بارگذاری...</p>
-            ) : (
-              <CryptoMarketTable
-                data={cryptoData}
-                active={activeTab}
-                setActive={setActiveTab}
-              />
-              
-            )}
-          </div>
+        <div className="pb-[87px]">
+  <CryptoMarketTable
+    data={cryptoData}
+    active={activeTab}
+    setActive={setActiveTab}
+    isLoading={loadingGeneral || loadingList} // 🟢 پرچم لودینگ پاس داده بشه
+  />
+</div>
+
         </div>
       </HeaderFooterLayout>
     </div>

@@ -123,22 +123,29 @@ const bankOptions = listCards.map(card => ({
           />
         </div>
 
-        <div className="mb-6">
-          <Controller
-            name="bank"
-            control={control}
-            rules={{ required: "لطفا بانک را انتخاب کنید" }}
-            render={({ field }) => (
-              <FloatingSelect<BankOption>
-                label="انتخاب بانک"
-                value={field.value}
-                onChange={field.onChange}
-                options={bankOptions}
-                isBankSelect={true}
-              />
-            )}
-          />
-        </div>
+      <div className="mb-6">
+  {bankOptions.length > 0 ? (
+    <Controller
+      name="bank"
+      control={control}
+      rules={{ required: "لطفا بانک را انتخاب کنید" }}
+      render={({ field }) => (
+        <FloatingSelect<BankOption>
+          label="انتخاب بانک"
+          value={field.value}
+          onChange={field.onChange}
+          options={bankOptions}
+          isBankSelect={true}
+        />
+      )}
+    />
+  ) : (
+    <div className="w-full border rounded-lg p-3 text-center text-gray-500 bg-gray-100">
+      هیچ کارت بانکی موجود نمی‌ باشد
+    </div>
+  )}
+</div>
+
       </div>
 
       <div>

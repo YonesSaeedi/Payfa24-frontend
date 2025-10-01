@@ -5,6 +5,8 @@ import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import useGetCryptoWithdraw from "../../hooks/useGetCryptoWithdraw";
 import { Coin } from "../../types/cryptoWithdraw";
 
+
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -56,7 +58,7 @@ Object.keys(withdrawData).forEach((symbol) => {
           c.name?.toLowerCase().includes(query.toLowerCase())
       );
     }
-    // مرتب‌سازی بر اساس نام یا ترتیب دلخواه (اینجا فقط بر اساس نام)
+    // مرتب‌ سازی بر اساس نام یا ترتیب دلخواه (اینجا فقط بر اساس نام)
     return list.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
   }, [query, mergedCryptosData]);
 
