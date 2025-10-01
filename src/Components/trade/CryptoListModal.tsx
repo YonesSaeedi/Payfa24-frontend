@@ -10,13 +10,6 @@ type CryptoListModalProps = {
   setIsCryptoListModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const fakeData = [
-  { name: 'btc', symbol: 'btc' },
-  { name: 'xrp', symbol: 'btc' },
-  { name: 'eth', symbol: 'btc' },
-  { name: 'ada', symbol: 'btc' },
-]
-
 const CryptoListModal = ({ setIsCryptoListModalOpen }: CryptoListModalProps) => {
   const [isDollarCurrencies, setIsDollarCurrencies] = useState<boolean>(false)
   const searchInputRef = useRef<HTMLInputElement | null>(null)
@@ -49,7 +42,6 @@ const CryptoListModal = ({ setIsCryptoListModalOpen }: CryptoListModalProps) => 
     }
     return {}
   }, [mappedGeneralData, cryptocurrenciesData])
-  console.log('merged => ', mergedCryptosData);
   // =======================================================================================================================================================
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()

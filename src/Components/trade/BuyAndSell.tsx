@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import IconArrowBottomLeft from "../../assets/icons/trade/IconArrowBottomLeft";
 import IconArrowTopLeft from "../../assets/icons/trade/IconArrowTopLeft";
@@ -9,6 +9,10 @@ import CryptoListModal from "./CryptoListModal";
 import PercentBar from "./PercentBar";
 import { toast } from "react-toastify";
 import { apiRequest } from "../../utils/apiClient";
+import { FiatBalance, TradeSymbolResponse } from "../../types/apiResponses";
+import useGetCryptoData from "../../hooks/useGetCryptoData";
+import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import { CryptoDataMap } from "../../types/crypto";
 
 type BuyAndSellProps = {
   isSell: boolean;
@@ -23,9 +27,11 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   const [selectedPercent, setSelectedPercent] = useState<number>(0)
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [TomanBalance, setTomanBalance] = useState<number>(0)
-  const currentCryptoPrice = 113_720 // to be removed after it is connected to the API
-  const cryptoBalance = 12.37 // to be removed after it is connected to the API
+  const [TomanBalance, setTomanBalance] = useState<number | null>(null)
+  const [currentCryptoPrice, setCurrentCryptoPrice] = useState<number | null>(null)
+  const [cryptoBalance, setCryptoBalance] = useState<number | null>(null)
+  // const currentCryptoPrice = 113_720 // to be removed after it is connected to the API
+  // const cryptoBalance = 12.37 // to be removed after it is connected to the API
   // const TomanBalance = 724_470 // to be removed after it is connected to the API
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
   // handles count input change ============================================================================================================================
@@ -109,21 +115,67 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     // Reset the change source after applying
     lastChangedRef.current = null;
   }, [countInputStr, amountValue, selectedPercent, isSell, cryptoBalance, TomanBalance, currentCryptoPrice]);
-  // fetch balance and cryptocurrency info at first ================================================================================================================
+  // fetch Toman balance and cryptocurrency balance/price at first ================================================================================================================
   useEffect(() => {
-    const fetchBalance = async () => {
+    const fetchTomanBalance = async () => {
       try {
         setIsLoading(true)
-        const response = await apiRequest({ url: '/api/wallets/fiat/balance' })
-
+        const response = await apiRequest<FiatBalance>({ url: '/api/wallets/fiat/balance' })
+        setTomanBalance(response?.balance_available ?? null)
       } catch (err) {
         toast.error(err?.response?.data?.msg || err?.response?.data?.message || "دریافت موجودی کاربر با مشکل مواجه شد!");
       } finally {
         setIsLoading(false)
       }
     }
-    fetchBalance()
+    fetchTomanBalance()
+    const fetchCryptoPrice = async () => {
+      try {
+        setIsLoading(true)
+        const response = await apiRequest<TradeSymbolResponse>({ url: `/api/order/get-info/${'XRP'}` })
+        console.log(response);
+        setCryptoBalance(response?.balance)
+        setCurrentCryptoPrice(isSell ? response?.price?.sell : response?.price?.buy)
+      } catch (err) {
+        toast.error(err?.response?.data?.msg || err?.response?.data?.message || `دریافت اطلاعات ${"ripple"} با مشکل مواجه شد`);
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchCryptoPrice()
   }, [])
+  // preparing crypto list modal data ===============================================================================================================================================
+  // preparing crypto list modal data ===============================================================================================================================================
+  // preparing crypto list modal data ===============================================================================================================================================
+  const { data: generalData, isLoading: isGeneralInfoLoading } = useGetGeneralInfo()
+  const { data: cryptocurrenciesData, isLoading: isCryptocurrenciesLoading } = useGetCryptoData()
+  const isCryptoListLoading = isGeneralInfoLoading || isCryptocurrenciesLoading
+  // computes an object with keys of crypto symbols and memoize it =======================================================================================
+  const mappedGeneralData: CryptoDataMap = useMemo(() => {
+    return generalData?.cryptocurrency?.reduce((acc, item) => {
+      acc[item.symbol] = item
+      return acc
+    }, {} as CryptoDataMap) ?? {}
+  }, [generalData]) // only recalculates when generalData changes  
+  // function that returns merged data (general info + list-cryptocurrencies) about crypto currencies; and memoizing ======================================
+  function mergeCryptoData(cryptosConstantInfo: CryptoDataMap, cryptosVariableInfo: CryptoDataMap) {
+    const result: CryptoDataMap = {}
+    for (const key of Object.keys(cryptosVariableInfo)) {
+      if (cryptosConstantInfo[key]) result[key] = { ...cryptosConstantInfo[key], ...cryptosVariableInfo[key] }
+    }
+    return result
+  }
+  const mergedCryptosData = useMemo(() => {
+    if (
+      mappedGeneralData &&
+      Object.keys(mappedGeneralData).length > 0 &&
+      cryptocurrenciesData &&
+      typeof cryptocurrenciesData === "object"
+    ) {
+      return mergeCryptoData(mappedGeneralData, cryptocurrenciesData)
+    }
+    return {}
+  }, [mappedGeneralData, cryptocurrenciesData])
 
   return (
     <div className="w-full h-full lg:bg-gray30 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between">
@@ -147,9 +199,9 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
           </div>
           <span className="icon-wrapper w-5 h-5 -rotate-90 text-grey1"><IconChevron /></span>
         </div>
-        {isCryptoListModalOpen && <CryptoListModal setIsCryptoListModalOpen={setIsCryptoListModalOpen} />}
+        {isCryptoListModalOpen && <CryptoListModal setIsCryptoListModalOpen={setIsCryptoListModalOpen} cryptoListData={Object.values(mergedCryptosData)} />}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-text5 text-xs lg:text-sm font-medium">موجودی شما :<span className="text-text4 font-normal" dir="ltr">{'12.003 MNS'}</span></div>
+          <div className="flex items-center gap-1 text-text5 text-xs lg:text-sm font-medium">موجودی شما :<span className="text-text4 font-normal" dir="ltr">{`${cryptoBalance} ${'XRP'}`}</span></div>
           <span className="text-sm font-normal text-text4">
             {isSell ? 'قیمت فروش' : 'قیمت خرید'} :{formatPersianDigits(currentCryptoPrice) + 'تومان'}
           </span>

@@ -28,3 +28,40 @@ export interface GeneralInfo {
   depositMethods: DepositMethods
   [key: string]: unknown // allows extra keys without breaking type-check
 }
+
+// ===============================================================================================================================================================================
+
+// balance internal
+export interface BalanceInternal {
+  country?: string
+  deposit_status?: number
+  id?: number
+  min_deposit?: number
+  min_withdraw: number
+  name?: string
+  percent?: number
+  symbol?: string
+  transfer_status?: number
+  withdraw_status?: number
+  [key: string]: unknown
+}
+// get fiat balance
+export interface FiatBalance {
+  balance?: number
+  balance_available?: number
+  internal?: BalanceInternal
+  [key: string]: unknown
+}
+
+// ===============================================================================================================================================================================
+
+// order/get-info/{symbol} .price
+export interface TradePrices {
+  buy: number
+  sell: number
+}
+export interface TradeSymbolResponse {
+  balance: number
+  price: TradePrices
+}
+// order/get-info/{symbol}
