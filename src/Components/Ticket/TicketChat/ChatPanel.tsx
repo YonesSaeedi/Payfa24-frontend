@@ -8,6 +8,7 @@ import IconSendMessage from "../../../assets/icons/ticket/IconSendMessage";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
 import { apiRequest } from "../../../utils/apiClient";
 
+
 interface ChatPanelProps {
   ticket: Ticket | null;
 }
@@ -74,6 +75,7 @@ const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
 const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isSending, setIsSending] = useState(false);
 
   const fetchMessages = async () => {
     if (!ticket) return;
@@ -106,40 +108,45 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
     fetchMessages();
   }, [ticket]);
 
-  const handleSend = async () => {
-    if (!newMessage.trim() || !ticket) return;
+ const handleSend = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+  if (e) e.preventDefault(); // جلوگیری از رفتار پیش‌فرض
+  if (!newMessage.trim() || !ticket || isSending) return;
 
-    try {
-      const payload = { message: newMessage };
+  setIsSending(true);
 
-      await apiRequest({
-        url: `/api/ticket/${ticket.id}/new`,
-        method: "POST",
-        data: payload,
-        isFormData: false,
-      });
+  try {
+    const payload = { message: newMessage };
 
-      const message: Message = {
-        id: Date.now(),
-        text: newMessage,
-        isUser: true,
-        timestamp: new Date().toLocaleString("fa-IR", {
-          hour: "2-digit",
-          minute: "2-digit",
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }),
-      };
+    await apiRequest({
+      url: `/api/ticket/${ticket.id}/new`,
+      method: "POST",
+      data: payload,
+      isFormData: false,
+    });
 
-      setMessages([...messages, message]);
-      setNewMessage("");
+    const message: Message = {
+      id: Date.now(),
+      text: newMessage,
+      isUser: true,
+      timestamp: new Date().toLocaleString("fa-IR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+    };
 
-      fetchMessages(); // آپدیت مجدد لیست پیام‌ها
-    } catch (err) {
-      console.error("خطا در ارسال پیام:", err);
-    }
-  };
+    setMessages([...messages, message]);
+    setNewMessage("");
+    await fetchMessages(); // آپدیت مجدد لیست پیام‌ها
+  } catch (err) {
+    console.error("خطا در ارسال پیام:", err);
+  } finally {
+    setIsSending(false);
+  }
+};
+
 
   const currentTicket: Ticket = ticket || {
     id: 0,
@@ -153,12 +160,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
       <div className="border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
         <ChatHeader ticket={currentTicket} />
 
-        <div className="relative flex-1 p-4 overflow-y-auto">
+       
           <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${bgChat})`, opacity: 0.1 }}
-          />
-          <div className="relative z-10 flex flex-col gap-4">
+  className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center"
+  style={{ backgroundImage: `url(${bgChat})`, opacity: 0.1 }}
+>
+  <div className="relative z-10 flex flex-col gap-4">
             {messages.map((msg) =>
               msg.system ? (
                 <div
@@ -203,7 +210,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
               )
             )}
           </div>
-        </div>
+</div>
+      
 
         <div dir="rtl" className="p-3 flex gap-2 bg-white8">
           <input
@@ -219,14 +227,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
               <IconAttachFile />
             </span>
           </button>
-          <button
-            className="bg-blue15 text-white rounded-xl shadow w-[45px] h-[45px]"
-            onClick={handleSend}
-          >
-            <span className="icon-wrapper w-[22px] text-blue2 h-[22px]">
-              <IconSendMessage />
-            </span>
-          </button>
+        <button
+  className="bg-blue15 text-white rounded-xl shadow w-[45px] h-[45px]"
+  onClick={handleSend}
+  disabled={isSending} // جلوگیری از کلیک همزمان
+>
+  <span className="icon-wrapper w-[22px] text-blue2 h-[22px]">
+    <IconSendMessage />
+  </span>
+</button>
+
         </div>
       </div>
     </div>
