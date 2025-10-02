@@ -14,6 +14,7 @@ interface Props {
 }
 
 export default function CurrencyWithdrawModal({ open, onClose, onSelect }: Props) {
+  ///////////////////////////////////////////////////////////////////////////////////
   const { data: generalData, isLoading: isGeneralInfoLoading } = useGetGeneralInfo();
   const { data: withdrawData, isLoading: isWithdrawLoading } = useGetCryptoWithdraw();
   const [query, setQuery] = useState("");

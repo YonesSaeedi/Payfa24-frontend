@@ -1,3 +1,536 @@
+// import React, { FC, useEffect, useState, useMemo } from "react";
+// import ReactDOM from "react-dom";
+// import FloatingSelect from "../FloatingInput/FloatingSelect";
+// import FloatingInput from "../FloatingInput/FloatingInput";
+// import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
+// import { apiRequest } from "../../utils/apiClient";
+// import { toast } from "react-toastify";
+// import CryptoListModal from "../trade/CryptoListModal"; // مودال همکار
+// import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+
+// interface CoinNetworkRef {
+//   id: number;
+//   withdraw_min?: string;
+//   withdraw_fee?: string;
+// }
+// interface Coin {
+//   id: number;
+//   symbol: string;
+//   balance?: string;
+//   balance_available?: string;
+//   network?: CoinNetworkRef[];
+//   icon?: string;
+// }
+// interface FullNetwork {
+//   id?: number;
+//   name?: string;
+//   symbol?: string;
+//   tag?: any;
+//   addressRegex?: string;
+//   memoRegex?: string;
+//   locale?: any;
+// }
+
+// interface CryptoItem {
+//   symbol: string;
+//   priceBuy?: string;
+//   icon?: string;
+//   isFont?: boolean;
+//   color?: string;
+//   locale?: { fa: { name: string } };
+// }
+
+// const CryptoWithdrawForm: FC = () => {
+//   const [crypto, setCrypto] = useState<string>("");
+//   const [selectedNetworkId, setSelectedNetworkId] = useState<string>("");
+//   const [address, setAddress] = useState<string>("");
+//   const [tag, setTag] = useState<string>(""); 
+//   const [amount, setAmount] = useState<string>("");
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [coins, setCoins] = useState<Coin[]>([]);
+//   const [allNetworks, setAllNetworks] = useState<FullNetwork[]>([]);
+//   const [availableNetworks, setAvailableNetworks] = useState<
+//     (FullNetwork & CoinNetworkRef & { displayName?: string })[]
+//   >([]);
+//   const [selectedNetwork, setSelectedNetwork] = useState<
+//     (FullNetwork & CoinNetworkRef & { displayName?: string }) | undefined
+//   >(undefined);
+
+//   const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
+//   const { data: generalInfo } = useGetGeneralInfo();
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const res = await apiRequest({
+//           url: "/api/wallets/crypto/withdraw",
+//           method: "GET",
+//         });
+//         setCoins(res.coins || []);
+//         setAllNetworks(res.networks || []);
+//       } catch (err) {
+//         console.error("خطا در گرفتن اطلاعات:", err);
+//       }
+//     };
+//     fetchData();
+//   }, []);
+
+//   const mergedCryptosData: Record<string, CryptoItem> = useMemo(() => {
+//     if (!generalInfo?.data || !coins) return {};
+
+//     const data = generalInfo.data as Record<string, { icon?: string }>; // ← اضافه شد
+
+//     const result: Record<string, CryptoItem> = {};
+//     coins.forEach(coin => {
+//       const general = data[coin.symbol]; // حالا TypeScript می‌دونه نوعش چیه
+//       result[coin.symbol] = {
+//         symbol: coin.symbol,
+//         priceBuy: coin.balance_available || "0",
+//         icon: general?.icon
+//               ? general.icon
+//               : coin.icon
+//                 ? `https://api.payfa24.org/images/currency/${coin.icon}`
+//                 : undefined,
+//         isFont: false,
+//         color: "#000",
+//         locale: { fa: { name: coin.symbol } }
+//       };
+//     });
+//     return result;
+//   }, [coins, generalInfo]);
+
+//   useEffect(() => {
+//     if (!crypto) {
+//       setAvailableNetworks([]);
+//       setSelectedNetworkId("");
+//       setSelectedNetwork(undefined);
+//       return;
+//     }
+
+//     const selectedCoin = coins.find((c) => c.symbol === crypto);
+//     if (!selectedCoin || !Array.isArray(selectedCoin.network)) {
+//       setAvailableNetworks([]);
+//       setSelectedNetworkId("");
+//       setSelectedNetwork(undefined);
+//       return;
+//     }
+
+//     const nets = selectedCoin.network.map((cn) => {
+//       const full = allNetworks.find((n) => n.id === cn.id) || ({} as FullNetwork);
+//       const localeName =
+//         (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) ||
+//         full?.name ||
+//         full?.symbol ||
+//         String(cn.id);
+
+//       return {
+//         ...full,
+//         ...cn,
+//         displayName: localeName,
+//       } as FullNetwork & CoinNetworkRef & { displayName?: string };
+//     });
+
+//     setAvailableNetworks(nets);
+//     setSelectedNetworkId("");
+//     setSelectedNetwork(undefined);
+//     setTag("");
+//   }, [crypto, coins, allNetworks]);
+
+//   const handleNetworkChange = (id: string) => {
+//     setSelectedNetworkId(id);
+//     const net = availableNetworks.find((n) => String(n.id) === id);
+//     setSelectedNetwork(net);
+//     setTag(""); 
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setIsLoading(true);
+
+//     if (!amount || isNaN(parseFloat(amount))) {
+//       toast.error("لطفاً مقدار برداشت را وارد کنید");
+//       setIsLoading(false);
+//       return;
+//     }
+
+//     if (selectedNetwork?.tag === 1 && selectedNetwork?.memoRegex) {
+//       const regex = new RegExp(selectedNetwork.memoRegex);
+//       if (!regex.test(tag)) {
+//         toast.error("مقدار Tag/Memo معتبر نیست");
+//         setIsLoading(false);
+//         return;
+//       }
+//     }
+
+//     try {
+//       await apiRequest({
+//         url: `/api/wallets/crypto/withdraw/${crypto}`,
+//         method: "POST",
+//         data: {
+//           network: selectedNetwork?.symbol || selectedNetworkId,
+//           withdrawAmount: parseFloat(amount),
+//           withdrawAddressWallet: address,
+//           withdrawAddressWalletTag: tag,
+//         },
+//       });
+
+//       toast.success("برداشت با موفقیت ثبت شد!");
+//     } catch (err: any) {
+//       console.error(err);
+//       toast.error(err?.response?.data?.msg || "خطا در برداشت!");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const renderModal = () => {
+//     if (!isCurrencyModalOpen) return null;
+//     const cryptoListData = Object.values(mergedCryptosData);
+
+//     return ReactDOM.createPortal(
+//       <CryptoListModal
+//         setIsCryptoListModalOpen={setIsCurrencyModalOpen}
+//         cryptoListData={cryptoListData}
+//         setCurrentCryptoCurrency={(cryptoItem) => {
+//           setCrypto(cryptoItem.symbol);
+//           setIsCurrencyModalOpen(false);
+//         }}
+//       />,
+//       document.body
+//     );
+//   };
+
+//   return (
+//     <form
+//       onSubmit={handleSubmit}
+//       className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between h-[644px] overflow-y-auto"
+//     >
+//       <div>
+//         <div
+//           dir="rtl"
+//           className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2"
+//         >
+//           <span className="w-6 h-6 icon-wrapper">
+//             <IconVideo />
+//           </span>
+//           <h2 className="font-normal text-blue2">ویدیو آموزشی برداشت رمز ارز</h2>
+//         </div>
+
+//         <div dir="rtl" className="mb-6 relative">
+//           <label className="block text-sm text-gray-600 mb-1">انتخاب رمز ارز</label>
+//           <div
+//             className="p-3 border rounded-lg cursor-pointer "
+//             onClick={() => setIsCurrencyModalOpen(true)}
+//           >
+//             {crypto || "انتخاب کنید"}
+//           </div>
+//         </div>
+
+//         <div dir="rtl" className="mb-6 relative">
+//           {crypto ? (
+//             <FloatingSelect
+//               label="شبکه برداشت"
+//               value={selectedNetworkId || undefined}
+//               onChange={handleNetworkChange}
+//               options={availableNetworks.map((n) => ({
+//                 value: String(n.id),
+//                 label: `${n.displayName || n.name || n.symbol || n.id} (${
+//                   n.name || n.symbol || n.id
+//                 })`,
+//               }))}
+//             />
+//           ) : (
+//             <div className="w-full border rounded-lg p-3 text-center text-gray-500 bg-gray-100">
+//               ابتدا رمز ارز مورد نظر را انتخاب کنید
+//             </div>
+//           )}
+
+//           {selectedNetworkId && (
+//             <div className="mt-4 relative z-10 flex flex-col gap-4">
+//               <FloatingInput
+//                 label="آدرس مقصد"
+//                 value={address}
+//                 onChange={(e) => setAddress(e.target.value)}
+//                 type="text"
+//               />
+//               {selectedNetwork?.tag === 1 && (
+//                 <FloatingInput
+//                   label="Tag / Memo (در صورت نیاز)"
+//                   value={tag}
+//                   onChange={(e) => setTag(e.target.value)}
+//                   type="text"
+//                 />
+//               )}
+//               <div>
+//                 <FloatingInput
+//                   label="مقدار برداشت"
+//                   value={amount}
+//                   onChange={(e) => setAmount(e.target.value)}
+//                   type="number"
+//                 />
+//                 <div className="flex justify-between pt-2 text-xs text-gray-500">
+//                   <p>کل موجودی: 34.000 MOS</p>
+//                   <button
+//                     type="button"
+//                     className="text-blue-500"
+//                     onClick={() => setAmount("34.000")}
+//                   >
+//                     همه موجودی
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+
+//       <div>
+//         <button
+//           type="submit"
+//           className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg"
+//           disabled={isLoading}
+//         >
+//           {isLoading ? "در حال ارسال..." : "تایید"}
+//         </button>
+//       </div>
+
+//       {renderModal()}
+//     </form>
+//   );
+// };
+
+// export default CryptoWithdrawForm;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// import React, { FC, useEffect, useMemo, useState } from "react";
+// import FloatingSelect from "../FloatingInput/FloatingSelect";
+// import FloatingInput from "../FloatingInput/FloatingInput";
+// import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
+// import { toast } from "react-toastify";
+// import useGetCryptoWithdraw from "../../hooks/useGetCryptoWithdraw";
+// import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+// import CryptoListModal from "../trade/CryptoListModal";
+// import { CryptoItem } from "../../types/crypto";
+
+// interface CoinNetworkRef {
+//   id: number;
+//   withdraw_min?: string;
+//   withdraw_fee?: string;
+// }
+
+// interface FullNetwork {
+//   id: number;
+//   name?: string;
+//   symbol?: string;
+//   tag?: any;
+//   addressRegex?: string;
+//   memoRegex?: string;
+//   locale?: any;
+// }
+
+// const CryptoWithdrawForm: FC = () => {
+//   const [selectedCrypto, setSelectedCrypto] = useState<CryptoItem & { network?: any[]; balance_available?: string } | null>(null);
+//   const [selectedNetworkId, setSelectedNetworkId] = useState<string>("");
+//   const [address, setAddress] = useState<string>("");
+//   const [tag, setTag] = useState<string>("");
+//   const [amount, setAmount] = useState<string>("");
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   const [allNetworks, setAllNetworks] = useState<FullNetwork[]>([]);
+//   const [availableNetworks, setAvailableNetworks] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string })[]>([]);
+//   const [selectedNetwork, setSelectedNetwork] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string }) | undefined>(undefined);
+//   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
+
+//   // fetch data
+//   const { data: withdrawData } = useGetCryptoWithdraw();
+//   const { data: generalData } = useGetGeneralInfo();
+
+//   useEffect(() => {
+//     if (withdrawData?.networks) setAllNetworks(withdrawData.networks);
+//   }, [withdrawData]);
+
+//   // merge two APIs
+//   const mergedCryptosData = useMemo(() => {
+//     if (!withdrawData || !generalData) return [];
+
+//     const generalDataMap = (generalData.cryptocurrency || []).reduce((acc, c) => {
+//       acc[c.symbol] = c;
+//       return acc;
+//     }, {} as Record<string, any>);
+
+//     return (withdrawData.coins || []).map((coin) => {
+//       const generalInfo = generalDataMap[coin.symbol] || {};
+//       return {
+//         ...coin,
+//         ...generalInfo,
+//         symbol: coin.symbol,
+//         priceBuy: generalInfo?.price?.buy || 0,
+//         locale: generalInfo?.locale || { fa: { name: coin.symbol } },
+//         network: coin.network || [],
+//         balance_available: coin.balance_available || "0",
+//       } as CryptoItem & { network?: any[]; balance_available?: string };
+//     });
+//   }, [withdrawData, generalData]);
+
+//   // update available networks when crypto changes
+//   useEffect(() => {
+//     if (!selectedCrypto) {
+//       setAvailableNetworks([]);
+//       setSelectedNetworkId("");
+//       setSelectedNetwork(undefined);
+//       setTag("");
+//       return;
+//     }
+
+//     const nets = (selectedCrypto.network || []).map((cn) => {
+//       const full = allNetworks.find((n) => n.id === cn.id) || ({} as FullNetwork);
+//       const localeName =
+//         (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) ||
+//         full?.name ||
+//         full?.symbol ||
+//         String(cn.id);
+
+//       return {
+//         ...full,
+//         ...cn,
+//         displayName: localeName,
+//       } as FullNetwork & CoinNetworkRef & { displayName?: string };
+//     });
+
+//     setAvailableNetworks(nets);
+//     setSelectedNetworkId("");
+//     setSelectedNetwork(undefined);
+//     setTag("");
+//   }, [selectedCrypto, allNetworks]);
+
+//   const handleNetworkChange = (id: string) => {
+//     setSelectedNetworkId(id);
+//     const net = availableNetworks.find((n) => String(n.id) === id);
+//     setSelectedNetwork(net);
+//     setTag("");
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setIsLoading(true);
+
+//     if (!amount || isNaN(parseFloat(amount))) {
+//       toast.error("لطفاً مقدار برداشت را وارد کنید");
+//       setIsLoading(false);
+//       return;
+//     }
+
+//     if (selectedNetwork?.tag === 1 && selectedNetwork?.memoRegex) {
+//       const regex = new RegExp(selectedNetwork.memoRegex);
+//       if (!regex.test(tag)) {
+//         toast.error("مقدار Tag/Memo معتبر نیست");
+//         setIsLoading(false);
+//         return;
+//       }
+//     }
+
+//     try {
+//       await fetch(`/api/wallets/crypto/withdraw/${selectedCrypto?.symbol}`, {
+//         method: "POST",
+//         body: JSON.stringify({
+//           network: selectedNetwork?.symbol || selectedNetworkId,
+//           withdrawAmount: parseFloat(amount),
+//           withdrawAddressWallet: address,
+//           withdrawAddressWalletTag: tag,
+//         }),
+//       });
+
+//       toast.success("برداشت با موفقیت ثبت شد!");
+//     } catch (err: any) {
+//       console.error(err);
+//       toast.error(err?.response?.data?.msg || "خطا در برداشت!");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   return (
+//     <form onSubmit={handleSubmit} className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between h-[644px] overflow-y-auto">
+//       <div>
+//         <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2">
+//           <span className="w-6 h-6 icon-wrapper">
+//             <IconVideo />
+//           </span>
+//           <h2 className="font-normal text-blue2">ویدیو آموزشی برداشت رمز ارز</h2>
+//         </div>
+
+//         {/* انتخاب رمز ارز */}
+//         <div dir="rtl" className="mb-6 relative">
+//           <label className="block text-sm text-gray-600 mb-1">انتخاب رمز ارز</label>
+//           <div className="p-3 border rounded-lg cursor-pointer bg-white flex items-center gap-2" onClick={() => setIsCryptoListModalOpen(true)}>
+//             {selectedCrypto?.locale?.fa?.name || "انتخاب کنید"}
+//             {selectedCrypto?.icon && <img src={selectedCrypto.icon} alt={selectedCrypto.symbol} className="w-6 h-6" />}
+//           </div>
+//         </div>
+
+//         {/* انتخاب شبکه و آدرس */}
+//         <div dir="rtl" className="mb-6 relative">
+//           {selectedCrypto ? (
+//             <FloatingSelect
+//               label="شبکه برداشت"
+//               value={selectedNetworkId || undefined}
+//               onChange={handleNetworkChange}
+//               options={availableNetworks.map((n) => ({
+//                 value: String(n.id),
+//                 label: `${n.displayName || n.name || n.symbol || n.id}`,
+//               }))}
+//             />
+//           ) : (
+//             <div className="w-full border rounded-lg p-3 text-center text-gray-500 bg-gray-100">
+//               ابتدا رمز ارز مورد نظر را انتخاب کنید
+//             </div>
+//           )}
+
+//           {selectedNetworkId && (
+//             <div className="mt-4 relative z-10 flex flex-col gap-4">
+//               <FloatingInput label="آدرس مقصد" value={address} onChange={(e) => setAddress(e.target.value)} type="text" />
+
+//               {selectedNetwork?.tag === 1 && (
+//                 <FloatingInput label="Tag / Memo (در صورت نیاز)" value={tag} onChange={(e) => setTag(e.target.value)} type="text" />
+//               )}
+
+//               <div>
+//                 <FloatingInput label="مقدار برداشت" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" />
+//                 <div className="flex justify-between pt-2 text-xs text-gray-500">
+//                   <p>کل موجودی: {selectedCrypto?.balance_available || "0"} {selectedCrypto?.symbol}</p>
+//                   <button type="button" className="text-blue-500" onClick={() => setAmount(selectedCrypto?.balance_available || "0")}>
+//                     همه موجودی
+//                   </button>
+//                 </div>
+//               </div>
+
+//               {selectedCrypto?.priceBuy && <p className="text-sm mt-1">قیمت خرید: {selectedCrypto.priceBuy} تومان</p>}
+//             </div>
+//           )}
+//         </div>
+//       </div>
+
+//       <div>
+//         <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg" disabled={isLoading}>
+//           {isLoading ? "در حال ارسال..." : "تایید"}
+//         </button>
+//       </div>
+
+//       {/* CryptoListModal */}
+//       {isCryptoListModalOpen && (
+//         <CryptoListModal
+//           setIsCryptoListModalOpen={setIsCryptoListModalOpen}
+//           cryptoListData={mergedCryptosData}
+//           setCurrentCryptoCurrency={setSelectedCrypto}
+//         />
+//       )}
+//     </form>
+//   );
+// };
+
+// export default CryptoWithdrawForm;
+
+
 import React, { FC, useEffect, useState } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import FloatingInput from "../FloatingInput/FloatingInput";
