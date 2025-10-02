@@ -39,14 +39,7 @@ export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModa
                                          <p className="text-sm font-medium">{order.amount}</p>
                                             <p className="text-xs text-gray-500">{order.date}</p>
                                       </div>
-
-
-
-
-
-
-
-                                      
+                 
             </button>
           ))}
         </div>
