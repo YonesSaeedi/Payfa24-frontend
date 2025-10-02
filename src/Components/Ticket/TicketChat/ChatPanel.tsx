@@ -7,6 +7,9 @@ import { CheckCircle, Clock, XCircle } from "lucide-react";
 import IconSendMessage from "../../../assets/icons/ticket/IconSendMessage";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
 import { apiRequest } from "../../../utils/apiClient";
+import { ticketStatusMap } from "../../../utils/statusMap";
+
+import StatusBadge from "../../UI/Button/StatusBadge";
 
 
 interface ChatPanelProps {
@@ -26,37 +29,8 @@ interface Message {
 
 // ---- ChatHeader همانند قبل بدون تغییر ----
 const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
-  const renderStatus = (status: Ticket["status"]) => {
-    switch (status) {
-      case "answered":
-        return (
-          <div className="flex items-center justify-center h-full w-full">
-            <span className="flex items-center justify-center gap-1 bg-green8 text-green2 w-[140px] h-[33px] rounded-[4px]">
-              پاسخ داده شده
-              <CheckCircle size={16}/> 
-            </span>
-          </div>
-        );
-      case "pending":
-        return (
-        <div className="flex items-center justify-center h-full w-full">
-          <span className="flex items-center justify-center gap-1 bg-orange4 text-orange-500 w-[140px] h-[33px] rounded-[4px]">
-            در حال بررسی
-            <Clock size={16}/> 
-          </span>
-        </div>
-        );
-      case "closed":
-        return (
-       <div className="flex items-center justify-center h-full w-full">
-         <span className="flex items-center justify-center gap-1 bg-red6 text-red-500 w-[126px] h-[33px] rounded-[4px]">
-          بسته شده
-           <XCircle size={16}/> 
-         </span>
-       </div>
-        );
-    }
-  };
+ const statusText = ticketStatusMap[ticket.status] || "نامشخص";
+
 
   return (
     <div className="border-b border-b-gray21 bg-gray37  rounded-t-[16px] px-4 py-3">
@@ -65,7 +39,9 @@ const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
           <span className="text-gray5 text-sm">شماره تیکت: #{ticket.id}</span>
           <span className="font-medium text-black1 mt-2 text-base">{ticket.title}</span>
         </div>
-        <div>{renderStatus(ticket.status)}</div>
+        <div>
+          <StatusBadge text={statusText} /> {/* ✅ نمایش وضعیت با Badge */}
+        </div>
       </div>
     </div>
   );
@@ -163,7 +139,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
        
           <div
   className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center"
-  style={{ backgroundImage: `url(${bgChat})`, opacity: 0.1 }}
+  style={{ backgroundImage: `url(${bgChat})` }}
 >
   <div className="relative z-10 flex flex-col gap-4">
             {messages.map((msg) =>

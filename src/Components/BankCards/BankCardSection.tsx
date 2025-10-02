@@ -28,6 +28,7 @@ function BankCardSection({ cards, setCards }: BankCardSectionProps) {
 
   return (
     <div className="lg:flex lg:flex-row-reverse w-full min-h-screen justify-between  gap-6">
+      
       <div className="">
         <BankCardForm onSave={handleAddCard} />
       </div>
@@ -45,3 +46,5 @@ function BankCardSection({ cards, setCards }: BankCardSectionProps) {
 }
 
 export default BankCardSection;
+
+

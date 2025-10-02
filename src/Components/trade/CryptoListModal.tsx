@@ -7,9 +7,10 @@ import CurrenciesVirtualizedList from "./CurrenciesVirtualizedList";
 type CryptoListModalProps = {
   setIsCryptoListModalOpen: Dispatch<SetStateAction<boolean>>;
   cryptoListData: CryptoItem[]
+  setCurrentCryptoCurrency: (cryptocurrency: CryptoItem) => void
 }
 
-const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData }: CryptoListModalProps) => {
+const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentCryptoCurrency }: CryptoListModalProps) => {
   const [isDollarCurrencies, setIsDollarCurrencies] = useState<boolean>(false)
   const searchInputRef = useRef<HTMLInputElement | null>(null)
   // =======================================================================================================================================================
@@ -48,7 +49,7 @@ const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData }: CryptoLis
             </button>
           </div>
           {/* crypto currencies list */}
-          <CurrenciesVirtualizedList items={cryptoListData} height={400} itemHeight={60} width='100%' />
+          <CurrenciesVirtualizedList items={cryptoListData} height={400} itemHeight={60} width='100%' setCurrentCryptoCurrency={setCurrentCryptoCurrency} closeModal={() => setIsCryptoListModalOpen(false)} />
         </div>
       </div>
     </div>

@@ -5,6 +5,9 @@ import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
 import { apiRequest } from "../../utils/apiClient";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routes/routes"; // مسیر دقیق فایل routes را چک کنید
+
 
 interface Wallet {
   name: string;
@@ -42,6 +45,9 @@ const CryptoTable: React.FC = () => {
   const [openModalId, setOpenModalId] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
+
 
   // 📌 هندل ریسایز
   useEffect(() => {
@@ -204,8 +210,8 @@ const cryptoData = walletsData.map((wallet) => {
                   {item.change ?? 0}%
                 </td>
                 <td className="px-4 py-3 flex gap-2 whitespace-nowrap">
-                  <button className="w-[84px] h-[34px] rounded-[8px] border text-sm text-blue2 hover:bg-blue-100 border-blue2">واریز</button>
-                  <button className="w-[84px] h-[34px] rounded-[8px] text-sm bg-blue2 text-white1 hover:bg-blue-100">برداشت</button>
+                  <button  onClick={() => navigate(ROUTES.Deposit)} className="w-[84px] h-[34px] rounded-[8px] border text-sm text-blue2 hover:bg-blue-100 border-blue2">واریز</button>
+                  <button  onClick={() => navigate(ROUTES.WITHDRAWAL.CREATE)} className="w-[84px] h-[34px] rounded-[8px] text-sm bg-blue2 text-white1 hover:bg-blue-100">برداشت</button>
                 </td>
                 <td className="px-4 py-3 text-center relative whitespace-nowrap group">
                   <button
@@ -219,13 +225,13 @@ const cryptoData = walletsData.map((wallet) => {
                   {!isMobile && (
                     <div className="absolute left-[41px] mt-2 top-6 w-[226px] bg-white rounded-lg shadow-md flex flex-col z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                       <button className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
-                        onClick={() => console.log("خرید", item.symbol)}
+                       onClick={() => navigate(ROUTES.TRADE.BUY)}
                       >
                         <span className="text-blue1 w-5 h-5 flex items-center justify-center"><ReceivedIcon /></span>
                         <span className="text-blue1">خرید</span>
                       </button>
                       <button className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
-                        onClick={() => console.log("فروش", item.symbol)}
+                        onClick={() => navigate(ROUTES.TRADE.SELL)}
                       >
                         <span className="text-blue1 w-5 h-5 flex items-center justify-center"><SendIcon /></span>
                         <span className="text-blue1">فروش</span>

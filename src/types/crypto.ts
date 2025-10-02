@@ -1,5 +1,7 @@
 export interface LocaleName {
-  name: string
+  en?: { name: string }
+  fa?: { name: string }
+  fr?: { name: string }
 }
 
 export interface CryptoItem {
@@ -11,10 +13,7 @@ export interface CryptoItem {
   id?: number
   isDisable?: boolean
   isFont?: boolean
-  locale?: string
-  en?: { name: string }
-  fa?: { name: string }
-  fr?: { name: string }
+  locale?: LocaleName
   name?: string
   percent?: number
   sell_status?: number

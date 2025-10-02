@@ -70,8 +70,8 @@ body,
   }
 
 
-    .skeleton-bg {
-    @apply bg-gray-300 dark:bg-gray-700 relative overflow-hidden rounded-md;
+  .skeleton-bg {
+    @apply bg-gray-300 dark:bg-gray-700 relative overflow-hidden;
   }
 
   .skeleton-bg::after {
@@ -85,6 +85,12 @@ body,
         transparent);
     animation: shimmer 1.5s infinite;
     border-radius: inherit;
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
   }
 }
 
@@ -109,10 +115,10 @@ body,
 
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
