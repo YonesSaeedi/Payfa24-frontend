@@ -13,7 +13,7 @@ import IconPieChart from "../../assets/icons/services/IconPieChart";
 import IconPersonalCard from "../../assets/icons/services/IconPersonalCard";
 import IconCloseButtun from "../../assets/icons/services/IconCloseButtun";
 import ChartIcon from "../../assets/icons/header/ChartIcon";
-import { ROUTES } from "../../routes/routes";  
+import { ROUTES } from "../../routes/routes";
 import IconWalletCard from "../../assets/icons/services/IconWalletCard";
 import IconMarketView from "../../assets/icons/services/IconMarketView";
 import IconTicket from "../../assets/icons/services/IconTicket";
@@ -24,6 +24,7 @@ import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
 interface ServiceItem {
   label: string;
   icon: ReactNode;
+  route?: string;
 }
 
 interface ServicesBoxProps {
@@ -43,64 +44,44 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     setTimeout(onClose, 300);
   };
 
-  const handleItemClick = (label: string) => {
-    if (label === "تاریخچه") {
-      navigate(ROUTES.TRANSACTION.CREATE); 
-    } else if (label === "سوالات") {
-      navigate(ROUTES.FAQ.CREATE); 
-    } else if (label === "کارت‌ها") {
-      navigate(ROUTES.BANK_CARDS.CREATE); 
-    } else if (label === "تیکت") {
-      navigate(ROUTES.TICKET.ROOT);
-    } else if (label === "اعلانات") {
-      navigate(ROUTES.NOTIFICATIONS);
-    } else if (label === "بازار") {
-      navigate(ROUTES.MARKET);
-    } else if (label === "کیف پول") {
-      navigate(ROUTES.Wallet);
-    } else if (label === "برداشت") {
-      navigate(ROUTES.WITHDRAWAL.ROOT);
-    } else if (label === "احراز هویت") {
-      navigate(ROUTES.AuthenticationBasic);
-    } else if (label === "خرید") {
-      navigate(ROUTES.TRADE.BUY);
-    } else if (label === "فروش") {
-      navigate(ROUTES.TRADE.SELL);
-    } else if (label === "واریز") {
-      navigate(ROUTES.Deposit);
-    } else if (label === "امنیت") {
-      navigate(ROUTES.AuthenticationBasic);
-    }
-  };
+const handleItemClick = (item: ServiceItem) => {
+  if (item.route) navigate(item.route);
+};
 
-  const financeItems: ServiceItem[] = [
-    { label: "خرید", icon: <span className="w-[26px] h-[26px] icon-wrapper"><ReceivedIcon /></span> },
-    { label: "فروش", icon: <span className="w-[26px] h-[26px] icon-wrapper"><SendIcon /></span> },
-    { label: "واریز", icon: <span className="w-[26px] h-[26px] icon-wrapper"><WalletAddIcon /></span> },
-    { label: "برداشت", icon: <WalletMinesIcon /> },
-    { label: "کیف پول", icon: <IconWalletCard/> },
-    { label: "کارت‌ها", icon: <IconCards /> },
-  ];
 
-  const marketItems: ServiceItem[] = [
-    { label: "تاریخچه", icon: <IconReceipt /> },
-    { label: "بازار", icon: <ChartIcon /> },
-    { label: "نمای بازار", icon:<IconMarketView/>  },
-    { label: "پرتفوی", icon: <IconPieChart/>},
-  ];
+const financeItems: ServiceItem[] = [
+  { label: "خرید", icon: <ReceivedIcon />, route: ROUTES.TRADE.BUY },
+  { label: "فروش", icon: <SendIcon />, route: ROUTES.TRADE.SELL },
+  { label: "واریز", icon: <WalletAddIcon />, route: ROUTES.Deposit },
+  { label: "برداشت", icon: <WalletMinesIcon />, route: ROUTES.WITHDRAWAL.ROOT },
+  { label: "کیف پول", icon: <IconWalletCard />, route: ROUTES.Wallet },
+  { label: "کارت‌ها", icon: <IconCards />, route: ROUTES.BANK_CARDS.CREATE },
+];
 
-  const supportItems: ServiceItem[] = [
-    { label: "احراز هویت", icon: <IconPersonalCard/> },
-    { label: "امنیت", icon: <IconSecurity/> },
-    { label: "تیکت", icon: <IconTicket/> },
-    { label: "سوالات", icon: <IconQuestionLabel/> },
-  ];
+const marketItems: ServiceItem[] = [
+  { label: "بازار", icon: <ChartIcon />, route: ROUTES.MARKET },
+  { label: "نمای بازار", icon: <IconMarketView /> },
+  { label: "پرتفوی", icon: <IconPieChart /> },
+];
 
-  const otherItems: ServiceItem[] = [
-    { label: "اعلانات", icon: <IconNotification/> },
-    { label: "مقالات", icon: <IconPersonalCard /> },
-    { label: "دعوت دوستان", icon: <IconUserPlus/> },
-  ];
+const historyItems: ServiceItem[] = [
+  { label: "خریدو فروش", icon: <IconReceipt />, route: ROUTES.TRANSACTION.CREATE },
+  { label: "تومانی", icon: <IconReceipt />, route: ROUTES.TRANSACTION.CREATE },
+  { label: "رمزارز", icon: <IconReceipt />, route: ROUTES.TRANSACTION.CREATE },
+];
+
+const supportItems: ServiceItem[] = [
+  { label: "احراز هویت", icon: <IconPersonalCard />, route: ROUTES.AuthenticationBasic },
+  { label: "امنیت", icon: <IconSecurity />, route: ROUTES.AuthenticationBasic },
+  { label: "تیکت", icon: <IconTicket />, route: ROUTES.TICKET.ROOT },
+  { label: "سوالات", icon: <IconQuestionLabel />, route: ROUTES.FAQ.CREATE },
+];
+
+const otherItems: ServiceItem[] = [
+  { label: "اعلانات", icon: <IconNotification />, route: ROUTES.NOTIFICATIONS },
+  { label: "مقالات", icon: <IconPersonalCard /> },
+  { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.AddFriend },
+];
 
   const renderSection = (title: string, items: ServiceItem[]) => (
     <div dir="rtl" className=" mb-6 ">
@@ -114,7 +95,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
         {items.map((item, i) => (
           <div
             key={i}
-            onClick={() => handleItemClick(item.label)} 
+            onClick={() => handleItemClick(item)}
             className="flex flex-col items-center justify-center px-11 h-[72px]  rounded-lg hover:border-blue2 d cursor-pointer transition border border-gray21 bg-gray33"
           >
             <span className="w-6 h-6 text-blue2">{item.icon}</span>
@@ -134,14 +115,13 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       onClick={handleClose} // کلیک روی پس‌زمینه -> بستن مودال
     >
       <div
-        className={`bg-white8 rounded-xl shadow-lg p-6 w-[500px] h-[700] transform transition-all duration-300 ${
-          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
-        } relative`}
+        className={`bg-white8 rounded-xl shadow-lg p-6 w-[500px] h-[700] transform transition-all duration-300 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+          } relative`}
         onClick={(e) => e.stopPropagation()} // جلوگیری از بسته شدن مودال با کلیک داخلش
       >
         <div className="flex border-b border-b-gray21 pb-4">
           <span className="w-6 h-6 icon-wrapper ml-1">
-            <CategoryActiveIcon/>
+            <CategoryActiveIcon />
           </span>
           <h3 className="text-blue2">خدمات</h3>
         </div>
@@ -155,6 +135,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
 
         {renderSection("مالی و تراکنش", financeItems)}
         {renderSection("بازار و اطلاعات", marketItems)}
+        {renderSection(" تاریخچه", historyItems)}
         {renderSection("پشتیبانی و حساب کاربری", supportItems)}
         {renderSection("سایر", otherItems)}
       </div>
