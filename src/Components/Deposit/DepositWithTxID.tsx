@@ -16,7 +16,7 @@ const initialCurrency = {
 };
 export default function DepositWithTxID() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useState(initialCurrency); // استیت برای نگهداری ارز انتخاب شده
+  const [selectedCurrency, setSelectedCurrency] = useState(initialCurrency); 
   const { control } = useForm({
     resolver: yupResolver(),
   });
