@@ -15,7 +15,7 @@ import TicketPage from "../pages/Ticket/TicketPage";
 import TicketPanel from "./../Components/Ticket/TicketPanel";
 import TicketLayout from "../pages/Ticket/TicketLayout";
 import TransactionLayout from "../pages/Transaction/TransactionLayout";
-import Transaction from "../Components/Transaction/Transaction";
+import CryptoPage from "../Components/History/CryptoPage";
 import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
@@ -30,6 +30,8 @@ import GoogleAuthFlow from "../pages/Profile/GoogleAuthFlow";
 import AddFriend from "../pages/Addfriend/AddFriend";
 import DepositPage from "../pages/Deposit/DepositPage";
 import ForgotPasswordPageSetPasswordPage from "../pages/ForgotPasswordPageSetPasswordPage";
+import TomanPage from "../Components/History/TomanPage";
+import OrderPage from "../Components/History/OrderPage";
 // import TransactionTable from '../Components/Transaction/Transaction';
 
 export default function AppRouter() {
@@ -52,8 +54,8 @@ export default function AppRouter() {
           <Route path={ROUTES.GoogleAuthFlow} element={<GoogleAuthFlow />} />
           <Route path={ROUTES.AddFriend} element={<AddFriend />} />
           <Route path={ROUTES.Deposit} element={<DepositPage />} />
-      
-      
+
+
 
           {/* auth pages ==================================================================================================== */}
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
@@ -62,7 +64,7 @@ export default function AppRouter() {
             path={ROUTES.FORGOT_PASSWORD}
             element={<ForgotPasswordPage />}
           />
-           <Route
+          <Route
             path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD}
             element={<ForgotPasswordPageSetPasswordPage />}
           />
@@ -77,9 +79,9 @@ export default function AppRouter() {
 
           {/* <Route path={ROUTES.BankAccount} element={<Profile/>}/> */}
           {/* <Route path={ROUTES.ConnectedDevices} element={<Profile/>}/> */}
-         
 
-    
+
+
           <Route path={ROUTES.Profile} element={<Profile />} />
           <Route path={ROUTES.Securitysettings} element={<Profile />} />
           <Route path={ROUTES.UserAccount} element={<Profile />} />
@@ -100,13 +102,14 @@ export default function AppRouter() {
             <Route path="CREATE" element={<TicketPanel />} />
           </Route>
 
-          <Route path="services" element={<TransactionLayout />}>
-            <Route index element={<Transaction />} />
-            <Route path="transaction" element={<Transaction />} />
+          <Route path={ROUTES.TRANSACTION.ROOT} element={<TransactionLayout />}>
+            <Route index element={<CryptoPage />} />           {/* /history */}
+            <Route path="Crypto" element={<CryptoPage />} />  {/* /history/Crypto */}
+            <Route path="tooman" element={<TomanPage />} />  {/* /history/toman */}
+            <Route path="order" element={<OrderPage />} />   {/* /history/order */}
           </Route>
 
           <Route path="services" element={<TransactionLayout />}>
-            <Route index element={<Transaction />} />
             <Route path="faq" element={<FaqLayout />} />
           </Route>
 

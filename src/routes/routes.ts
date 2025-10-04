@@ -40,8 +40,10 @@ export const ROUTES = {
     CREATE: "/ticket/create",
   },
   TRANSACTION: {
-    ROOT: "/services",
-    CREATE: "/services/transaction",
+    ROOT: "/history",
+    CRYPTO_HISTORY: "/history/crypto",
+    TOMAN_HISTORY: "/history/toman",
+    ORDER_HISTORY: "/history/order",
   },
   FAQ: {
     ROOT: "/services",

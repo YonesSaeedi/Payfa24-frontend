@@ -2,7 +2,7 @@ import React, { useState, useMemo,useEffect } from "react";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
 import { ICryptoItem } from "../Market/types";
-import Pagination from "../../Components/Transaction/Pagination"; 
+import Pagination from "../History/Pagination"; 
 import { useNavigate } from "react-router-dom"; 
 
 type TabType =

@@ -65,9 +65,9 @@ const marketItems: ServiceItem[] = [
 ];
 
 const historyItems: ServiceItem[] = [
-  { label: "خریدو فروش", icon: <IconReceipt />, route: ROUTES.TRANSACTION.CREATE },
-  { label: "تومانی", icon: <IconReceipt />, route: ROUTES.TRANSACTION.CREATE },
-  { label: "رمزارز", icon: <IconReceipt />, route: ROUTES.TRANSACTION.CREATE },
+  { label: "خریدو فروش", icon: <IconReceipt />, route: ROUTES.TRANSACTION.ORDER_HISTORY },
+  { label: "تومانی", icon: <IconReceipt />, route: ROUTES.TRANSACTION.TOMAN_HISTORY },
+  { label: "رمزارز", icon: <IconReceipt />, route: ROUTES.TRANSACTION.CRYPTO_HISTORY },
 ];
 
 const supportItems: ServiceItem[] = [
