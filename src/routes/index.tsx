@@ -30,6 +30,7 @@ import GoogleAuthFlow from "../pages/Profile/GoogleAuthFlow";
 import AddFriend from "../pages/Addfriend/AddFriend";
 import DepositPage from "../pages/Deposit/DepositPage";
 import ForgotPasswordPageSetPasswordPage from "../pages/ForgotPasswordPageSetPasswordPage";
+import MarketViewPage from "../pages/market-view/MarketViewPage";
 // import TransactionTable from '../Components/Transaction/Transaction';
 
 export default function AppRouter() {
@@ -50,10 +51,6 @@ export default function AppRouter() {
           <Route path={ROUTES.ChangePassword} element={<ChangePassword />} />
           <Route path={ROUTES.MultiFactor} element={<MultiFactor />} />
           <Route path={ROUTES.GoogleAuthFlow} element={<GoogleAuthFlow />} />
-          <Route path={ROUTES.AddFriend} element={<AddFriend />} />
-          <Route path={ROUTES.Deposit} element={<DepositPage />} />
-      
-      
 
           {/* auth pages ==================================================================================================== */}
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
@@ -62,70 +59,76 @@ export default function AppRouter() {
             path={ROUTES.FORGOT_PASSWORD}
             element={<ForgotPasswordPage />}
           />
-           <Route
+          <Route
             path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD}
             element={<ForgotPasswordPageSetPasswordPage />}
           />
-          <Route
-            path={ROUTES.AuthenticationBasic}
-            element={<AuthenticationBasic />}
-          />
-          <Route
-            path={ROUTES.AuthenticationAdvance}
-            element={<AuthenticationAdvance />}
-          />
-
-          {/* <Route path={ROUTES.BankAccount} element={<Profile/>}/> */}
-          {/* <Route path={ROUTES.ConnectedDevices} element={<Profile/>}/> */}
-         
-
-    
-          <Route path={ROUTES.Profile} element={<Profile />} />
-          <Route path={ROUTES.Securitysettings} element={<Profile />} />
-          <Route path={ROUTES.UserAccount} element={<Profile />} />
-
-          {/* header only pages ==================================================================================================== */}
-
-          <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
-          <Route path={ROUTES.Wallet} element={<Wallet />} />
-          <Route path={ROUTES.WITHDRAWAL.CREATE} element={<WithdrawPage />} />
-
-          <Route path="trade" element={<TradeLayout />}>
-            <Route index element={<Navigate to="buy" replace />} />
-            <Route path="buy" element={<Buy />} />
-            <Route path="sell" element={<Sell />} />
-          </Route>
-          <Route path="ticket" element={<TicketLayout />}>
-            <Route index element={<TicketPage />} />
-            <Route path="CREATE" element={<TicketPanel />} />
-          </Route>
-
-          <Route path="services" element={<TransactionLayout />}>
-            <Route index element={<Transaction />} />
-            <Route path="transaction" element={<Transaction />} />
-          </Route>
-
-          <Route path="services" element={<TransactionLayout />}>
-            <Route index element={<Transaction />} />
-            <Route path="faq" element={<FaqLayout />} />
-          </Route>
-
-          <Route path="services" element={<ConnectedDevices />}>
-            <Route path="ConnectedDevices" element={<ConnectedDevices />} />
-          </Route>
-
-          <Route path="services" element={<BankCardsPage />}>
-            <Route path="BankCards" element={<BankCards />} />
-          </Route>
-
-          {/* header + Footer pages ==================================================================================================== */}
-          <Route path={ROUTES.HOME} element={<HomePage />} />
-          <Route path={ROUTES.MARKET} element={<MarketPage />} />
-
-          {/* protected pages ==================================================================================================== */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </GoogleReCaptchaProvider>
-    </BrowserRouter>
+
+      <Routes>
+        <Route
+          path={ROUTES.AuthenticationBasic}
+          element={<AuthenticationBasic />}
+        />
+        <Route
+          path={ROUTES.AuthenticationAdvance}
+          element={<AuthenticationAdvance />}
+        />
+
+        <Route path={ROUTES.AddFriend} element={<AddFriend />} />
+        {/* <Route path={ROUTES.BankAccount} element={<Profile/>}/> */}
+        {/* <Route path={ROUTES.ConnectedDevices} element={<Profile/>}/> */}
+
+
+
+        <Route path={ROUTES.Profile} element={<Profile />} />
+        <Route path={ROUTES.Securitysettings} element={<Profile />} />
+        <Route path={ROUTES.UserAccount} element={<Profile />} />
+
+        {/* header only pages ==================================================================================================== */}
+
+        <Route path={ROUTES.Deposit} element={<DepositPage />} />
+        <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
+        <Route path={ROUTES.Wallet} element={<Wallet />} />
+        <Route path={ROUTES.WITHDRAWAL.CREATE} element={<WithdrawPage />} />
+
+        <Route path="trade" element={<TradeLayout />}>
+          <Route index element={<Navigate to="buy" replace />} />
+          <Route path="buy" element={<Buy />} />
+          <Route path="sell" element={<Sell />} />
+        </Route>
+        <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />
+        <Route path="ticket" element={<TicketLayout />}>
+          <Route index element={<TicketPage />} />
+          <Route path="CREATE" element={<TicketPanel />} />
+        </Route>
+
+        <Route path="services" element={<TransactionLayout />}>
+          <Route index element={<Transaction />} />
+          <Route path="transaction" element={<Transaction />} />
+        </Route>
+
+        <Route path="services" element={<TransactionLayout />}>
+          <Route index element={<Transaction />} />
+          <Route path="faq" element={<FaqLayout />} />
+        </Route>
+
+        <Route path="services" element={<ConnectedDevices />}>
+          <Route path="ConnectedDevices" element={<ConnectedDevices />} />
+        </Route>
+
+        <Route path="services" element={<BankCardsPage />}>
+          <Route path="BankCards" element={<BankCards />} />
+        </Route>
+
+        {/* header + Footer pages ==================================================================================================== */}
+        <Route path={ROUTES.HOME} element={<HomePage />} />
+        <Route path={ROUTES.MARKET} element={<MarketPage />} />
+
+        {/* protected pages ==================================================================================================== */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter >
   );
 }

@@ -55,5 +55,6 @@ export const ROUTES = {
     ROOT: "/withdrawal",
     CREATE: "/withdrawal",
   },
+  MARKET_VIEW: '/services/market-view'
 };
 
