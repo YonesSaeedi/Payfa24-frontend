@@ -12,69 +12,12 @@ import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { CryptoDataMap } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import SkeletonTable from "./SkeletonTable";
+import { filterForOptions, MergedCryptoHistory, statusOptions, TypeCryptoHistory, typeOptions } from "./typeHistory";
 
-// ثابت‌ها
-export const typeOptions = [
-  { id: 0, name: "واریز و برداشت", value: "" },
-  { id: 1, name: "واریز", value: "deposit" },
-  { id: 2, name: "برداشت", value: "withdraw" },
-];
-
-export const statusOptions = [
-  { id: 0, name: "همه وضعیت ها", value: "" },
-  { id: 1, name: "موفق", value: "success" },
-  { id: 2, name: "درحال بررسی", value: "pending" },
-  { id: 3, name: "ناموفق", value: "unsuccessful" },
-  { id: 4, name: "رد شده", value: "reject" },
-];
-
-export const filterForOptions = [
-  { id: 0, name: "همه تراکنش ها", value: "" },
-  { id: 1, name: "ترید", value: "trades" },
-  { id: 2, name: "سفارش", value: "orders" },
-  { id: 3, name: "کیف پول", value: "wallets" },
-];
-
-// اینترفیس‌ها
-export interface TypeGeneralInfo {
-  id: number;
-  name: string;
-  symbol: string;
-  icon: string;
-  color: string;
-  isFont: boolean;
-  isDisable: boolean;
-  locale: {
-    fa?: { name?: string };
-    en?: { name?: string };
-    fr?: { name?: string };
-  };
-}
-
-export interface TypeCryptoTransaction {
-  id: number;
-  type: string;
-  amount: number;
-  status: string;
-  description?: string;
-  DateTime: string;
-  coin: { name: string; symbol: string };
-  fee?: number;
-  memoTag?: string;
-  code?: string;
-}
-
-export interface MergedTransaction extends TypeCryptoTransaction {
-  color: string | null;
-  isFont: boolean;
-  icon: string | null;
-  locale: TypeGeneralInfo["locale"] | null;
-  name: string;
-}
 
 // صفحه اصلی
 const CryptoPage: React.FC = () => {
-  const [responseData, setResponseData] = useState<TypeCryptoTransaction[]>([]);
+  const [responseData, setResponseData] = useState<TypeCryptoHistory[]>([]);
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
   const [selectedFilterFor, setSelectedFilterFor] = useState(filterForOptions[0]);
   const [selectedFilterType, setSelectedFilterType] = useState(typeOptions[0]);
@@ -130,7 +73,7 @@ const CryptoPage: React.FC = () => {
   }, [page, selectedFilterType?.value, selectedFilterFor?.value, selectedStatus?.value]);
 
   // ادغام داده‌های ارز و تراکنش
-  const mergedTransactions: MergedTransaction[] = useMemo(() => {
+  const mergedTransactions: MergedCryptoHistory[] = useMemo(() => {
     if (!responseData.length) return [];
     return responseData.map(tx => {
       const coinData = mappedGeneralData[tx.coin.symbol];
@@ -158,7 +101,7 @@ const CryptoPage: React.FC = () => {
   }, [mergedTransactions, searchText]);
 
   // باز کردن مودال جزئیات
-  const handleOpenModal = (tx: MergedTransaction) => {
+  const handleOpenModal = (tx: MergedCryptoHistory) => {
     setSelectedTx({
       id: tx.id.toString(),
       source: "crypto",

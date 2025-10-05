@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import StatusBadge from "../UI/Button/StatusBadge";
 import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
 import Pagination from "./Pagination";
@@ -8,78 +8,20 @@ import TrasactionHisory from "./../../assets/images/Transaction/Transactionhisto
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
-import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
-import { CryptoDataMap } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import ImageIran from "./../../assets/images/Transaction/iran.png"
-
-// ---------------- ثابت‌ها ----------------
-export const typeOptions = [
-    { id: 0, name: "واریز و برداشت", value: "" },
-    { id: 1, name: "واریز", value: "deposit" },
-    { id: 2, name: "برداشت", value: "withdraw" },
-];
-
-export const statusOptions = [
-    { id: 0, name: "همه وضعیت ها", value: "" },
-    { id: 1, name: "موفق", value: "success" },
-    { id: 2, name: "درحال بررسی", value: "pending" },
-    { id: 3, name: "ناموفق", value: "unsuccessful" },
-    { id: 4, name: "رد شده", value: "reject" },
-];
-
-export const filterForOptions = [
-    { id: 0, name: "همه تراکنش ها", value: "" },
-    { id: 1, name: "ترید", value: "trades" },
-    { id: 2, name: "سفارش", value: "orders" },
-    { id: 3, name: "کیف پول", value: "wallets" },
-];
-
-// ---------------- اینترفیس‌ها ----------------
-
-
-export interface TypeCryptoTransaction {
-    id: number;
-    type: string;
-    amount: number;
-    status: string;
-    description?: string;
-    DateTime: string;
-    symbol: string;
-    name: string
-}
+import { filterForTomanOptions, statusTomanOptions, typeTomanOptions, TypeTomanTransaction } from "./typeHistory";
+import SkeletonTable from "./SkeletonTable";
 
 
 
-
-// ---------------- اسکلتون ----------------
-const TableSkeleton = () => (
-    <div className="divide-y divide-gray21">
-        {Array.from({ length: 7 }).map((_, i) => (
-            <div key={i} className="grid grid-cols-6 gap-4 py-4 animate-pulse">
-                <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-full skeleton-bg"></div>
-                    <div className="flex flex-col gap-1">
-                        <div className="h-3 w-20 rounded skeleton-bg"></div>
-                        <div className="h-2 w-10 rounded skeleton-bg"></div>
-                    </div>
-                </div>
-                <div className="h-3 w-16 rounded skeleton-bg"></div>
-                <div className="h-3 w-14 rounded skeleton-bg"></div>
-                <div className="h-6 w-20 rounded-full skeleton-bg"></div>
-                <div className="h-3 w-24 rounded skeleton-bg"></div>
-                <div className="h-3 w-10 rounded skeleton-bg"></div>
-            </div>
-        ))}
-    </div>
-);
 
 // ---------------- صفحه اصلی ----------------
 const TomanPage: React.FC = () => {
-    const [responseData, setResponseData] = useState<TypeCryptoTransaction[]>([]);
-    const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
-    const [selectedFilterFor, setSelectedFilterFor] = useState(filterForOptions[0]);
-    const [selectedFilterType, setSelectedFilterType] = useState(typeOptions[0]);
+    const [responseData, setResponseData] = useState<TypeTomanTransaction[]>([]);
+    const [selectedStatus, setSelectedStatus] = useState(statusTomanOptions[0]);
+    const [selectedFilterFor, setSelectedFilterFor] = useState(filterForTomanOptions[0]);
+    const [selectedFilterType, setSelectedFilterType] = useState(typeTomanOptions[0]);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
@@ -129,7 +71,7 @@ const TomanPage: React.FC = () => {
 
 
     // باز کردن مودال جزئیات
-    const handleOpenModal = (tx: TypeCryptoTransaction) => {
+    const handleOpenModal = (tx: TypeTomanTransaction) => {
         setSelectedTx({
             id: tx.id.toString(),
             source: "fiat",
@@ -170,12 +112,12 @@ const TomanPage: React.FC = () => {
                     <FilterDropdown
                         id="type"
                         label="نوع تراکنش"
-                        options={typeOptions.map(o => o.name)}
+                        options={typeTomanOptions.map(o => o.name)}
                         selected={selectedFilterType.name}
                         isOpen={openDropdown === "type"}
                         onToggle={() => handleToggle("type")}
                         onSelect={(id, name) =>
-                            setSelectedFilterType(typeOptions.find(o => o.name === name) || typeOptions[0])
+                            setSelectedFilterType(typeTomanOptions.find(o => o.name === name) || typeTomanOptions[0])
                         }
                     />
 
@@ -183,12 +125,12 @@ const TomanPage: React.FC = () => {
                     <FilterDropdown
                         id="status"
                         label="وضعیت"
-                        options={statusOptions.map(o => o.name)}
+                        options={statusTomanOptions.map(o => o.name)}
                         selected={selectedStatus.name}
                         isOpen={openDropdown === "status"}
                         onToggle={() => handleToggle("status")}
                         onSelect={(id, name) =>
-                            setSelectedStatus(statusOptions.find(o => o.name === name) || statusOptions[0])
+                            setSelectedStatus(statusTomanOptions.find(o => o.name === name) || statusTomanOptions[0])
                         }
                     />
 
@@ -196,12 +138,12 @@ const TomanPage: React.FC = () => {
                     <FilterDropdown
                         id="filterFor"
                         label="محدوده"
-                        options={filterForOptions.map(o => o.name)}
+                        options={filterForTomanOptions.map(o => o.name)}
                         selected={selectedFilterFor.name}
                         isOpen={openDropdown === "filterFor"}
                         onToggle={() => handleToggle("filterFor")}
                         onSelect={(id, name) =>
-                            setSelectedFilterFor(filterForOptions.find(o => o.name === name) || filterForOptions[0])
+                            setSelectedFilterFor(filterForTomanOptions.find(o => o.name === name) || filterForTomanOptions[0])
                         }
                     />
                 </div>
@@ -220,7 +162,7 @@ const TomanPage: React.FC = () => {
                     </div>
 
                     {isLoading ? (
-                        <TableSkeleton />
+                        <SkeletonTable />
                     ) : responseData.length > 0 ? (
                         <div className="divide-y divide-gray21">
                             {responseData.map(tx => (

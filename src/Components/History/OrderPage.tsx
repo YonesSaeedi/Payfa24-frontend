@@ -12,73 +12,10 @@ import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { CryptoDataMap } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import { ListDigitalCoin } from "../../constants/ListdigitalCoins";
+import { MergedOrderHistory, statusOrderOptions, TypeOrderHistory, typeOrderOptions } from "./typeHistory";
 
-// ---------------- ثابت‌ها ----------------
-export const typeOptions = [
-  { id: 0, name: "خرید و فروش", value: "" },
-  { id: 1, name: "خرید", value: "buy" },
-  { id: 2, name: "فروش", value: "sell" },
-];
 
-export const statusOptions = [
-  { id: 0, name: "همه وضعیت ها", value: "" },
-  { id: 1, name: "موفق", value: "success" },
-  { id: 2, name: "درحال بررسی", value: "pending" },
-  { id: 3, name: "ناموفق", value: "unsuccessful" },
-  { id: 4, name: "رد شده", value: "reject" },
-];
 
-// ---------------- اینترفیس‌ها ----------------
-export interface TypeGeneralInfo {
-  id: number;
-  name: string;
-  symbol: string;
-  icon: string;
-  color: string;
-  isFont: boolean;
-  isDisable: boolean;
-  locale: {
-    fa?: { name?: string };
-    en?: { name?: string };
-    fr?: { name?: string };
-  };
-}
-
-export interface TypeOrderTransaction {
-  id: number;
-  amount: number;
-  amount_coin: number;
-  dateTime: string;
-  fee: number;
-  description?: string;
-  internal: string;
-  name: string;
-  status?: string;
-  symbol?: string;
-  type?: string;
-  icon?: string;
-}
-
-export interface MergedTransaction {
-  // ---------------- تراکنش ----------------
-  id: number;
-  amount: number;
-  amount_coin: number;
-  dateTime: string;
-  fee: number;
-  description?: string;
-  internal: string;
-  name: string;      // نام ارز یا تراکنش
-  status?: string;
-  symbol?: string;
-  type?: string;
-
-  // ---------------- اطلاعات ارز ----------------
-  color: string | null;
-  isFont: boolean;
-  icon: string | null;
-  locale: TypeGeneralInfo["locale"] | null;
-}
 
 // ---------------- اسکلتون ----------------
 const TableSkeleton = () => (
@@ -104,9 +41,9 @@ const TableSkeleton = () => (
 
 // ---------------- صفحه اصلی ----------------
 const OrderPage: React.FC = () => {
-  const [responseData, setResponseData] = useState<TypeOrderTransaction[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
-  const [selectedFilterType, setSelectedFilterType] = useState(typeOptions[0]);
+  const [responseData, setResponseData] = useState<TypeOrderHistory[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState(statusOrderOptions[0]);
+  const [selectedFilterType, setSelectedFilterType] = useState(typeOrderOptions[0]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [selectedTx, setSelectedTx] = useState<ModalTransaction | null>(null);
@@ -153,7 +90,7 @@ const OrderPage: React.FC = () => {
     fetchTransactionData();
   }, [page, selectedFilterType?.value, selectedStatus?.value]);
 
-const mergedTransactions: MergedTransaction[] = useMemo(() => {
+const mergedTransactions: MergedOrderHistory[] = useMemo(() => {
   if (!responseData.length) return [];
 
   return responseData.map((tx) => {
@@ -199,7 +136,7 @@ const mergedTransactions: MergedTransaction[] = useMemo(() => {
 
 
   // باز کردن مودال جزئیات
-const handleOpenModal = (tx: MergedTransaction) => {
+const handleOpenModal = (tx: MergedOrderHistory) => {
   setSelectedTx({
     id: tx.id.toString(),
     source: "order",
@@ -231,12 +168,12 @@ const handleOpenModal = (tx: MergedTransaction) => {
           <FilterDropdown
             id="status"
             label="وضعیت"
-            options={statusOptions.map(o => o.name)}
+            options={statusOrderOptions.map(o => o.name)}
             selected={selectedStatus.name}
             isOpen={openDropdown === "status"}
             onToggle={() => handleToggle("status")}
             onSelect={(id, name) =>
-              setSelectedStatus(statusOptions.find(o => o.name === name) || statusOptions[0])
+              setSelectedStatus(statusOrderOptions.find(o => o.name === name) || statusOrderOptions[0])
             }
           />
 
@@ -244,12 +181,12 @@ const handleOpenModal = (tx: MergedTransaction) => {
           <FilterDropdown
             id="type"
             label="نوع تراکنش"
-            options={typeOptions.map(o => o.name)}
+            options={typeOrderOptions.map(o => o.name)}
             selected={selectedFilterType.name}
             isOpen={openDropdown === "type"}
             onToggle={() => handleToggle("type")}
             onSelect={(id, name) =>
-              setSelectedFilterType(typeOptions.find(o => o.name === name) || typeOptions[0])
+              setSelectedFilterType(typeOrderOptions.find(o => o.name === name) || typeOrderOptions[0])
             }
           />
         </div>

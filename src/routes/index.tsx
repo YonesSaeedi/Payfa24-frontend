@@ -105,7 +105,7 @@ export default function AppRouter() {
           <Route path={ROUTES.TRANSACTION.ROOT} element={<TransactionLayout />}>
             <Route index element={<CryptoPage />} />           {/* /history */}
             <Route path="Crypto" element={<CryptoPage />} />  {/* /history/Crypto */}
-            <Route path="tooman" element={<TomanPage />} />  {/* /history/toman */}
+            <Route path="toman" element={<TomanPage />} />  {/* /history/toman */}
             <Route path="order" element={<OrderPage />} />   {/* /history/order */}
           </Route>
 

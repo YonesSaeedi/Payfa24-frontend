@@ -4,34 +4,78 @@ import IconClose from "../../assets/Icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
 
-export interface Transaction {
+export interface OrderDetail {
   id: string;
-  source: "order" | "crypto" | "fiat";
-  currencyName?: string;
-  currencySymbol?: string;
-  currencyIcon?: string | React.ReactNode;
   amount?: string;
-  type?: string;
-  status?: string;
+  amountCoin?: string;
+  name?: string;
+  symbol?: string;
+  uVoucher?: string;
+  Code?: string;
+  Memo?: string;
+  Amount?: string;
   date?: string;
-  time?: string;
-  total?: string;
-  fee?: string;
-  memoTag?: string;
-  code?: string;
-  faName?: string | null;
-  image?: string | React.ReactNode;
   description?: string;
+  fee?: string;
+  status?: string;
+  type?: string;
+  wage?: string;
+  source: "order";
 }
 
+export interface CryptoDetail {
+  id: string;
+  date?: string;
+  amount?: string;
+  amountToman?: string;
+  symbol?: string;
+  description?: string;
+  destination?: string;
+  destinationTag?: string;
+  file?: string;
+  network?: string;
+  reason?: string;
+  status?: string;
+  stock?: string;
+  txid?: string;
+  type?: string;
+  withdrawFee?: string;
+  source: "crypto";
+}
+
+export interface FiatDetail {
+  id: string;
+  date?: string;
+  PaymentGateway?: string;
+  amount?: string;
+  accountNumber?: string;
+  cardNumber?: string;
+  iban?: string;
+  description?: string;
+  idInternalcurrency?: string;
+  idOrder?: string;
+  idTrade?: string;
+  payment?: string;
+  reason?: string;
+  status?: string;
+  stock?: string;
+  traceNumber?: string;
+  type?: string;
+  uuid?: string;
+  source: "fiat";
+}
+
+export type TransactionDetail = OrderDetail | CryptoDetail | FiatDetail;
+
+
 interface TransactionModalProps {
-  tx: Transaction;
+  tx: TransactionDetail;
   onClose: () => void;
 }
 
 const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
   const [loading, setLoading] = useState(true);
-  const [detail, setDetail] = useState<Transaction | null>(null);
+  const [detail, setDetail] = useState<TransactionDetail | null>(null);
 
   useEffect(() => {
     if (!tx.id || !tx.source) return;
@@ -57,49 +101,66 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
         if (tx.source === "order" && res.order) {
           const o = res.order;
           setDetail({
-            id: o.id?.toString(),
-            source: "order",
-            currencyName: o.coin?.name,
-            currencySymbol: o.coin?.symbol,
             amount: o.amount?.toString(),
-            total: o.amount_coin?.toString(),
-            type: o.type,
-            fee: o.fee?.toString(),
+            amountCoin: o.amount_coin?.toString(),
+            name: o?.coin?.name,
+            symbol: o?.coin?.symbol,
+            uVoucher: o?.data?.uVoucher,
+            Memo: o?.data?.Memo,
+            Code: o?.data?.Code,
+            Amount: o?.data?.Amount,
+            date: o?.dateTime,
+            description: o?.description,
+            fee: o?.fee,
+            id: o.id?.toString(),
             status: o.status,
-            date: o.dateTime,
-            memoTag: o.data?.uVoucher,
-            description: o.description,
+            type: o?.type,
+            wage: o?.wage,
+            source: "order",
           });
         } else if (tx.source === "crypto" && res.transaction) {
           const c = res.transaction;
           setDetail({
-            id: c.id?.toString(),
-            source: "crypto",
-            currencyName: c.coin?.symbol,
-            currencySymbol: c.coin?.symbol,
-            amount: c.amount?.toString(),
-            total: c.stock?.toString(),
-            type: c.type,
-            fee: c.withdraw_fee?.toString(),
-            status: c.status,
             date: c.DateTime,
-            memoTag: c.destination_tag || c.reason,
-            code: c.txid,
+            amount: c.amount?.toString(),
+            amountToman: c?.amount_toman?.toString(),
+            symbol: c?.coin?.symbol,
+            description: c?.description,
+            destination: c?.destination,
+            destinationTag: c?.destination_tag,
+            file: c?.file,
+            id: c.id?.toString(),
+            network: c?.network,
+            reason: c?.reason,
+            status: c?.status,
+            stock: c?.stock,
+            txid: c?.txid,
+            type: c.type,
+            withdrawFee: c?.withdraw_fee,
+            source: "crypto",
           });
         } else if (tx.source === "fiat" && res.transaction) {
           const f = res.transaction;
           setDetail({
-            id: f.id?.toString(),
-            source: "fiat",
-            currencyName: f.PaymentGateway || "تومان",
-            currencySymbol: f.stock?.toString(),
-            amount: f.amount?.toString(),
-            total: f.stock?.toString(),
-            type: f.type,
-            fee: "0",
-            status: f.status,
             date: f.DateTime,
-            memoTag: f.description,
+            PaymentGateway: f.PaymentGateway,
+            amount: f.amount?.toString(),
+            accountNumber: f?.cardbank?.account_number,
+            cardNumber: f?.cardbank?.card_number,
+            iban: f?.cardbank?.iban,
+            description: f?.description,
+            id: f?.id?.toString(),
+            idInternalcurrency: f?.id_internalcurrency,
+            idOrder: f?.id_order,
+            idTrade: f?.id_trade,
+            payment: f?.payment,
+            reason: f?.reason,
+            status: f?.status,
+            stock: f?.stock,
+            traceNumber: f?.trace_number,
+            type: f?.type,
+            uuid: f?.uuid,
+            source: "fiat",
           });
         }
       } catch (err) {
@@ -134,105 +195,139 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
   if (!tx) return null;
 
   console.log("detail", detail);
-  
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-  className="bg-white8 rounded-2xl p-6 w-[90%] max-w-lg relative shadow-lg max-h-[80vh] overflow-y-auto"
+        className="bg-white rounded-2xl p-6 w-[90%] max-w-md relative shadow-xl border border-gray-100 max-h-[85vh] overflow-y-auto animate-fadeIn"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="font-bold text-base text-black1">جزئیات تراکنش</h2>
-          <button onClick={onClose} className="text-xl w-6 h-6">
+        {/* Header */}
+        <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-4">
+          <h2 className="font-semibold text-lg text-gray-800">جزئیات تراکنش</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 transition w-7"
+          >
             <IconClose />
           </button>
         </div>
 
+        {/* Loader */}
         {loading ? (
           <div className="text-center py-10 text-gray-500">در حال دریافت اطلاعات...</div>
         ) : detail ? (
           <>
-            <div className="flex flex-col items-center gap-2 mb-6">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gray-100 overflow-hidden">
-                {renderIcon()}
-              </div>
-              <h3 className="font-bold text-lg text-black1">{tx.faName || detail.currencyName}</h3>
-              {detail.currencySymbol && <span className="text-sm text-gray-500">{detail.currencySymbol}</span>}
+            {/* Icon and Title */}
+            <div className="flex flex-col items-center mb-6">
+              {renderIcon()}
+              <h3 className="font-bold text-lg mt-3 text-gray-800">
+                {tx.faName || (detail as any).name || "ارز نامشخص"}
+              </h3>
+              {"symbol" in detail && detail.symbol && (
+                <span className="text-sm text-gray-500">{detail.symbol}</span>
+              )}
             </div>
 
-            <div className="space-y-3 text-sm text-gray3 p-2">
+            {/* Detail grid */}
+            <div className="grid grid-cols-1 gap-3 text-sm text-gray-700">
               {detail.status && (
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">وضعیت:</span>
-                    <StatusBadge text={transactionStatusMap[detail.status] || "نامشخص"} />
-                </div>
+                <DetailRow
+                  label="وضعیت"
+                  value={
+                    <StatusBadge
+                      text={transactionStatusMap[detail.status] || detail.status}
+                    />
+                  }
+                />
               )}
-              {detail.id && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">شناسه تراکنش:</span>
-                  <span className="text-black1">{detail.id}</span>
-                </div>
-              )}
-              {detail.date && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">تاریخ تراکنش:</span>
-                  <span className="text-black1">{detail.date}</span>
-                </div>
-              )}
+              {detail.id && <DetailRow label="شناسه تراکنش" value={detail.id} />}
+              {detail.date && <DetailRow label="تاریخ تراکنش" value={detail.date} />}
               {detail.type && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">نوع:</span>
-                  <span className="text-black1">{detail.type}</span>
-                </div>
+                <DetailRow
+                  label="نوع تراکنش"
+                  value={transactionTypeMap[detail.type] || detail.type}
+                />
               )}
-              {detail.amount && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">مقدار:</span>
-                  <span className="text-black1">{detail.amount}</span>
-                </div>
+              {"amount" in detail && detail.amount && (
+                <DetailRow label="مقدار" value={detail.amount} symbol={detail?.symbol} />
               )}
-              {detail.total && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">مبلغ کل:</span>
-                  <span className="text-black1">{detail.total}</span>
-                </div>
+              {"amountCoin" in detail && detail.amountCoin && (
+                <DetailRow label="مقدار ارز" value={detail.amountCoin} />
               )}
-              {detail.fee && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">کارمزد:</span>
-                  <span className="text-black1">{detail.fee}</span>
-                </div>
+              {"fee" in detail && detail.fee && (
+                <DetailRow label="قیمت" value={detail.fee} symbol={detail?.symbol} />
+              )}
+              {"wage" in detail && detail.wage && (
+                <DetailRow label="کارمزد" value={detail.wage} />
+              )}
+              {"stock" in detail && detail.stock && (
+                <DetailRow label="موجودی بعد از تراکنش" value={detail.stock} symbol="تومان" />
               )}
               {detail.description && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">توضیحات:</span>
-                  <span className="text-black1">{detail.description}</span>
-                </div>
+                <DetailRow label="توضیحات" value={detail.description} />
               )}
-              {detail.memoTag && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">Memo:</span>
-                  <span className="text-black1">{detail.memoTag}</span>
-                </div>
+              {"network" in detail && detail.network && (
+                <DetailRow label="شبکه" value={detail.network} />
               )}
-              {detail.code && (
-                <div className="flex justify-between pt-2">
-                  <span className="font-medium">کد:</span>
-                  <span className="text-black1 break-all">{detail.code}</span>
-                </div>
+              {"txid" in detail && detail.txid && (
+                <DetailRow label="TXID" value={detail.txid} isCopyable />
               )}
+              {"iban" in detail && detail.iban && (
+                <DetailRow label="شماره شبا" value={detail.iban} />
+              )}
+              {"cardNumber" in detail && detail.cardNumber && (
+                <DetailRow label="شماره کارت" value={detail.cardNumber} />
+              )}
+              {"uVoucher" in detail && detail.uVoucher && (
+                <DetailRow label="uVoucher" value={detail.uVoucher} />
+              )}
+              {"Code" in detail && detail.Code && (
+                <DetailRow label="کد ووچرز" value={detail.Code} />
+              )}
+              {"Memo" in detail && detail.Memo && (
+                <DetailRow label="Memo" value={detail.Memo} />
+              )}
+
             </div>
           </>
         ) : (
-          <div className="text-center py-10 text-gray-500">داده‌ای برای نمایش وجود ندارد</div>
+          <div className="text-center py-10 text-gray-500">
+            داده‌ای برای نمایش وجود ندارد
+          </div>
         )}
       </div>
     </div>
   );
 };
+
+// 🧩 Subcomponent for cleaner layout
+const DetailRow = ({
+  label,
+  value,
+  symbol,
+  isCopyable = false,
+}: {
+  label: string;
+  value: React.ReactNode;
+  symbol?: string;
+  isCopyable?: boolean;
+}) => (
+  <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+    <span className="font-medium text-gray-600">{label}:</span>
+    <div className="flex gap-3 text-gray-800 text-left">
+      <span
+        className={` ${typeof value === "string" && value.length > 20 ? "break-all" : ""
+          }`}
+      >
+        {value}
+      </span>
+      <span>{symbol}</span>
+    </div>
+  </div>
+);
 
 export default TransactionModal;
