@@ -3,20 +3,10 @@ import { useForm, Controller } from "react-hook-form";
 import FileUpload from "./FileUpload";
 import OrderSelector from "./OrderSelector";
 import FloatingInput from "../../FloatingInput/FloatingInput";
-import IconMinus from "../../../assets/icons/trade/IconMinus";
-import IconReceipt from "../../../assets/icons/services/IconReceipt";
-import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
-import WalletMinesIcon from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 import { apiRequest } from "../../../utils/apiClient";
+import { TicketFormInputs, TicketNewResponse } from '../../../types/Ticket';
 
-
-interface TicketFormInputs {
-  title: string;
-  orderId: string;
-  description: string;
-  file: FileList;
-}
 
 interface Order {
   id: string;
@@ -26,13 +16,13 @@ interface Order {
   date: string;
   icon: React.ReactNode;
 }
-
-const orders: Order[] = [
-  { id: "1", coin: "بیت کوین", type: "برداشت", amount: "2003", date: "1403/05/05 | 13:00", icon: <IconMinus /> },
-  { id: "2", coin: "تتر", type: "خرید", amount: "2003", date: "1403/05/05 | 13:00", icon: <IconReceipt /> },
-  { id: "3", coin: "سولانا", type: "واریز", amount: "2003", date: "1403/05/05 | 13:00", icon: <SendIcon /> },
-  { id: "4", coin: "آلترا", type: "فروش", amount: "2003", date: "1403/05/05 | 13:00", icon: <WalletMinesIcon /> },
-];
+interface TicketPayload {
+  subject: string;
+  message: string;
+  order?: number;
+  file?: File;
+}
+type FormDataValue = string | number | boolean | File;
 
 export default function TicketForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -40,9 +30,10 @@ export default function TicketForm() {
 
   const { register, handleSubmit, control, formState: { errors } } = useForm<TicketFormInputs>();
 
- const onSubmit = async (data: TicketFormInputs) => {
+const onSubmit = async (data: TicketFormInputs) => {
   try {
-    const payload: Record<string, any> = {
+    // ساخت payload با تایپ دقیق
+    const payload: TicketPayload = {
       subject: data.title,
       message: data.description,
     };
@@ -50,31 +41,28 @@ export default function TicketForm() {
     if (selectedOrder?.id) payload.order = Number(selectedOrder.id);
     if (selectedFile) payload.file = selectedFile;
 
+    // تبدیل به Record<string, FormDataValue> برای apiRequest
+    const payloadRecord: Record<string, FormDataValue> = { ...payload };
+
     const response = await apiRequest({
       url: "/api/ticket/new",
       method: "POST",
-      data: payload,
+      data: payloadRecord,
       isFormData: !!selectedFile,
-    });
+    }) as TicketNewResponse;
 
-    // بررسی وضعیت پاسخ API
-    if (response.status === false) {
-      toast.error(response.msg); // نمایش پیام خطا
-      return; // ادامه پردازش متوقف می‌شود
-    }
-
-    // اگر موفق بود
     toast.success("تیکت با موفقیت ایجاد شد!");
     console.log("تیکت ساخته شد:", response);
 
-  } catch (err: any) {
-    console.error("خطا در ساخت تیکت:", err);
-    toast.error(
-"شما دو تیکت باز دارید و بیشتر از این نمیتوانید تیکتی ایجاد کنید!");
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("خطا در ساخت تیکت:", err.message);
+    } else {
+      console.error("خطا در ساخت تیکت:", err);
+    }
+    toast.error("شما دو تیکت باز دارید و بیشتر از این نمیتوانید تیکتی ایجاد کنید!");
   }
 };
-
-
 
   return (
     <form
@@ -113,7 +101,6 @@ export default function TicketForm() {
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
           register={register}
-          orders={orders}
         />
 
         {/* توضیحات */}
