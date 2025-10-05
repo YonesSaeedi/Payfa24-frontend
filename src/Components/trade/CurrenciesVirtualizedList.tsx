@@ -52,6 +52,9 @@ const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ h
     );
   };
 
+  if (items.length === 0) {
+    return <div className="flex items-center justify-center p-4 text-black2" style={{ height }}>موردی یافت نشد.</div>
+  }
   return (
     <List
       height={height}

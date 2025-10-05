@@ -8,15 +8,34 @@ type CryptoListModalProps = {
   setIsCryptoListModalOpen: Dispatch<SetStateAction<boolean>>;
   cryptoListData: CryptoItem[]
   setCurrentCryptoCurrency: (cryptocurrency: CryptoItem) => void
+  isCryptoListLoading?: boolean
 }
 
-const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentCryptoCurrency }: CryptoListModalProps) => {
+const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentCryptoCurrency, isCryptoListLoading }: CryptoListModalProps) => {
   const [isDollarCurrencies, setIsDollarCurrencies] = useState<boolean>(false)
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [searchResults, setSearchResults] = useState<CryptoItem[]>([])
   const searchInputRef = useRef<HTMLInputElement | null>(null)
   // =======================================================================================================================================================
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
   }
+  // search functionality ===================================================================================================================================
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim()
+    setSearchTerm(value)
+    if (value === '') {
+      setSearchResults([]) // reset to show full list
+      return
+    }
+    const filtered = cryptoListData.filter((cryptoItem: CryptoItem) =>
+      cryptoItem?.symbol?.toLowerCase().includes(value.toLowerCase()) ||
+      cryptoItem?.locale?.fa?.name?.toLowerCase().includes(value.toLowerCase()) ||
+      cryptoItem?.locale?.en?.name?.toLowerCase().includes(value.toLowerCase())
+    )
+    setSearchResults(filtered)
+  }
+  const displayList = isCryptoListLoading ? Array(10).fill(null) : searchTerm ? searchResults : cryptoListData
 
   return (
     <div onClick={() => setIsCryptoListModalOpen(false)} className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.3)] backdrop-blur-sm flex items-center justify-center">
@@ -31,7 +50,7 @@ const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentC
           {/* search box */}
           <div onClick={() => searchInputRef.current?.focus()} className="rounded-lg px-4 py-2.5 lg:py-3 flex items-center gap-2 border border-gray15 cursor-text focus-within:border-blue1 transition duration-200">
             <span className="w-5 h-5 lg:w-6 lg:h-6 text-gray15"><IconSearch /></span>
-            <input type="text" placeholder="جستجو..." ref={searchInputRef} className="bg-transparent outline-none text-black1 placeholder:text-gray15" />
+            <input onChange={handleSearch} type="text" placeholder="جستجو..." ref={searchInputRef} className="bg-transparent outline-none text-black1 placeholder:text-gray15" />
           </div>
           {/* currency type toggle */}
           <div className="flex items-center">
@@ -49,7 +68,14 @@ const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentC
             </button>
           </div>
           {/* crypto currencies list */}
-          <CurrenciesVirtualizedList items={cryptoListData} height={400} itemHeight={60} width='100%' setCurrentCryptoCurrency={setCurrentCryptoCurrency} closeModal={() => setIsCryptoListModalOpen(false)} />
+          <CurrenciesVirtualizedList
+            items={displayList}
+            height={400}
+            itemHeight={60}
+            width='100%'
+            setCurrentCryptoCurrency={setCurrentCryptoCurrency}
+            closeModal={() => setIsCryptoListModalOpen(false)}
+          />
         </div>
       </div>
     </div>
