@@ -76,6 +76,61 @@ export default function DeviceList() {
 
 
   return (
+// <<<<<<< HEAD
+//     <div>
+//       <div dir="rtl" className="flex justify-between items-center mb-6">
+//         <h2 className="text-lg font-semibold text-black1 hidden lg:flex">دستگاه‌های متصل</h2>
+//         <button
+//           onClick={() => setShowModal(true)}
+//           className="w-full text-center justify-center lg:w-[187px] h-[40px] px-3 py-1 rounded-md text-sm transition bg-red6 text-red1 flex items-center gap-1"
+//         >
+//             <span className="w-5 h-5 icon-wrapper mr-2 ml-1">
+//             <IconCloseMonitor />
+//           </span>
+//           پایان تمام نشست‌ها
+          
+//         </button>
+//       </div>
+
+
+//       <div dir="rtl" className="hidden lg:block overflow-x-auto">
+//         <table className="w-full text-right border-collapse">
+//           <thead className="rounded-[8px] ">
+//             <tr className="bg-gray41 text-sm ">
+//               <th className="py-2 px-4 text-gray-500 rounded-tr-lg rounded-bl-lg">نوع دستگاه</th>
+//               <th className="py-2 px-4 text-gray-500">مدل دستگاه</th>
+//               <th className="py-2 px-4 text-gray-500">آخرین زمان اتصال</th>
+//               <th className="py-2 px-4 text-gray-500">IP</th>
+//               <th className="py-2 px-4 text-gray-500 rounded-br-lg"></th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {devices.map((device, idx) => (
+//               <tr key={idx} className="border-b border-gray21 text-black1">
+//                 <td className="py-6 px-4">{device.type}</td>
+//                 <td className="py-6 px-4">{device.model}</td>
+//                 <td className="py-6 px-4">{device.lastConnection}</td>
+//                 <td className="py-6 px-4">{device.ip}</td>
+//                 <td className="py-6 px-4">
+//                   {device.status === "active" ? (
+//                     <span className="text-blue-500">نشست فعال</span>
+//                   ) : (
+//                     <span className="text-red-500">پایان نشست</span>
+//                   )}
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+
+      
+//       <div dir="rtl" className="lg:hidden flex flex-col gap-4">
+//         {devices.map((device, idx) => (
+//           <div
+//             key={idx}
+//             className={`p-4 rounded-lg bg-gray27  borde border-gray2 shadow-sm`}
+// =======
     <div className="base-style gap-5" dir="rtl">
       <div className="bg-secondary w-full h-full rounded-2xl gap-5 py-7 px-5 flex flex-col">
         {/* Header */}
@@ -83,8 +138,7 @@ export default function DeviceList() {
           <h2 className="text-lg font-semibold text-black1 hidden lg:flex">دستگاه‌های متصل</h2>
           <button
             onClick={() => setShowModal(true)}
-            className="w-full text-center justify-center lg:w-[187px] h-[40px] px-3 py-1 rounded-md text-sm transition bg-red6 text-red1 flex items-center gap-1"
-          >
+            className="w-full text-center justify-center lg:w-[187px] h-[40px] px-3 py-1 rounded-md text-sm transition bg-red6 text-red1 flex items-center gap-1" >
             <span className="w-5 h-5 icon-wrapper mr-2 ml-1">
               <IconCloseMonitor />
             </span>

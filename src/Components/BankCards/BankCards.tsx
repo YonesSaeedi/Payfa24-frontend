@@ -21,9 +21,10 @@ type Card = {
 const BankCardsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [cards, setCards] = useState<Card[]>([]);
+  const [showCards, setShowCards] = useState(false); // کنترل نمایش BankCardSection
 
-  // تابع GET کارت‌ها
-  const fetchCards = async () => {
+  // دریافت کارت‌ها از سرور
+  const fetchCards = async (): Promise<Card[]> => {
     try {
       const response = await apiRequest<{
         status: boolean;
@@ -36,9 +37,10 @@ const BankCardsPage = () => {
           iban: string;
         }[];
       }>({
-        url: "api/account/credit-card/list",
+        url: "/api/account/credit-card/list",
         method: "GET",
       });
+    console.log("لیست کارت‌ها از API:", response.data);
 
       if (response.status) {
         const mappedCards: Card[] = response.data.map((c) => ({
@@ -54,61 +56,46 @@ const BankCardsPage = () => {
               : "rejected",
         }));
         setCards(mappedCards);
+        return mappedCards;
       }
+      return [];
     } catch (err) {
       console.error("خطا در دریافت کارت‌ها:", err);
-
+      return [];
     }
   };
 
-
-
-
-  useEffect(() => {
-    fetchCards();
-  }, []);
-
-  const fetchKyc = async () => {
-
-    // const kycResponse = await apiRequest({ url: "/api/account/get-user" });
-    // console.log(kycResponse);
-    // const response = await apiRequest({url:'/api/kyc/basic/level2', method:'POST', data:{
-    //   dateBirth:'1375/05/22',
-    //   family:'tehranchi',
-    //   father: 'test',
-    //   name:'simin',
-    //   nationalCode:'0925175171'
-    // }})
-    // console.log(response);
-    
-  };
-  useEffect(() => {
-    fetchKyc();
-  }, []);
-
+  // افزودن کارت جدید یا بررسی کارت تکراری
   const handleAddCard = async (cardNumber: string, bankName: string) => {
-    // تبدیل اعداد فارسی به انگلیسی
     const parsedCardNumber = cardNumber
       .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
       .replace(/\D/g, "");
 
-   if (parsedCardNumber.length !== 16) {
-    toast.error("شماره کارت باید دقیقاً ۱۶ رقم باشد.");
-    return;
-  }
-
+    if (parsedCardNumber.length !== 16) {
+      toast.error("شماره کارت باید دقیقاً ۱۶ رقم باشد.");
+      return;
+    }
 
     try {
-      const response = await apiRequest<
-        RegisterCardResponse,
-        { card_number: string }
-      >({
+      const currentCards = await fetchCards();
+
+      // بررسی کارت تکراری
+      if (currentCards.some((c) => c.number === parsedCardNumber)) {
+        toast.warning("این شماره کارت قبلاً ثبت شده است.");
+        setCards(currentCards);  
+        setShowCards(true);       // نمایش BankCardSection
+        setIsModalOpen(false);    // بستن مودال
+        return;
+      }
+
+      // ثبت کارت جدید
+      const registerResponse = await apiRequest<RegisterCardResponse, { CardNumber: string }>({
         url: "/api/account/credit-card",
         method: "POST",
         data: { CardNumber: parsedCardNumber },
       });
 
-      if (response.status) {
+      if (registerResponse.status) {
         const newCard: Card = {
           id: Date.now(),
           number: parsedCardNumber,
@@ -116,34 +103,41 @@ const BankCardsPage = () => {
           bankName,
           status: "pending",
         };
-        setCards((prev) => [...prev, newCard]);
-        setIsModalOpen(false);
-        toast.success(response.msg);
+
+        setCards([...currentCards, newCard]); // اضافه کردن کارت جدید
+        setShowCards(true);                   // نمایش BankCardSection
+        setIsModalOpen(false);                // بستن مودال
+        toast.success(registerResponse.msg);
       } else {
-         toast.success(response.msg);
+        toast.error(registerResponse.msg || "ثبت کارت با مشکل مواجه شد.");
       }
     } catch (err: any) {
-      console.error("خطا در ثبت کارت:", err);
       toast.error(
-        err?.response?.data?.msg ||err?.response?.data?.message ||
-          "ثبت کارت با مشکل مواجه شد."
+        err?.response?.data?.msg || err?.response?.data?.message || "ثبت کارت با مشکل مواجه شد."
       );
     }
   };
 
   return (
     <div className="">
-      {cards.length === 0 && !isModalOpen ? (
-        <EmptyState onAddCard={() => setIsModalOpen(true)} />
-      ) : cards.length > 0 ? (
-        <BankCardSection cards={cards} setCards={setCards} />
-      ) : null}
-
+      {/* مودال اضافه کردن کارت */}
       <AddBankCardModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleAddCard}
       />
+
+      {/* نمایش EmptyState فقط وقتی مودال بسته است و هیچ کارت وجود ندارد */}
+      {!isModalOpen && !showCards && cards.length === 0 && (
+        <EmptyState onAddCard={() => setIsModalOpen(true)} />
+      )}
+
+      {/* نمایش BankCardSection وقتی showCards=true یا کارت‌ها داریم */}
+     {/* نمایش BankCardSection وقتی showCards=true یا کارت‌ها داریم */}
+{(showCards || cards.length > 0) && (
+  <BankCardSection cards={cards} setCards={setCards} />
+)}
+
     </div>
   );
 };

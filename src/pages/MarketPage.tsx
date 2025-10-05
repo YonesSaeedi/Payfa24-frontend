@@ -39,7 +39,8 @@ interface ApiResponseGeneral {
 // 🟢 تایپ API دوم
 interface ApiCryptoPrice {
   symbol: string;
-  price: string;
+  priceBuy: string;
+  priceSell:string
   fee: string;
   quoteVolume: string;
   priceChangePercent: string;
@@ -72,21 +73,28 @@ function MarketPage() {
     },
   });
 
-  // 📌 ترکیب داده‌ها با استفاده از ICryptoItem
-  const cryptoData: ICryptoItem[] =
-  generalData?.cryptocurrency.map((item) => {
-    const match = listData?.list.find((c) => c.symbol === item.symbol);
+  console.log("listData",listData);
+  
 
-    const renderIcon = item.isFont ? (
+
+
+const cryptoData: ICryptoItem[] =
+  listData?.list.map((item) => {
+    const generalItem = generalData?.cryptocurrency.find(
+      (g) => g.symbol === item.symbol
+    );
+
+    // 📌 آیکون
+    const renderIcon = generalItem?.isFont ? (
       <i
         className={`cf cf-${item.symbol.toLowerCase()}`}
-        style={{ color: item.color, fontSize: "24px" }}
+        style={{ color: generalItem?.color || "#000", fontSize: "24px" }}
       ></i>
     ) : (
       <img
         src={
-          item.icon
-            ? `https://api.payfa24.org/images/currency/${item.icon}`
+          generalItem?.icon
+            ? `https://api.payfa24.org/images/currency/${generalItem.icon}`
             : "/default-coin.png"
         }
         alt={item.symbol}
@@ -98,39 +106,40 @@ function MarketPage() {
     );
 
     return {
-      name: item.locale?.fa?.name || item.name,
       symbol: item.symbol,
-      icon: item.icon || undefined,
-      color: item.color,
-      isFont: item.isFont,
-      locale: item.locale,
-      renderIcon, // 🟢 اضافه شد
-      priceUSDT: match ? parseFloat(match.price) : 0,
-      buyPrice: match ? parseFloat(match.price) : 0,
-      sellPrice: match ? parseFloat(match.price) : 0,
-      change24h: match ? parseFloat(match.priceChangePercent) : item.percent ?? 0,
-      volume: match ? parseFloat(match.quoteVolume) : 0,
-      isNew: false,
-      change: match ? `${parseFloat(match.priceChangePercent).toFixed(2)}%` : `${item.percent ?? 0}%`,
-      isPositive: (match ? parseFloat(match.priceChangePercent) : item.percent ?? 0) >= 0,
-      sort: item.sort,
+      name:generalItem?.locale?.fa?.name || generalItem?.name ,
+      locale: {
+        fa: generalItem?.locale?.fa?.name,
+        en: generalItem?.locale?.en?.name,
+      },
+      icon: renderIcon,
 
+      priceUSDT: Number(item.priceBuy),
+      buyPrice: Number(item.priceBuy),
+      sellPrice: Number(item.priceSell),
+      change24h: Number(item.priceChangePercent),
+      volume: Number(item.quoteVolume),
+
+      isNew: !!generalItem?.sort, // شرطی برای جدید بودن
+      favorite: false,
     };
-  }) || [];
+  }) ?? [];
+
+      console.log("cryptoData",cryptoData);
 
 
   // ✅ آماده‌سازی دیتا برای باکس‌های بالا
-  const losers = [...cryptoData]
-    .sort((a, b) => a.change24h - b.change24h)
-    .slice(0, 5);
+//   const losers = [...cryptoData]
+//     .sort((a, b) => a.change24h - b.change24h)
+//     .slice(0, 5);
 
-  const gainers = [...cryptoData]
-    .sort((a, b) => b.change24h - a.change24h)
-    .slice(0, 5);
+//   const gainers = [...cryptoData]
+//     .sort((a, b) => b.change24h - a.change24h)
+//     .slice(0, 5);
 
- const newest = [...cryptoData]
-  .sort((a, b) => b.sort - a.sort) // جدیدترین بر اساس sort
-  .slice(0, 5);
+//  const newest = [...cryptoData]
+//   .sort((a, b) => b.sort - a.sort) // جدیدترین بر اساس sort
+//   .slice(0, 5);
 
 
   return (
@@ -149,23 +158,21 @@ function MarketPage() {
 
           {/* 📊 باکس‌های بالای صفحه */}
           <div className="hidden lg:flex gap-6 justify-start flex-row-reverse">
-            <CryptoBox title="بیشترین افت" iconTop={<VectorDown />} items={losers} />
+            {/* <CryptoBox title="بیشترین افت" iconTop={<VectorDown />} items={losers} />
             <CryptoBox title="بیشترین رشد" iconTop={<VectorUp />} items={gainers} />
-            <CryptoBox title="جدیدترین‌ها" iconTop={<FireTopIcon />} items={newest} />
+            <CryptoBox title="جدیدترین‌ها" iconTop={<FireTopIcon />} items={newest} /> */}
           </div>
 
           {/* 📋 جدول اصلی */}
-          <div className="pb-[87px]">
-            {loadingGeneral || loadingList ? (
-              <p className="text-center text-gray-500">در حال بارگذاری...</p>
-            ) : (
-              <CryptoMarketTable
-                data={cryptoData}
-                active={activeTab}
-                setActive={setActiveTab}
-              />
-            )}
-          </div>
+        <div className="pb-[87px]">
+  <CryptoMarketTable
+    data={cryptoData}
+    active={activeTab}
+    setActive={setActiveTab}
+    isLoading={loadingGeneral || loadingList} // 🟢 پرچم لودینگ پاس داده بشه
+  />
+</div>
+
         </div>
       </HeaderFooterLayout>
     </div>
