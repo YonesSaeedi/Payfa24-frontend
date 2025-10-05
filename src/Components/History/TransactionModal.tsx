@@ -3,6 +3,7 @@ import StatusBadge from "../UI/Button/StatusBadge";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
+import SkeletonTransactionModal from "./SkeletonTransactionModal";
 
 export interface OrderDetail {
   id: string;
@@ -218,7 +219,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
 
         {/* Loader */}
         {loading ? (
-          <div className="text-center py-10 text-gray-500">در حال دریافت اطلاعات...</div>
+          <SkeletonTransactionModal/>
         ) : detail ? (
           <>
             {/* Icon and Title */}
