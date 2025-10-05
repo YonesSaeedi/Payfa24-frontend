@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosProgressEvent } from "axios";
 import { ROUTES } from "../routes/routes";
 
 const apiClient = axios.create({
@@ -98,10 +98,7 @@ type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 // Allowed values for FormData
 type FormDataValue = string | number | boolean | Blob | File;
 // Fully typed request params
-interface ApiRequestParams<
-  TData extends Record<string, FormDataValue> | undefined = undefined,
-  TParams extends Record<string, unknown> | undefined = undefined
-> {
+interface ApiRequestParams<TData extends Record<string, FormDataValue> | undefined = undefined, TParams extends Record<string, unknown> | undefined = undefined> {
   url: string;
   method?: HttpMethod;
   data?: TData; // JSON or FormData-compatible object
@@ -109,6 +106,7 @@ interface ApiRequestParams<
   headers?: Record<string, string>;
   isFormData?: boolean; // flag for file uploads
   timeout?: number; // override default timeout
+  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void
 }
 
 export async function apiRequest<
@@ -123,6 +121,7 @@ export async function apiRequest<
   headers,
   isFormData = false,
   timeout,
+  onUploadProgress,
 }: ApiRequestParams<TData, TParams>): Promise<TResponse> {
   const config = {
     url,
@@ -134,6 +133,7 @@ export async function apiRequest<
     },
     data: isFormData && data ? buildFormData(data) : data,
     timeout,
+    onUploadProgress,
   };
   const response = await apiClient.request<TResponse>(config);
   return response.data;

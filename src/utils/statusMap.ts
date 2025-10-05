@@ -14,6 +14,7 @@ export const transactionStatusMap: Record<string, string> = {
   "pending": "درحال بررسی",
   "reject": "رد شده",
   "unsuccessful": "ناموفق",
+
 };
 
 
@@ -21,4 +22,6 @@ export const transactionStatusMap: Record<string, string> = {
 export const transactionTypeMap: Record<string, string> = {
   deposit: "واریز",
   withdraw: "برداشت",
+  buy: "خرید",
+  sell: "فروش"
 };

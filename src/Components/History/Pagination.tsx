@@ -8,7 +8,16 @@ interface PaginationProps {
 
 const Pagination: React.FC<PaginationProps> = ({ current, total, onPageChange }) => {
 
-  const pages = [1, 2, 3, "...", total];
+  const getPages = () => {
+    if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
+
+    if (current <= 3) return [1, 2, 3, "...", total];
+    if (current >= total - 2) return [1, "...", total - 2, total - 1, total];
+
+    return [1, "...", current - 1, current, current + 1, "...", total];
+  };
+
+  const pages = getPages();
 
   return (
     <div dir="rtl" className="flex justify-center items-center gap-2 mt-4 text-sm pb-6">
@@ -21,11 +30,10 @@ const Pagination: React.FC<PaginationProps> = ({ current, total, onPageChange })
           <button
             key={num}
             onClick={() => onPageChange(num as number)}
-            className={`px-3 py-1  rounded-md transition ${
-              num === current
+            className={`px-3 py-1  rounded-md transition ${num === current
                 ? "bg-blue-600 text-white"
                 : "text-gray-600 hover:bg-gray-100"
-            }`}
+              }`}
           >
             {num}
           </button>

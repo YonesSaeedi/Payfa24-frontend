@@ -9,11 +9,15 @@ import CryptoListModal from "./CryptoListModal";
 import PercentBar from "./PercentBar";
 import { toast } from "react-toastify";
 import { apiRequest } from "../../utils/apiClient";
-import { FiatBalance, TradeSymbolResponse } from "../../types/apiResponses";
+import { CryptoBuy, FiatBalance, TradeSymbolResponse } from "../../types/apiResponses";
 import useGetCryptoData from "../../hooks/useGetCryptoData";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { CryptoDataMap, CryptoItem } from "../../types/crypto";
 import { ROUTES } from "../../routes/routes";
+import TradeConfirmationModal from "./TradeConfirmationModal";
+import { TradeConfirmationData } from "../../types/tradePage";
+import TradeCancelModal from "./TradeCancelModal";
+import TradeSuccessModal from "./TradeSuccessModal";
 
 type BuyAndSellProps = {
   isSell: boolean;
@@ -28,6 +32,10 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   const [selectedPercent, setSelectedPercent] = useState<number>(0)
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState<boolean>(false)
   const [isTradeConfirmationModalOpen, setIsTradeConfirmationModalOpen] = useState<boolean>(false)
+  const [TradeConfirmationModalData, setTradeConfirmationModalData] = useState<TradeConfirmationData | null>(null)
+  const [isTradeCancelModalOpen, setIsTradeCancelModalOpen] = useState<boolean>(false)
+  const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [TomanBalance, setTomanBalance] = useState<number | null>(null)
   const [currentCryptoPrice, setCurrentCryptoPrice] = useState<number | null>(null)
@@ -47,7 +55,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
         : TomanBalance / currentCryptoPrice;
       if (num > max) {
         num = max;
-        val = String(Math.round(max * 100) / 100);
+        val = String(Math.round(max * 1e8) / 1e8);
       }
       setCountInputStr(val);
       setAmountValue(Math.round(num * currentCryptoPrice * 100) / 100);
@@ -65,11 +73,11 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     else if (isSell && num > cryptoBalance * currentCryptoPrice) num = cryptoBalance * currentCryptoPrice
     const rounded = Math.round(num * 100) / 100;
     setAmountValue(rounded);
-    setCountInputStr(String(Math.round((rounded / currentCryptoPrice) * 100) / 100));
+    setCountInputStr(String(Math.round((rounded / currentCryptoPrice) * 1e8) / 1e8));
   };
   // handles filling the count input by 'all balance' button ====================================================================================================
   const handleFillCount = () => {
-    const roundedCount = isSell ? cryptoBalance : Math.round((TomanBalance / currentCryptoPrice) * 100) / 100;
+    const roundedCount = isSell ? cryptoBalance : Math.round((TomanBalance / currentCryptoPrice) * 1e8) / 1e8;
     setCountInputStr(String(roundedCount));
     setAmountValue(Math.round((roundedCount * currentCryptoPrice) * 100) / 100);
     setSelectedPercent(100)
@@ -78,7 +86,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   const handleFillAmount = () => {
     const roundedAmount = isSell ? Math.round(cryptoBalance * currentCryptoPrice * 100) / 100 : TomanBalance;
     setAmountValue(roundedAmount);
-    setCountInputStr(String(Math.round((roundedAmount / currentCryptoPrice) * 100) / 100));
+    setCountInputStr(String(Math.round((roundedAmount / currentCryptoPrice) * 1e8) / 1e8));
     setSelectedPercent(100)
   };
   // syncing the percent bar and inputs together =============================================================================================================
@@ -101,13 +109,13 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
         setCountInputStr("0");
         setAmountValue(0);
       } else if (isSell) {
-        const newCount = Math.round((cryptoBalance * selectedPercent / 100) * 100) / 100;
+        const newCount = Math.round((cryptoBalance * selectedPercent / 100) * 1e8) / 1e8;
         const newAmount = Math.round(newCount * currentCryptoPrice * 100) / 100;
         if (Number(countInputStr) !== newCount) setCountInputStr(String(newCount));
         if ((amountValue || 0) !== newAmount) setAmountValue(newAmount);
       } else {
         const newAmount = Math.round((TomanBalance * selectedPercent / 100) * 100) / 100;
-        const newCount = Math.round(newAmount / currentCryptoPrice * 100) / 100;
+        const newCount = Math.round(newAmount / currentCryptoPrice * 1e8) / 1e8;
         if ((amountValue || 0) !== newAmount) setAmountValue(newAmount);
         if (Number(countInputStr) !== newCount) setCountInputStr(String(newCount));
       }
@@ -116,34 +124,34 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     lastChangedRef.current = null;
   }, [countInputStr, amountValue, selectedPercent, isSell, cryptoBalance, TomanBalance, currentCryptoPrice]);
   // fetch Toman balance and cryptocurrency balance/price at first ================================================================================================================
-  useEffect(() => {
-    const fetchTomanBalance = async () => {
+  const fetchTomanBalance = async () => {
+    try {
+      setIsLoading(true)
+      const response = await apiRequest<FiatBalance>({ url: '/api/wallets/fiat/balance' })
+      setTomanBalance(response?.balance_available ?? null)
+    } catch (err) {
+      toast.error(err?.response?.data?.msg || err?.response?.data?.message || "دریافت موجودی کاربر با مشکل مواجه شد!");
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  const fetchCryptoBalanceAndPrice = async () => {
+    if (currentCryptocurrency) {
       try {
         setIsLoading(true)
-        const response = await apiRequest<FiatBalance>({ url: '/api/wallets/fiat/balance' })
-        setTomanBalance(response?.balance_available ?? null)
+        const response = await apiRequest<TradeSymbolResponse>({ url: `/api/order/get-info/${currentCryptocurrency?.symbol}` })
+        setCryptoBalance(response?.balance)
+        setCurrentCryptoPrice(isSell ? response?.price?.sell : response?.price?.buy)
       } catch (err) {
-        toast.error(err?.response?.data?.msg || err?.response?.data?.message || "دریافت موجودی کاربر با مشکل مواجه شد!");
+        toast.error(err?.response?.data?.msg || err?.response?.data?.message || `دریافت اطلاعات ${currentCryptocurrency?.locale?.fa?.name} با مشکل مواجه شد`);
       } finally {
         setIsLoading(false)
       }
     }
+  }
+  useEffect(() => {
     fetchTomanBalance()
-    const fetchCryptoPrice = async () => {
-      if (currentCryptocurrency) {
-        try {
-          setIsLoading(true)
-          const response = await apiRequest<TradeSymbolResponse>({ url: `/api/order/get-info/${currentCryptocurrency?.symbol}` })
-          setCryptoBalance(response?.balance)
-          setCurrentCryptoPrice(isSell ? response?.price?.sell : response?.price?.buy)
-        } catch (err) {
-          toast.error(err?.response?.data?.msg || err?.response?.data?.message || `دریافت اطلاعات ${currentCryptocurrency?.locale?.fa?.name} با مشکل مواجه شد`);
-        } finally {
-          setIsLoading(false)
-        }
-      }
-    }
-    fetchCryptoPrice()
+    fetchCryptoBalanceAndPrice()
   }, [isSell, currentCryptocurrency])
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
@@ -180,25 +188,58 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   // assign BTC to the current cryptocurrency at first
   useEffect(() => {
     if ((mergedCryptosData['BTC'] && currentCryptocurrency === null)) setCurrentCryptocurrency(mergedCryptosData['BTC'])
-  }, [mergedCryptosData, currentCryptocurrency])
+  }, [mergedCryptosData, currentCryptocurrency, setCurrentCryptocurrency])
   // buy/sell functionality ==========================================================================================================================================================
   // buy/sell functionality ==========================================================================================================================================================
   // buy/sell functionality ==========================================================================================================================================================
   const handleBuyOrSell = async () => {
     if (isSell) {
-      return null
+      try {
+        setIsSubmitting(true)
+        const response = await apiRequest<CryptoBuy, { amountCoin: string }>({ url: `/api/order/crypto/sell/${currentCryptocurrency?.symbol}`, method: 'POST', data: { amountCoin: countInputStr } })
+        setTradeConfirmationModalData({
+          coinAmount: response?.amount_coin,
+          tomanAmount: response?.amount,
+          symbol: currentCryptocurrency?.symbol ? currentCryptocurrency?.symbol : '',
+          unitPrice: response?.fee,
+          orderID: response?.id_order
+        })
+        setIsTradeConfirmationModalOpen(true)
+      } catch (err) {
+        toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+      }
+      finally {
+        setIsSubmitting(false)
+      }
     } else {
       try {
-        // setIsSubmitting(true)
-        const response = await apiRequest({ url: `/api/order/crypto/buy/${currentCryptocurrency?.symbol}`, method: 'POST', data: { amount: String(amountValue) } })
-        console.log(response);
+        setIsSubmitting(true)
+        const response = await apiRequest<CryptoBuy, { amount: string }>({ url: `/api/order/crypto/buy/${currentCryptocurrency?.symbol}`, method: 'POST', data: { amount: String(amountValue) } })
+        setTradeConfirmationModalData({
+          coinAmount: response?.amount_coin,
+          tomanAmount: response?.amount,
+          symbol: currentCryptocurrency?.symbol ? currentCryptocurrency?.symbol : '',
+          unitPrice: response?.fee,
+          orderID: response?.id_order
+        })
+        setIsTradeConfirmationModalOpen(true)
       } catch (err) {
-        toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ارسال سفارش مشکلی پیش آمد.');
+        toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
       }
-      // finally {
-      //   setIsSubmitting(false)
-      // }
+      finally {
+        setIsSubmitting(false)
+      }
     }
+  }
+  // handle cancel trade ================================================================================================================================================================
+  const handleCancelTrade = () => {
+    setIsTradeConfirmationModalOpen(false)
+    setIsTradeCancelModalOpen(true)
+  }
+  // handle success trade ===============================================================================================================================================================
+  const handleSuccessTrade = () => {
+    setIsTradeConfirmationModalOpen(false)
+    setIsTradeSuccessModalOpen(true)
   }
 
   return (
@@ -229,7 +270,25 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
           </div>
           <span className="icon-wrapper w-5 h-5 -rotate-90 text-grey1"><IconChevron /></span>
         </div>
-        {isCryptoListModalOpen && <CryptoListModal setIsCryptoListModalOpen={setIsCryptoListModalOpen} cryptoListData={Object.values(mergedCryptosData)} setCurrentCryptoCurrency={setCurrentCryptocurrency} />}
+        {isCryptoListModalOpen &&
+          <CryptoListModal
+            setIsCryptoListModalOpen={setIsCryptoListModalOpen}
+            cryptoListData={Object.values(mergedCryptosData)}
+            setCurrentCryptoCurrency={setCurrentCryptocurrency}
+            isCryptoListLoading={isCryptoListLoading}
+          />}
+        {isTradeConfirmationModalOpen &&
+          <TradeConfirmationModal
+            setIsTradeConfirmationModalOpen={setIsTradeConfirmationModalOpen}
+            isSell={isSell}
+            tradeConfirmationModalData={TradeConfirmationModalData!}
+            fetchCryptoBalanceAndPrice={fetchCryptoBalanceAndPrice}
+            fetchTomanBalance={fetchTomanBalance}
+            handleCancelTrade={handleCancelTrade}
+            handleSuccessTrade={handleSuccessTrade}
+          />}
+        {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
+        {isTradeSuccessModalOpen && <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} isSell={isSell} />}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1 text-text5 text-xs lg:text-sm font-medium">موجودی شما :
             {isLoading || cryptoBalance === null ?
@@ -299,7 +358,12 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       </div>
       {/* percent bar ======================================================================================================= */}
       <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
-      <button onClick={handleBuyOrSell} className="rounded-lg bg-blue2 py-2 lg:py-2.5 text-white2 text-base font-medium lg:text-lg lg:font-bold">{isSell ? "ثبت فروش" : "ثبت خرید"}</button>
+      <button
+        disabled={isSubmitting || !countInputStr || !amountValue}
+        onClick={handleBuyOrSell}
+        className="rounded-lg bg-blue2 py-2 lg:py-2.5 text-white2 text-base font-medium lg:text-lg lg:font-bold hover:bg-blue-600 hover:-translate-y-0.5 transition duration-300">
+        {isSubmitting ? 'در حال ثبت سفارش ...' : isSell ? "ثبت فروش" : "ثبت خرید"}
+      </button>
     </div>
   )
 }

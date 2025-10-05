@@ -11,13 +11,13 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   ticket: "تیکت‌ها",
   create: "ایجاد تیکت",
   authentication: 'احراز هویت',
-  services:'خدمات',
-  transaction:'تاریخچه تراکنش ها',
-  ConnectedDevices:'دستگاه های متصل',
-  faq:'سوالات متدال',
-  BankCards:'کارت های بانکی',
-  withdrawal:'برداشت'
-
+  services: 'خدمات',
+  transaction: 'تاریخچه تراکنش ها',
+  ConnectedDevices: 'دستگاه های متصل',
+  faq: 'سوالات متدال',
+  BankCards: 'کارت های بانکی',
+  withdrawal: 'برداشت',
+  'market-view': 'نمای بازار'
 
 };
 
@@ -27,7 +27,7 @@ const BreadcrumbNavigation = () => {
 
   return (
     <nav className="w-full flex items-center gap-1 lg:gap-2 text-xs lg:text-sm font-normal" dir="rtl">
-      <Link className="text-text2 text-black0" to='/'>پی‌فا24</Link>
+      <Link className="text-text2 text-black0 hover:text-blue2 hover:underline" to='/'>پی‌فا24</Link>
       {pathnames.map((value, index) => {
         const to = `/${pathnames.slice(0, index + 1).join("/")}`;
         const isLast = index === pathnames.length - 1;
@@ -37,7 +37,7 @@ const BreadcrumbNavigation = () => {
             {isLast ?
               <span className="text-blue2">{BREADCRUMB_LABELS[value]}</span>
               :
-              <Link className="text-black1 hover:text-primary" to={to}>{BREADCRUMB_LABELS[value]}</Link>
+              <Link className="text-black1 hover:text-blue2 hover:underline" to={to}>{BREADCRUMB_LABELS[value]}</Link>
             }
           </React.Fragment>
         );
