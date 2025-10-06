@@ -8,10 +8,7 @@ import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
 import { apiRequest } from "../../../utils/apiClient";
 import { ticketStatusMap } from "../../../utils/statusMap";
 import StatusBadge from "../../UI/Button/StatusBadge";
-import CryptoJS from "crypto-js";
 
-const SECRET_KEY =
-  "XBPGNB6GEXUPWES22VU2OBOHX6G49LHACNLBNVP3KZKIXBXA3GIHFZM40INDJXRL";
 
 interface ChatPanelProps {
   ticket: Ticket | null;
@@ -34,25 +31,15 @@ interface Message {
   system?: boolean;
 }
 
-const statusMap = {
-  "awaiting answer": "در انتظار پاسخ",
-  answered: "پاسخ داده شده",
-  closed: "بسته شده",
-} as const;
 
 
 type TicketInfo = {
   ticket: {
     id: number;
     title: string;
-    status: keyof typeof statusMap;
+    status: keyof typeof ticketStatusMap;
   };
   ticket_message: Message[];
-};
-
-const generateSignature = (filePath: string, timestamp: string) => {
-  const dataToHash = `GET ${filePath} ${timestamp} []`;
-  return CryptoJS.HmacSHA256(dataToHash, SECRET_KEY).toString(CryptoJS.enc.Hex);
 };
 
 const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
@@ -118,14 +105,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const fetchFileAsDataUrl = async (fileToken: string) => {
     const filePath = `/api/image/${fileToken}`;
     const timestamp = Math.floor(Date.now() / 1000).toString();
-    const signature = generateSignature(filePath, timestamp);
 
     try {
       const blob = await apiRequest<Blob>({
         url: filePath,
         method: "GET",
         responseType: "blob",
-        headers: { "x-timestamp": timestamp, "x-signature": signature },
+        headers: { "x-timestamp": timestamp},
       });
 
       // فایل PDF رو هم می‌تونیم blob URL بسازیم
