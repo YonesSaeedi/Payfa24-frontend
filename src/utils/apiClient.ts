@@ -1,48 +1,48 @@
-import axios, { AxiosProgressEvent } from "axios";
+
+// apiClient.ts
+import axios, { AxiosRequestConfig, AxiosProgressEvent, AxiosRequestHeaders } from "axios";
+
 import { ROUTES } from "../routes/routes";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
-  timeout: 10_000, // 10 seconds default, set longer for heavier requests and set 0 to disable it.
+  timeout: 10_000,
   headers: {
-    'Content-Type': 'application/json',
-    'X-Device': 'android' // temporarily; to be removed later when mohandes fixed allowed domains for recaptcha !!!!!!!!!!!!!!!!!!!!!!!!!$%^&!%#^@$#%^$#%$^&*$#^&%*(^*^#$#$!#$@%$#^%*)
-  }
-})
+    // حذف Content-Type پیش‌فرض تا هنگام ارسال FormData مرورگر خودش header مناسب را بسازد
+    "X-Device": "android",
+  },
+});
 
-// helper to check expiry
-function isTokenExpiringSoon() {
-  const expiresAt = localStorage.getItem('expiresAt');
+// ---------- helper: token expiry ----------
+function isTokenExpiringSoon(): boolean {
+  const expiresAt = localStorage.getItem("expiresAt");
   if (!expiresAt) return false;
   const now = Math.floor(Date.now() / 1000);
-  return now >= parseInt(expiresAt, 10) - (5 * 60)
+  return now >= parseInt(expiresAt, 10) - 5 * 60;
 }
 
-// Refresh function
+// ---------- single-flight token refresh ----------
 let refreshingPromise: Promise<string | null> | null = null;
-// Used to ensure only one refresh request is in flight at a time.
-// If multiple requests trigger a refresh, they all await the same promise.
-// Once it finishes, refreshingPromise is reset so future refreshes can happen again.
 async function refreshAccessToken(): Promise<string | null> {
   if (!refreshingPromise) {
     refreshingPromise = (async () => {
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        const res = await axios.post(apiClient.defaults.baseURL + '/api/auth/refresh-token', { refreshToken });
+        const refreshToken = localStorage.getItem("refreshToken");
+        const res = await axios.post(apiClient.defaults.baseURL + "/api/auth/refresh-token", { refreshToken });
         if (res?.data?.access_token) {
-          localStorage.setItem('accessToken', res.data.access_token);
-          localStorage.setItem('expiresAt', res.data.expires_in.toString());
-          localStorage.setItem('refreshToken', res.data.refresh_token);
+          localStorage.setItem("accessToken", res.data.access_token);
+          localStorage.setItem("expiresAt", String(res.data.expires_in));
+          localStorage.setItem("refreshToken", res.data.refresh_token);
           return res.data.access_token;
-        } else return null;
+        }
+        return null;
       } catch (err) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('expiresAt');
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("expiresAt");
         window.location.href = ROUTES.LOGIN;
         return null;
       } finally {
-        // always clear so the next call can retry if needed
         refreshingPromise = null;
       }
     })();
@@ -50,68 +50,84 @@ async function refreshAccessToken(): Promise<string | null> {
   return refreshingPromise;
 }
 
-// Request interceptor: attach token, refresh if needed
-apiClient.interceptors.request.use(async config => {
+// ---------- request interceptor ----------
+apiClient.interceptors.request.use(async (config) => {
+  // allow auth routes through
   if (
-    config.url?.includes('/auth/login')
-    || config.url?.includes('/auth/refresh-token')
-    || config.url?.includes('/auth/forget')
-    || config.url?.includes('/auth/forget/reset')
-    || config.url?.includes('/auth/login/login-2fa')
-    || config.url?.includes('/auth/login/resend-2fa')
-    || config.url?.includes('/auth/register')
-    || config.url?.includes('/auth/google')
-    // ???
-  ) return config;
-  let token = localStorage.getItem('accessToken');
-  if (isTokenExpiringSoon()) token = await refreshAccessToken();
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  else {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('expiresAt');
-    window.location.href = '/login';
+    config.url?.includes("/auth/login") ||
+    config.url?.includes("/auth/refresh-token") ||
+    config.url?.includes("/auth/forget") ||
+    config.url?.includes("/auth/forget/reset") ||
+    config.url?.includes("/auth/login/login-2fa") ||
+    config.url?.includes("/auth/login/resend-2fa") ||
+    config.url?.includes("/auth/register") ||
+    config.url?.includes("/auth/google")
+  ) {
+    return config;
   }
+
+  let token = localStorage.getItem("accessToken");
+  if (isTokenExpiringSoon()) token = await refreshAccessToken();
+
+  // ensure headers object exists and has the right type
+  if (!config.headers) config.headers = {} as AxiosRequestHeaders;
+
+  if (token) {
+    // config.headers may be AxiosRequestHeaders or plain object; cast to any-safe set
+    (config.headers as any).Authorization = `Bearer ${token}`;
+  } else {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("expiresAt");
+    window.location.href = "/login";
+  }
+
   return config;
 });
 
-// Response interceptor: retry once on 401
-// sends the error so you can display it wherever the api is called. ==========================================================================
+// ---------- response interceptor: retry once on 401 ----------
 apiClient.interceptors.response.use(
-  res => res,
-  async error => {
-    const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
       const newToken = await refreshAccessToken();
       if (newToken) {
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return apiClient(originalRequest); // retry request
+        originalRequest.headers = originalRequest.headers ?? ({} as AxiosRequestHeaders);
+        (originalRequest.headers as any).Authorization = `Bearer ${newToken}`;
+        return apiClient(originalRequest);
       }
     }
     return Promise.reject(error);
   }
 );
 
-// creating apiRequest function that wraps apiClient and handles methods and headers etc. can be exported to another file later. =============================================================
+// ========== apiRequest wrapper ==========
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-// Allowed values for FormData
 type FormDataValue = string | number | boolean | Blob | File;
-// Fully typed request params
-interface ApiRequestParams<TData extends Record<string, FormDataValue> | undefined = undefined, TParams extends Record<string, unknown> | undefined = undefined> {
+
+
+interface ApiRequestParams<
+  TData extends Record<string, FormDataValue> | FormData | undefined = undefined,
+  TParams extends Record<string, unknown> | undefined = undefined
+> {
+
   url: string;
   method?: HttpMethod;
-  data?: TData; // JSON or FormData-compatible object
-  params?: TParams; // query params
+  data?: TData;
+  params?: TParams;
   headers?: Record<string, string>;
-  isFormData?: boolean; // flag for file uploads
-  timeout?: number; // override default timeout
-  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void
+
+  isFormData?: boolean;
+  timeout?: number;
+  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream';
+
 }
 
 export async function apiRequest<
   TResponse = unknown,
-  TData extends Record<string, FormDataValue> | undefined = undefined,
+  TData extends Record<string, FormDataValue> | FormData | undefined = undefined,
   TParams extends Record<string, unknown> = Record<string, unknown>
 >({
   url,
@@ -121,34 +137,71 @@ export async function apiRequest<
   headers,
   isFormData = false,
   timeout,
+
+  responseType,
   onUploadProgress,
-}: ApiRequestParams<TData, TParams>): Promise<TResponse> {
-  const config = {
+}: ApiRequestParams<TData, TParams> & { onUploadProgress?: (progressEvent?: AxiosProgressEvent) => void }): Promise<TResponse> {
+  // prepare outgoing headers
+  const outgoingHeaders: Record<string, string> = { ...(headers ?? {}) };
+  if (!isFormData) {
+    outgoingHeaders["Content-Type"] = "application/json";
+  } else {
+    // ensure Content-Type is not set so browser/axios creates multipart boundary
+    if ("Content-Type" in outgoingHeaders) delete outgoingHeaders["Content-Type"];
+  }
+
+  // prepare body: if caller passed FormData, use it; otherwise build
+  const body = isFormData
+    ? data instanceof FormData
+      ? (data as FormData)
+      : buildFormData(data as Record<string, FormDataValue>)
+    : data;
+
+  // debug logging
+  if (isFormData && body instanceof FormData) {
+    console.log("Sending FormData payload:");
+    for (const [key, value] of body.entries()) {
+      if (value instanceof File) {
+        console.log(key, { name: value.name, size: value.size, type: value.type });
+      } else {
+        console.log(key, value);
+      }
+    }
+  } else {
+    console.log("Sending JSON payload:", body);
+  }
+
+  const config: AxiosRequestConfig = {
+
     url,
     method,
     params,
-    headers: {
-      ...headers,
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
-    },
-    data: isFormData && data ? buildFormData(data) : data,
+    headers: outgoingHeaders as AxiosRequestHeaders,
+    data: body,
     timeout,
-    onUploadProgress,
+
+    responseType: responseType,
+    // Axios expects a function that accepts AxiosProgressEvent; we accept that type in our param
+    onUploadProgress: onUploadProgress as ((progressEvent?: any) => void) | undefined,
+
   };
+
   const response = await apiClient.request<TResponse>(config);
   return response.data;
 }
 
-// Helper for FormData
+// Helper: build FormData from plain object (keeps File/Blob as-is)
 function buildFormData(data: Record<string, FormDataValue>): FormData {
   const formData = new FormData();
   Object.entries(data).forEach(([key, value]) => {
-    // Convert boolean/number to string automatically
+    if (value === undefined || value === null) return;
     if (typeof value === "boolean" || typeof value === "number") {
       formData.append(key, String(value));
     } else {
-      formData.append(key, value);
+      formData.append(key, value as any);
     }
   });
   return formData;
 }
+
+export default apiClient;

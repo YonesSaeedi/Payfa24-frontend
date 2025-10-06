@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import FileUpload from "./FileUpload";
-import OrderSelector from "./OrderSelector";
 import FloatingInput from "../../FloatingInput/FloatingInput";
+import OrderSelector from "./OrderSelector";
 import { toast } from "react-toastify";
 import { apiRequest } from "../../../utils/apiClient";
-import { TicketFormInputs, TicketNewResponse } from '../../../types/Ticket';
-
+import { TicketFormInputs, TicketNewResponse } from "../../../types/Ticket";
+import type { AxiosProgressEvent } from "axios";
 
 interface Order {
   id: string;
@@ -16,62 +15,67 @@ interface Order {
   date: string;
   icon: React.ReactNode;
 }
-interface TicketPayload {
-  subject: string;
-  message: string;
-  order?: number;
-  file?: File;
-}
-type FormDataValue = string | number | boolean | File;
 
 export default function TicketForm() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<TicketFormInputs>();
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<TicketFormInputs>();
 
-const onSubmit = async (data: TicketFormInputs) => {
-  try {
-    // ساخت payload با تایپ دقیق
-    const payload: TicketPayload = {
-      subject: data.title,
-      message: data.description,
-    };
+  const onSubmit = async (data: TicketFormInputs) => {
+    try {
+      const formData = new FormData();
+      formData.append("subject", data.title.trim());
+      formData.append("message", data.description.trim());
 
-    if (selectedOrder?.id) payload.order = Number(selectedOrder.id);
-    if (selectedFile) payload.file = selectedFile;
+      if (selectedOrder?.id) formData.append("order", selectedOrder.id);
 
-    // تبدیل به Record<string, FormDataValue> برای apiRequest
-    const payloadRecord: Record<string, FormDataValue> = { ...payload };
+    
+      if (data.file && data.file.length > 0) {
+        formData.append("file", data.file[0]);
+      }
 
-    const response = await apiRequest({
-      url: "/api/ticket/new",
-      method: "POST",
-      data: payloadRecord,
-      isFormData: !!selectedFile,
-    }) as TicketNewResponse;
+      const response = await apiRequest<TicketNewResponse, FormData>({
+        url: "/api/ticket/new",
+        method: "POST",
+        data: formData,
+        isFormData: true,
+        timeout: 60000,
+        onUploadProgress: (e?: AxiosProgressEvent) => {
+          if (e?.total) {
+            const percent = Math.round((e.loaded * 100) / e.total);
+            setUploadProgress(percent);
+          }
+        },
+      });
 
-    toast.success("تیکت با موفقیت ایجاد شد!");
-    console.log("تیکت ساخته شد:", response);
-
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error("خطا در ساخت تیکت:", err.message);
-    } else {
-      console.error("خطا در ساخت تیکت:", err);
+      if (response.status) {
+        toast.success("تیکت با موفقیت ایجاد شد!");
+        setValue("file", undefined); // پاک کردن فایل انتخابی
+        setUploadProgress(0);
+      } else {
+        toast.error(response.msg || "خطا در ثبت تیکت");
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      toast.error("شما دو تیکت باز دارید و بیشتر از این نمی‌توانید تیکتی ایجاد کنید!");
     }
-    toast.error("شما دو تیکت باز دارید و بیشتر از این نمیتوانید تیکتی ایجاد کنید!");
-  }
-};
+  };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       dir="rtl"
-      className="w-full h-full flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl p-6"
+      className="w-full flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl p-6"
     >
       <div className="flex flex-col">
-        <h2 className="text-xl font-semibold text-center text-black1 mt-2 flex-shrink-0 mb-12">
+        <h2 className="text-xl font-semibold text-center text-black1 mt-2 mb-12">
           ایجاد تیکت جدید
         </h2>
 
@@ -92,15 +96,14 @@ const onSubmit = async (data: TicketFormInputs) => {
             />
           )}
         />
-        {errors.title && (
-          <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
-        )}
+        {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
 
         {/* انتخاب سفارش */}
         <OrderSelector
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
           register={register}
+          setValue={setValue}
         />
 
         {/* توضیحات */}
@@ -127,19 +130,58 @@ const onSubmit = async (data: TicketFormInputs) => {
           <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
         )}
 
-        {/* آپلود فایل */}
-        <FileUpload
-          selectedFile={selectedFile}
-          setSelectedFile={setSelectedFile}
-          register={register}
-        />
+        {/* قسمت آپلود فایل */}
+        <div className="relative w-full mt-5">
+          <label className="absolute right-3 text-xs -top-2 px-1 duration-200 z-40 lg:bg-gray43 bg-gray38">بارگذاری فایل (اختیاری)</label>
+          <Controller
+            name="file"
+            control={control}
+            render={({ field }) => (
+              <div className="w-full  border rounded-md z-10 px-3 py-4 flex justify-between items-center
+          focus:outline-none focus:ring-0 border-gray12   ">
+                <label className="bg-secondary font-normal text-sm w-24 h-[30px] rounded-[10px] flex items-center justify-center cursor-pointer transition duration-200">
+                  upload
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => field.onChange(e.target.files)}
+                  />
+                </label>
+                <span className="truncate text-xs text-gray-300">
+                  {field.value && field.value.length > 0
+                    ? field.value[0].name
+                    : "فایلی انتخاب نشده"}
+                </span>
+              </div>
+            )}
+          />
+
+          {/* نوار پیشرفت آپلود */}
+          {uploadProgress > 0 && (
+            <div className="mt-2">
+              <div className="flex justify-between mb-1 text-xs text-gray-300">
+                <span>در حال آپلود فایل...</span>
+                <span>{uploadProgress}%</span>
+              </div>
+              <div className="w-full bg-gray-400 h-2 rounded overflow-hidden">
+                <div
+                  className="bg-primary h-2 transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
 
       <button
         type="submit"
-        className="w-full bg-blue2 text-white mb-6 py-3 px-4 rounded-lg hover:bg-blue-700 transition flex-shrink-0 mt-4"
+        disabled={isSubmitting || (uploadProgress > 0 && uploadProgress < 100)}
+        className={`w-full bg-blue2 text-white mb-6 py-3 px-4 rounded-lg mt-4 transition ${isSubmitting ? "opacity-60 cursor-not-allowed" : "hover:bg-blue-700"
+          }`}
       >
-        ارسال تیکت
+        {isSubmitting ? "در حال ارسال..." : "ارسال تیکت"}
       </button>
     </form>
   );

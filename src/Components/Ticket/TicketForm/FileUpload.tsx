@@ -1,6 +1,6 @@
 import { Paperclip } from "lucide-react";
 import { UseFormRegister } from "react-hook-form";
-import { TicketFormInputs} from "./Types";
+import { TicketFormInputs } from "../../../types/Ticket";
 
 
 interface FileUploadProps {

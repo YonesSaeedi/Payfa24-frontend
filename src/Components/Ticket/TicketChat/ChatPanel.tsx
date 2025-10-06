@@ -9,6 +9,7 @@ import { apiRequest } from "../../../utils/apiClient";
 import { ticketStatusMap } from "../../../utils/statusMap";
 import StatusBadge from "../../UI/Button/StatusBadge";
 
+
 interface ChatPanelProps {
   ticket: Ticket | null;
 }
@@ -20,6 +21,7 @@ interface Message {
   timestamp: string;
   senderName?: string;
   senderRole?: string;
+  file?: string;
   attachment?: {
     type: "pdf" | "image";
     name: string;
@@ -29,6 +31,17 @@ interface Message {
   system?: boolean;
 }
 
+
+
+type TicketInfo = {
+  ticket: {
+    id: number;
+    title: string;
+    status: keyof typeof ticketStatusMap;
+  };
+  ticket_message: Message[];
+};
+
 const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
   const statusText = ticketStatusMap[ticket.status] || "نامشخص";
 
@@ -37,7 +50,9 @@ const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
       <div className="flex items-center justify-between flex-row-reverse">
         <div dir="rtl" className="flex flex-col">
           <span className="text-gray5 text-sm">شماره تیکت: #{ticket.id}</span>
-          <span className="font-medium text-black1 mt-2 text-base">{ticket.title}</span>
+          <span className="font-medium text-black1 mt-2 text-base">
+            {ticket.title}
+          </span>
         </div>
         <div>
           <StatusBadge text={statusText} />
@@ -54,210 +69,161 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [imageCache, setImageCache] = useState<Record<number, string>>({});
+  const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const [isSentPreview, setIsSentPreview] = useState(false); // حالت جدید
+  const [loading, setLoading] = useState(true);
 
-
-  // بارگذاری پیام‌ها از سرور
-  const fetchMessages = async () => {
-    if (!ticket) return;
+  // دریافت اطلاعات تیکت و پیام‌ها
+  const fetchData = async () => {
+    if (!ticket?.id) return;
     try {
-      console.log("sending file:", selectedFile);
-
-      const response = await apiRequest<{
-        ticket_message: {
-          id: number;
-          message: string;
-          author: string;
-          time: string;
-          file?: string;
-        }[];
-      }>({
+      const res = await apiRequest<any>({
         url: `/api/ticket/${ticket.id}/get-info`,
         method: "GET",
       });
 
-      const serverMessages: Message[] = response.ticket_message.map((msg) => {
-        let attachment;
-        if (msg.file) {
-          const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(msg.file);
-          attachment = {
-            type: isImage ? "image" : "pdf",
-            name: msg.file,
-            size: "؟MB",
-            url: isImage ? `/api/ticket/file/${msg.file}` : undefined,
-          };
-        }
-       console.log(response);
-       console.log("sending file:", selectedFile);
+      const formattedMessages = res.ticket_message.map((m: any) => ({
+        id: m.id,
+        text: m.message,
+        isUser: m.author === "user",
+        timestamp: m.time,
+        file: m.file,
+      }));
 
-       
-       
-        return {
-          id: msg.id,
-          text: msg.message,
-          isUser: msg.author === "user",
-          timestamp: msg.time,
-          senderName: msg.author === "user" ? "شما" : "پشتیبانی",
-          senderRole: msg.author === "user" ? "user" : "admin",
-          attachment,
-        };
-      });
-console.log(serverMessages);
-      setMessages(serverMessages);
+      setTicketInfo(res); // ✅ درست شد
+      setMessages(formattedMessages);
     } catch (err) {
-      console.error("خطا در دریافت پیام‌ها:", err);
+      console.error("ticket/get-info:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
+
+  const fetchFileAsDataUrl = async (fileToken: string) => {
+    const filePath = `/api/image/${fileToken}`;
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+
+    try {
+      const blob = await apiRequest<Blob>({
+        url: filePath,
+        method: "GET",
+        responseType: "blob",
+        headers: { "x-timestamp": timestamp},
+      });
+
+      // فایل PDF رو هم می‌تونیم blob URL بسازیم
+      return URL.createObjectURL(blob); // ✅ blob URL برای PDF و تصاویر
+    } catch (err) {
+      console.error("خطا در دریافت فایل:", err);
+      return null;
+    }
+  };
+
+
+
   useEffect(() => {
-    fetchMessages();
+    fetchData();
   }, [ticket]);
-    
+
+  // بارگذاری تصویر فایل‌های تیکت
+  useEffect(() => {
+    if (!ticketInfo) return;
+
+    const loadFiles = async () => {
+      const newCache = { ...imageCache };
+      let updated = false;
+      for (const msg of ticketInfo.ticket_message) {
+        if (msg.file && !newCache[msg.id]) {
+          const fileUrl = await fetchFileAsDataUrl(msg.file);
+          if (fileUrl) {
+            newCache[msg.id] = fileUrl;
+            updated = true;
+          }
+        }
+      }
+      if (updated) setImageCache(newCache);
+    };
+
+    loadFiles();
+  }, [ticketInfo]);
+
+
   // ارسال پیام جدید
   const handleSend = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.preventDefault();
     if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) return;
 
     setIsSending(true);
-    setIsSentPreview(true); // وقتی ارسال زدیم، حالت preview اصلی فعال بشه
+    setUploadProgress(0); // شروع آپلود
 
     try {
       const formData = new FormData();
       formData.append("message", newMessage.trim() || "فایل پیوست شد");
       if (selectedFile) formData.append("file", selectedFile);
-      else formData.append("file", "");
 
       await apiRequest({
         url: `/api/ticket/${ticket.id}/new`,
         method: "POST",
         data: formData,
-        // headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (event: ProgressEvent) => {
-          if (event.total) setUploadProgress(Math.round((event.loaded * 100) / event.total));
+        isFormData: true,
+        timeout: 60000,
+        onUploadProgress: (event?: any) => {
+          if (event?.total) {
+            const percent = Math.round((event.loaded * 100) / event.total);
+            setUploadProgress(percent);
+          }
         },
       });
 
-      // اضافه کردن پیام به لیست محلی
-      const isImage = selectedFile?.type.startsWith("image/");
-      const message: Message = {
-        id: Date.now(),
-        text: newMessage.trim() || undefined,
-        isUser: true,
-        timestamp: new Date().toLocaleString("fa-IR", {
-          hour: "2-digit",
-          minute: "2-digit",
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }),
-        attachment: selectedFile
-          ? {
-              type: isImage ? "image" : "pdf",
-              name: selectedFile.name,
-              size: `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`,
-              url: isImage ? URL.createObjectURL(selectedFile) : undefined,
-            }
-          : undefined,
-      };
-      console.log("new message", message);
-
-      setMessages((prev) => [...prev, message]);
+      // پاک کردن ورودی‌ها بعد از ارسال موفق
       setNewMessage("");
       setSelectedFile(null);
-      setIsSentPreview(false);
-
       if (fileInputRef.current) fileInputRef.current.value = "";
 
-      // بارگذاری مجدد پیام‌ها از سرور برای همگام‌سازی
-      fetchMessages();
+      await fetchData(); // دریافت مجدد پیام‌ها و فایل‌ها
     } catch (err) {
       console.error("خطا در ارسال پیام:", err);
     } finally {
       setIsSending(false);
-      setUploadProgress(null);
+      setUploadProgress(null); // بعد از آپلود نوار پیشرفت را مخفی کن
     }
   };
 
+
   const handleAttachClick = () => fileInputRef.current?.click();
 
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files.length > 0) setSelectedFile(e.target.files[0]);
-  //   setIsSentPreview(false);
-
-  // };
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files && e.target.files.length > 0) {
-    const file = e.target.files[0];
-    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-
-    if (!validTypes.includes(file.type)) {
-      alert("فقط فرمت‌های jpg, jpeg, png مجاز است");
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      return;
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        alert("فقط فرمت‌های jpg, jpeg, png مجاز است");
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        return;
+      }
+      setSelectedFile(file);
     }
-
-    setSelectedFile(file);
-  }
-};
-
+  };
 
   const removeSelectedFile = () => {
     setSelectedFile(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
-    setIsSentPreview(false);
-
   };
 
-  // کش کردن تصاویر با DataURL
-  useEffect(() => {
-    const loadImages = async () => {
-      for (const msg of messages) {
-        if (msg.attachment?.type === "image" && msg.attachment.name && !msg.attachment.url) {
-          try {
-            const res = await fetch(`/api/ticket/file/${msg.attachment.name}`);
-            const blob = await res.blob();
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              const url = reader.result as string;
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === msg.id
-                    ? { ...m, attachment: { ...m.attachment!, url } }
-                    : m
-                )
-              );
-            };
-            reader.readAsDataURL(blob);
-          } catch (err) {
-            console.error("خطا در دریافت تصویر:", err);
-          }
-        }
-      }
-    };
-    loadImages();
-  }, [messages]);
-
-  // اسکرول خودکار به آخر پیام‌ها
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+
   return (
     <div className="flex-1">
       <div className="border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
-        <ChatHeader
-          ticket={
-            ticket || {
-              id: 0,
-              title: "",
-              status: "pending",
-              date: new Date().toISOString(),
-            }
-          }
-        />
+        {ticket && <ChatHeader ticket={ticket} />}
 
+        {/* پیام‌ها */}
         <div
           className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center"
           style={{ backgroundImage: `url(${bgChat})` }}
@@ -266,23 +232,15 @@ console.log(serverMessages);
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${
-                  msg.isUser ? "justify-end" : "justify-start"
-                }`}
+                className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}
               >
                 <div
                   dir="rtl"
-                  className={`shadow rounded-xl px-3 w-[379px] relative flex-col justify-end ${
-                    msg.isUser
-                      ? "bg-black4 text-black1"
-                      : "bg-gray40 text-black1"
-                  }`}
+                  className={`shadow rounded-xl px-3 w-[379px] relative flex-col ${msg.isUser ? "bg-black4 text-black1" : "bg-gray40 text-black1"
+                    }`}
                 >
                   {!msg.isUser && (
-                    <div
-                      dir="rtl"
-                      className="flex items-center gap-2 mb-2 mt-4"
-                    >
+                    <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
                       <img
                         src={supportAvatar}
                         alt="پشتیبانی"
@@ -295,40 +253,35 @@ console.log(serverMessages);
                     </div>
                   )}
 
-                  {msg.text && (
-                    <p dir="rtl" className="mt-4">
-                      {msg.text}
-                    </p>
-                  )}
-                  {msg.attachment && (
-                    <>
-                      {msg.attachment.type === "pdf" && (
-                        <div className="flex items-center gap-2 border rounded-lg p-2 mt-1 bg-white">
-                          <FileText size={20} className="text-blue-600" />
-                          <div className="flex flex-col text-xs">
-                            <span>{msg.attachment.name}.PDF</span>
-                            <span className="text-gray-400">
-                              {msg.attachment.size}
-                            </span>
-                          </div>
-                        </div>
-                      )}
+                  {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
 
-                      {msg.attachment.type === "image" &&
-                        msg.attachment.url && (
-                          <div className="rounded-2xl w-fit shadow bg-white p-2 mt-2">
-                            <img
-                              src={msg.attachment.url}
-                              alt="attachment"
-                              className="rounded-xl object-contain max-h-[150px] max-w-[200px] cursor-pointer"
-                              onClick={() =>
-                                setFullscreenImage(msg.attachment!.url!)
-                              }
-                            />
-                          </div>
-                        )}
-                    </>
+                  {msg.file && (
+                    <div className="rounded-2xl w-fit shadow bg-white p-2 mt-2">
+                      {imageCache[msg.id] ? (
+                        msg.file.endsWith(".pdf") ? (
+                          <a
+                            href={imageCache[msg.id]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-blue-600 underline"
+                          >
+                            <FileText className="w-5 h-5" />
+                            <span>دانلود PDF</span>
+                          </a>
+                        ) : (
+                          <img
+                            src={imageCache[msg.id]}
+                            alt="attachment"
+                            className="rounded-xl object-contain max-h-[150px] max-w-[200px] cursor-pointer"
+                            onClick={() => setFullscreenImage(imageCache[msg.id])}
+                          />
+                        )
+                      ) : (
+                        <div className="skeleton-bg w-30 h-10 rounded" />
+                      )}
+                    </div>
                   )}
+
 
                   <span
                     dir="rtl"
@@ -339,43 +292,23 @@ console.log(serverMessages);
                 </div>
               </div>
             ))}
+
             <div ref={bottomRef} />
 
-            {/* پیش‌نمایش فایل انتخابی */}
-            {selectedFile && !isSentPreview && (
-              <>
-                {selectedFile.type.startsWith("image/") ? (
-                  <div className="flex items-center justify-between rounded-full bg-white shadow px-3 py-2 mt-2 w-fit">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={removeSelectedFile}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-sm"
-                      >
-                        ×
-                      </button>
-                      <span className="text-sm font-medium">
-                        {selectedFile.name}
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between rounded-full bg-white shadow px-3 py-2 mt-2 w-fit">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={removeSelectedFile}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-sm"
-                      >
-                        ×
-                      </button>
-                      <span className="text-sm font-medium">
-                        {selectedFile.name}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </>
+            {/* پیش‌نمایش فایل */}
+            {selectedFile && (
+              <div className="flex items-center justify-between rounded-full bg-white shadow px-3 py-2 mt-2 w-fit">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={removeSelectedFile}
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-sm"
+                  >
+                    ×
+                  </button>
+                  <span className="text-sm font-medium">{selectedFile.name}</span>
+                </div>
+              </div>
             )}
 
             {uploadProgress !== null && (
@@ -386,10 +319,11 @@ console.log(serverMessages);
                 />
               </div>
             )}
+
           </div>
         </div>
 
-        {/* ورودی پیام و دکمه‌ها */}
+        {/* ناحیه ارسال پیام */}
         <div dir="rtl" className="p-3 flex gap-2 bg-white8">
           <input
             type="text"
@@ -419,14 +353,18 @@ console.log(serverMessages);
             onClick={handleSend}
             disabled={isSending}
           >
-            <span className="icon-wrapper w-[22px] text-blue2 h-[22px]">
-              <IconSendMessage />
-            </span>
+            {isSending ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
+            ) : (
+              <span className="icon-wrapper w-[22px] text-blue2 h-[22px]">
+                <IconSendMessage />
+              </span>
+            )}
           </button>
         </div>
       </div>
 
-      {/* نمایش تصویر فول‌اسکرین */}
+      {/* نمایش فول‌اسکرین تصویر */}
       {fullscreenImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
