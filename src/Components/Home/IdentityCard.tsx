@@ -57,7 +57,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
 
      
 
-        <Link to="/authentication" className=" mt-4 bg-blue-500 text-white rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full">
+        <Link to="/kyc-basic" className=" mt-4 bg-blue-500 text-white rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full">
 
           <span className="pr-2 flex  w-8 h-8 ">
             <ArrowLeftIcon />

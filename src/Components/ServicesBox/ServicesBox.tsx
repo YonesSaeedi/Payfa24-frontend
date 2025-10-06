@@ -52,15 +52,15 @@ const handleItemClick = (item: ServiceItem) => {
 const financeItems: ServiceItem[] = [
   { label: "خرید", icon: <ReceivedIcon />, route: ROUTES.TRADE.BUY },
   { label: "فروش", icon: <SendIcon />, route: ROUTES.TRADE.SELL },
-  { label: "واریز", icon: <WalletAddIcon />, route: ROUTES.Deposit },
-  { label: "برداشت", icon: <WalletMinesIcon />, route: ROUTES.WITHDRAWAL.ROOT },
-  { label: "کیف پول", icon: <IconWalletCard />, route: ROUTES.Wallet },
-  { label: "کارت‌ها", icon: <IconCards />, route: ROUTES.BANK_CARDS.CREATE },
+  { label: "واریز", icon: <WalletAddIcon />, route: ROUTES.DEPOSIT},
+  { label: "برداشت", icon: <WalletMinesIcon />, route: ROUTES.WITHDRAWAL},
+  { label: "کیف پول", icon: <IconWalletCard />, route: ROUTES.WALLET },
+  { label: "کارت‌ها", icon: <IconCards />, route: ROUTES.BANK_CARDS },
 ];
 
 const marketItems: ServiceItem[] = [
   { label: "بازار", icon: <ChartIcon />, route: ROUTES.MARKET },
-  { label: "نمای بازار", icon: <IconMarketView /> },
+  { label: "نمای بازار", icon: <IconMarketView />,route:ROUTES.MARKET_VIEW },
   { label: "پرتفوی", icon: <IconPieChart /> },
 ];
 
@@ -71,16 +71,16 @@ const historyItems: ServiceItem[] = [
 ];
 
 const supportItems: ServiceItem[] = [
-  { label: "احراز هویت", icon: <IconPersonalCard />, route: ROUTES.AuthenticationBasic },
-  { label: "امنیت", icon: <IconSecurity />, route: ROUTES.AuthenticationBasic },
+  { label: "احراز هویت", icon: <IconPersonalCard />, route: ROUTES.AUTHENTICATION_BASIC},
+  { label: "امنیت", icon: <IconSecurity />, route: ROUTES.AUTHENTICATION_BASIC },
   { label: "تیکت", icon: <IconTicket />, route: ROUTES.TICKET.ROOT },
-  { label: "سوالات", icon: <IconQuestionLabel />, route: ROUTES.FAQ.CREATE },
+  { label: "سوالات", icon: <IconQuestionLabel />, route: ROUTES.FAQ},
 ];
 
 const otherItems: ServiceItem[] = [
   { label: "اعلانات", icon: <IconNotification />, route: ROUTES.NOTIFICATIONS },
   { label: "مقالات", icon: <IconPersonalCard /> },
-  { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.AddFriend },
+  { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND},
 ];
 
   const renderSection = (title: string, items: ServiceItem[]) => (

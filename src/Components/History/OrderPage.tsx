@@ -13,6 +13,7 @@ import { CryptoDataMap } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import { ListDigitalCoin } from "../../constants/ListdigitalCoins";
 import { MergedOrderHistory, statusOrderOptions, TypeOrderHistory, typeOrderOptions } from "./typeHistory";
+import BreadcrumbNavigation from "../BreadcrumbNavigation";
 
 
 

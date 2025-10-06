@@ -20,7 +20,7 @@ type BankCardListProps = {
 
 // تعریف بانک‌ها با تصویرشان
 const banks: { name: string; img: string }[] = [
- {   img: 'bank-sayer.png', name: 'سایر' },
+  {   img: 'bank-sayer.png', name: 'سایر' },
   {   img: 'bank-mellat.png', name: 'بانک ملت' },
   {   img: 'bank-melli.png', name: 'بانک ملی' },
   {   img: 'bank-tejarat.png', name: 'بانک تجارت' },
