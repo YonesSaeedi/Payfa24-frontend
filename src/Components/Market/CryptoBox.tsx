@@ -2,14 +2,14 @@ import { ReactNode } from "react";
 
 /* Type definition for a single cryptocurrency item.*/
 type Item = {
-                  
-  name: string;             
-  symbol: string;        
-  icon: ReactNode;       
-  price: string;        
-  change: string;       
+  name: string;
+  symbol: string;
+  icon: ReactNode;   // همان renderIcon
+  buyPrice: number;  // قیمت خرید
+  change: string;
   isPositive: boolean;
 };
+
 
 /*Props for the CryptoBox component.*/
 type CryptoBoxProps = {
@@ -35,8 +35,8 @@ export default function CryptoBox({ title, iconTop, items }: CryptoBoxProps) {
           <li key={`${item.symbol}-${index}`} className="contents">
             {/* Icon + Name + Symbol */}
             <div className="flex items-center gap-2">
-              <span className="w-[34px] h-[34px]">{item.renderIcon}</span>
-              <div className="flex flex-col text-right leading-tight">
+               <span className="w-[34px] h-[34px]">{item.icon}</span>
+               <div className="flex flex-col text-right leading-tight">
     <span className="text-black1 mb-2 font-normal text-base whitespace-nowrap">
   {item.name.length > 10 ? item.name.substring(0, 10) + "..." : item.name}
 </span>

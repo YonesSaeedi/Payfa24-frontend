@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { toast } from "react-toastify"; // ✅ اضافه شده
+import "react-toastify/dist/ReactToastify.css"; // ✅ برای اطمینان از استایل‌ها
 import IconCloseButtun from "../../assets/icons/services/IconCloseButtun";
 import FloatingInput from "../FloatingInput/FloatingInput";
 
 interface SupportCallModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { phone: string; description: string }) => void;
 }
 
 interface SupportCallFormInputs {
@@ -14,15 +15,41 @@ interface SupportCallFormInputs {
   description: string;
 }
 
-const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) => {
   const { control, handleSubmit, formState: { errors }, reset } = useForm<SupportCallFormInputs>();
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const onFormSubmit = (data: SupportCallFormInputs) => {
-    onSubmit(data);
-    reset(); // پاک کردن فرم بعد از ارسال
-    onClose();
+  const onFormSubmit = async (data: SupportCallFormInputs) => {
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/ticket/call", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.status) {
+        toast.success("درخواست شما با موفقیت ثبت شد ");
+        reset();
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+      } else {
+        toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید ");
+      }
+    } catch (error) {
+      console.error("Error posting data:", error);
+      toast.error("ارتباط با سرور برقرار نشد ");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,17 +57,17 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose, on
       <div dir="rtl" className="bg-gray43 rounded-2xl shadow-lg w-full max-w-md p-6 relative">
         <button
           onClick={() => { reset(); onClose(); }}
-          className="absolute top-3 left-3 text-gray-400 hover:text-gray-600 w-6 h-6"
+          className="absolute top-8 left-3 text-gray-400 hover:text-gray-600 w-6 h-6"
         >
           <IconCloseButtun />
         </button>
 
-        <h2 className="text-lg font-semibold text-black1 mb-4">
+        <h2 className="text-lg font-semibold text-black1 mb-12 pt-3">
           درخواست تماس با پشتیبانی
         </h2>
 
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 bg-gray43 ">
-          {/* شماره موبایل */}
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 bg-gray43">
+         
           <div>
             <Controller
               name="phone"
@@ -54,7 +81,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose, on
                   type="tel"
                   placeholder=""
                   placeholderColor="text-black0"
-                  borderClass="border-gray12"
+                  borderClass="border-gray2"
+                   heightClass="h-[48px]"
                 />
               )}
             />
@@ -66,8 +94,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose, on
             </p>
           </div>
 
-          {/* توضیحات */}
-          <div className="pt-4">
+      
+          <div className="pt-8 pb-8">
             <Controller
               name="description"
               control={control}
@@ -80,8 +108,9 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose, on
                   type="text"
                   placeholder="درخواست تماس با پشتیبانی درباره..."
                   placeholderColor="text-black0"
-                  borderClass="border-gray12"
-                  heightClass="h-[120px]"
+                  borderClass="border-gray2"
+                  heightClass="h-[160px]"
+                  
                 />
               )}
             />
@@ -92,9 +121,12 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose, on
 
           <button
             type="submit"
-            className="w-full py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition"
+            disabled={loading}
+            className={`w-full py-2 rounded-lg font-medium transition text-white ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+            }`}
           >
-            تایید
+            {loading ? "در حال ارسال..." : "تایید"}
           </button>
         </form>
       </div>

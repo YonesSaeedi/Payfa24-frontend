@@ -1,6 +1,6 @@
-import WalletMinesIcon from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
+
 import IconClose from "../../../assets/Icons/Login/IconClose";
-import { Order } from "./Types";
+import { Order } from "../../../types/Ticket";
 
 interface OrderModalProps {
   orders: Order[];
@@ -16,6 +16,11 @@ export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModa
           <h3 className="text-lg font-semibold p-4 text-black1">انتخاب سفارش</h3>
           <button onClick={onClose} className="w-6 h-6 icon-wrapper"><IconClose/></button>
         </div>
+
+        {orders.length === 0 ? (
+  <p className="text-center text-gray-500">سفارشی موجود نیست</p>
+) : (
+
         <div className="space-y-2">
         
           {orders.map((order) => (
@@ -35,21 +40,12 @@ export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModa
                                         <span className="text-gray3 text-sm pt-2">{order.type}</span>
                                       </div>
                                       </div>
-                                      <div className="flex flex-col justify-end text-left">
-                                         <p className="text-sm font-medium">{order.amount}</p>
-                                            <p className="text-xs text-gray-500">{order.date}</p>
-                                      </div>
-
-
-
-
-
-
-
-                                      
+                                     
+                 
             </button>
           ))}
         </div>
+)}
       </div>
     </div>
   );
