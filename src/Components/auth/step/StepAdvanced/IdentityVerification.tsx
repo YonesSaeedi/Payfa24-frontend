@@ -66,8 +66,9 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
             </ul>
           </div>
           <div
-            className="relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed border-gray31 rounded-lg text-center"
-            onClick={() => fileInputRef.current?.click()}
+            className={`relative w-full  mx-auto my-5 p-4 border-2 border-dashed border-gray31 rounded-lg text-center
+              ${uploadProgress === null ? 'cursor-pointer' : 'cursor-default'}`}
+            onClick={uploadProgress === null ? () => fileInputRef.current?.click() : undefined}
           >
             <div className="flex flex-col items-center justify-center h-48">
               {!previewImage ?
@@ -108,10 +109,15 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
         <button
           onClick={handleProceed}
           type="submit"
-          className="mt-1 text-lg font-bold mb-6 bg-blue1 w-full lg:h-[56px] h-10 rounded-lg text-white2"
+          className={`relative mt-1 text-lg font-bold mb-6 w-full lg:h-[56px] h-10 rounded-lg border border-transparent transition duration-300 ease-in overflow-hidden
+            ${uploadProgress !== null ? 'bg-gray2' : previewImage ? 'hover:bg-transparent hover:border-blue1 hover:text-blue1 text-white2 bg-blue1' : 'bg-gray2'}`}
           disabled={!previewImage || uploadProgress !== null} // disable during upload
         >
-          تأیید
+          {/* Progress background */}
+          {uploadProgress !== null &&
+            <span className="absolute left-0 top-0 bottom-0 bg-green-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+          }
+          <span className="relative z-10">{uploadProgress !== null ? `در حال ارسال ${uploadProgress}%` : 'ثبت و ارسال'}</span>
         </button>
       </form>
       {isOpenTextModal &&

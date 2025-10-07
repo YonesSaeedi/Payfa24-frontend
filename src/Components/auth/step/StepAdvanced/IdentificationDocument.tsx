@@ -74,7 +74,8 @@ export default function IdentificationDocument({ handleUploadImageFiles, setStep
         <button
           onClick={handleProceed}
           type="submit"
-          className="mt-1 text-lg font-bold mb-6 bg-blue1 w-full lg:h-[56px] h-10 rounded-lg text-white2 border border-transparent hover:bg-transparent hover:border-blue1 hover:text-blue1 transition duration-300"
+          className={`mt-1 text-lg font-bold mb-6 w-full lg:h-[56px] h-10 rounded-lg border border-transparent transition duration-300 ease-in
+          ${previewImage ? 'hover:bg-transparent hover:border-blue1 hover:text-blue1 text-white2 bg-blue1' : 'bg-gray2'}`}
           disabled={!previewImage}>
           تأیید
         </button>

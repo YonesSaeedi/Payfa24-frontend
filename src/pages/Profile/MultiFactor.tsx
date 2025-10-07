@@ -14,6 +14,7 @@ import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
 import { toast } from "react-toastify";
 import useGetUser from "../../hooks/useGetUser";
 import { useMemo } from "react";
+import { ROUTES } from "../../routes/routes";
 
 
 export default function MultiFactor() {
@@ -81,7 +82,7 @@ export default function MultiFactor() {
     } else {
       // هنوز فعال نشده
       if (type === "google") {
-        navigate('/GoogleAuthFlow');
+        navigate(ROUTES.GOOGLE_AUTH_FLOW);
       } else if (type === "telegram") {
         navigate('/TelegramAuthFlow');
       } else {

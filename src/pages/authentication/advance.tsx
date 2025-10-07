@@ -69,7 +69,19 @@ export default function Advance() {
       console.log('FormData entry ->', key, value);
     }
     try {
-      const response = await apiRequest({ url: '/api/kyc/advanced/level1', method: "POST", data: formData, isFormData: true })
+      const response = await apiRequest({
+        url: '/api/kyc/advanced/level1',
+        method: "POST",
+        data: formData,
+        timeout: 0,
+        isFormData: true,
+        onUploadProgress: (event) => {
+          if (event && event.total) {
+            const percent = Math.round((event.loaded * 100) / event.total)
+            setUploadProgress(percent)
+          }
+        }
+      })
       toast.success('تصاویر با موفقیت ارسال شدند.')
       setIsPendingModalOpen(true)
     } catch (err) {
