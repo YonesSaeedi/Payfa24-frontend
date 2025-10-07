@@ -19,7 +19,7 @@ import CryptoPage from "../Components/History/CryptoPage";
 import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
-import BankCardsPage from "../pages/BankCards/BankCardsPage";
+import BankCardsPage from "../pages/BankCards/BankcardsPage2";
 import Wallet from "../pages/Wallet/Wallet";
 import WithdrawPage from "../pages/Withdrawal/Withdrawal";
 import ChangePassword from "../pages/Profile/ChangePassword";

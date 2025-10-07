@@ -20,6 +20,12 @@ import IconTicket from "../../assets/icons/services/IconTicket";
 import IconNotification from "../../assets/icons/services/IconNotification";
 import IconUserPlus from "../../assets/icons/services/IconUserPlus";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
+import { apiRequest } from "../../utils/apiClient";
+import { toast } from "react-toastify";
+
+
+
+
 
 interface ServiceItem {
   label: string;
@@ -44,9 +50,56 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     setTimeout(onClose, 300);
   };
 
-const handleItemClick = (item: ServiceItem) => {
+// const handleItemClick = (item: ServiceItem) => {
+//   if (item.route) navigate(item.route);
+// };
+//اینجا api را صدا می زنیم و اگر کاربر قبلا کارت بانکی وارد کرده بود alert میشه 
+const handleItemClick = async (item: ServiceItem) => {
+  if (item.label === "کارت‌ها") {
+    try {
+      const response = await apiRequest<{
+        status: boolean;
+        msg: string;
+        data: {
+          bank_name: string;
+          card_number: string;
+          iban: string;
+          status: string;
+          reason: string;
+          name_family: string;
+        }[];
+      }>({
+        url: "/account/credit-card/list",
+        method: "GET",
+      });
+
+      if (response.status && Array.isArray(response.data) && response.data.length > 0) {
+        const activeCards = response.data.filter(c => c.status === "active");
+        if (activeCards.length > 0) {
+          // کارت فعال موجوده → برو به صفحه کارت‌ها
+          navigate(ROUTES.BANK_CARDS);
+        } else {
+          toast.error("هیچ کارت فعالی ثبت نشده است."); 
+          navigate(ROUTES.BANK_CARDS); // باز شدن صفحه کارت‌ها در حالت خالی
+        }
+      } else {
+        // هیچ کارت بانکی ثبت نشده
+        toast.error("هیچ کارت بانکی ثبت نشده است."); 
+        navigate(ROUTES.BANK_CARDS); // باز شدن صفحه کارت‌ها در حالت خالی
+      }
+
+    } catch (error) {
+      console.error("❌ خطا در دریافت کارت‌ها:", error);
+      toast.error("خطا در ارتباط با سرور.");
+    }
+
+    return; // جلوگیری از ادامه‌ی navigate عمومی
+  }
+
+  // برای بقیه گزینه‌ها
   if (item.route) navigate(item.route);
 };
+
 
 
 const financeItems: ServiceItem[] = [
@@ -138,7 +191,12 @@ const otherItems: ServiceItem[] = [
         {renderSection(" تاریخچه", historyItems)}
         {renderSection("پشتیبانی و حساب کاربری", supportItems)}
         {renderSection("سایر", otherItems)}
+
+
+
       </div>
+
+
     </div>
   );
 };

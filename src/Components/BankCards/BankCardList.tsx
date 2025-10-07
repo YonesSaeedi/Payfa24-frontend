@@ -133,9 +133,9 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
               key={card.id}
               className="rounded-xl shadow p-4 flex flex-col justify-between relative"
               style={{
-                backgroundImage: `url(${isDark ? BackgroundCardDark : BackgroundCard})`,
+                backgroundImage:`url(${isDark ? BackgroundCardDark : BackgroundCard})`,
                 backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundPosition:"center",
               }}
             >
               <div className="flex justify-start items-center space-x-2 relative z-10">
@@ -147,7 +147,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
                       className="w-6 h-6 object-contain"
                     />
                   ) : (
-                    <div className="h-6 w-6 rounded bg-gray-300" />
+                    <div className="h-6 w-6 rounded bg-gray-300"/>
                   )}
                 </div>
                 <div className="font-semibold mt-2">{card.bankName}</div>

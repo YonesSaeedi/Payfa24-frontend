@@ -68,57 +68,41 @@ const BankCardsPage = () => {
   };
 
   // افزودن کارت جدید یا بررسی کارت تکراری
-  const handleAddCard = async (cardNumber: string, bankName: string) => {
-    const parsedCardNumber = cardNumber
-      .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
-      .replace(/\D/g, "");
+ const handleAddCard = async (cardNumber: string, bankName: string) => {
+  const parsedCardNumber = cardNumber.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632)).replace(/\D/g, "");
+  if (parsedCardNumber.length !== 16) {
+    toast.error("شماره کارت باید دقیقاً ۱۶ رقم باشد.");
+    return;
+  }
 
-    if (parsedCardNumber.length !== 16) {
-      toast.error("شماره کارت باید دقیقاً ۱۶ رقم باشد.");
-      return;
+  try {
+    const registerResponse = await apiRequest<RegisterCardResponse, { CardNumber: string }>({
+      url: "/api/account/credit-card",
+      method: "POST",
+      data: { CardNumber: parsedCardNumber },
+    });
+
+    if (registerResponse.status) {
+      toast.success(registerResponse.msg);
+    } else if (registerResponse.msg === "این شماره کارت قبلا ثبت شده است.") {
+      toast.warning(registerResponse.msg);
+    } else {
+      toast.error(registerResponse.msg || "ثبت کارت با مشکل مواجه شد.");
     }
 
-    try {
-      const currentCards = await fetchCards();
+    // در همه حالات مودال بسته شود و کارت‌ها fetch شوند
+    setIsModalOpen(false);
+    setShowCards(true);
+    const currentCards = await fetchCards();
+    setCards(currentCards);
 
-      // بررسی کارت تکراری
- if (currentCards.some((c) => c.number === parsedCardNumber)) {
-  toast.warning("این شماره کارت قبلاً ثبت شده است.");
-  console.log("بستن مودال");
-  setShowCards(true);       // نمایش BankCardSection
-  setIsModalOpen(false);    // بستن مودال
-  return;
-}
+  } catch (err: any) {
+    toast.error(err?.response?.data?.msg || err?.response?.data?.message || "ثبت کارت با مشکل مواجه شد.");
+    setIsModalOpen(false);
+    setShowCards(true);
+  }
+};
 
-      // ثبت کارت جدید
-      const registerResponse = await apiRequest<RegisterCardResponse, { CardNumber: string }>({
-        url: "/api/account/credit-card",
-        method: "POST",
-        data: { CardNumber: parsedCardNumber },
-      });
-
-      if (registerResponse.status) {
-        const newCard: Card = {
-          id: Date.now(),
-          number: parsedCardNumber,
-          holder: "مالک کارت",
-          bankName,
-          status: "pending",
-        };
-
-        setCards([...currentCards, newCard]); // اضافه کردن کارت جدید
-        setShowCards(true);                   // نمایش BankCardSection
-        setIsModalOpen(false);                // بستن مودال
-        toast.success(registerResponse.msg);
-      } else {
-        toast.error(registerResponse.msg || "ثبت کارت با مشکل مواجه شد.");
-      }
-    } catch (err: any) {
-   toast.error(err.msg || "ثبت کارت با مشکل مواجه شد.");
-  setIsModalOpen(false);                // <-- این خط اضافه شد
-  setShowCards(true); 
-    }
-  };
 
   return (
      <HeaderLayout>
