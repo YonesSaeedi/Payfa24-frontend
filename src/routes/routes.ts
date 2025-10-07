@@ -11,6 +11,8 @@ export const ROUTES = {
   PROFILE: "/profile",
   USER_ACCOUNT: "./authProfile",
   BANK_ACCOUNT: "./authProfile",
+  
+   Cards_Manager:"/services/Cards_Manager",
   WALLET: "/wallet",
   CHANGE_PASSWORD: "/change-password",
   VERIFY_GOOGLE: "/verify/google",

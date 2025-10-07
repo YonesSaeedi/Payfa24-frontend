@@ -69,34 +69,56 @@ const handleItemClick = async (item: ServiceItem) => {
           name_family: string;
         }[];
       }>({
-        url: "/account/credit-card/list",
+        url: "/api/account/credit-card/list",
         method: "GET",
       });
 
-      if (response.status && Array.isArray(response.data) && response.data.length > 0) {
-        const activeCards = response.data.filter(c => c.status === "active");
-        if (activeCards.length > 0) {
-          // کارت فعال موجوده → برو به صفحه کارت‌ها
-          navigate(ROUTES.BANK_CARDS);
+      if (response.status && Array.isArray(response.data)) {
+   
+
+        // 🔹 اگر کارت فعال موجود بود → بستن مودال و رفتن به مدیریت کارت‌ها
+        if (response?.data.length > 0) {
+          await new Promise<void>((resolve) => {
+            setIsVisible(false);
+            setTimeout(() => {
+              onClose();
+              resolve();
+            }, 300); // زمان انیمیشن مودال
+          });
+          navigate(ROUTES.Cards_Manager);
         } else {
-          toast.error("هیچ کارت فعالی ثبت نشده است."); 
-          navigate(ROUTES.BANK_CARDS); // باز شدن صفحه کارت‌ها در حالت خالی
+          // کارت موجود نیست یا فعال نیست → هدایت به صفحه افزودن کارت
+          toast.error("هیچ کارت فعالی ثبت نشده است.");
+          await new Promise<void>((resolve) => {
+            setIsVisible(false);
+            setTimeout(() => {
+              onClose();
+              resolve();
+            }, 300);
+          });
+          navigate(ROUTES.BANK_CARDS);
         }
       } else {
-        // هیچ کارت بانکی ثبت نشده
-        toast.error("هیچ کارت بانکی ثبت نشده است."); 
-        navigate(ROUTES.BANK_CARDS); // باز شدن صفحه کارت‌ها در حالت خالی
+        // هیچ کارتی ثبت نشده
+        toast.error("هیچ کارت بانکی ثبت نشده است.");
+        await new Promise<void>((resolve) => {
+          setIsVisible(false);
+          setTimeout(() => {
+            onClose();
+            resolve();
+          }, 300);
+        });
+        navigate(ROUTES.BANK_CARDS);
       }
-
     } catch (error) {
       console.error("❌ خطا در دریافت کارت‌ها:", error);
       toast.error("خطا در ارتباط با سرور.");
     }
 
-    return; // جلوگیری از ادامه‌ی navigate عمومی
+    return; // جلوگیری از ادامه navigate عمومی
   }
 
-  // برای بقیه گزینه‌ها
+  // بقیه گزینه‌ها
   if (item.route) navigate(item.route);
 };
 

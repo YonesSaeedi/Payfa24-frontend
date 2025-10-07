@@ -176,9 +176,9 @@ const CryptoWithdrawForm: FC = () => {
 
         {/* 👇 تغییر داده شد: به جای FloatingSelect، یک div قابل کلیک و مودال */}
         <div dir="rtl" className="mb-6 relative">
-          <label className="block text-sm text-gray-600 mb-1">انتخاب رمز ارز</label>
+          <label className="block text-sm text-gray-600 mb-1  ">انتخاب رمز ارز</label>
           <div
-            className="p-3 border rounded-lg cursor-pointer bg-white"
+            className="p-3 border rounded-lg cursor-pointer border-gray12  "
             onClick={() => setIsCurrencyModalOpen(true)}
           >
             {crypto || "انتخاب کنید"}
@@ -266,6 +266,7 @@ const CryptoWithdrawForm: FC = () => {
     setCurrentCryptoCurrency={(item: CryptoItem) => {
       setCrypto(item.symbol);
       setIsCurrencyModalOpen(false);
+
     }}
   />
 )}

@@ -19,7 +19,7 @@ import CryptoPage from "../Components/History/CryptoPage";
 import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
-import BankCardsPage from "../pages/BankCards/BankcardsPage2";
+import BankCardsPage from "../pages/BankCards/BankcardsPage";
 import Wallet from "../pages/Wallet/Wallet";
 import WithdrawPage from "../pages/Withdrawal/Withdrawal";
 import ChangePassword from "../pages/Profile/ChangePassword";
@@ -32,6 +32,7 @@ import MarketViewPage from "../pages/market-view/MarketViewPage";
 import TomanPage from "../Components/History/TomanPage";
 import OrderPage from "../Components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
+import CardsManager from "../pages/BankCards/CardsManager";
 
 export default function AppRouter() {
   return (
@@ -76,6 +77,8 @@ export default function AppRouter() {
         <Route path={ROUTES.FAQ} element={<FaqLayout />} />
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevices />} />
         <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
+        <Route path={ROUTES.Cards_Manager} element={<CardsManager />} />
+
         <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />
         {/* header + Footer pages ==================================================================================================== */}
         <Route path={ROUTES.HOME} element={<HomePage />} />
