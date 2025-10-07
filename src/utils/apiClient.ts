@@ -1,5 +1,6 @@
-import axios, { AxiosProgressEvent } from "axios";
+import axios, { AxiosError, AxiosProgressEvent } from "axios";
 import { ROUTES } from "../routes/routes";
+import { toast } from "react-toastify";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
@@ -36,6 +37,7 @@ async function refreshAccessToken(): Promise<string | null> {
           return res.data.access_token;
         } else return null;
       } catch (err) {
+        toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || "خطا در برقراری ارتباط با سرور");
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('expiresAt');
@@ -98,7 +100,7 @@ type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 // Allowed values for FormData
 type FormDataValue = string | number | boolean | Blob | File;
 // Fully typed request params
-interface ApiRequestParams<TData extends Record<string, FormDataValue> | undefined = undefined, TParams extends Record<string, unknown> | undefined = undefined> {
+interface ApiRequestParams<TData extends Record<string, FormDataValue> | FormData | undefined = undefined, TParams extends Record<string, unknown> | undefined = undefined> {
   url: string;
   method?: HttpMethod;
   data?: TData; // JSON or FormData-compatible object
@@ -111,18 +113,9 @@ interface ApiRequestParams<TData extends Record<string, FormDataValue> | undefin
 
 export async function apiRequest<
   TResponse = unknown,
-  TData extends Record<string, FormDataValue> | undefined = undefined,
+  TData extends Record<string, FormDataValue> | FormData | undefined = undefined,
   TParams extends Record<string, unknown> = Record<string, unknown>
->({
-  url,
-  method = "GET",
-  data,
-  params,
-  headers,
-  isFormData = false,
-  timeout,
-  onUploadProgress,
-}: ApiRequestParams<TData, TParams>): Promise<TResponse> {
+>({ url, method = "GET", data, params, headers, isFormData = false, timeout, onUploadProgress, }: ApiRequestParams<TData, TParams>): Promise<TResponse> {
   const config = {
     url,
     method,
@@ -131,7 +124,7 @@ export async function apiRequest<
       ...headers,
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
     },
-    data: isFormData && data ? buildFormData(data) : data,
+    data: isFormData && data && !(data instanceof FormData) ? buildFormData(data as Record<string, FormDataValue>) : data,
     timeout,
     onUploadProgress,
   };

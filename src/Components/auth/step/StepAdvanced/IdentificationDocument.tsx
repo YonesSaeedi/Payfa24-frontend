@@ -1,270 +1,81 @@
-// import React, { useRef, useState } from "react";
-// import { useForm } from "react-hook-form";
-// import StepperComponent from "../Stepper";
-// import UploadImage from "../../../../assets/Icons/authentication/UploadImage";
-// import IconAlert from "../../../../assets/Icons/Login/IconAlert";
-
-// type Props = {
-//   onNext: () => void;
-//   onFileChange: (file: File | null) => void;
-// };
-
-// type FormData = {
-//   document: FileList;
-// };
-
-// export default function IdentificationDocument({ onNext }: Props) {
-//   const { handleSubmit, setValue } = useForm<FormData>();
-//   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-//   const [previewURL, setPreviewURL] = useState<string | null>(null);
-
-//   const onSubmit = () => {
-//     if (!selectedFile) return;
-//     console.log("فایل انتخاب شده:", selectedFile);
-//     // onNext();
-//   };
-
-//   const fileInputRef = useRef<HTMLInputElement>(null);
-
-//   const handleClick = () => {
-//     fileInputRef.current?.click();
-//   };
-
-//   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const files = event.target.files;
-//     if (files && files.length > 0) {
-//       const file = files[0];
-//       setSelectedFile(file);
-//       setValue("document", files);
-//       onFileChange(file);
-//       const objectUrl = URL.createObjectURL(file);
-//       setPreviewURL(objectUrl);
-//     }
-//   };
-
-//   return (
-//     <div className="w-full">
-//       <form
-//         onSubmit={handleSubmit(onSubmit)}
-//         className="lg:bg-gray9 lg:rounded-2xl lg:px-8 w-full"
-//       >
-//         <div className="flex flex-col text-right">
-//           <StepperComponent currentStep={0} isAdvance={true} />
-
-//           <p className="lg:text-xl text-sm font-medium text-black0">
-//             لطفا مدرک شناسایی خود را بارگذاری کنید
-//           </p>
-
-//           <div
-//             className="relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed border-gray31 rounded-lg text-center"
-//             onClick={handleClick}
-//           >
-//             <div className="flex flex-col items-center justify-center h-48">
-//               {/* قبل از انتخاب عکس: آیکون و متن */}
-//               {!previewURL && (
-//                 <>
-//                   <span className="icon-wrapper lg:w-14 lg:h-14 w-8 h-8 text-gray15">
-//                     <UploadImage />
-//                   </span>
-//                   <p className="text-gray15 lg:text-lg text-sm mt-1 font-normal">
-//                     بارگذاری تصویر مدرک شناسایی
-//                   </p>
-//                 </>
-//               )}
-
-//               {/* بعد از انتخاب عکس: فقط نمایش پیش‌نمایش */}
-//               {previewURL && (
-//                 <div className="flex justify-center items-center w-full h-full">
-//                   <img
-//                     src={previewURL}
-//                     alt="پیش نمایش"
-//                     className="max-h-full max-w-full rounded-lg object-contain"
-//                   />
-//                 </div>
-//               )}
-//             </div>
-
-//             <input
-//               type="file"
-//               ref={fileInputRef}
-//               className="hidden"
-//               onChange={handleFileChange}
-//               accept="image/*"
-//             />
-//           </div>
-
-//           <div className="bg-orange4 flex flex-col pr-6 pl-2 py-4 gap-2 lg:mb-12 mb-24 rounded-lg">
-//             <div className="flex text-orange1 gap-1 self-end font-medium">
-//               <span className="lg:text-base text-xs">توجه داشته باشید</span>
-//               <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4 text-orange1">
-//                 <IconAlert />
-//               </span>
-//             </div>
-//             <p className="text-black1 font-medium lg:text-base text-xs">
-//               در صورت عدم وجود کارت ملی میتوانید از کارت‌های (گواهینامه و یا
-//               کارت پایان خدمت و یا معافیت) نیز استفاده کنید
-//             </p>
-//           </div>
-//         </div>
-
-//         <button
-//           type="submit"
-//           className="mt-1 text-lg font-bold mb-6 bg-blue1 w-full lg:h-[56px] h-10 rounded-lg text-white2"
-//         >
-//           تأیید
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
-
 import React, { useRef, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import UploadImage from "../../../../assets/Icons/authentication/UploadImage";
+import UploadImage from "../../../../assets/icons/authentication/UploadImage";
 import IconAlert from "../../../../assets/Icons/Login/IconAlert";
 import { toast } from "react-toastify";
 import StepperComponent from "../Stepper";
 
-type Props = {
-  onNext: () => void;
-  onFileChange: (file: File | null) => void;
-  initialPreviewUrl: string | null;
+type IdentificationDocumentProps = {
+  handleUploadImageFiles: (key: "idCardImageFile" | "identityVerifyImageFile", imageFile: File | undefined) => void
+  setStep: React.Dispatch<React.SetStateAction<0 | 1 | 2>>;
 };
 
-type FormData = {
-  document: FileList;
-};
-
-export default function IdentificationDocument({
-  onNext,
-  onFileChange, // ⬅️ دریافت صحیح پراپ
-  initialPreviewUrl,
-}: Props) {
-  const { handleSubmit, setValue } = useForm<FormData>();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewURL, setPreviewURL] = useState<string | null>(
-    initialPreviewUrl
-  );
+export default function IdentificationDocument({ handleUploadImageFiles, setStep }: IdentificationDocumentProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // مدیریت پاکسازی Object URL
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+  // upload image and display it =======================================================================================================================
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const imageFile = e.target.files?.[0]
+    if (!imageFile) return
+    if (imageFile.size > 20 * 1024 * 1024) {
+      toast.error('حجم فایل نباید بیشتر از 20 مگابایت باشد.')
+      return
+    }
+    if (!imageFile?.type.startsWith('image/')) {
+      toast.error('نوع فایل باید تصویر باشد.')
+      return
+    }
+    const imageURL = URL.createObjectURL(imageFile)
+    setPreviewImage(imageURL)
+    handleUploadImageFiles('idCardImageFile', imageFile)
+  }
+  // cleanup object URL when previewImage changes or component unmounts; preventing memory leak ============================================================
   useEffect(() => {
-    setPreviewURL(initialPreviewUrl);
     return () => {
-      if (
-        previewURL &&
-        previewURL.startsWith("blob:") &&
-        previewURL !== initialPreviewUrl
-      ) {
-        URL.revokeObjectURL(previewURL);
-      }
-    };
-  }, [previewURL, initialPreviewUrl]);
-
-  const onSubmit = () => {
-    if (!selectedFile) {
-      toast.error("لطفا یک مدرک شناسایی را انتخاب کنید.");
-      return;
+      if (previewImage) URL.revokeObjectURL(previewImage)
     }
-    onFileChange(selectedFile); // guarantee
-    onNext();
-  };
-
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-
-      if (previewURL && previewURL.startsWith("blob:")) {
-        URL.revokeObjectURL(previewURL);
-      }
-
-      const objectUrl = URL.createObjectURL(file);
-
-      setSelectedFile(file);
-      setValue("document", files);
-      onFileChange(file); // ⬅️ فراخوانی تابع ارسالی از والد
-      setPreviewURL(objectUrl);
-    } else {
-      setSelectedFile(null);
-      if (previewURL && previewURL.startsWith("blob:")) {
-        URL.revokeObjectURL(previewURL);
-      }
-      setPreviewURL(null);
-      onFileChange(null);
-    }
-  };
+  }, [previewImage])
+  // 
+  const handleProceed = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    setStep(2)
+  }
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="lg:bg-gray9 lg:rounded-2xl lg:px-8 w-full"
-      >
+      <form className="lg:bg-gray9 lg:rounded-2xl lg:px-8 w-full">
         <div className="flex flex-col text-right">
           <StepperComponent currentStep={0} isAdvance={true} />
-
-          <p className="lg:text-xl text-sm font-medium text-black0">
-            لطفا مدرک شناسایی خود را بارگذاری کنید
-          </p>
-
-          <div
-            className="relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed border-gray31 rounded-lg text-center"
-            onClick={handleClick}
-          >
+          <p className="lg:text-xl text-sm font-medium text-black0">لطفا مدرک شناسایی خود را بارگذاری کنید</p>
+          <div className="relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed border-gray31 rounded-lg text-center" onClick={() => fileInputRef?.current?.click()}>
             <div className="flex flex-col items-center justify-center h-48">
-              {previewURL ? (
+              {previewImage ?
                 <div className="flex justify-center items-center w-full h-full">
-                  <img
-                    src={previewURL}
-                    alt="پیش نمایش مدرک شناسایی"
-                    className="max-h-full max-w-full rounded-lg object-contain"
-                  />
+                  <img src={previewImage} alt="پیش نمایش مدرک شناسایی" className="max-h-full max-w-full rounded-lg object-contain" />
                 </div>
-              ) : (
+                :
                 <>
-                  <span className="icon-wrapper lg:w-14 lg:h-14 w-8 h-8 text-gray15">
-                    <UploadImage />
-                  </span>
-                  <p className="text-gray15 lg:text-lg text-sm mt-1 font-normal">
-                    بارگذاری تصویر مدرک شناسایی
-                  </p>
+                  <span className="icon-wrapper lg:w-14 lg:h-14 w-8 h-8 text-gray15"><UploadImage /></span>
+                  <p className="text-gray15 lg:text-lg text-sm mt-1 font-normal">بارگذاری تصویر مدرک شناسایی</p>
                 </>
-              )}
+              }
             </div>
-
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              onChange={handleFileChange}
-              accept="image/*"
-            />
+            <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} accept="image/*" />
           </div>
-
           <div className="bg-orange4 flex flex-col pr-6 pl-2 py-4 gap-2 lg:mb-12 mb-24 rounded-lg">
             <div className="flex text-orange1 gap-1 self-end font-medium">
               <span className="lg:text-base text-xs">توجه داشته باشید</span>
-              <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4 text-orange1">
-                <IconAlert />
-              </span>
+              <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4 text-orange1"><IconAlert /></span>
             </div>
             <p className="text-black1 font-medium lg:text-base text-xs">
-              در صورت عدم وجود کارت ملی می‌توانید از کارت‌های (گواهینامه و یا
-              کارت پایان خدمت و یا معافیت) نیز استفاده کنید
+              در صورت عدم وجود کارت ملی می‌توانید از کارت‌های (گواهینامه و یا کارت پایان خدمت و یا معافیت) نیز استفاده کنید
             </p>
           </div>
         </div>
-
         <button
+          onClick={handleProceed}
           type="submit"
-          className="mt-1 text-lg font-bold mb-6 bg-blue1 w-full lg:h-[56px] h-10 rounded-lg text-white2"
-          disabled={!previewURL && !selectedFile}
-        >
+          className="mt-1 text-lg font-bold mb-6 bg-blue1 w-full lg:h-[56px] h-10 rounded-lg text-white2 border border-transparent hover:bg-transparent hover:border-blue1 hover:text-blue1 transition duration-300"
+          disabled={!previewImage}>
           تأیید
         </button>
       </form>

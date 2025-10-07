@@ -12,14 +12,14 @@ import AuthenticationAdvance from "../pages/authentication/advance";
 import Profile from "../pages/Profile/Profile";
 import MarketPage from "../pages/MarketPage";
 import TicketPage from "../pages/Ticket/TicketPage";
-import TicketPanel from "./../Components/Ticket/TicketPanel";
+import TicketPanel from "./../components/Ticket/TicketPanel";
 import TicketLayout from "../pages/Ticket/TicketLayout";
 import TransactionLayout from "../pages/Transaction/TransactionLayout";
-import CryptoPage from "../Components/History/CryptoPage";
+import CryptoPage from "../components/History/CryptoPage";
 import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
-import BankCards from "../Components/BankCards/BankCards";
+import BankCards from "../components/BankCards/BankCards";
 import Wallet from "../pages/Wallet/Wallet";
 import WithdrawPage from "../pages/Withdrawal/Withdrawal";
 import ChangePassword from "../pages/Profile/ChangePassword";
@@ -29,8 +29,8 @@ import AddFriend from "../pages/Addfriend/AddFriend";
 import DepositPage from "../pages/Deposit/DepositPage";
 import ForgotPasswordPageSetPasswordPage from "../pages/ForgotPasswordPageSetPasswordPage";
 import MarketViewPage from "../pages/market-view/MarketViewPage";
-import TomanPage from "../Components/History/TomanPage";
-import OrderPage from "../Components/History/OrderPage";
+import TomanPage from "../components/History/TomanPage";
+import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
 
 export default function AppRouter() {

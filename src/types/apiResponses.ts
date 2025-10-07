@@ -82,3 +82,26 @@ export interface CryptoBuyConfirm {
   balance?: number
   price?: TradePrices
 }
+
+// ===============================================================================================================================================================================
+
+export interface KycGetInfo {
+  level_kyc: null | 'basic' | 'advanced';
+  kyc: {
+    basic?: {
+      name?: string | null;
+      family?: string | null;
+      mobile?: string | null;
+      email?: string | null;
+      father?: string | null;
+      national_code?: string | null;
+      date_birth?: string | null;
+      cardbank?: number;
+    };
+    advanced?: {
+      status: "pending" | "success" | "reject";
+      reason_reject: string | null;
+    };
+  };
+  [key: string]: unknown
+}
