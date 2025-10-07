@@ -129,17 +129,17 @@ const cryptoData: ICryptoItem[] =
 
 
   // ✅ آماده‌سازی دیتا برای باکس‌های بالا
-//   const losers = [...cryptoData]
-//     .sort((a, b) => a.change24h - b.change24h)
-//     .slice(0, 5);
+  const losers = [...cryptoData]
+    .sort((a, b) => a.change24h - b.change24h)
+    .slice(0, 5);
 
-//   const gainers = [...cryptoData]
-//     .sort((a, b) => b.change24h - a.change24h)
-//     .slice(0, 5);
+  const gainers = [...cryptoData]
+    .sort((a, b) => b.change24h - a.change24h)
+    .slice(0, 5);
 
-//  const newest = [...cryptoData]
-//   .sort((a, b) => b.sort - a.sort) // جدیدترین بر اساس sort
-//   .slice(0, 5);
+ const newest = [...cryptoData]
+  .sort((a, b) => b.sort - a.sort) // جدیدترین بر اساس sort
+  .slice(0, 5);
 
 
   return (
@@ -158,9 +158,9 @@ const cryptoData: ICryptoItem[] =
 
           {/* 📊 باکس‌های بالای صفحه */}
           <div className="hidden lg:flex gap-6 justify-start flex-row-reverse">
-            {/* <CryptoBox title="بیشترین افت" iconTop={<VectorDown />} items={losers} />
+            <CryptoBox title="بیشترین افت" iconTop={<VectorDown />} items={losers} />
             <CryptoBox title="بیشترین رشد" iconTop={<VectorUp />} items={gainers} />
-            <CryptoBox title="جدیدترین‌ها" iconTop={<FireTopIcon />} items={newest} /> */}
+            <CryptoBox title="جدیدترین‌ها" iconTop={<FireTopIcon />} items={newest} />
           </div>
 
           {/* 📋 جدول اصلی */}

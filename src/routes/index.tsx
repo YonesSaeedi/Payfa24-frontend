@@ -19,7 +19,7 @@ import CryptoPage from "../components/History/CryptoPage";
 import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
-import BankCards from "../components/BankCards/BankCards";
+import BankCardsPage from "../pages/BankCards/BankcardsPage2";
 import Wallet from "../pages/Wallet/Wallet";
 import WithdrawPage from "../pages/Withdrawal/Withdrawal";
 import ChangePassword from "../pages/Profile/ChangePassword";
@@ -75,7 +75,7 @@ export default function AppRouter() {
         </Route>
         <Route path={ROUTES.FAQ} element={<FaqLayout />} />
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevices />} />
-        <Route path={ROUTES.BANK_CARDS} element={<BankCards />} />
+        <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
         <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />
         {/* header + Footer pages ==================================================================================================== */}
         <Route path={ROUTES.HOME} element={<HomePage />} />

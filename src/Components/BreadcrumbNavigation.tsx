@@ -15,9 +15,14 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   transaction: 'تاریخچه تراکنش ها',
   ConnectedDevices: 'دستگاه های متصل',
   faq: 'سوالات متدال',
-  BankCards: 'کارت های بانکی',
+"bank-cards": 'کارت های بانکی',
   withdrawal: 'برداشت',
-  'market-view': 'نمای بازار'
+  'market-view': 'نمای بازار',
+  "kyc-basic": "احراز هویت پایه",
+"history":"خدمات",
+"order":"تاریخچه خرید و فروش",
+"toman":"تاریخچه تراکنش های تومانی",
+"crypto":"تاریخچه تراکنش های رمز ارز"
 
 };
 

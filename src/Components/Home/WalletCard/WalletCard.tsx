@@ -36,7 +36,7 @@ const WalletCard = ({
   const actionButtons = [
     {
       label: "تاریخچه",
-      onClick: () => navigate("/services/transaction"),
+      onClick: () => navigate("/history/crypto"),
       icon: <span className="text-blue1">
            <ReceiptText />
          </span>,
@@ -50,7 +50,7 @@ const WalletCard = ({
     },
     {
       label: "واریز",
-      onClick: () => navigate("/DepositPage"),
+      onClick: () => navigate("/kyc-basic"),
       icon:  <span className="text-blue1">
           <WalletAdd />
          </span>,
