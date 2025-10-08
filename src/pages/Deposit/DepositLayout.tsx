@@ -1,15 +1,15 @@
 import React, { ReactNode } from "react";
 // import IconAlert from "../../assets/Icons/Login/IconAlert"; // استفاده نشده
-// import IconDanger from "../../assets/Icons/Deposit/IconDanger";
+import IconDanger from "../../assets/Icons/Deposit/IconDanger";
 // import IconVideo from "../../assets/Icons/Deposit/IconVideo"; // استفاده نشده
 
-// interface DepositLayoutProps {
-//   step: number;
-//   started: boolean;
-//   onStart: () => void;
-//   children: ReactNode;
-//   alertMessages: string[];
-// }
+interface DepositLayoutProps {
+  step: number;
+  started: boolean;
+  onStart: () => void;
+  children: ReactNode;
+  alertMessages: string[];
+}
 
 const DepositLayout: React.FC<DepositLayoutProps> = ({
   step,
