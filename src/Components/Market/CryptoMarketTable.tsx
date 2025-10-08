@@ -134,8 +134,8 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
 
   return (
     <div className="w-full flex flex-col gap-6 lg:mt-16">
-      {/*باکس سرچ*/}
-      <div className="items-center gap-4">
+      {/*باکس سرچ */}
+     <div className="items-center gap-4">
         <div className="w-full flex justify-between">
           <div className="flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 px-3">
             <span className=" w-5 h-5 ml-2 text-gray-400"><IconSearch  /></span>
@@ -233,7 +233,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
                     </td>
                     <td className="py-3 px-4 text-black1">
                       {item.buyPrice != null
-                        ? تومان ${item.buyPrice.toLocaleString()}
+                        ? `تومان ${item.buyPrice.toLocaleString()}`
                         : "-"}
                     </td>
                     <td className="py-3 px-4 text-black1 hidden lg:table-cell">
@@ -244,7 +244,8 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
                         className={`${
                           item.change24h >= 0 ? "text-green4" : "text-red1"
                         }`}
-                      >{item.change24h >= 0 ? "+" : ""}
+                      >
+                        {item.change24h >= 0 ? "+" : ""}
                         {item.change24h}%
                       </span>
                     </td>

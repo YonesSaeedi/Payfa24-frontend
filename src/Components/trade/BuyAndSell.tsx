@@ -326,3 +326,46 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
           <span onClick={handleFillCount} className="text-primary text-sm font-normal cursor-pointer">تمام موجودی</span>
         </div>
       </div>
+      {/* choose total amount ======================================================================================================= */}
+      <div className="flex flex-col gap-5 lg:gap-3">
+        <div onClick={() => amountInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
+          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43 border-none -top-4 right-4 text-gray5 text-sm font-normal">{isSell ? 'مقدار دریافتی' : 'مقدار پرداختی'}</div>
+          <div className="w-full flex items-center justify-between">
+            <input
+              ref={amountInputRef}
+              type="text"
+              inputMode="decimal"
+              className="bg-transparent appearance-none outline-none text-text4 text-right w-10/12"
+              value={amountValue === "" ? formatPersianDigits(0) : formatPersianDigits(amountValue)}
+              onChange={handleAmountChange}
+              dir="ltr"
+            />
+            <span className="text-sm font-normal text-gray5">تومان</span>
+          </div>
+        </div>
+        <div className={`items-center justify-between text-sm font-normal ${isSell ? 'hidden' : 'flex'}`}>
+          <div className="flex items-center gap-1">
+            <span className="icon-wrapper w-5 h-5 text-text5"><IconBorderedPlus /></span>
+            <span className="text-xs lg:text-sm font-medium text-text5">موجودی شما : </span>
+            {isLoading ?
+              <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
+              :
+              <span>{formatPersianDigits(TomanBalance)} تومان</span>
+            }
+          </div>
+          <span onClick={handleFillAmount} className="text-primary text-sm font-normal cursor-pointer">تمام موجودی</span>
+        </div>
+      </div>
+      {/* percent bar ======================================================================================================= */}
+      <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
+      <button
+        disabled={isSubmitting || !countInputStr || !amountValue}
+        onClick={handleBuyOrSell}
+        className="rounded-lg bg-blue2 py-2 lg:py-2.5 text-white2 text-base font-medium lg:text-lg lg:font-bold hover:bg-blue-600 hover:-translate-y-0.5 transition duration-300">
+        {isSubmitting ? 'در حال ثبت سفارش ...' : isSell ? "ثبت فروش" : "ثبت خرید"}
+      </button>
+    </div>
+  )
+}
+
+export default BuyAndSell
