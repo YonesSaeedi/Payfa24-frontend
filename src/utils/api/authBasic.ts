@@ -50,7 +50,7 @@ interface ApiResponse {
 
 export const sendContact = async (payload: ContactPayload) => {
   return apiRequest<ApiResponse>({
-    url: '/kyc/basic/level1', // مطابق Swagger
+    url: '/api/kyc/basic/level1', // مطابق Swagger
     method: 'POST',
     data: payload,
   });
@@ -58,7 +58,7 @@ export const sendContact = async (payload: ContactPayload) => {
 
 export const verifyOtp = async (payload: VerifyPayload) => {
   return apiRequest<ApiResponse>({
-    url: '/kyc/basic/level1', // مطابق Swagger
+    url: '/api/kyc/basic/level1', // مطابق Swagger
     method: 'POST',
     data: payload,
   });

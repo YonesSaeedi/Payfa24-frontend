@@ -1,15 +1,14 @@
-
 // apiClient.ts
-import axios, { AxiosRequestConfig, AxiosProgressEvent, AxiosRequestHeaders } from "axios";
-
+import axios, { AxiosRequestConfig, AxiosProgressEvent, AxiosRequestHeaders, AxiosError } from "axios";
 import { ROUTES } from "../routes/routes";
+import { toast } from "react-toastify";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
   timeout: 10_000,
   headers: {
     // حذف Content-Type پیش‌فرض تا هنگام ارسال FormData مرورگر خودش header مناسب را بسازد
-    "X-Device": "android",
+    "X-Device": "android", // to be fixed later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   },
 });
 
@@ -37,9 +36,10 @@ async function refreshAccessToken(): Promise<string | null> {
         }
         return null;
       } catch (err) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("expiresAt");
+        toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || "خطا در برقراری ارتباط با سرور");
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('expiresAt');
         window.location.href = ROUTES.LOGIN;
         return null;
       } finally {
@@ -65,23 +65,19 @@ apiClient.interceptors.request.use(async (config) => {
   ) {
     return config;
   }
-
   let token = localStorage.getItem("accessToken");
   if (isTokenExpiringSoon()) token = await refreshAccessToken();
-
   // ensure headers object exists and has the right type
   if (!config.headers) config.headers = {} as AxiosRequestHeaders;
-
   if (token) {
     // config.headers may be AxiosRequestHeaders or plain object; cast to any-safe set
-    (config.headers as any).Authorization = `Bearer ${token}`;
+    (config.headers).Authorization = `Bearer ${token}`;
   } else {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("expiresAt");
     window.location.href = "/login";
   }
-
   return config;
 });
 
@@ -95,7 +91,7 @@ apiClient.interceptors.response.use(
       const newToken = await refreshAccessToken();
       if (newToken) {
         originalRequest.headers = originalRequest.headers ?? ({} as AxiosRequestHeaders);
-        (originalRequest.headers as any).Authorization = `Bearer ${newToken}`;
+        (originalRequest.headers).Authorization = `Bearer ${newToken}`;
         return apiClient(originalRequest);
       }
     }
@@ -107,22 +103,15 @@ apiClient.interceptors.response.use(
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 type FormDataValue = string | number | boolean | Blob | File;
 
-
-interface ApiRequestParams<
-  TData extends Record<string, FormDataValue> | FormData | undefined = undefined,
-  TParams extends Record<string, unknown> | undefined = undefined
-> {
-
+interface ApiRequestParams<TData extends Record<string, FormDataValue> | FormData | undefined = undefined, TParams extends Record<string, unknown> | undefined = undefined> {
   url: string;
   method?: HttpMethod;
   data?: TData;
   params?: TParams;
   headers?: Record<string, string>;
-
   isFormData?: boolean;
   timeout?: number;
   responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream';
-
 }
 
 export async function apiRequest<
@@ -137,7 +126,6 @@ export async function apiRequest<
   headers,
   isFormData = false,
   timeout,
-
   responseType,
   onUploadProgress,
 }: ApiRequestParams<TData, TParams> & { onUploadProgress?: (progressEvent?: AxiosProgressEvent) => void }): Promise<TResponse> {
@@ -179,11 +167,9 @@ export async function apiRequest<
     headers: outgoingHeaders as AxiosRequestHeaders,
     data: body,
     timeout,
-
     responseType: responseType,
     // Axios expects a function that accepts AxiosProgressEvent; we accept that type in our param
-    onUploadProgress: onUploadProgress as ((progressEvent?: any) => void) | undefined,
-
+    onUploadProgress: onUploadProgress as ((progressEvent?: AxiosProgressEvent) => void) | undefined,
   };
 
   const response = await apiClient.request<TResponse>(config);
@@ -198,7 +184,7 @@ function buildFormData(data: Record<string, FormDataValue>): FormData {
     if (typeof value === "boolean" || typeof value === "number") {
       formData.append(key, String(value));
     } else {
-      formData.append(key, value as any);
+      formData.append(key, value);
     }
   });
   return formData;

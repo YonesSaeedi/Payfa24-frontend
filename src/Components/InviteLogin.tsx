@@ -14,6 +14,7 @@ import OTPModal from "./OTPModal";
 import IconClose from "../assets/Icons/Login/IconClose";
 import { getStepInviteSchema } from "../utils/validationSchemas";
 import { toast } from "react-toastify";
+import { ROUTES } from "../routes/routes";
 
 interface RegisterResponse {
   status: boolean;
@@ -74,6 +75,10 @@ export default function StepInvite({ onNext }) {
         payload.email = value;
         setContactMethod("email");
       }
+
+      if (data.inviteCode && data.inviteCode.trim() !== "") {
+        payload.id_referral = data.inviteCode.trim();
+      }
       const response = await apiRequest<RegisterResponse, Record<string, string>>(
         { url: "/api/auth/register", method: "POST", data: payload }
       );
@@ -88,8 +93,8 @@ export default function StepInvite({ onNext }) {
     } catch (err: any) {
       toast.error(
         err?.response?.data?.msg ||
-          err?.response?.data?.message ||
-          "در ثبت اطلاعات مشکلی پیش آمد."
+        err?.response?.data?.message ||
+        "در ثبت اطلاعات مشکلی پیش آمد."
       );
     } finally {
       setIsLoading(false);
@@ -117,18 +122,16 @@ export default function StepInvite({ onNext }) {
   };
 
   const switchClass = (isChecked: boolean, theme: string) =>
-    `w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${
-      isChecked ? "bg-blue2" : theme === "dark" ? "bg-gray19" : "bg-gray19"
+    `w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${isChecked ? "bg-blue2" : theme === "dark" ? "bg-gray19" : "bg-gray19"
     }`;
 
   const knobClass = (isChecked: boolean) =>
-    `bg-white1 w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
-      isChecked ? "translate-x-6" : "translate-x-0"
+    `bg-white1 w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${isChecked ? "translate-x-6" : "translate-x-0"
     }`;
 
   return (
-    <div className="flex items-center justify-center w-full lg:w-3/4 lg:px-16">
-      <div className="w-full px-4 flex items-center justify-center">
+    <div className="flex items-center justify-center">
+      <div className="w-full max-w-md px-4">
         <form onSubmit={handleSubmit(onSubmit)} dir="rtl" className="w-full mx-auto">
           <h1 className="text-[28px] font-bold text-blue2 mb-2 text-center">ثبت نام در پی‌فا24</h1>
           <p className="font-normal mb-10 lg:text-lg text-sm text-center text-black1">
@@ -145,7 +148,7 @@ export default function StepInvite({ onNext }) {
                 error={errors.email?.message}
                 {...field}
                 labelBgClass="bg-white4"
-                showError={true} 
+                showError={true}
               />
             )}
           />
@@ -180,7 +183,7 @@ export default function StepInvite({ onNext }) {
                       error={errors.inviteCode?.message}
                       {...field}
                       labelBgClass="bg-white4"
-                      showError={true} 
+                      showError={true}
                     />
                   )}
                 />
@@ -199,7 +202,7 @@ export default function StepInvite({ onNext }) {
           <p className="text-sm font-normal text-gray12 mt-3 mb-10 text-start">
             حساب کاربری دارید؟
             <span className="text-blue2 text-sm px-1 font-normal">
-              <Link to="#">ورود به حساب</Link>
+              <Link to={ROUTES.LOGIN}>ورود به حساب</Link>
             </span>
           </p>
 
@@ -273,9 +276,8 @@ export default function StepInvite({ onNext }) {
                   <button
                     onClick={handleConfirm}
                     disabled={otpCode.length < 5}
-                    className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${
-                      otpCode.length < 5 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
-                    }`}
+                    className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${otpCode.length < 5 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
+                      }`}
                   >
                     تایید
                   </button>

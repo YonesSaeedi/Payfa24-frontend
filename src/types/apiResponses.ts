@@ -23,11 +23,18 @@ export interface DepositMethodInfo {
 export type DepositMethods = Record<string, DepositMethodInfo>
 // general info =========================================================================================
 export interface GeneralInfo {
-  application: ApplicationInfo
-  cryptocurrency: CryptoItem[]
-  depositMethods: DepositMethods
-  [key: string]: unknown // allows extra keys without breaking type-check
+  application: ApplicationInfo;
+  cryptocurrency: CryptoItem[];
+  depositMethods: DepositMethods;
+  [key: string]: unknown; // بقیه کلیدهای احتمالی
 }
+export type GetUserResponse = {
+  status: boolean;
+  msg: string;
+  user: GetUser;
+};
+
+
 
 // ===============================================================================================================================================================================
 
@@ -82,3 +89,40 @@ export interface CryptoBuyConfirm {
   balance?: number
   price?: TradePrices
 }
+
+// ===============================================================================================================================================================================
+
+export interface KycGetInfo {
+  level_kyc: null | 'basic' | 'advanced';
+  kyc: {
+    basic?: {
+      name?: string | null;
+      family?: string | null;
+      mobile?: string | null;
+      email?: string | null;
+      father?: string | null;
+      national_code?: string | null;
+      date_birth?: string | null;
+      cardbank?: number;
+    };
+    advanced?: {
+      status: "pending" | "success" | "reject";
+      reason_reject: string | null;
+    };
+  };
+  [key: string]: unknown
+}
+
+export type GetUser = {
+  id: number;
+  name: string;
+  name_display: string;
+  family: string;
+  email: string;
+  mobile: string;
+  national_code: string;
+  profile_img: string | null;
+  date_register: string;
+  level_account: number;
+  level_kyc: string;
+};

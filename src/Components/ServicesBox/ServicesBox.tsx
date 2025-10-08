@@ -88,7 +88,7 @@ const handleItemClick = async (item: ServiceItem) => {
           navigate(ROUTES.Cards_Manager);
         } else {
           // کارت موجود نیست یا فعال نیست → هدایت به صفحه افزودن کارت
-          toast.error("هیچ کارت فعالی ثبت نشده است.");
+        
           await new Promise<void>((resolve) => {
             setIsVisible(false);
             setTimeout(() => {

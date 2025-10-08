@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import OTPModal from "../../OTPModal";
 import { apiRequest } from "../../../utils/apiClient";
 import { UseTwoStepVerification } from "../../../hooks/UseTwoStepVerification";
+import { useNavigate } from "react-router";
+import { ROUTES } from "../../../routes/routes";
 
 interface EnterCodePageProps {
   onPrev: () => void;
@@ -11,7 +13,7 @@ export default function EnterCodePage({ onPrev }: EnterCodePageProps) {
   const { data } = UseTwoStepVerification();
   const type = data?.twofa?.type; // مقدار type برای URL
   const [code, setCode] = useState("");
-
+  const navigate = useNavigate()
   const onClick = async () => {
     if (!code || !type) return; // اعتبارسنجی اولیه
 
@@ -23,7 +25,8 @@ export default function EnterCodePage({ onPrev }: EnterCodePageProps) {
       });
       console.log("Verify response:", res);
       // اینجا می‌تونید بعد از موفقیت onPrev یا هر چیزی که لازمه اجرا کنید
-      onPrev();
+      // onPrev();
+      navigate(ROUTES.MULTI_FACTOR)
     } catch (error) {
       console.error("Error verifying code:", error);
     }

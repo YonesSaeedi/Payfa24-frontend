@@ -1,8 +1,10 @@
+// ✳️ کد کامل و به‌روز
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { toast } from "react-toastify";
 
 import AuthLayout from "../layouts/AuthLayout";
 import imageForgetDark from "../assets/imageForgetDark.png";
@@ -14,11 +16,13 @@ import { apiRequest } from "../utils/apiClient";
 import OTPModal from "../Components/OTPModal";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import IconClose from "../assets/Icons/Login/IconClose";
-import { toast } from "react-toastify";
 
 type FormData = {
   email: string;
 };
+
+const DISABLE_DURATION = 120; // مدت زمان قفل شدن دکمه (ثانیه)
+const STORAGE_KEY = "forget_button_disable_until";
 
 export default function ForgotPasswordPage() {
   const context = useContext(ThemeContext);
@@ -36,6 +40,9 @@ export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
+
+  const [disableButton, setDisableButton] = useState(false);
+  const [disableTimer, setDisableTimer] = useState(0);
 
   const {
     handleSubmit,
@@ -57,7 +64,40 @@ export default function ForgotPasswordPage() {
     throw new Error("ایمیل یا شماره موبایل معتبر نیست.");
   };
 
-  // تایمر شمارش معکوس
+  // 📦 بازیابی وضعیت دکمه بعد از رفرش
+  useEffect(() => {
+    const savedExpire = localStorage.getItem(STORAGE_KEY);
+    if (savedExpire) {
+      const remaining = Math.floor((parseInt(savedExpire) - Date.now()) / 1000);
+      if (remaining > 0) {
+        setDisableButton(true);
+        setDisableTimer(remaining);
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+  }, []);
+
+  // 🔁 تایمر دکمه
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (disableButton && disableTimer > 0) {
+      interval = setInterval(() => {
+        setDisableTimer(prev => {
+          if (prev <= 1) {
+            setDisableButton(false);
+            localStorage.removeItem(STORAGE_KEY);
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [disableButton, disableTimer]);
+
+  // 🔁 تایمر OTP resend
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isOpen && resendTimer > 0) {
@@ -82,11 +122,16 @@ export default function ForgotPasswordPage() {
         setIsOpen(true);
         setResendTimer(120);
         setCanResend(false);
+
+        const expireTime = Date.now() + DISABLE_DURATION * 1000;
+        localStorage.setItem(STORAGE_KEY, expireTime.toString());
+        setDisableButton(true);
+        setDisableTimer(DISABLE_DURATION);
       } else {
         console.error("Forgot password failed:", response);
       }
     } catch (err: any) {
-      toast.error( err.response?.data.msg || "خطا در ارسال")
+      toast.error(err.response?.data.msg || "خطا در ارسال");
     } finally {
       setIsLoading(false);
     }
@@ -151,14 +196,22 @@ export default function ForgotPasswordPage() {
 
             <button
               type="submit"
-              className="h-[48px] w-full rounded-xl bg-blue2 lg:mt-14 mt-12 text-white font-bold text-lg"
+              disabled={disableButton || isLoading}
+              className={`h-[48px] w-full rounded-xl font-bold text-lg text-white transition-colors duration-300 ${
+                disableButton ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
+              } lg:mt-14 mt-12`}
             >
-              {!isLoading ? "ادامه" : "در حال بررسی..."}
+              {isLoading
+                ? "در حال بررسی..."
+                : disableButton
+                ? `لطفا ${disableTimer} ثانیه صبر کنید`
+                : "ادامه"}
             </button>
           </form>
         </div>
       </div>
 
+      {/* --- OTP Modal --- */}
       {isOpen && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
@@ -183,7 +236,6 @@ export default function ForgotPasswordPage() {
 
               <div className="mt-[32px] mb-[48px]">
                 <OTPModal length={6} onChange={(val: string) => setOtpCode(val)} />
-               
               </div>
 
               <div className="flex justify-between flex-row-reverse mb-4">

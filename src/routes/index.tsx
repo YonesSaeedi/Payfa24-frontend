@@ -12,10 +12,10 @@ import AuthenticationAdvance from "../pages/authentication/advance";
 import Profile from "../pages/Profile/Profile";
 import MarketPage from "../pages/MarketPage";
 import TicketPage from "../pages/Ticket/TicketPage";
-import TicketPanel from "./../Components/Ticket/TicketPanel";
+import TicketPanel from "./../components/Ticket/TicketPanel";
 import TicketLayout from "../pages/Ticket/TicketLayout";
 import TransactionLayout from "../pages/Transaction/TransactionLayout";
-import CryptoPage from "../Components/History/CryptoPage";
+import CryptoPage from "../components/History/CryptoPage";
 import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
@@ -29,10 +29,13 @@ import AddFriend from "../pages/Addfriend/AddFriend";
 import DepositPage from "../pages/Deposit/DepositPage";
 import ForgotPasswordPageSetPasswordPage from "../pages/ForgotPasswordPageSetPasswordPage";
 import MarketViewPage from "../pages/market-view/MarketViewPage";
-import TomanPage from "../Components/History/TomanPage";
-import OrderPage from "../Components/History/OrderPage";
+import TomanPage from "../components/History/TomanPage";
+import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
-import CardsManager from "../pages/BankCards/CardsManager";
+import CardsManager from "../pages/BankCards/BankCardsManager";
+
+
+
 
 export default function AppRouter() {
   return (
@@ -78,6 +81,7 @@ export default function AppRouter() {
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevices />} />
         <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
         <Route path={ROUTES.Cards_Manager} element={<CardsManager />} />
+
 
         <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />
         {/* header + Footer pages ==================================================================================================== */}
