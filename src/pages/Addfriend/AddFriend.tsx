@@ -642,7 +642,7 @@ export default function AddFriend() {
             <div
               onClick={() => setIsOpenModal(false)}
               className="fixed inset-0 bg-black/25 z-40 "
-            >
+            ></div>
               <div
                 onClick={(e) => e.stopPropagation()}
                 className="fixed inset-0 flex items-center justify-center z-50"
@@ -708,7 +708,6 @@ export default function AddFriend() {
                   </button>
                 </div>
               </div>
-            </div>
           </>
         )}
       </HeaderLayout>
