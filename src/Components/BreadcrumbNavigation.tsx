@@ -23,7 +23,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
 "order":"تاریخچه خرید و فروش",
 "toman":"تاریخچه تراکنش های تومانی",
 "crypto":"تاریخچه تراکنش های رمز ارز",
-"Cards_Manager":"کارت های بانکی"
+"bank-cards":"کارت های بانکی"
 
 };
 

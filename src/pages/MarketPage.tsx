@@ -157,11 +157,11 @@ const cryptoData: ICryptoItem[] =
           </div>
 
           {/* 📊 باکس‌های بالای صفحه */}
-          <div className="hidden lg:flex gap-6 justify-start flex-row-reverse">
+          {/* <div className="hidden lg:flex gap-6 justify-start flex-row-reverse">
             <CryptoBox title="بیشترین افت" iconTop={<VectorDown />} items={losers} />
             <CryptoBox title="بیشترین رشد" iconTop={<VectorUp />} items={gainers} />
             <CryptoBox title="جدیدترین‌ها" iconTop={<FireTopIcon />} items={newest} />
-          </div>
+          </div> */}
 
           {/* 📋 جدول اصلی */}
         <div className="pb-[87px]">

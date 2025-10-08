@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 //صفحه دو بخشیت
 import { apiRequest } from "../../utils/apiClient"; // مسیرت رو تنظیم کن
-import BankCardForm from "../../Components/BankCards/BankCardModal/BankCardForm";
-import BankCardList from "../../Components/BankCards/BankCardList";
-import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
+import BankCardForm from "./BankCardModal/BankCardForm";
+import BankCardList from "./BankCardList";
+import BreadcrumbNavigation from "../BreadcrumbNavigation";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import useGetUser from "../../hooks/useGetUser";
-import SkeletonCard from "../../Components/BankCards/SkeletonCard";
-import { AddCardApi } from "../../Components/BankCards/AddCardApi";
+import SkeletonCard from "./SkeletonCard";
+import { AddCardApi } from "./AddCardApi";
 
 type Card = {
   id: number;

@@ -1,8 +1,8 @@
 // BankCardsContainer.tsx
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../utils/apiClient";
-import { BankCardsPage } from "./BankCardsPage"; // کامپوننت نه صفحه
-import { BankCardManager } from "./BankCardManager"; // کامپوننت نه صفحه
+import  BankCardsPage  from "../../Components/BankCards/BankcardsPage"; // کامپوننت نه صفحه
+import  BankCardManager  from "../../Components/BankCards/BankCardsManager"; // کامپوننت نه صفحه
 
 type Card = {
   id: number;
