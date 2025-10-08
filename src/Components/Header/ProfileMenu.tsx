@@ -12,6 +12,7 @@ import IconUser from "../../assets/icons/ProfileMenue/IconUser";
 import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 // import LogOut from "../../assets/images/logout.png";
 import { ROUTES } from "../../routes/routes"; // مسیر را متناسب با پروژه خود اصلاح کنید
+import { apiRequest } from "../../utils/apiClient";
 
 
 interface ProfileMenuProps {
@@ -41,20 +42,18 @@ export default function ProfileMenu({
     };
   }, []);
 
-const handleLogout = () => {
-    // این توکن‌های امنیتی رو پاک می‌کنه
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("expiresAt");
-    localStorage.removeItem("kycStepCompleted");
-    
-    // این خط برای پاک کردن اطلاعات فرم ثبت نام (رجیستر) هست
-    localStorage.removeItem("tempContactValue");
+  const handleLogout = async () => {
+    try {
+      await apiRequest({url:"/api/auth/logout",method:"POST"});
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+    finally {
+      localStorage.clear();
+      window.location.replace("/login");
+    }
+  };
 
-    // کاربر رو به صفحه ورود هدایت می‌کنه
-    window.location.href = "/login";
-};
-  
   return (
     <div className="relative" ref={menuRef}>
 
@@ -74,13 +73,12 @@ const handleLogout = () => {
       </button>
 
 
-       
-            <div
-        className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
-          open
-            ? "scale-100 opacity-100"
-            : "scale-95 opacity-0 pointer-events-none"
-        }`}
+
+      <div
+        className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${open
+          ? "scale-100 opacity-100"
+          : "scale-95 opacity-0 pointer-events-none"
+          }`}
 
       >
         <div
@@ -114,47 +112,47 @@ const handleLogout = () => {
             </li>
           </Link>
 
-           <Link to={"/Security settings"} className="flex items-center gap-2 w-full">
-           <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
-            <span className="w-6 h-6">
-              <IconSecurity />
-            </span>{" "}
-            تنظیمات امنیت
-          </li>
-           </Link>
-           <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full">
-             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
-            <span className="w-6 h-6">
-              <IconAuthentication />
-            </span>{" "}
-            احراز هویت
-          </li>
-           </Link>
+          <Link to={"/Security settings"} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
+              <span className="w-6 h-6">
+                <IconSecurity />
+              </span>{" "}
+              تنظیمات امنیت
+            </li>
+          </Link>
+          <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
+              <span className="w-6 h-6">
+                <IconAuthentication />
+              </span>{" "}
+              احراز هویت
+            </li>
+          </Link>
           <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
-            <span className="w-6 h-6">
-              <IconBankAccounts />
-            </span>{" "}
-            حساب‌های بانکی
-          </li>
+              <span className="w-6 h-6">
+                <IconBankAccounts />
+              </span>{" "}
+              حساب‌های بانکی
+            </li>
 
           </Link>
 
-        <Link to={ROUTES.TRANSACTION.CRYPTO_HISTORY} className="flex items-center gap-2 w-full">
-         <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
-            <span className="w-6 h-6">
-              <IconTransactionhistory />
-            </span>{" "}
-            تاریخچه معاملات
-          </li>
-        </Link>
-            <Link to={ROUTES.CONNECTED_DEVICES} className="flex items-center gap-2 w-full">
-              <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2 text-black1">
-            <span className="w-6 h-6">
-              <IconConnecteddevices />
-            </span>{" "}
-            دستگاه‌های متصل
-          </li>
+          <Link to={ROUTES.TRANSACTION.CRYPTO_HISTORY} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
+              <span className="w-6 h-6">
+                <IconTransactionhistory />
+              </span>{" "}
+              تاریخچه معاملات
+            </li>
+          </Link>
+          <Link to={ROUTES.CONNECTED_DEVICES} className="flex items-center gap-2 w-full">
+            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2 text-black1">
+              <span className="w-6 h-6">
+                <IconConnecteddevices />
+              </span>{" "}
+              دستگاه‌های متصل
+            </li>
 
 
           </Link>
@@ -210,7 +208,7 @@ const handleLogout = () => {
                   انصراف
                 </button>
                 <Link to={""} className="w-1/2">
-                  <button  onClick={handleLogout} className="w-full lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-lg ">
+                  <button onClick={handleLogout} className="w-full lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-lg ">
                     خروج
                   </button>
                 </Link>
