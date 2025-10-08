@@ -1,15 +1,15 @@
 import React, { ReactNode } from "react";
 // import IconAlert from "../../assets/Icons/Login/IconAlert"; // استفاده نشده
-import IconDanger from "../../assets/Icons/Deposit/IconDanger";
+// import IconDanger from "../../assets/Icons/Deposit/IconDanger";
 // import IconVideo from "../../assets/Icons/Deposit/IconVideo"; // استفاده نشده
 
-interface DepositLayoutProps {
-  step: number;
-  started: boolean;
-  onStart: () => void;
-  children: ReactNode;
-  alertMessages: string[];
-}
+// interface DepositLayoutProps {
+//   step: number;
+//   started: boolean;
+//   onStart: () => void;
+//   children: ReactNode;
+//   alertMessages: string[];
+// }
 
 const DepositLayout: React.FC<DepositLayoutProps> = ({
   step,
@@ -21,7 +21,7 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
   return (
     <div className="w-full container-style h-full flex flex-col lg:flex-row items-center justify-center">
       {/* بخش اصلی (راست و چپ) */}
-      <div className=" flex w-full lg:gap-7 lg:flex-row-reverse lg:p-10 flex-col items-start mt-14 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl">
+      <div className=" flex شhشش w-full lg:gap-7 lg:flex-row-reverse lg:p-10 flex-col items-start mt-14 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl">
         
         {/*
           بخش راست - ثابت (ستون انتخاب‌های واریز)

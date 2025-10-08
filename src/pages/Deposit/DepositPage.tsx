@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import DepositLayout from "./DepositLayout";
 import IconBank from "../../assets/Icons/Deposit/IconBank";
@@ -15,6 +15,8 @@ import IconIDentifier from "../../assets/Icons/Deposit/IconIDentifier";
 import IconReceipt from "../../assets/Icons/Deposit/Iconreceipt";
 import DepositwithIdentifier from "../../Components/Deposit/DepositwithIdentifier";
 import BankReceipt from "../../Components/Deposit/BankReceipt";
+import { useFetcher } from "react-router";
+import { apiRequest } from "../../utils/apiClient";
 
 export default function DepositPage() {
   const [step, setStep] = useState<number>(1);
@@ -112,6 +114,27 @@ export default function DepositPage() {
     }
   };
 
+
+  useEffect(() => {
+     const fetchFiatData = async () => {
+   
+    try {
+      const response = await apiRequest({
+        url: "/api/wallets/fiat",
+        method: "GET",
+        params: { withdraw: null },
+      });
+      setFiatData(response);
+    } catch (err: any) {
+      // setError(`خطا: ${err.message} - جزئیات: ${JSON.stringify(err.response?.data)}`);
+      console.error("Error fetching fiat data:", err.response?.data || err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchFiatData();
+  },[])
   return (
     <>
       <HeaderLayout>
@@ -221,3 +244,9 @@ export default function DepositPage() {
     </>
   );
 }
+
+
+
+
+
+
