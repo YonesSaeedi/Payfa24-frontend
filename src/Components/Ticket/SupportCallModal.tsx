@@ -1,75 +1,132 @@
-import React from "react";
+import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { toast } from "react-toastify"; // ✅ اضافه شده
+import "react-toastify/dist/ReactToastify.css"; // ✅ برای اطمینان از استایل‌ها
 import IconCloseButtun from "../../assets/icons/services/IconCloseButtun";
+import FloatingInput from "../FloatingInput/FloatingInput";
 
 interface SupportCallModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { phone: string; description: string }) => void;
 }
 
-const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [phone, setPhone] = React.useState("");
-  const [description, setDescription] = React.useState("");
+interface SupportCallFormInputs {
+  phone: string;
+  description: string;
+}
 
-  if (!isOpen) return null; 
+const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) => {
+  const { control, handleSubmit, formState: { errors }, reset } = useForm<SupportCallFormInputs>();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({ phone, description });
-    onClose();
+  if (!isOpen) return null;
+
+  const onFormSubmit = async (data: SupportCallFormInputs) => {
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/ticket/call", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.status) {
+        toast.success("درخواست شما با موفقیت ثبت شد ");
+        reset();
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+      } else {
+        toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید ");
+      }
+    } catch (error) {
+      console.error("Error posting data:", error);
+      toast.error("ارتباط با سرور برقرار نشد ");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div dir='rtl'  className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
-      <div dir='rtl' className=" bg-white8 rounded-2xl shadow-lg w-full max-w-md p-6 relative">
-        
+    <div dir="rtl" className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
+      <div dir="rtl" className="bg-gray43 rounded-2xl shadow-lg w-full max-w-md p-6 relative">
         <button
-          onClick={onClose}
-          className="absolute top-3 left-3 text-gray-400 hover:text-gray-600 w-6 h-6"
+          onClick={() => { reset(); onClose(); }}
+          className="absolute top-8 left-3 text-gray-400 hover:text-gray-600 w-6 h-6"
         >
-          <IconCloseButtun/>
+          <IconCloseButtun />
         </button>
 
-      
-        <h2 className="text-lg font-semibold text-black1 text- mb-4">
+        <h2 className="text-lg font-semibold text-black1 mb-12 pt-3">
           درخواست تماس با پشتیبانی
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 bg-gray43">
+         
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              شماره موبایل
-            </label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 bg-white8  focus:ring-blue-500"
-              required
+            <Controller
+              name="phone"
+              control={control}
+              rules={{ required: "شماره موبایل الزامی است" }}
+              render={({ field }) => (
+                <FloatingInput
+                  label="شماره موبایل"
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  type="tel"
+                  placeholder=""
+                  placeholderColor="text-black0"
+                  borderClass="border-gray2"
+                   heightClass="h-[48px]"
+                />
+              )}
             />
+            {errors.phone && (
+              <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>
+            )}
             <p className="text-xs text-gray-500 mt-1">
               لطفا موبایلی که درخواست تماس تلفنی با آن را دارید وارد کنید.
             </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              توضیحات
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="درخواست تماس با پشتیبانی درباره..."
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 bg-white8  focus:ring-blue-500"
-              rows={4}
+      
+          <div className="pt-8 pb-8">
+            <Controller
+              name="description"
+              control={control}
+              rules={{ required: "توضیحات الزامی است" }}
+              render={({ field }) => (
+                <FloatingInput
+                  label="توضیحات"
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  type="text"
+                  placeholder="درخواست تماس با پشتیبانی درباره..."
+                  placeholderColor="text-black0"
+                  borderClass="border-gray2"
+                  heightClass="h-[160px]"
+                  
+                />
+              )}
             />
+            {errors.description && (
+              <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
+            )}
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition"
+            disabled={loading}
+            className={`w-full py-2 rounded-lg font-medium transition text-white ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+            }`}
           >
-            تایید
+            {loading ? "در حال ارسال..." : "تایید"}
           </button>
         </form>
       </div>

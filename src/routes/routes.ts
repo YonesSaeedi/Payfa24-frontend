@@ -1,66 +1,44 @@
-
-
-
 export const ROUTES = {
-
-  HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
-  MARKET: '/market',
-  NOTIFICATIONS: '/notifications',
-  FORGOT_PASSWORD: '/forgot-password',
-
-  AuthenticationBasic: '/authentication',
-  AuthenticationAdvance: '/authenticationAdvance',
-  Profile: '/authProfile',
-
-  Securitysettings: './Security settings',
-  UserAccount: './authProfile',
-  BankAccount: './authProfile',
-  Wallet: '/wallet',
-  ConnectedDevices: {
-    Root: '/services',
-    CREATE: '/services/ConnectedDevices'
-  },
-
-  ChangePassword: '/ChangePassword',
-  VerifyGooglePage: '/verify/google',
-  MultiFactor: '/MultiFactor',
-  GoogleAuthFlow: '/GoogleAuthFlow',
-  AddFriend: '/AddFriend',
-  Deposit: '/DepositPage',
-
+  HOME: "/",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  MARKET: "/market",
+  NOTIFICATIONS: "/notifications",
+  FORGOT_PASSWORD: "/forgot-password",
+  FORGOT_PASSWORD_SET_PASSWORD: "/forgot-password-set-password",
+  AUTHENTICATION_BASIC: "/kyc-basic",
+  AUTHENTICATION_ADVANCED: "/kyc-advanced",
+  BANK_CARDS_CONTAINER: "/services/bank-cards",
+  PROFILE: "/profile",
+  USER_ACCOUNT: "./authProfile",
+  BANK_ACCOUNT: "./authProfile",
+  WALLET: "/wallet",
+  CHANGE_PASSWORD: "/change-password",
+  VERIFY_GOOGLE: "/verify/google",
+  MULTI_FACTOR: "/multi-factor",
+  GOOGLE_AUTH_FLOW: "/google-auth-flow",
+  ADD_FRIEND: "/add-friend",
+  DEPOSIT: "/deposit",
+  CONNECTED_DEVICES: "/services/connected-devices",
+  FAQ: "/services/faq",
+  BANK_CARDS: "/services/bank-cards",
+  WITHDRAWAL: "/withdrawal",
+  MARKET_VIEW: '/services/market-view',
   TRADE: {
-    ROOT: '/trade',
-    BUY: '/trade/buy',
-    SELL: '/trade/sell',
+    ROOT: "/trade",
+    BUY: "/trade/buy",
+    SELL: "/trade/sell",
   },
-  Ticket: {
-    ROOT: '/ticket',
-    CREATE: '/ticket/create',
-
+  TICKET: {
+    ROOT: "/ticket",
+    CREATE: "/ticket/create",
   },
-  Transaction: {
-    Root: '/services',
-    CREATE: '/services/transaction'
-  },
-  FAQ: {
-    Root: '/services',
-    CREATE: '/services/faq'
-  },
-  BankCards: {
-    Root: '/services',
-    CREATE: '/services/BankCards'
-  },
-  withdrawal: {
-    Root: '/',
-    CREATE: '/withdrawal'
-  },
-
-  Bank_Cards: {
-    ROOT: '/services',
-    CREATE: '/services/BankCards'
+  TRANSACTION: {
+    ROOT: "/history",
+    CRYPTO_HISTORY: "/history/crypto",
+    TOMAN_HISTORY: "/history/toman",
+    ORDER_HISTORY: "/history/order",
   },
 
 
-}
+};

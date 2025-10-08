@@ -6,7 +6,7 @@ interface EmptyStateProps {
   onAddCard: () => void;
 }
 
-const EmptyState: React.FC<EmptyStateProps> = ({ onAddCard }) => {
+const EmptyCards: React.FC<EmptyStateProps> = ({ onAddCard }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
       <img src={BankCardImg} alt="Bank Card Illustration" className="max-w-sm" />
@@ -28,4 +28,4 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onAddCard }) => {
   );
 };
 
-export default EmptyState;
+export default EmptyCards;

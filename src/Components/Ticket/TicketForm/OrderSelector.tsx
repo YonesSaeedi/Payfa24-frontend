@@ -1,29 +1,71 @@
-import { useState } from "react";
+// OrderSelector.tsx
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import { UseFormRegister } from "react-hook-form";
-import { TicketFormInputs, Order } from "./Types";
+import { createPortal } from "react-dom";
+import { TicketFormInputs, Order } from "../../../types/Ticket";
 import IconOrderSelection from "../../../assets/icons/ticket/IconOrderSelection";
+import OrderModal from "./OrderModal";
+import { apiRequest } from "../../../utils/apiClient";
+import type { UseFormSetValue, UseFormRegister } from "react-hook-form";
+
+interface TicketInfoResponse {
+  last_orders: { id: number; title: string }[];
+}
 
 interface OrderSelectorProps {
   selectedOrder: Order | null;
   setSelectedOrder: (order: Order | null) => void;
   register: UseFormRegister<TicketFormInputs>;
-  orders: Order[];
+  setValue: UseFormSetValue<TicketFormInputs>;
 }
 
-
-export default function OrderSelector({ selectedOrder, setSelectedOrder, register, orders }: OrderSelectorProps) {
+export default function OrderSelector({
+  selectedOrder,
+  setSelectedOrder,
+  register,
+  setValue,
+}: OrderSelectorProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [apiOrders, setApiOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const fetchOrders = async () => {
+      try {
+        const response = (await apiRequest<TicketInfoResponse>({
+          url: "/api/ticket/get-info",
+          method: "GET",
+        })) as TicketInfoResponse;
+
+        if (response?.last_orders) {
+          const mappedOrders: Order[] = response.last_orders.map((o) => ({
+            id: String(o.id),
+            coin: o.title,
+            type: "خرید",
+            amount: "-",
+            date: "-",
+            icon: <IconOrderSelection />,
+          }));
+          setApiOrders(mappedOrders);
+        }
+      } catch (error) {
+        console.error("خطا در گرفتن سفارش‌ها:", error);
+      }
+    };
+
+    fetchOrders();
+  }, [isModalOpen]);
 
   const handleSelectOrder = (order: Order) => {
     setSelectedOrder(order);
-    register("orderId").onChange({ target: { value: order.id } }); 
+    setValue("orderId", order.id); // <-- از props.setValue استفاده می‌کنیم
     setIsModalOpen(false);
   };
 
   const handleRemoveOrder = () => {
     setSelectedOrder(null);
-    register("orderId").onChange({ target: { value: "" } });
+    setValue("orderId", ""); // پاک کردن مقدار فرم
   };
 
   return (
@@ -31,18 +73,19 @@ export default function OrderSelector({ selectedOrder, setSelectedOrder, registe
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="w-full border rounded-lg p-5 text-sm text-right bg-gray37 flex items-center justify-between border-gray12 mt-3 mb-3"
+        className="w-full border rounded-lg p-5 text-sm text-right bg-gray37 flex items-center justify-between border-gray12 mt-4 mb-3"
       >
         <span className="text-gray12">انتخاب سفارش (اختیاری)</span>
-         <span className="w-4 h-4"><IconOrderSelection/></span>
+        <span className="w-4 h-4"><IconOrderSelection /></span>
       </button>
-      <input type="hidden" {...register("orderId")} />
+
+      {/* hidden input برای orderId */}
+      <input type="hidden" {...register("orderId" as any)} />
 
       {selectedOrder && (
         <div className="mt-2 flex items-center justify-between border rounded-lg p-3 bg-gray-50">
           <div>
             <p className="text-sm font-medium">{selectedOrder.amount} {selectedOrder.coin}</p>
-            <p className="text-xs text-gray-500">{selectedOrder.date}</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-blue-600 text-sm">{selectedOrder.type}</span>
@@ -53,30 +96,9 @@ export default function OrderSelector({ selectedOrder, setSelectedOrder, registe
         </div>
       )}
 
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-lg p-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">انتخاب سفارش</h3>
-              <button onClick={() => setIsModalOpen(false)}>✕</button>
-            </div>
-            <div className="space-y-2">
-              {orders.map((order) => (
-                <button
-                  key={order.id}
-                  onClick={() => handleSelectOrder(order)}
-                  className="w-full border rounded-lg p-3 flex justify-between hover:bg-gray-100"
-                >
-                  <div>
-                    <p className="text-sm font-medium">{order.amount} {order.coin}</p>
-                    <p className="text-xs text-gray-500">{order.date}</p>
-                  </div>
-                  <span className="text-blue-600 text-sm">{order.type}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+      {isModalOpen && typeof document !== "undefined" && createPortal(
+        <OrderModal orders={apiOrders} onSelectOrder={handleSelectOrder} onClose={() => setIsModalOpen(false)} />,
+        document.body
       )}
     </div>
   );

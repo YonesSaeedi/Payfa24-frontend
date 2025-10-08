@@ -1,19 +1,18 @@
 export interface ICryptoItem {
-  name: string;
   symbol: string;
-  icon?: string;
-  priceUSDT: number;
+  name: string;
+  locale?: {
+    fa?: string;
+    en?: string;
+  };
+  icon: JSX.Element;
+
+  priceUSDT: number;     // از priceBuy یا هر چیزی که می‌خوای
   buyPrice: number;
   sellPrice: number;
-  change24h: number;
-  favorite?: boolean;
-  volume?: number;
+  change24h: number;     // از priceChangePercent
+  volume: number;        // از quoteVolume
+
   isNew?: boolean;
-  isFont?: boolean;
-  color?: string;
-  locale?: {
-    fa?: { name: string };
-    en?: { name: string };
-  };
-  renderIcon?: React.ReactNode; // 🟢 اضافه شد
+  favorite?: boolean;
 }

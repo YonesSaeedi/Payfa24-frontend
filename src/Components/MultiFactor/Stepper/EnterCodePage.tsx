@@ -1,6 +1,38 @@
 import React from "react";
 import OTPModal from "../../OTPModal";
 
+import { apiRequest } from "../../../utils/apiClient";
+import { UseTwoStepVerification } from "../../../hooks/UseTwoStepVerification";
+import { useNavigate } from "react-router";
+import { ROUTES } from "../../../routes/routes";
+
+interface EnterCodePageProps {
+  onPrev: () => void;
+}
+
+export default function EnterCodePage({ onPrev }: EnterCodePageProps) {
+  const { data } = UseTwoStepVerification();
+  const type = data?.twofa?.type; // مقدار type برای URL
+  const [code, setCode] = useState("");
+  const navigate = useNavigate()
+  const onClick = async () => {
+    if (!code || !type) return; // اعتبارسنجی اولیه
+
+    try {
+      const res = await apiRequest({
+        url: `/api/account/2fa/verify/google`, // جایگزینی type
+        method: "POST",
+        data: { code }, // ارسال کد در body
+      });
+      console.log("Verify response:", res);
+      // اینجا می‌تونید بعد از موفقیت onPrev یا هر چیزی که لازمه اجرا کنید
+      // onPrev();
+      navigate(ROUTES.MULTI_FACTOR)
+    } catch (error) {
+      console.error("Error verifying code:", error);
+    }
+  };
+
 export default function EnterCodePage({ onPrev }) {
   return (
     <div className="w-full flex flex-col items-center gap-6">

@@ -1,4 +1,4 @@
-const iconRefresh = () => (
+const IconRefresh = () => (
   <svg
     width="100%"
     height="100%"
@@ -17,4 +17,4 @@ const iconRefresh = () => (
   </svg>
 );
 
-export default iconRefresh;
+export default IconRefresh;

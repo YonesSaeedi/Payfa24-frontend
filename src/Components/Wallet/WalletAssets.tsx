@@ -1,96 +1,151 @@
-import React, { useState, useEffect, useRef } from "react";
-import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
-import VeChainIcon from "../../assets/icons/Home/CryptoTableIcon/VeChainIcon";
-import AltraPurple from "../../assets/icons/market/CryptoMarketTable.tsx/AltraPurple";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { MoreVertical, MoreHorizontal, ChevronDown } from "lucide-react";
-import {ActionModal} from "../../Components/Wallet/ActionModal";
+import { ActionModal } from "../../Components/Wallet/ActionModal";
 import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
+import { apiRequest } from "../../utils/apiClient";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routes/routes"; // مسیر دقیق فایل routes را چک کنید
 
-type Crypto = {
+
+interface Wallet {
   name: string;
   symbol: string;
+  percent?: number;
+  color?: string;
+  deposit: boolean;
+  withdraw: boolean;
+  balance: number;
+  fee_toman: string;
   price: number;
-  change: number;
-  icon: React.ReactNode;
-};
+  icon?: React.ReactNode;
+  change?: number;
+}
 
-const initialData: Crypto[] = [
-  { name: "تراوالا", symbol: "AVA", price: 48870.3, change: 1.1, icon: <span className="w-8 h-8"><VeChainIcon /></span> },
-  { name: "الترا", symbol: "UOS", price: 48870.3, change: -1.3, icon: <span className="w-8 h-8"><AltraPurple /></span> },
-  { name: "وی چین", symbol: "VET", price: 48870.3, change: -1.3, icon: <span className="w-8 h-8"><VeChainIcon /></span> },
-  { name: "ویلی", symbol: "WLY", price: 48870.3, change: -1.3, icon: <span className="w-8 h-8"><TravelaIcon /></span> },
+interface WalletsResponse {
+  crypto_count: number;
+  wallets_internal: Record<string, unknown>;
+  wallets: Wallet[];
+}
+
+const sortOptions = [
+  { label: "پیش فرض", key: "default" },
+  { label: "موجودی (تعداد)", key: "stock" },
+  { label: "موجودی (ارزش تومانی)", key: "balance" },
+  { label: "قیمت (زیاد به کم)", key: "priceDown" },
+  { label: "قیمت (کم به زیاد)", key: "priceUp" },
 ];
 
 const CryptoTable: React.FC = () => {
-  const [data, setData] = useState<Crypto[]>(initialData);
-  const [search, setSearch] = useState<string>("");
-  const [sortField, setSortField] = useState<keyof Crypto | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  const [selectedSort, setSelectedSort] = useState("گزینه‌ها (تعداد)");
+  const [walletsData, setWalletsData] = useState<Wallet[]>([]);
+  const [search, setSearch] = useState("");
+  const [selectedSortKey, setSelectedSortKey] = useState("default");
+  const [openDropdown, setOpenDropdown] = useState(false);
   const [openModalId, setOpenModalId] = useState<number | null>(null);
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1024); 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const navigate = useNavigate();
+
+
+  // 📌 هندل ریسایز
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleSort = (field: keyof Crypto) => {
-    let order: "asc" | "desc" = sortOrder;
-    if (sortField === field) {
-      order = sortOrder === "asc" ? "desc" : "asc";
-    } else {
-      order = "asc";
-    }
-    setSortField(field);
-    setSortOrder(order);
-
-    const sorted = [...data].sort((a, b) => {
-      if (field === "icon") return 0;
-      if (a[field] < b[field]) return order === "asc" ? -1 : 1;
-      if (a[field] > b[field]) return order === "asc" ? 1 : -1;
-      return 0;
-    });
-    setData(sorted);
-  };
-
-  const sortOptions = [
-    "پیش فرض",
-    "موجودی (تعداد)",
-    "موجودی (ارزش تومانی)",
-    "قیمت (زیاد به کم)",
-    "قیمت (کم به زیاد)",
-  ];
-
+  // 📌 بستن منو در کلیک بیرون
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setOpenDropdownId(null);
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredData = data.filter(
-    (item) =>
-      item.name.includes(search) ||
-      item.symbol.toLowerCase().includes(search.toLowerCase())
+  // 📌 تابع fetchData
+  const fetchData = useCallback(
+    async (searchTerm: string, sortKey: string) => {
+      try {
+        const response = await apiRequest<WalletsResponse>({
+          url: "/api/wallets/crypto",
+          method: "GET",
+          params: { limit: 10, page: 1, search: searchTerm, sort: sortKey },
+        });
+        setWalletsData(response.wallets || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    },
+    []
   );
 
+useEffect(() => {
+  fetchData(search, selectedSortKey);
+}, [search, selectedSortKey, fetchData]);
+
+  // 📌 هندل تغییر sort
+  const handleSort = (key: string) => {
+    setSelectedSortKey(key);
+    setOpenDropdown(false);
+  };
+
+  // 📌 گرفتن اطلاعات عمومی
+  const { data: generalData } = useQuery({
+    queryKey: ["general-info"],
+    queryFn: async () => {
+      const res = await fetch("/api/get-general-info");
+      if (!res.ok) throw new Error("Failed to fetch general info");
+      return res.json();
+    },
+  });
+
+// 📌 ترکیب داده‌ها: merge walletsData + generalData
+const cryptoData = walletsData.map((wallet) => {
+  const generalItem = generalData?.cryptocurrency.find(
+    (item: any) => item.symbol === wallet.symbol
+  );
+
+  // 📌 شرط برای آیکون
+  const renderIcon = generalItem?.isFont ? (
+    <i
+      className={`cf cf-${wallet.symbol.toLowerCase()}`}
+      style={{ color: generalItem?.color || "#000", fontSize: "24px" }}
+    ></i>
+  ) : (
+    <img
+      src={
+        generalItem?.icon
+          ? `https://api.payfa24.org/images/currency/${generalItem.icon}`
+          : "/default-coin.png"
+      }
+      alt={wallet.symbol}
+      className="w-6 h-6 rounded-full"
+      onError={(e) => {
+        (e.currentTarget as HTMLImageElement).src = "/default-coin.png";
+      }}
+    />
+  );
+
+  return {
+    ...wallet, 
+    name: generalItem?.locale?.fa?.name || generalItem?.name || wallet.name,
+    color: generalItem.color ,
+    isFont: generalItem.isFont ,
+    icon: renderIcon, 
+    percent: generalItem?.percent ?? wallet.percent,
+  };
+});
+
+
+
   return (
-    <div
-      dir="rtl"
-      className="p-4 bg-white1 rounded-xl border border-gray21 w-full max-w-2xl mx-auto"
-    >
-   
+    <div dir="rtl" className="p-4 bg-white1 rounded-xl border border-gray21 w-full max-w-2xl mx-auto">
+      {/* Search و Dropdown */}
       <div className="flex items-center justify-between mb-3">
         <input
           type="text"
@@ -102,51 +157,24 @@ const CryptoTable: React.FC = () => {
 
         <div className="relative inline-block text-right" ref={dropdownRef}>
           <button
-            onClick={() =>
-              setOpenDropdownId(openDropdownId === -1 ? null : -1)
-            }
+            onClick={() => setOpenDropdown(!openDropdown)}
             className="border border-gray19 rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-52 justify-between text-black1"
           >
-            {selectedSort}
+            {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
             <ChevronDown
-              className={`w-4 h-4 transition-transform duration-200 ${
-                openDropdownId === -1 ? "rotate-180" : ""
-              }`}
+              className={`w-4 h-4 transition-transform duration-200 ${openDropdown ? "rotate-180" : ""}`}
             />
           </button>
 
-          {openDropdownId === -1 && (
+          {openDropdown && (
             <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col">
               {sortOptions.map((option) => (
                 <button
-                  key={option}
-                  onClick={() => {
-                    setSelectedSort(option);
-                    setOpenDropdownId(null);
-                    switch (option) {
-                      case "موجودی (ارزش تومانی)":
-                        handleSort("price");
-                        setSortOrder("asc");
-                        break;
-                      case "قیمت (زیاد به کم)":
-                        handleSort("price");
-                        setSortOrder("desc");
-                        break;
-                      case "قیمت (کم به زیاد)":
-                        handleSort("price");
-                        setSortOrder("asc");
-                        break;
-                      case "موجودی (تعداد)":
-                        handleSort("price");
-                        setSortOrder("asc");
-                        break;
-                      default:
-                        break;
-                    }
-                  }}
+                  key={option.key}
+                  onClick={() => handleSort(option.key)}
                   className="w-full text-right px-3 py-2 hover:bg-gray-100 text-sm text-black1 whitespace-nowrap"
                 >
-                  {option}
+                  {option.label}
                 </button>
               ))}
             </div>
@@ -154,7 +182,8 @@ const CryptoTable: React.FC = () => {
         </div>
       </div>
 
-      <div className="">
+      {/* جدول */}
+      <div>
         <table className="w-full text-sm text-right border-collapse text-black1">
           <thead>
             <tr className="bg-gray41 text-black1">
@@ -166,7 +195,7 @@ const CryptoTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((item: Crypto, index: number) => (
+            {cryptoData.map((item, index) => (
               <tr key={index} className="border-b border-b-gray21 hover:bg-gray41 last:border-b-0">
                 <td className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
                   {item.icon}
@@ -176,23 +205,18 @@ const CryptoTable: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">{item.price.toLocaleString()} تومان</td>
-                <td className={`px-4 py-3 whitespace-nowrap ${item.change >= 0 ? "text-green-600" : "text-red-600"}`}>
-                  {item.change > 0 ? "+" : ""}
-                  {item.change}%
+                <td className={`px-4 py-3 whitespace-nowrap ${item.change && item.change >= 0 ? "text-green-600" : "text-red-600"}`}>
+                  {item.change && item.change > 0 ? "+" : ""}
+                  {item.change ?? 0}%
                 </td>
                 <td className="px-4 py-3 flex gap-2 whitespace-nowrap">
-                  <button className="w-[84px] h-[34px] rounded-[8px] border text-sm text-blue2 hover:bg-blue-100 border-blue2">واریز</button>
-                  <button className="w-[84px] h-[34px] rounded-[8px] text-sm bg-blue2 text-white1 hover:bg-blue-100">برداشت</button>
+                  <button  onClick={() => navigate(ROUTES.Deposit)} className="w-[84px] h-[34px] rounded-[8px] border text-sm text-blue2 hover:bg-blue-100 border-blue2">واریز</button>
+                  <button  onClick={() => navigate(ROUTES.WITHDRAWAL.CREATE)} className="w-[84px] h-[34px] rounded-[8px] text-sm bg-blue2 text-white1 hover:bg-blue-100">برداشت</button>
                 </td>
                 <td className="px-4 py-3 text-center relative whitespace-nowrap group">
-              
                   <button
                     className="p-2 rounded-full hover:bg-gray-100 transition"
-                    onClick={() => {
-                      if (isMobile) {
-                        setOpenModalId(index); 
-                      }
-                    }}
+                    onClick={() => isMobile && setOpenModalId(index)}
                   >
                     <MoreVertical className="w-4 h-4 text-blue2 block group-hover:hidden" />
                     <MoreHorizontal className="w-4 h-4 text-blue2 hidden group-hover:block" />
@@ -200,26 +224,21 @@ const CryptoTable: React.FC = () => {
 
                   {!isMobile && (
                     <div className="absolute left-[41px] mt-2 top-6 w-[226px] bg-white rounded-lg shadow-md flex flex-col z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                      <button
-                        onClick={() => console.log("خرید", item.symbol)}
-                        className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                      <button className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                       onClick={() => navigate(ROUTES.TRADE.BUY)}
                       >
-                        <span className="text-blue1 w-5 h-5 flex items-center justify-center">
-                          <ReceivedIcon />
-                        </span>
-                        <span>خرید</span>
+                        <span className="text-blue1 w-5 h-5 flex items-center justify-center"><ReceivedIcon /></span>
+                        <span className="text-blue1">خرید</span>
                       </button>
-                      <button
-                        onClick={() => console.log("فروش", item.symbol)}
-                        className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                      <button className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                        onClick={() => navigate(ROUTES.TRADE.SELL)}
                       >
-                        <span className="text-blue1 w-5 h-5 flex items-center justify-center">
-                          <SendIcon />
-                        </span>
-                        <span>فروش</span>
+                        <span className="text-blue1 w-5 h-5 flex items-center justify-center"><SendIcon /></span>
+                        <span className="text-blue1">فروش</span>
                       </button>
                     </div>
                   )}
+
                   <ActionModal
                     open={openModalId === index}
                     onClose={() => setOpenModalId(null)}

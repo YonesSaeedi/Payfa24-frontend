@@ -11,7 +11,7 @@ interface TicketListProps {
 }
 
 const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect }) => (
-<div dir="rtl" className="w-[500px] bg-gray38 flex flex-col rounded-[16px] h-[790px] overflow-hidden">
+<div dir="rtl" className="w-[500px] bg-gray38 flex flex-col rounded-[16px] h-[790px]">
   <h2 className="text-lg font-semibold mb-6 text-black1">تیکت‌های شما</h2>
 
   <div className="flex-1 overflow-auto">

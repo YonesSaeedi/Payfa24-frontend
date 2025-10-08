@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "../../../assets/icons/Home/WalletCardIcon/VisibilityIcon";
@@ -31,11 +30,12 @@ const WalletCard = ({
   const navigate = useNavigate();
 
   const isPositive = change >= 0;
+  
 
   const actionButtons = [
     {
       label: "تاریخچه",
-      onClick: () => navigate("/services/transaction"),
+      onClick: () => navigate("/history/crypto"),
       icon: <span className="text-blue1">
            <ReceiptText />
          </span>,
@@ -49,7 +49,7 @@ const WalletCard = ({
     },
     {
       label: "واریز",
-      onClick: () => navigate("/deposit"),
+      onClick: () => navigate("/kyc-basic"),
       icon:  <span className="text-blue1">
           <WalletAdd />
          </span>,
@@ -80,7 +80,7 @@ const WalletCard = ({
 
   return (
     <div>
-      <div className="c border border-gray21 rounded-xl p-6 shadow lg:w-[630px]">
+      <div className="border border-gray21 rounded-xl p-6 shadow lg:w-[630px]">
       
         <div className="flex items-center justify-between mb-7">
           <CurrencyToggle onChange={handleCurrencyChange} />
@@ -101,7 +101,7 @@ const WalletCard = ({
         <div className="text-center mb-6">
           <p
             className={`text-3xl font-bold text-black1 ${
-              !stateBlure ? "blur-sm" : ""
+              !stateBlure ? "blur-md" : ""
             }`}
             dir="rtl"
           >
@@ -128,24 +128,25 @@ const WalletCard = ({
               <p className="text-black1 pl-2">
                 {changeAmount.toLocaleString()} {currency}
               </p>
-              تغییر در ۲۴ ساعت گذشته
+              تغییر در۲۴ ساعت گذشته
             </span>
           </div>
         </div>
 
 
-        <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(100px,1fr))]">
-          {actionButtons.map((btn, idx) => (
-            <button
-              key={idx}
-              onClick={btn.onClick}
-              className="flex flex-col items-center justify-center rounded-lg border bg-gray27 border-gray21 p-[14px] text-sm text-black1 hover:border-blue2 hover:shadow-sm transition"
-            >
-              <div className="w-6 h-6 mb-[6px]">{btn.icon}</div>
-              {btn.label}
-            </button>
-          ))}
-        </div>
+       <div className="flex gap-4 m-2">
+  {actionButtons.map((btn, idx) => (
+    <button
+      key={idx}
+      onClick={btn.onClick}
+      className="flex-1 flex flex-col items-center justify-center rounded-lg border bg-gray27 border-gray21 p-3 text-sm text-black1 hover:border-blue2 hover:shadow-sm transition"
+    >
+      <div className="w-6 h-6 mb-1.5">{btn.icon}</div>
+      {btn.label}
+    </button>
+  ))}
+</div>
+
       </div>
 
 
@@ -158,18 +159,3 @@ const WalletCard = ({
 };
 
 export default WalletCard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
