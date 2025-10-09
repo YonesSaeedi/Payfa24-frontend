@@ -1,9 +1,9 @@
-import React, { useState, useMemo,useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
 import { ICryptoItem } from "../Market/types";
-import Pagination from "../History/Pagination"; 
-import { useNavigate } from "react-router-dom"; 
+import Pagination from "../History/Pagination";
+import { useNavigate } from "react-router-dom";
 
 type TabType =
   | "همه"
@@ -17,20 +17,46 @@ interface Props {
   data: ICryptoItem[];
   active: number;
   setActive: React.Dispatch<React.SetStateAction<number>>;
-   isLoading: boolean;  
+  isLoading: boolean;
 }
 
-const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading  }) => {
+const CryptoMarketTable: React.FC<Props> = ({
+  data,
+  active,
+  setActive,
+  isLoading,
+}) => {
   const [search, setSearch] = useState("");
-  const [cryptoList, setCryptoList] = useState<ICryptoItem[]>(data);
+  const [cryptoList, setCryptoList] = useState<ICryptoItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12; // تعداد آیتم در هر صفحه
+  const itemsPerPage = 12;
   const navigate = useNavigate();
 
- useEffect(() => {
-    setCryptoList(data);
+  // 🟡 بارگذاری داده‌ها + علاقه‌مندی‌ها از localStorage
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    const updatedData = data.map((item) => ({
+      ...item,
+      favorite: storedFavorites.includes(item.symbol),
+    }));
+    setCryptoList(updatedData);
   }, [data]);
 
+  // 🟡 تابع تغییر علاقه‌مندی
+  const toggleFavorite = (symbol: string) => {
+    setCryptoList((prev) => {
+      const updated = prev.map((item) =>
+        item.symbol === symbol ? { ...item, favorite: !item.favorite } : item
+      );
+
+      const favorites = updated
+        .filter((item) => item.favorite)
+        .map((item) => item.symbol);
+
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+      return updated;
+    });
+  };
 
   const tabs: TabType[] = [
     "همه",
@@ -40,14 +66,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
     "بیشترین معامله",
     "تازه‌های بازار",
   ];
-
-  const toggleFavorite = (symbol: string) => {
-    setCryptoList((prev) =>
-      prev.map((item) =>
-        item.symbol === symbol ? { ...item, favorite: !item.favorite } : item
-      )
-    );
-  };
 
   const filteredData = useMemo(() => {
     let filtered = [...cryptoList];
@@ -89,7 +107,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
     return filtered;
   }, [cryptoList, active, search]);
 
-  // 🟢 داده‌های صفحه فعلی
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
@@ -134,11 +151,12 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
 
   return (
     <div className="w-full flex flex-col gap-6 lg:mt-16">
-      {/*باکس سرچ */}
-     <div className="items-center gap-4">
+      <div className="items-center gap-4">
         <div className="w-full flex justify-between">
           <div className="flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 px-3">
-            <span className=" w-5 h-5 ml-2 text-gray-400"><IconSearch  /></span>
+            <span className=" w-5 h-5 ml-2 text-gray-400">
+              <IconSearch />
+            </span>
             <input
               type="text"
               placeholder="...جستجو"
@@ -152,8 +170,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
           </div>
         </div>
       </div>
-
-      {/* تب‌ها */}
       <div className="bg-white1 rounded-2xl shadow border border-gray21 overflow-hidden">
         <div className="flex flex-row-reverse gap-4 text-sm text-gray24 px-4 pt-8">
           {tabs.map((tab, index) => (
@@ -173,8 +189,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
             </span>
           ))}
         </div>
-
-        {/* جدول */}
         <div className="px-6 mt-6">
           <table
             dir="rtl"
@@ -182,7 +196,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
           >
             <thead>
               <tr className="bg-gray0 text-black1 text-sm rounded-md">
-                <th className="py-3 text-center rounded-tr-lg rounded-br-lg">
+                <th className="py-3 text-center rounded-tr-lg rounded-br-lg w-48">
                   نام و نماد ارز
                 </th>
                 <th className="py-3 px-4 hidden lg:table-cell">قیمت به USDT</th>
@@ -192,7 +206,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
                 <th className="py-3 px-4 rounded-tl-lg rounded-bl-lg hidden lg:table-cell"></th>
               </tr>
             </thead>
-            {/* 🟢 اینجا شرط برای اسکلتون/داده اصلی */}
             {isLoading ? (
               <TableSkeleton />
             ) : (
@@ -202,32 +215,32 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
                     key={index}
                     className="border-b border-gray21 hover:bg-gray0 text-sm last:border-b-0"
                   >
-                   <td className="py-3 px-4 flex items-center gap-3 pr-8">
-  <button
-    onClick={() => toggleFavorite(item.symbol)}
-    className={`w-[22px] h-[22px] ${
-      item.favorite ? "text-yellow-400" : "text-gray-400"
-    }`}
-  >
-    <IconStar />
-  </button>
-  <span className="h-9 w-9 flex items-center justify-center">
-    {item.icon}
-  </span>
-  <div>
-    <div className="font-medium text-black1">
-      {((item.locale?.fa ?? item.name) || "").length > 10
-        ? ((item.locale?.fa ?? item.name) || "").slice(0, 10) + "..."
-        : (item.locale?.fa ?? item.name) || ""}
-    </div>
-    <span className="text-xs text-gray-500">
-      {item.symbol}
-    </span>
-  </div>
-</td>
-
-
-
+                    <td className="py-3 px-4 flex items-center gap-3 pr-8">
+                      <button
+                        onClick={() => toggleFavorite(item.symbol)}
+                        className={`w-[22px] h-[22px] ${
+                          item.favorite ? "text-yellow-400" : "text-gray-400"
+                        }`}
+                      >
+                        <IconStar />
+                      </button>
+                      <span className="h-9 w-9 flex items-center justify-center">
+                        {item.icon}
+                      </span>
+                      <div>
+                        <div className="font-medium text-black1">
+                          {((item.locale?.fa ?? item.name) || "").length > 10
+                            ? ((item.locale?.fa ?? item.name) || "").slice(
+                                0,
+                                10
+                              ) + "..."
+                            : (item.locale?.fa ?? item.name) || ""}
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {item.symbol}
+                        </span>
+                      </div>
+                    </td>
                     <td className="py-3 px-4 text-black1 hidden lg:table-cell">
                       USDT {item.priceUSDT.toLocaleString()}
                     </td>
@@ -250,7 +263,10 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
                       </span>
                     </td>
                     <td className="py-3 px-4 text-end hidden lg:table-cell">
-                      <button onClick={() => navigate("/trade/buy")}  className="bg-blue-600 text-white rounded-lg px-4 py-1.5 text-sm hover:bg-blue-700 transition">
+                      <button
+                        onClick={() => navigate("/trade/buy")}
+                        className="bg-blue-600 text-white rounded-lg px-4 py-1.5 text-sm hover:bg-blue-700 transition"
+                      >
                         خرید/فروش
                       </button>
                     </td>
@@ -269,8 +285,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
           </table>
         </div>
       </div>
-      
-      {/* 🟢 استفاده از کامپوننت Pagination خودت */}
       <Pagination
         current={currentPage}
         total={totalPages}
