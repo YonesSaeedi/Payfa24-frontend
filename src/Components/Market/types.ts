@@ -5,14 +5,29 @@ export interface ICryptoItem {
     fa?: string;
     en?: string;
   };
-  icon: JSX.Element;
-
-  priceUSDT: number;     // از priceBuy یا هر چیزی که می‌خوای
+   sort?: number;
+  icon: React.ReactNode;
+  priceUSDT: number;
   buyPrice: number;
   sellPrice: number;
-  change24h: number;     // از priceChangePercent
-  volume: number;        // از quoteVolume
+  change24h: number;
+  volume: number;
+  isNew: boolean;
+  favorite: boolean;
+}
+export interface IGeneralCryptoItem {
+  symbol: string;
+  isFont?: boolean;
+  color?: string;
+  icon?: string;
+  sort?: number; // <-- این برای تعیین isNew است
+  locale?: {
+    fa?: { name: string };
+    en?: { name: string };
+  };
+  name?: string;
+}
 
-  isNew?: boolean;
-  favorite?: boolean;
+export interface IGeneralData {
+  cryptocurrency: IGeneralCryptoItem[];
 }

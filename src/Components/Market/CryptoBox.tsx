@@ -6,10 +6,9 @@ type Item = {
   buyPrice: number;
   change: string;
   isPositive: boolean;
-  isFont?: boolean; // از API میاد
-  color?: string; // از API میاد
-  icon?: string; // نام فایل تصویر از API
+  icon: React.ReactNode; // ✅ به‌روزرسانی شد
 };
+
 
 type CryptoBoxProps = {
   title: string;
@@ -61,24 +60,20 @@ export default function CryptoBox({
           : items.map((item, index) => (
               <li key={`${item.symbol}-${index}`} className="contents">
                 <div className="flex items-center gap-2">
-                  {/* <span className="w-[34px] h-[34px] flex items-center justify-center">
-                    {item.isFont ? (
-                      <i
-                        className={`cf cf-${item.symbol.toLowerCase()}`}
-                        style={{ color: item.color, fontSize: "28px" }}
-                      ></i>
-                    ) : (
-                      <img
-                        src={item.icon || "/default-coin.png"}
-                        alt={item.symbol}
-                        className="object-contain w-full h-full"
-                        onError={(e) =>
-                          (e.currentTarget.src = "/default-coin.png")
-                        }
-                      />
-                    )}
-                  </span> */}<span className="w-[34px] h-[34px] flex items-center justify-center">
-  {item.icon}
+                  <span className="w-[34px] h-[34px] flex items-center justify-center">
+             {item.isFont ? (
+                     <i
+      className={`cf cf-${item.symbol.toLowerCase()}`}
+      style={{ color: item.color, fontSize: '32px' }}
+    ></i>
+  ) : (
+    <img
+      src={`https://api.payfa24.org/images/currency/${item.icon}`}
+      alt={item.symbol}
+      className="object-contain"
+      onError={(e) => ((e.currentTarget as HTMLImageElement).src = "/default-coin.png")}
+    />
+  )}
 </span>
 
 
