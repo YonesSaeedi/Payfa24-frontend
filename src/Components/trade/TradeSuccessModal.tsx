@@ -18,7 +18,7 @@ const TradeSuccessModal = ({ setIsTradeSuccessModalOpen, isSell }: TradeSuccessM
       <div onClick={handleModalClick} className="bg-white8 rounded-2xl border border-white6 py-8 px-6 lg:py-10 lg:px-10 flex flex-col gap-10 lg:gap-12 w-[328px] lg:w-[448px]">
         <div className="flex flex-col items-center gap-4">
           <span className="h-14 w-14 lg:h-[72px] lg:w-[72px] text-green4"><IconSuccess /></span>
-          <span className="font-medium text-lg lg:text-xl text-black1">{isSell ? 'فروش' : 'خرید'}با موفقیت انجام شد.</span>
+          <span className="font-medium text-lg lg:text-xl text-black1">{isSell ? 'فروش ' : 'خرید '}با موفقیت انجام شد.</span>
         </div>
         <div className="flex items-center gap-2">
           <button
