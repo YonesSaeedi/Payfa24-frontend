@@ -113,6 +113,7 @@ export interface KycGetInfo {
   [key: string]: unknown
 }
 
+
 export type GetUser = {
   id: number;
   name: string;
@@ -126,3 +127,20 @@ export type GetUser = {
   level_account: number;
   level_kyc: string;
 };
+
+// ===============================================================================================================================================================================
+
+export interface OrderGetInfoCoin {
+  id?: number
+  symbol: string
+  price?: TradePrices
+}
+export interface OrderGetInfoDigitalCurrency {
+  name?: string
+  symbol: string
+}
+export interface OrderGetInfo {
+  coins?: OrderGetInfoCoin[]
+  digitalCurrency?: OrderGetInfoDigitalCurrency[]
+}
+

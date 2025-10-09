@@ -145,20 +145,6 @@ export async function apiRequest<
       : buildFormData(data as Record<string, FormDataValue>)
     : data;
 
-  // debug logging
-  if (isFormData && body instanceof FormData) {
-    console.log("Sending FormData payload:");
-    for (const [key, value] of body.entries()) {
-      if (value instanceof File) {
-        console.log(key, { name: value.name, size: value.size, type: value.type });
-      } else {
-        console.log(key, value);
-      }
-    }
-  } else {
-    console.log("Sending JSON payload:", body);
-  }
-
   const config: AxiosRequestConfig = {
 
     url,

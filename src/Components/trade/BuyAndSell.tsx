@@ -10,14 +10,17 @@ import PercentBar from "./PercentBar";
 import { toast } from "react-toastify";
 import { apiRequest } from "../../utils/apiClient";
 import { CryptoBuy, FiatBalance, TradeSymbolResponse } from "../../types/apiResponses";
-import useGetCryptoData from "../../hooks/useGetCryptoData";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
-import { CryptoDataMap, CryptoItem } from "../../types/crypto";
+import { CryptoDataMap, CryptoItem, DigitalCurrency, OrderInfoCryptoDataMap } from "../../types/crypto";
 import { ROUTES } from "../../routes/routes";
 import TradeConfirmationModal from "./TradeConfirmationModal";
 import { TradeConfirmationData } from "../../types/tradePage";
 import TradeCancelModal from "./TradeCancelModal";
 import TradeSuccessModal from "./TradeSuccessModal";
+import useGetOrderInfo from "../../hooks/useGetOrderInfo";
+import { mappedDigitalGeneralData } from "../../constants/ListdigitalCoins";
+import { number } from "yup";
+
 
 type BuyAndSellProps = {
   isSell: boolean;
@@ -77,6 +80,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   };
   // handles filling the count input by 'all balance' button ====================================================================================================
   const handleFillCount = () => {
+    if (!cryptoBalance) return
     const roundedCount = isSell ? cryptoBalance : Math.round((TomanBalance / currentCryptoPrice) * 1e8) / 1e8;
     setCountInputStr(String(roundedCount));
     setAmountValue(Math.round((roundedCount * currentCryptoPrice) * 100) / 100);
@@ -84,6 +88,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   };
   // handles filling the amount input by 'all balance' button ====================================================================================================
   const handleFillAmount = () => {
+    if (!TomanBalance) return
     const roundedAmount = isSell ? Math.round(cryptoBalance * currentCryptoPrice * 100) / 100 : TomanBalance;
     setAmountValue(roundedAmount);
     setCountInputStr(String(Math.round((roundedAmount / currentCryptoPrice) * 1e8) / 1e8));
@@ -150,15 +155,25 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     }
   }
   useEffect(() => {
-    fetchTomanBalance()
-    fetchCryptoBalanceAndPrice()
+    if (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') {
+      setCurrentCryptocurrency(mergedDigitalCryptosData[currentCryptocurrency.symbol])
+      if (isSell) setCurrentCryptoPrice(Number(currentCryptocurrency.priceSell))
+      else {
+        setCurrentCryptoPrice(Number(currentCryptocurrency.priceBuy))
+        fetchTomanBalance()
+      }
+    }
+    else {
+      fetchTomanBalance()
+      fetchCryptoBalanceAndPrice()
+    }
   }, [isSell, currentCryptocurrency])
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
   const { data: generalData, isLoading: isGeneralInfoLoading } = useGetGeneralInfo()
-  const { data: cryptocurrenciesData, isLoading: isCryptocurrenciesLoading } = useGetCryptoData()
-  const isCryptoListLoading = isGeneralInfoLoading || isCryptocurrenciesLoading
+  const { data: orderInfoData, isLoading: isOrderInfoDataLoading } = useGetOrderInfo()
+  const isCryptoListLoading = isGeneralInfoLoading || isOrderInfoDataLoading
   // computes an object with keys of crypto symbols and memoize it =======================================================================================
   const mappedGeneralData: CryptoDataMap = useMemo(() => {
     return generalData?.cryptocurrency?.reduce((acc, item) => {
@@ -167,10 +182,16 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     }, {} as CryptoDataMap) ?? {}
   }, [generalData]) // only recalculates when generalData changes  
   // function that returns merged data (general info + list-cryptocurrencies) about crypto currencies; and memoizing ======================================
-  function mergeCryptoData(cryptosConstantInfo: CryptoDataMap, cryptosVariableInfo: CryptoDataMap) {
+  function mergeCryptoData(cryptosConstantInfo: OrderInfoCryptoDataMap, cryptosVariableInfo: OrderInfoCryptoDataMap) {
     const result: CryptoDataMap = {}
     for (const key of Object.keys(cryptosVariableInfo)) {
-      if (cryptosConstantInfo[key]) result[key] = { ...cryptosConstantInfo[key], ...cryptosVariableInfo[key] }
+      if (cryptosConstantInfo[key])
+        result[key] = {
+          ...cryptosConstantInfo[key],
+          ...cryptosVariableInfo[key],
+          priceBuy: cryptosVariableInfo[key].price?.buy.toString(),
+          priceSell: cryptosVariableInfo[key].price?.sell.toString()
+        }
     }
     return result
   }
@@ -178,13 +199,44 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     if (
       mappedGeneralData &&
       Object.keys(mappedGeneralData).length > 0 &&
-      cryptocurrenciesData &&
-      typeof cryptocurrenciesData === "object"
+      orderInfoData &&
+      typeof orderInfoData === "object"
     ) {
-      return mergeCryptoData(mappedGeneralData, cryptocurrenciesData)
+      return mergeCryptoData(mappedGeneralData, orderInfoData.coins)
     }
     return {}
-  }, [mappedGeneralData, cryptocurrenciesData])
+  }, [mappedGeneralData, orderInfoData])
+  // computing merged digital currencies if they exist and memoize it ======================================================================================
+  const mergeDigitalCurrenciesData = (cryptosConstantInfo: Record<string, DigitalCurrency>, cryptosVariableInfo: Record<string, DigitalCurrency>) => {
+    if (!cryptosVariableInfo || Object.keys(cryptosVariableInfo).length === 0) return {};
+    else {
+      const result: CryptoDataMap = {}
+      for (const key of Object.keys(cryptosVariableInfo)) {
+        if (cryptosConstantInfo[key])
+          result[key] = {
+            symbol: cryptosConstantInfo[key].symbol,
+            color: cryptosConstantInfo[key].colorCode,
+            locale: cryptosConstantInfo[key].locale,
+            type: cryptosConstantInfo[key].type,
+            icon: cryptosConstantInfo[key].icon,
+            priceBuy: cryptosVariableInfo[key].price?.buy.toString(),
+            priceSell: cryptosVariableInfo[key].price?.sell.toString()
+          }
+      }
+      return result
+    }
+  }
+  const mergedDigitalCryptosData = useMemo(() => {
+    if (
+      mappedGeneralData &&
+      Object.keys(mappedGeneralData).length > 0 &&
+      orderInfoData &&
+      typeof orderInfoData === "object"
+    ) {
+      return mergeDigitalCurrenciesData(mappedDigitalGeneralData, orderInfoData.digitalCurrency)
+    }
+    return {}
+  }, [mappedGeneralData, orderInfoData])
   // assign BTC to the current cryptocurrency at first
   useEffect(() => {
     if ((mergedCryptosData['BTC'] && currentCryptocurrency === null)) setCurrentCryptocurrency(mergedCryptosData['BTC'])
@@ -193,7 +245,10 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   // buy/sell functionality ==========================================================================================================================================================
   // buy/sell functionality ==========================================================================================================================================================
   const handleBuyOrSell = async () => {
-    if (isSell) {
+    if (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') {
+      
+    }
+    else if (isSell) {
       try {
         setIsSubmitting(true)
         const response = await apiRequest<CryptoBuy, { amountCoin: string }>({ url: `/api/order/crypto/sell/${currentCryptocurrency?.symbol}`, method: 'POST', data: { amountCoin: countInputStr } })
@@ -241,6 +296,11 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
     setIsTradeConfirmationModalOpen(false)
     setIsTradeSuccessModalOpen(true)
   }
+  // compute isDisabled for the percent bar =====================================================================================================================================
+  const isDisabled = (isSell && cryptoBalance === 0) || (!isSell && TomanBalance === 0)
+  // compute if it's isDigitalCurrencySell or isDigitalCurrency =================================================================================================================
+  const isDigitalCurrencySell = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') && isSell
+  const isDigitalCurrency = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher')
 
   return (
     <div className="w-full h-full lg:bg-gray30 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between">
@@ -276,6 +336,7 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
             cryptoListData={Object.values(mergedCryptosData)}
             setCurrentCryptoCurrency={setCurrentCryptocurrency}
             isCryptoListLoading={isCryptoListLoading}
+            digitalCryptoListData={Object.values(mergedDigitalCryptosData)}
           />}
         {isTradeConfirmationModalOpen &&
           <TradeConfirmationModal
@@ -289,8 +350,9 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
           />}
         {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
         {isTradeSuccessModalOpen && <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} isSell={isSell} />}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-text5 text-xs lg:text-sm font-medium">موجودی شما :
+        <div className={`flex items-center ${isDigitalCurrency ? 'justify-end' : 'justify-between'}`}>
+          <div className={`items-center gap-1 text-text5 text-xs lg:text-sm font-medium ${isDigitalCurrency ? 'hidden' : 'flex'}`}>
+            موجودی شما :
             {isLoading || cryptoBalance === null ?
               <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
               :
@@ -307,8 +369,8 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
           </span>
         </div>
       </div>
-      {/* choose coin count ======================================================================================================= */}
-      <div className="flex flex-col gap-5 lg:gap-3">
+      {/* choose coin count (gets hidden when digital currency: sell) ============================================================================================ */}
+      <div className={`${isDigitalCurrencySell ? 'hidden' : 'flex'} flex-col gap-5 lg:gap-3`}>
         <div onClick={() => countInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
           <div className="absolute px-1 bg-backgroundMain lg:bg-gray43  border-none -top-4 right-4 text-gray5 text-sm font-normal">مقدار رمز ارز</div>
           <input
@@ -323,11 +385,29 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
           />
         </div>
         <div className={`justify-end text-sm font-normal ${isSell ? 'flex' : 'hidden'}`}>
-          <span onClick={handleFillCount} className="text-primary text-sm font-normal cursor-pointer">تمام موجودی</span>
+          <button onClick={handleFillCount} className="text-primary text-sm font-normal hover:text-blue2 hover:underline">تمام موجودی</button>
         </div>
       </div>
+      {/* input for voucher code (only visible when digital currency: sell) ======================================================================================= */}
+      <div className={`${isDigitalCurrencySell && isSell ? 'flex' : 'hidden'} flex-col gap-5 lg:gap-3`}>
+        <div onClick={() => countInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
+          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43  border-none -top-4 right-4 text-gray5 text-sm font-normal">کد ووچر</div>
+          <input
+            ref={countInputRef}
+            type="text"
+            className="bg-transparent appearance-none outline-none w-full text-gray5 text-right"
+            placeholder={`کد ووچر ${currentCryptocurrency?.locale?.fa?.name} را وارد کنید`}
+            value={countInputStr}
+            onChange={handleCountChange}
+            dir="ltr"
+          />
+        </div>
+        {/* <div className={`justify-end text-sm font-normal ${isSell ? 'flex' : 'hidden'}`}>
+          <button onClick={handleFillCount} className="text-primary text-sm font-normal hover:text-blue2 hover:underline">تمام موجودی</button>
+        </div> */}
+      </div>
       {/* choose total amount ======================================================================================================= */}
-      <div className="flex flex-col gap-5 lg:gap-3">
+      <div className={`${isDigitalCurrencySell ? 'hidden' : 'flex'} flex-col gap-5 lg:gap-3`}>
         <div onClick={() => amountInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
           <div className="absolute px-1 bg-backgroundMain lg:bg-gray43 border-none -top-4 right-4 text-gray5 text-sm font-normal">{isSell ? 'مقدار دریافتی' : 'مقدار پرداختی'}</div>
           <div className="w-full flex items-center justify-between">
@@ -353,15 +433,19 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
               <span>{formatPersianDigits(TomanBalance)} تومان</span>
             }
           </div>
-          <span onClick={handleFillAmount} className="text-primary text-sm font-normal cursor-pointer">تمام موجودی</span>
+          <button onClick={handleFillAmount} className="text-primary text-sm font-normal hover:text-blue2 hover:underline">تمام موجودی</button>
         </div>
       </div>
       {/* percent bar ======================================================================================================= */}
-      <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
+      {!isDigitalCurrencySell &&
+        <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} isDisabled={isDisabled} />
+      }
       <button
         disabled={isSubmitting || !countInputStr || !amountValue}
         onClick={handleBuyOrSell}
-        className="rounded-lg bg-blue2 py-2 lg:py-2.5 text-white2 text-base font-medium lg:text-lg lg:font-bold hover:bg-blue-600 hover:-translate-y-0.5 transition duration-300">
+        className={`rounded-lg py-2 lg:py-2.5 text-base font-medium lg:text-lg lg:font-bold transition duration-300
+        ${isSubmitting || !countInputStr || !amountValue ? 'text-black1 bg-gray2' : 'bg-blue2 text-white2 hover:bg-blue-600 hover:-translate-y-0.5'}`}
+      >
         {isSubmitting ? 'در حال ثبت سفارش ...' : isSell ? "ثبت فروش" : "ثبت خرید"}
       </button>
     </div>

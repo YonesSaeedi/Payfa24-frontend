@@ -69,7 +69,7 @@ export default function Advance() {
       console.log('FormData entry ->', key, value);
     }
     try {
-      const response = await apiRequest({
+      await apiRequest({
         url: '/api/kyc/advanced/level1',
         method: "POST",
         data: formData,
@@ -108,7 +108,7 @@ export default function Advance() {
           {step === 2 && <IdentityVerification handleUploadImageFiles={handleUploadImageFiles} handleSubmit={handleSubmit} uploadProgress={uploadProgress} />}
           {isSuccessModalOpen ?
             <KycSuccessModal />
-            : isRejectModalOpen ? <KycRejectModal msg={rejectModalMsg} />
+            : isRejectModalOpen ? <KycRejectModal msg={rejectModalMsg} setIsRejectModalOpen={setIsRejectModalOpen} />
               : isPendingModalOpen ? <KycPendingModal />
                 : null
           }
@@ -117,5 +117,3 @@ export default function Advance() {
     </HeaderLayout>
   );
 }
-
-
