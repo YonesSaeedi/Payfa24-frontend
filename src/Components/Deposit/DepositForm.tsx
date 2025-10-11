@@ -64,10 +64,11 @@ export default function DepositForm() {
 
     // --- ۲. منطق بررسی نهایی تراکنش (Callback) با درخواست GET ---
     useEffect(() => {
+        console.log("urlId",urlId);
+
         // اگر id در URL وجود نداشت، از اجرای این تابع جلوگیری کن
         if (!urlId) return;
 
-        // تابعی برای حذف پارامترهای اضافی از URL پس از پردازش
         const cleanUrl = () => {
             const newUrl = window.location.origin + window.location.pathname;
             window.history.replaceState({}, "", newUrl);
@@ -89,15 +90,15 @@ export default function DepositForm() {
             cleanUrl();
         })
         .catch((error) => {
-            const errorMessage = error.response?.data?.msg || "خطا در بررسی وضعیت تراکنش.";
-            toast.error(errorMessage);
+            // const errorMessage = error.response?.data?.msg || "خطا در بررسی وضعیت تراکنش.";
+            // toast.error(errorMessage);
+            console.log(error)
             cleanUrl();
         });
         
     }, [urlId]); // این useEffect فقط زمانی اجرا می‌شود که urlId تغییر کند (در بارگذاری اولیه صفحه Callback)
 
 
-    // --- ۳. هندلر ارسال فرم و هدایت به درگاه (API اول: درخواست POST) ---
     const onSubmit = async (data: any) => {
         
         // 🔑 مهم: ارسال مقدار واریزی دقیقاً همانطور که کاربر وارد کرده (بدون ضرب در ۱۰)
@@ -119,10 +120,10 @@ export default function DepositForm() {
             // هدایت کاربر به لینک درگاه پرداخت
             const redirectLink = response.link || response.url;
             if (response.status && redirectLink) {
-                toast.info("در حال هدایت به درگاه پرداخت... 🚀");
+                toast.success("در حال هدایت به درگاه پرداخت... 🚀");
                 window.location.href = redirectLink; 
             } else {
-                toast.error(response.msg || "خطا: لینک درگاه پرداخت از سرور دریافت نشد. 🚫");
+                toast.error(response.msg || "خطا: لینک درگاه پرداخت از سرور دریافت نشد");
             }
 
         } catch (error: any) {
@@ -158,7 +159,7 @@ export default function DepositForm() {
                                 placeholder="0 تومان "
                                 placeholderColor="text-black0"
                             />
-                            {errors.amount && <p className="text-red-500 text-sm mt-1">{errors.amount.message}</p>}
+                            {errors.amount && <p className="text-red1 text-sm mt-1">{errors.amount.message}</p>}
                         </>
                     )}
                 />

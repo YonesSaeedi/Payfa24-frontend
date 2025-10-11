@@ -6,7 +6,7 @@ function IconAccept() {
     
 
     return (
-        
+        <></>
     )
 }
 

@@ -20,7 +20,7 @@ import { apiRequest } from "../../utils/apiClient";
 
 export default function DepositPage() {
   const [step, setStep] = useState<number>(1);
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string>("closeDeal");
   const [started, setStarted] = useState<boolean>(false);
 
   const handleStart = () => {
@@ -110,7 +110,7 @@ export default function DepositPage() {
       case "trade":
         return <WalletDeposit />;
       default:
-        return <DepositWithTxID />;
+        return <DepositForm />;
     }
   };
 

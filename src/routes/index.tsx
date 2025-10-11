@@ -57,8 +57,9 @@ export default function AppRouter() {
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
         <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />
-        <Route path={ROUTES.ADD_FRIEND} element={<AddFriend />} />
+        <Route path={ROUTES.ADD_FRIEND.ROOT} element={<AddFriend />} />
         <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
+
         <Route path={ROUTES.WALLET} element={<Wallet />} />
         <Route path={ROUTES.WITHDRAWAL} element={<WithdrawPage />} />
         <Route path={ROUTES.TRADE.ROOT} element={<TradeLayout />}>

@@ -17,8 +17,7 @@ export const ROUTES = {
   VERIFY_GOOGLE: "/verify/google",
   MULTI_FACTOR: "/multi-factor",
   GOOGLE_AUTH_FLOW: "/google-auth-flow",
-  ADD_FRIEND: "/add-friend",
-  DEPOSIT: "/deposit",
+  DEPOSIT: "/wallet/deposit",
   CONNECTED_DEVICES: "/services/connected-devices",
   FAQ: "/services/faq",
   BANK_CARDS: "/services/bank-cards",
@@ -39,6 +38,11 @@ export const ROUTES = {
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },
+  
+
+ADD_FRIEND: {
+  ROOT:"/services/add-friend", // مسیر اصلی را به زیرمجموعه خدمات ببرید
+},
 
 
 };

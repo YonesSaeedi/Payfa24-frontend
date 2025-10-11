@@ -51,6 +51,7 @@ import HeaderLayout from "../../layouts/HeaderLayout";
 import IdentyIcon from "../../assets/Icons/authentication/IdentyIcon";
 import IconCardIdenty from "../../assets/Icons/authentication/IconCardIdenty";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
+import { Link } from "react-router";
 
 // تابع برای فرمت‌بندی تاریخ شمسی
 function formatPersianDate(dateStr: string): string {
@@ -81,6 +82,7 @@ function formatPersianDate(dateStr: string): string {
   )}`;
 }
 
+
 export default function Profile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -104,11 +106,6 @@ export default function Profile() {
     fetchData();
   }, []);
 
-
-
-
-    
-
   // توابع کمکی برای نمایش بر اساس سطح
   const verificationLevel = userData?.verification_level || 0;
   const showEmailAndName = verificationLevel >= 1;
@@ -130,23 +127,6 @@ export default function Profile() {
       ? `${nameInitial} ${familyInitial}`
       : nameInitial || "N/A";
   };
-
-  // if (loading) {
-  //   return (
-  //     <HeaderLayout>
-  //       <div className="p-10 text-center">در حال بارگذاری اطلاعات...</div>
-  //     </HeaderLayout>
-  //   );
-  // }
-  // if (error || !userData) {
-  //   return (
-  //     <HeaderLayout>
-  //       <div className="p-10 text-center text-red1">
-  //         {error ? error.message : "خطا در دریافت اطلاعات کاربر."}
-  //       </div>
-  //     </HeaderLayout>
-  //   );
-  // }
 
   return (
     <>
@@ -171,7 +151,7 @@ export default function Profile() {
                 )}
 
                 {/* --- بخش مشترک اطلاعات کاربر (بالا) --- */}
-                <div className="flex justify-between flex-row-reverse lg:text-lg font-normal text-sm lg:mb-10 mb-8 lg:w-[498px] w-full">
+                <div className="flex justify-between items-center flex-row-reverse lg:text-lg font-normal text-sm lg:mb-10 mb-8 lg:w-[498px] w-full">
                   <div className="flex flex-col text-end gap-4 text-gray5">
                     <span>سطح کاربری</span>
                     {showEmailAndName && <span>نام و نام خانوادگی</span>}
@@ -181,7 +161,7 @@ export default function Profile() {
                   </div>
                   <div className="flex flex-col gap-4 text-black1">
                     {loading ? (
-                      <span className="animate-pulse bg-gray-600 w-20 h-4 rounded-md"></span>
+                      <span className="skeleton-bg w-20 h-5 rounded-md"></span>
                     ) : (
                       <span>
                         {verificationLevel === 0
@@ -191,10 +171,27 @@ export default function Profile() {
                           : `سطح ${verificationLevel}`}
                       </span>
                     )}
-                    {showEmailAndName && <span>{userName}</span>}
-                    <span>{userMobile}</span>
-                    {showEmailAndName && <span>{userEmail}</span>}
-                    <span>{userJoinDate}</span>
+                    {loading ? (
+                      <span className="skeleton-bg w-28 h-5 rounded-md"></span>
+                    ) : (
+                      <>{showEmailAndName && <span>{userName}</span>}</>
+                    )}
+
+                    {loading ? (
+                      <span className="skeleton-bg w-36 h-5 rounded-md"></span>
+                    ) : (
+                      <span>{userMobile}</span>
+                    )}
+                    {loading ? (
+                      <span className="skeleton-bg w-64 h-5 rounded-md"></span>
+                    ) : (
+                      <>{showEmailAndName && <span>{userEmail}</span>}</>
+                    )}
+                    {loading ? (
+                      <span className="skeleton-bg w-32 h-5 rounded-md"></span>
+                    ) : (
+                      <span>{userJoinDate}</span>
+                    )}
                   </div>
                 </div>
 
@@ -229,9 +226,11 @@ export default function Profile() {
                         <li>خرید و فروش رمز ارزها</li>
                       </ul>
                     </div>
-                    <button className="bg-blue2 flex items-center justify-center w-full mt-5 h-[48px] rounded-lg text-white2 font-bold">
-                      احراز هویت
-                    </button>
+                    <Link to={"/kyc-basic"} className="w-full">
+                      <button className="bg-blue2 flex items-center justify-center w-full mt-5 h-[48px] rounded-lg text-white2 font-bold">
+                        احراز هویت
+                      </button>
+                    </Link>
                   </form>
                 ) : verificationLevel === 1 ? (
                   <form className="lg:w-[498px] text-gray15 w-full items-end mb-5 border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 justify-center sm:justify-end">
@@ -262,9 +261,11 @@ export default function Profile() {
                         <li className="text-right">دسترسی به ارز Utopia USD</li>
                       </ul>
                     </div>
-                    <button className="bg-blue2 w-full mt-5 h-[48px] rounded-lg text-white2 font-bold">
-                      احراز هویت
-                    </button>
+                    <Link to={"/kyc-advanced"} className="w-full">
+                      <button className="bg-blue2 w-full mt-5 h-[48px] rounded-lg text-white2 font-bold">
+                        احراز هویت
+                      </button>
+                    </Link>
                   </form>
                 ) : (
                   <div className="lg:w-[498px] p-6 text-center text-green-600 border-solid border-green-600 rounded-lg border-[1px]">

@@ -30,7 +30,7 @@ const WithdrawPage: React.FC = () => {
               <div className="flex-1 flex flex-col gap-6 p-8 ">
                 <div
                   dir="rtl"
-                  className="bg-orange5 rounded-xl p-4 text-sm text-left  w-[565px]"
+                  className="bg-orange5 rounded-xl p-4 text-sm text-left  "
                 >
                   <h3 className="text-orange1  flex items-left gap-1 mb-2">
                     <span dir="rtl" className="w-5 h-5 text-orange1">
