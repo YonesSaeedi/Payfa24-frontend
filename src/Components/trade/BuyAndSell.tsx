@@ -19,16 +19,15 @@ import TradeCancelModal from "./TradeCancelModal";
 import TradeSuccessModal from "./TradeSuccessModal";
 import useGetOrderInfo from "../../hooks/useGetOrderInfo";
 import { mappedDigitalGeneralData } from "../../constants/ListdigitalCoins";
-import { number } from "yup";
+import OTPModal from "../OTPModal";
+import OTPInputModal from "./OTPInputModal";
+import useGetUser from "../../hooks/useGetUser";
+import useGetSettings from "../../hooks/useGetSettings";
 
-
-type BuyAndSellProps = {
-  isSell: boolean;
-}
-
-const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
+const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const countInputRef = useRef<HTMLInputElement | null>(null)
   const amountInputRef = useRef<HTMLInputElement | null>(null)
+  const voucherCodeInputRef = useRef<HTMLInputElement | null>(null)
   const lastChangedRef = useRef<'percent' | 'input' | null>(null);
   const [countInputStr, setCountInputStr] = useState<string>("");
   const [amountValue, setAmountValue] = useState<number | ''>('')
@@ -43,6 +42,10 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   const [TomanBalance, setTomanBalance] = useState<number | null>(null)
   const [currentCryptoPrice, setCurrentCryptoPrice] = useState<number | null>(null)
   const [cryptoBalance, setCryptoBalance] = useState<number | null>(null)
+  const [voucherCode, setVoucherCode] = useState<string>('')
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState<boolean>(false)
+  const [otpCode, setOtpCode] = useState<string>('')
+  const [digitalIDOrder, setDigitalIDOrder] = useState<number | null>(null)
   const { currentCryptocurrency, setCurrentCryptocurrency } = useOutletContext<{ currentCryptocurrency: CryptoItem | null; setCurrentCryptocurrency: React.Dispatch<React.SetStateAction<CryptoItem | null>>; }>();
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
   // handles count input change ============================================================================================================================
@@ -246,7 +249,49 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   // buy/sell functionality ==========================================================================================================================================================
   const handleBuyOrSell = async () => {
     if (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') {
-      
+      if (isSell) {
+        try {
+          setIsSubmitting(true)
+          const response = await apiRequest({
+            url: `/api/order/digital/sell/${currentCryptocurrency?.locale?.en?.name}`,
+            method: 'POST',
+            data: { voucherCode: voucherCode }
+          })
+          // setTradeConfirmationModalData({
+          //   coinAmount: response?.amount_coin,
+          //   tomanAmount: response?.amount,
+          //   symbol: currentCryptocurrency?.symbol ? currentCryptocurrency?.symbol : '',
+          //   unitPrice: response?.fee,
+          //   orderID: response?.id_order
+          // })
+          // setIsTradeConfirmationModalOpen(true)
+        } catch (err) {
+          toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+        }
+        finally {
+          setIsSubmitting(false)
+        }
+      } else {
+        try {
+          setIsSubmitting(true)
+          const response = await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue) } })
+          // setTradeConfirmationModalData({
+          //   coinAmount: response?.amount_coin,
+          //   tomanAmount: response?.amount,
+          //   symbol: currentCryptocurrency?.symbol ? currentCryptocurrency?.symbol : '',
+          //   unitPrice: response?.fee,
+          //   orderID: response?.id_order
+          // })
+          // setIsTradeConfirmationModalOpen(true)
+          setDigitalIDOrder(response?.id_order)
+          setIsOtpModalOpen(true)
+        } catch (err) {
+          toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+        }
+        finally {
+          setIsSubmitting(false)
+        }
+      }
     }
     else if (isSell) {
       try {
@@ -286,9 +331,25 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
       }
     }
   }
+  // handleSubmitDigitalTrade ==================================================================================================================================================
+  const handleSubmitDigitalBuy = async () => {
+    try {
+      setIsSubmitting(true)
+      const response = await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue), codeOtp: otpCode, id_order: String(digitalIDOrder) } })
+    } catch (err) {
+      toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
   // handle cancel trade ================================================================================================================================================================
   const handleCancelTrade = () => {
     setIsTradeConfirmationModalOpen(false)
+    setIsTradeCancelModalOpen(true)
+  }
+  //
+  const handleCancelDigitalBuy = () => {
+    setIsOtpModalOpen(false)
     setIsTradeCancelModalOpen(true)
   }
   // handle success trade ===============================================================================================================================================================
@@ -301,121 +362,148 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
   // compute if it's isDigitalCurrencySell or isDigitalCurrency =================================================================================================================
   const isDigitalCurrencySell = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') && isSell
   const isDigitalCurrency = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher')
+  const { data: settingsData, isLoading: isSettingsDataLoading } = useGetSettings()
+  const { data: userData, isLoading: isUserDataLoading } = useGetUser()
+  const OTPModalMainText = settingsData?.twofa?.type === 'sms' ? `کد ارسال شده به شماره ${userData?.user?.mobile} را وارد کنید.`
+    : settingsData?.twofa?.type === 'email' ? `کد ارسال شده به ایمیل ${userData?.user?.email} را وارد کنید.`
+      : settingsData?.twofa?.type === 'telegram' ? `کد ارسال شده به تلگرام ${userData?.user?.mobile} را وارد کنید.`
+        : settingsData?.twofa?.type === 'google' ? `کد ارسال شده به google authenticator را وارد کنید.`
+          : ''
+  // console.log(userData);
+  // console.log(settingsData);
 
   return (
-    <div className="w-full h-full lg:bg-gray30 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between">
-      <div className="flex items-center gap-2">
-        <Link to={ROUTES.TRADE.BUY} className={`w-1/2 py-3 flex items-center gap-1 justify-center rounded-lg border border-transparent transition duration-300 ${isSell ? 'bg-gray10 text-gray17 hover:bg-transparent hover:text-green2 hover:border-green2' : 'bg-green2 text-white2'}`}>
-          <span className="text-sm font-medium lg:text-lg lg:font-bold">خرید</span>
-          <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4"><IconArrowBottomLeft /></span>
-        </Link>
-        <Link to={ROUTES.TRADE.SELL} className={`w-1/2 py-3 flex items-center gap-1 justify-center rounded-lg text-text6 border border-transparent transition duration-300 ${isSell ? 'bg-red1 text-white2' : 'bg-gray10 text-gray17 hover:bg-transparent hover:text-red1 hover:border-red1'}`}>
-          <span className="text-sm font-medium lg:text-lg lg:font-bold">فروش</span>
-          <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4"><IconArrowTopLeft /></span>
-        </Link>
-      </div>
-      {/* select coin button ======================================================================================================= */}
-      <div className="flex flex-col gap-3">
-        <div onClick={() => setIsCryptoListModalOpen(true)} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 flex items-center justify-between cursor-pointer relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43 border-none -top-4 right-4 text-gray5 text-sm font-normal">انتخاب رمز ارز</div>
-          <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-full">
-              {currentCryptocurrency?.isFont ?
-                <i className={`cf cf-${currentCryptocurrency?.symbol.toLowerCase()}`} style={{ color: currentCryptocurrency?.color, fontSize: '28px' }}></i>
+    <div className="w-full h-full lg:bg-white8 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between lg:border lg:border-gray21">
+      <div className="flex flex-col gap-10">
+        <div className="flex items-center gap-2">
+          <Link to={ROUTES.TRADE.BUY} className={`w-1/2 py-3 flex items-center gap-1 justify-center rounded-lg border border-transparent transition duration-300 ${isSell ? 'bg-gray10 text-gray17 hover:bg-transparent hover:text-green2 hover:border-green2' : 'bg-green2 text-white2'}`}>
+            <span className="text-sm font-medium lg:text-lg lg:font-bold">خرید</span>
+            <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4"><IconArrowBottomLeft /></span>
+          </Link>
+          <Link to={ROUTES.TRADE.SELL} className={`w-1/2 py-3 flex items-center gap-1 justify-center rounded-lg text-text6 border border-transparent transition duration-300 ${isSell ? 'bg-red1 text-white2' : 'bg-gray10 text-gray17 hover:bg-transparent hover:text-red1 hover:border-red1'}`}>
+            <span className="text-sm font-medium lg:text-lg lg:font-bold">فروش</span>
+            <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4"><IconArrowTopLeft /></span>
+          </Link>
+        </div>
+        {/* select coin button ======================================================================================================= */}
+        <div className="flex flex-col gap-3">
+          <div onClick={() => setIsCryptoListModalOpen(true)} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 flex items-center justify-between cursor-pointer relative group hover:border-blue2">
+            <div className="absolute px-1 bg-white1  lg:bg-white8 border-none -top-4 right-4 text-gray5 text-sm font-normal group-hover:text-blue2">انتخاب رمز ارز</div>
+            <div className="flex items-center gap-2">
+              <span className="w-7 h-7 rounded-full">
+                {currentCryptocurrency?.isFont ?
+                  <i className={`cf cf-${currentCryptocurrency?.symbol.toLowerCase()}`} style={{ color: currentCryptocurrency?.color, fontSize: '28px' }}></i>
+                  :
+                  <img src={`https://api.payfa24.org/images/currency/${currentCryptocurrency?.icon}`} alt={currentCryptocurrency?.symbol} className="object-contain" />
+                }
+              </span>
+              <span className="text-black1 text-sm font-normal">{currentCryptocurrency?.locale?.fa?.name}</span>
+            </div>
+            <span className="icon-wrapper w-5 h-5 -rotate-90 text-gray23 group-hover:text-blue2"><IconChevron /></span>
+          </div>
+          {isCryptoListModalOpen &&
+            <CryptoListModal
+              setIsCryptoListModalOpen={setIsCryptoListModalOpen}
+              cryptoListData={Object.values(mergedCryptosData)}
+              setCurrentCryptoCurrency={setCurrentCryptocurrency}
+              isCryptoListLoading={isCryptoListLoading}
+              digitalCryptoListData={Object.values(mergedDigitalCryptosData)}
+            />}
+          {isTradeConfirmationModalOpen &&
+            <TradeConfirmationModal
+              setIsTradeConfirmationModalOpen={setIsTradeConfirmationModalOpen}
+              isSell={isSell}
+              tradeConfirmationModalData={TradeConfirmationModalData!}
+              fetchCryptoBalanceAndPrice={fetchCryptoBalanceAndPrice}
+              fetchTomanBalance={fetchTomanBalance}
+              handleCancelTrade={handleCancelTrade}
+              handleSuccessTrade={handleSuccessTrade}
+            />}
+          {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
+          {isTradeSuccessModalOpen && <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} isSell={isSell} />}
+          {isOtpModalOpen &&
+            <div className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.3)] backdrop-blur-sm flex items-center justify-center">
+              <div className="bg-white8 rounded-2xl border border-white6 py-4 px-4 lg:py-8 lg:px-10 flex flex-col gap-8 w-[328px] lg:w-[448px]">
+                <OTPModal length={6} onChange={(value: string) => setOtpCode(value)} />
+                <button className="bg-blue2 p-2 " onClick={handleSubmitDigitalBuy}>ثبت</button>
+              </div>
+            </div>
+          }
+          {!isOtpModalOpen &&
+            <OTPInputModal
+              titleText={`تایید ${isSell ? 'فروش' : 'خرید'} ${currentCryptocurrency?.locale?.fa?.name}`}
+              mainText={OTPModalMainText}
+              closeModal={handleCancelDigitalBuy}
+              OTPLength={6}
+            />
+          }
+          <div className={`flex items-center ${isDigitalCurrency ? 'justify-end' : 'justify-between'}`}>
+            <div className={`items-center gap-1 text-gray24 text-xs lg:text-sm font-medium ${isDigitalCurrency ? 'hidden' : 'flex'}`}>
+              موجودی شما :
+              {isLoading || cryptoBalance === null ?
+                <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
                 :
-                <img src={`https://api.payfa24.org/images/currency/${currentCryptocurrency?.icon}`} alt={currentCryptocurrency?.symbol} className="object-contain" />
+                <span className="text-black1 font-normal" dir="ltr">{`${cryptoBalance} ${currentCryptocurrency?.symbol}`}</span>
+              }
+            </div>
+            <span className="text-sm font-normal text-black1 flex items-center gap-1">
+              {isSell ? 'قیمت فروش' : 'قیمت خرید'} :
+              {isLoading ?
+                <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
+                :
+                <span>{formatPersianDigits(currentCryptoPrice)} تومان</span>
               }
             </span>
-            <span className="text-text4 text-sm font-normal">{currentCryptocurrency?.locale?.fa?.name}</span>
           </div>
-          <span className="icon-wrapper w-5 h-5 -rotate-90 text-grey1"><IconChevron /></span>
         </div>
-        {isCryptoListModalOpen &&
-          <CryptoListModal
-            setIsCryptoListModalOpen={setIsCryptoListModalOpen}
-            cryptoListData={Object.values(mergedCryptosData)}
-            setCurrentCryptoCurrency={setCurrentCryptocurrency}
-            isCryptoListLoading={isCryptoListLoading}
-            digitalCryptoListData={Object.values(mergedDigitalCryptosData)}
-          />}
-        {isTradeConfirmationModalOpen &&
-          <TradeConfirmationModal
-            setIsTradeConfirmationModalOpen={setIsTradeConfirmationModalOpen}
-            isSell={isSell}
-            tradeConfirmationModalData={TradeConfirmationModalData!}
-            fetchCryptoBalanceAndPrice={fetchCryptoBalanceAndPrice}
-            fetchTomanBalance={fetchTomanBalance}
-            handleCancelTrade={handleCancelTrade}
-            handleSuccessTrade={handleSuccessTrade}
-          />}
-        {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
-        {isTradeSuccessModalOpen && <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} isSell={isSell} />}
-        <div className={`flex items-center ${isDigitalCurrency ? 'justify-end' : 'justify-between'}`}>
-          <div className={`items-center gap-1 text-text5 text-xs lg:text-sm font-medium ${isDigitalCurrency ? 'hidden' : 'flex'}`}>
-            موجودی شما :
-            {isLoading || cryptoBalance === null ?
-              <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
-              :
-              <span className="text-text4 font-normal" dir="ltr">{`${cryptoBalance} ${currentCryptocurrency?.symbol}`}</span>
-            }
+        {/* choose coin count (gets hidden when digital currency: sell) ============================================================================================ */}
+        <div className={`${isDigitalCurrencySell ? 'hidden' : 'flex'} flex-col gap-5 lg:gap-3`}>
+          <div onClick={() => countInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative group focus-within:border-blue2">
+            <div className="absolute px-1 bg-white1 lg:bg-white8  border-none -top-4 right-4 text-gray5 text-sm font-normal group-focus-within:text-blue2">مقدار رمز ارز</div>
+            <input
+              ref={countInputRef}
+              type="text"
+              inputMode="decimal"
+              className="bg-transparent appearance-none outline-none w-full text-gray5 text-right"
+              placeholder={`مقدار ${currentCryptocurrency?.locale?.fa?.name} مدنظر را وارد کنید`}
+              value={countInputStr}
+              onChange={handleCountChange}
+              dir="ltr"
+            />
           </div>
-          <span className="text-sm font-normal text-text4 flex items-center gap-1">
-            {isSell ? 'قیمت فروش' : 'قیمت خرید'} :
-            {isLoading ?
-              <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
-              :
-              <span>{formatPersianDigits(currentCryptoPrice)} تومان</span>
-            }
-          </span>
+          <div className={`justify-end text-sm font-normal ${isSell ? 'flex' : 'hidden'}`}>
+            <button onClick={handleFillCount} className="text-blue2 text-sm font-normal hover:underline">تمام موجودی</button>
+          </div>
         </div>
-      </div>
-      {/* choose coin count (gets hidden when digital currency: sell) ============================================================================================ */}
-      <div className={`${isDigitalCurrencySell ? 'hidden' : 'flex'} flex-col gap-5 lg:gap-3`}>
-        <div onClick={() => countInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43  border-none -top-4 right-4 text-gray5 text-sm font-normal">مقدار رمز ارز</div>
-          <input
-            ref={countInputRef}
-            type="text"
-            inputMode="decimal"
-            className="bg-transparent appearance-none outline-none w-full text-gray5 text-right"
-            placeholder={`مقدار ${currentCryptocurrency?.locale?.fa?.name} مدنظر را وارد کنید`}
-            value={countInputStr}
-            onChange={handleCountChange}
-            dir="ltr"
-          />
-        </div>
-        <div className={`justify-end text-sm font-normal ${isSell ? 'flex' : 'hidden'}`}>
-          <button onClick={handleFillCount} className="text-primary text-sm font-normal hover:text-blue2 hover:underline">تمام موجودی</button>
-        </div>
-      </div>
-      {/* input for voucher code (only visible when digital currency: sell) ======================================================================================= */}
-      <div className={`${isDigitalCurrencySell && isSell ? 'flex' : 'hidden'} flex-col gap-5 lg:gap-3`}>
-        <div onClick={() => countInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43  border-none -top-4 right-4 text-gray5 text-sm font-normal">کد ووچر</div>
-          <input
-            ref={countInputRef}
-            type="text"
-            className="bg-transparent appearance-none outline-none w-full text-gray5 text-right"
-            placeholder={`کد ووچر ${currentCryptocurrency?.locale?.fa?.name} را وارد کنید`}
-            value={countInputStr}
-            onChange={handleCountChange}
-            dir="ltr"
-          />
-        </div>
-        {/* <div className={`justify-end text-sm font-normal ${isSell ? 'flex' : 'hidden'}`}>
+        {/* input for voucher code (only visible when digital currency: sell) ======================================================================================= */}
+        <div className={`${isDigitalCurrencySell && isSell ? 'flex' : 'hidden'} flex-col gap-5 lg:gap-3`}>
+          <div onClick={() => voucherCodeInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative group focus-within:border-blue2">
+            <div className="absolute px-1 bg-white1 lg:bg-white8 border-none -top-4 right-4 text-gray5 text-sm font-normal group-focus-within:text-blue2">کد ووچر</div>
+            <input
+              ref={voucherCodeInputRef}
+              type="text"
+              className="bg-transparent appearance-none outline-none w-full text-gray5 text-right"
+              placeholder={`کد ووچر ${currentCryptocurrency?.locale?.fa?.name} را وارد کنید`}
+              value={voucherCode}
+              onChange={(e) => setVoucherCode(e.target.value)}
+              dir="ltr"
+            />
+          </div>
+          {/* <div className={`justify-end text-sm font-normal ${isSell ? 'flex' : 'hidden'}`}>
           <button onClick={handleFillCount} className="text-primary text-sm font-normal hover:text-blue2 hover:underline">تمام موجودی</button>
         </div> */}
+        </div>
       </div>
       {/* choose total amount ======================================================================================================= */}
       <div className={`${isDigitalCurrencySell ? 'hidden' : 'flex'} flex-col gap-5 lg:gap-3`}>
-        <div onClick={() => amountInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative">
-          <div className="absolute px-1 bg-backgroundMain lg:bg-gray43 border-none -top-4 right-4 text-gray5 text-sm font-normal">{isSell ? 'مقدار دریافتی' : 'مقدار پرداختی'}</div>
+        <div onClick={() => amountInputRef.current?.focus()} className="border border-gray12 rounded-lg px-4 py-2.5 lg:py-3.5 cursor-text relative group focus-within:border-blue2">
+          <div className="absolute px-1 bg-white1 lg:bg-white8 border-none -top-4 right-4 text-gray5 text-sm font-normal group-focus-within:text-blue2">{isSell ? 'مقدار دریافتی' : 'مقدار پرداختی'}</div>
           <div className="w-full flex items-center justify-between">
             <input
               ref={amountInputRef}
               type="text"
               inputMode="decimal"
-              className="bg-transparent appearance-none outline-none text-text4 text-right w-10/12"
+              className="bg-transparent appearance-none outline-none text-black1 text-right w-10/12"
               value={amountValue === "" ? formatPersianDigits(0) : formatPersianDigits(amountValue)}
               onChange={handleAmountChange}
               dir="ltr"
@@ -424,16 +512,16 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
           </div>
         </div>
         <div className={`items-center justify-between text-sm font-normal ${isSell ? 'hidden' : 'flex'}`}>
-          <div className="flex items-center gap-1">
-            <span className="icon-wrapper w-5 h-5 text-text5"><IconBorderedPlus /></span>
-            <span className="text-xs lg:text-sm font-medium text-text5">موجودی شما : </span>
+          <Link to={ROUTES.DEPOSIT} className="flex items-center gap-1 group">
+            <span className="icon-wrapper w-5 h-5 text-gray24 group-hover:text-blue2"><IconBorderedPlus /></span>
+            <span className="text-xs lg:text-sm font-medium text-gray24 group-hover:text-blue2">موجودی شما : </span>
             {isLoading ?
               <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
               :
-              <span>{formatPersianDigits(TomanBalance)} تومان</span>
+              <span className="text-black1">{formatPersianDigits(TomanBalance)} تومان</span>
             }
-          </div>
-          <button onClick={handleFillAmount} className="text-primary text-sm font-normal hover:text-blue2 hover:underline">تمام موجودی</button>
+          </Link>
+          <button onClick={handleFillAmount} className="text-blue2 text-sm font-normal hover:underline">تمام موجودی</button>
         </div>
       </div>
       {/* percent bar ======================================================================================================= */}
@@ -441,14 +529,17 @@ const BuyAndSell = ({ isSell = false }: BuyAndSellProps) => {
         <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} isDisabled={isDisabled} />
       }
       <button
-        disabled={isSubmitting || !countInputStr || !amountValue}
+        disabled={isDigitalCurrencySell ? !voucherCode : (isSubmitting || !countInputStr || !amountValue)}
         onClick={handleBuyOrSell}
         className={`rounded-lg py-2 lg:py-2.5 text-base font-medium lg:text-lg lg:font-bold transition duration-300
-        ${isSubmitting || !countInputStr || !amountValue ? 'text-black1 bg-gray2' : 'bg-blue2 text-white2 hover:bg-blue-600 hover:-translate-y-0.5'}`}
+        ${isSubmitting
+            || (!isDigitalCurrencySell && !countInputStr)
+            || (!isDigitalCurrencySell && !amountValue)
+            || (isDigitalCurrencySell && !voucherCode) ? 'text-black1 bg-gray2' : 'bg-blue2 text-white2 hover:bg-blue-600 hover:-translate-y-0.5'}`}
       >
         {isSubmitting ? 'در حال ثبت سفارش ...' : isSell ? "ثبت فروش" : "ثبت خرید"}
       </button>
-    </div>
+    </div >
   )
 }
 

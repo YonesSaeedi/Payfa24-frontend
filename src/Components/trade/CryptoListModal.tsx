@@ -60,8 +60,11 @@ const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentC
         {/* modal body ==================================================================================================================================== */}
         <div className="flex flex-col gap-4">
           {/* search box */}
-          <div onClick={() => searchInputRef.current?.focus()} className="rounded-lg px-4 py-2.5 lg:py-3 flex items-center gap-2 border border-gray15 cursor-text focus-within:border-blue1 transition duration-200">
-            <span className="w-5 h-5 lg:w-6 lg:h-6 text-gray15"><IconSearch /></span>
+          <div
+            onClick={() => searchInputRef.current?.focus()}
+            className="rounded-lg px-4 py-2.5 lg:py-3 flex items-center gap-2 border border-gray15 cursor-text focus-within:border-blue2 focus-within:shadow-[0_0_8px_rgba(33,107,232,0.3)] transition duration-200 ease-in group"
+          >
+            <span className="w-5 h-5 lg:w-6 lg:h-6 text-gray15 group-focus-within:text-blue2 transition duration-200 ease-in"><IconSearch /></span>
             <input onChange={handleSearch} type="text" placeholder="جستجو..." ref={searchInputRef} className="bg-transparent outline-none text-black1 placeholder:text-gray15" />
           </div>
           {/* currency type toggle */}

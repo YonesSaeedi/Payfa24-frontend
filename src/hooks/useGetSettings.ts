@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { apiRequest } from "../utils/apiClient"
 
-const useGetUser = () => {
+const useGetSettings = () => {
   return useQuery({
-    queryKey: ['user-data'],
-    queryFn: () => { return apiRequest({ url: '/api/account/get-user' }) },
+    queryKey: ['settings'],
+    queryFn: () => { return apiRequest({ url: '/api/account/settings/info' }) },
     staleTime: Infinity,         // always fresh
     gcTime: Infinity,            // never garbage collected
     refetchOnWindowFocus: false, // disable re-fetch on focus
@@ -14,4 +14,4 @@ const useGetUser = () => {
 
 }
 
-export default useGetUser
+export default useGetSettings
