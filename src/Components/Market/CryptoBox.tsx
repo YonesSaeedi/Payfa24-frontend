@@ -1,3 +1,4 @@
+
 import { ReactNode } from "react";
 
 type Item = {
@@ -6,15 +7,14 @@ type Item = {
   buyPrice: number;
   change: string;
   isPositive: boolean;
-  icon: React.ReactNode; // ✅ به‌روزرسانی شد
+  icon: React.ReactNode;
 };
-
 
 type CryptoBoxProps = {
   title: string;
   iconTop: ReactNode;
   items: Item[];
-  isLoading?: boolean; // اضافه شده
+  isLoading?: boolean;
 };
 
 export default function CryptoBox({
@@ -23,11 +23,11 @@ export default function CryptoBox({
   items,
   isLoading = false,
 }: CryptoBoxProps) {
-  const skeletonArray = Array.from({ length: 6 }); // تعداد اسکلتون‌ها
+  const skeletonArray = Array.from({ length: 6 });
 
   return (
     <div className="bg-gray27 rounded-2xl p-4 w-full h-[359px]">
-      {/* Header Section */}
+      {/* Header */}
       <div className="flex items-center justify-end mb-4">
         <h2 className="font-bold text-black1 pr-2">{title}</h2>
         <span className="text-blue-500 bg-blue13 w-[40px] h-[40px] rounded-[8px] inline-flex items-center justify-center">
@@ -35,7 +35,7 @@ export default function CryptoBox({
         </span>
       </div>
 
-      {/* Items Grid */}
+      {/* Items */}
       <ul className="grid grid-cols-3 gap-y-2 pt-2" dir="rtl">
         {isLoading
           ? skeletonArray.map((_, i) => (
@@ -61,22 +61,8 @@ export default function CryptoBox({
               <li key={`${item.symbol}-${index}`} className="contents">
                 <div className="flex items-center gap-2">
                   <span className="w-[34px] h-[34px] flex items-center justify-center">
-             {item.isFont ? (
-                     <i
-      className={`cf cf-${item.symbol.toLowerCase()}`}
-      style={{ color: item.color, fontSize: '32px' }}
-    ></i>
-  ) : (
-    <img
-      src={`https://api.payfa24.org/images/currency/${item.icon}`}
-      alt={item.symbol}
-      className="object-contain"
-      onError={(e) => ((e.currentTarget as HTMLImageElement).src = "/default-coin.png")}
-    />
-  )}
-</span>
-
-
+                    {item.icon}
+                  </span>
                   <div className="flex flex-col text-right leading-tight">
                     <span className="text-black1 mb-2 font-normal text-base whitespace-nowrap">
                       {item.name.length > 10
