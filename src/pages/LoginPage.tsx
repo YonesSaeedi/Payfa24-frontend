@@ -20,6 +20,7 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "react-toastify";
 import { apiRequest } from "../utils/apiClient";
 import { ROUTES } from "../routes/routes";
+import { GoogleLoginButton } from "../firebase/GoogleLoginButton";
 
 type LoginFormData = {
   email: string;
@@ -129,6 +130,8 @@ export default function LoginPage() {
     }
   };
 
+
+
   // 🧩 مرحله ۲: تایید کد ۲FA
   const handleConfirm = async () => {
     if (!idUser || !token2fa || otpCode.length < 5) return;
@@ -181,6 +184,40 @@ export default function LoginPage() {
       toast.error(err?.response?.data?.msg || "خطا در ارسال مجدد.");
     }
   };
+
+const handleLoginResponse = (data: LoginResponse) => {
+  console.log("google",data);
+
+  
+  // 🔐 اگر ورود نیاز به تأیید دو مرحله‌ای دارد
+  if (data?.id_user && data?.token2fa) {
+        console.log("ورود دو مرحله ای");
+
+    setIdUser(data.id_user);
+    setToken2fa(data.token2fa);
+    setResendTimer(120);
+    setCanResend(false);
+    setIsOpen(true);
+    return;
+  }
+
+  // ✅ اگر ورود موفق بود (access_token + status === true)
+  if (data?.access_token && data?.status) {
+    console.log("ورود");
+    
+    localStorage.setItem("accessToken", data.access_token);
+    localStorage.setItem("refreshToken", data.refresh_token || "");
+    localStorage.setItem("expiresAt", data.expires_in?.toString() || "");
+    toast.success(data?.msg || "ورود با گوگل با موفقیت انجام شد 🎉");
+    navigate(ROUTES.HOME);
+    return;
+  }
+
+  // ⚠️ در غیر اینصورت خطا
+  toast.error(data?.msg || "پاسخ نامعتبر از سرور دریافت شد");
+};
+
+
 
   // 🧩 هندل کلیک‌ها در UI بدون تغییر JSX
   const handleModalConfirm = () => handleConfirm();
@@ -268,12 +305,9 @@ export default function LoginPage() {
               <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
               <div className="flex-grow h-[1px] bg-gray19"></div>
             </div>
-            <button className="w-full h-[46px] flex justify-center items-center gap-2 font-normal mt-4 mb-8 rounded-xl text-xs text-gray12 border border-gray12">
-              <span className="icon-wrapper h-5 w-5">
-                <IconGoogle />
-              </span>
-              اکانت گوگل
-            </button>
+            <GoogleLoginButton
+              onSuccess={handleLoginResponse}
+            />
           </form>
         </div>
       </div>
