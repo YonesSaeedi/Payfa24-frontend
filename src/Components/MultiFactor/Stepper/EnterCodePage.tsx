@@ -4,13 +4,15 @@ import { apiRequest } from "../../../utils/apiClient";
 import { UseTwoStepVerification } from "../../../hooks/UseTwoStepVerification";
 import { useNavigate } from "react-router";
 import { ROUTES } from "../../../routes/routes";
+import { toast } from "react-toastify";
 
 interface EnterCodePageProps {
   onPrev: () => void;
 }
 
 export default function EnterCodePage({ onPrev }: EnterCodePageProps) {
-  const { data } = UseTwoStepVerification();
+  const { data,refresh } = UseTwoStepVerification();
+  
   const type = data?.twofa?.type; // مقدار type برای URL
   const [code, setCode] = useState("");
   const navigate = useNavigate()
@@ -23,12 +25,14 @@ export default function EnterCodePage({ onPrev }: EnterCodePageProps) {
         method: "POST",
         data: { code }, // ارسال کد در body
       });
-      console.log("Verify response:", res);
+      toast.success(data.msg || `تایید شد`);
+      refresh()
       // اینجا می‌تونید بعد از موفقیت onPrev یا هر چیزی که لازمه اجرا کنید
       // onPrev();
       navigate(ROUTES.MULTI_FACTOR)
     } catch (error) {
-      console.error("Error verifying code:", error);
+      const errorMsg = error.response?.data?.msg || `خطا در تأیید کد.`;
+      toast.error(errorMsg);
     }
   };
 

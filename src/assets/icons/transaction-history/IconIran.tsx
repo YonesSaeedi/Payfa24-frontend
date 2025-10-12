@@ -7,7 +7,7 @@ function IconIran() {
 
     return (
         <svg width="100%" height="100%" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_15063_132884)">
+<g clipPath="url(#clip0_15063_132884)">
 <path fillRule="evenodd" clipRule="evenodd" d="M-15.75 0H57.7472V41.9936H-15.75V0Z" fill="white"/>
 <path fillRule="evenodd" clipRule="evenodd" d="M-15.75 28.2021H57.7472V42.0025H-15.75V28.2021Z" fill="#DA0000"/>
 <path fillRule="evenodd" clipRule="evenodd" d="M-1.78076 28.7861H2.24927V29.0655H-1.78076V28.7861ZM-1.17964 30.1746H-0.900252V30.4456H-1.18811L-1.17964 30.1746ZM2.25773 30.1662V30.4456H1.45342V30.1662H2.25773ZM2.68952 28.7861H2.96891V30.4456H2.68952V28.7861Z" fill="white"/>

@@ -1,12 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { apiRequest } from "../utils/apiClient"
-import { GetUserResponse } from "../types/BankCards"
 
-const useGetUser = () => {
-  return useQuery<GetUserResponse, Error>({
-    queryKey: ['user'],
-
-    queryFn: () => { return apiRequest({ url: '/api/account/get-user' }) },
+const useGetSettings = () => {
+  return useQuery({
+    queryKey: ['settings'],
+    queryFn: () => { return apiRequest({ url: '/api/account/settings/info' }) },
     staleTime: Infinity,         // always fresh
     gcTime: Infinity,            // never garbage collected
     refetchOnWindowFocus: false, // disable re-fetch on focus
@@ -16,4 +14,4 @@ const useGetUser = () => {
 
 }
 
-export default useGetUser
+export default useGetSettings

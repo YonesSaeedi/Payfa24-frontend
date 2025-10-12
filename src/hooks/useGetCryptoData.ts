@@ -10,7 +10,7 @@ const useGetCryptoData = () => {
       return response.list
     },
     staleTime: 60_000,
-    gcTime: 60_000,
+    gcTime: 5 * 60_000,
     refetchInterval: 60_000,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
