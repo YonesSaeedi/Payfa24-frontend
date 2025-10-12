@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { apiRequest } from "../utils/apiClient"
-import { GetUserResponse } from "../types/apiResponses"
+import { GetUserResponse } from "../types/BankCards"
 
 const useGetUser = () => {
   return useQuery<GetUserResponse, Error>({
