@@ -23,13 +23,13 @@ const TradeSuccessModal = ({ setIsTradeSuccessModalOpen, isSell }: TradeSuccessM
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsTradeSuccessModalOpen(false)}
-            className="w-2/3 text-sm lg:text-lg font-bold py-2.5 rounded-lg bg-blue2 border border-transparent text-white transition duration-300 hover:bg-transparent hover:text-blue2 hover:border-blue2"
+            className="w-1/3 text-sm lg:text-lg font-bold py-2.5 rounded-lg bg-blue2 border border-transparent text-white transition duration-300 hover:bg-transparent hover:text-blue2 hover:border-blue2"
           >
             متوجه شدم
           </button>
           <Link
             to={ROUTES.TRANSACTION.ROOT} // to be corrected later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            className="w-1/3 text-sm lg:text-lg font-bold py-2.5 rounded-lg bg-transparent border border-blue2 text-blue2 transition duration-300 hover:bg-blue2 hover:text-white hover:border-transparent text-center"
+            className="w-2/3 text-sm lg:text-lg font-bold py-2.5 rounded-lg bg-transparent border border-blue2 text-blue2 transition duration-300 hover:bg-blue2 hover:text-white hover:border-transparent text-center"
           >
             مشاهده جزئیات
           </Link>
