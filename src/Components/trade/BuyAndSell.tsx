@@ -377,6 +377,22 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     }, 1000);
     return () => clearInterval(interval)
   }, [resendCodeTimeLeft])
+  // handle resend code ========================================================================================================================================================
+  const handleResendCode = async () => {
+    try {
+      setResendCodeIsSubmitting(true)
+      const response = await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue) } })
+      setDigitalIDOrder(response?.id_order)
+      setResendCodeTimeLeft(120)
+      setIsOtpModalOpen(true)
+      toast.success(response?.msgOtp)
+    } catch (err) {
+      toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ارسال مجدد سفارش .');
+    }
+    finally {
+      setResendCodeIsSubmitting(false)
+    }
+  }
   // console.log(userData);
   // console.log(settingsData);
 
@@ -444,9 +460,9 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               closeModal={handleCancelDigitalBuy}
               OTPLength={6}
               onSubmit={handleSubmitDigitalBuy}
-              handleResendCode={handleBuyOrSell}
+              handleResendCode={handleResendCode}
               resendCodeIsSubmitting={resendCodeIsSubmitting}
-              resendCodeTimeLeft={formatTime(resendCodeTimeLeft)}
+              resendCodeTimeLeft={resendCodeTimeLeft}
               onChange={(value: string) => setOtpCode(value)}
             />
           }

@@ -1,5 +1,4 @@
-import { useContext, useRef, useState } from "react";
-import { ThemeContext } from "../Context/ThemeContext";
+import { useRef, useState } from "react";
 
 interface OTPInputProps {
   length?: number;
@@ -7,12 +6,9 @@ interface OTPInputProps {
 }
 
 export default function OTPModal({ length = 5, onChange }: OTPInputProps) {
-  const context = useContext(ThemeContext);
-  if (!context) throw new Error("ThemeContext is undefined");
-  const { theme } = context;
   const [values, setValues] = useState(Array(length).fill(""));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
-
+  // handleInput ===========================================================================================================
   const handleInput = (e: React.FormEvent<HTMLInputElement>, idx: number) => {
     const input = e.target as HTMLInputElement;
     const val = input.value.replace(/[^0-9]/g, "");
@@ -20,16 +16,12 @@ export default function OTPModal({ length = 5, onChange }: OTPInputProps) {
     newValues[idx] = val[0] || "";
     setValues(newValues);
     onChange?.(newValues.join(""));
-
     if (val && idx < length - 1) {
       inputsRef.current[idx + 1]?.focus();
     }
   };
-
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    idx: number
-  ) => {
+  // handle key down ======================================================================================================
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
     if (e.key === "Backspace") {
       if (values[idx]) {
         const newValues = [...values];
@@ -51,10 +43,7 @@ export default function OTPModal({ length = 5, onChange }: OTPInputProps) {
   };
 
   return (
-    <div
-      className="flex justify-center gap-2 items-center lg:w-[384px] w-[296px] lg:mt-8 lg:mb-12 mt-6 mb-8"
-      dir="ltr"
-    >
+    <div className="flex justify-center gap-2 items-center lg:mt-8 lg:mb-12 mt-6 mb-8" dir="ltr">
       {values.map((val, idx) => (
         <input
           key={idx}
@@ -64,9 +53,7 @@ export default function OTPModal({ length = 5, onChange }: OTPInputProps) {
           onInput={(e) => handleInput(e, idx)}
           onKeyDown={(e) => handleKeyDown(e, idx)}
           maxLength={1}
-          className={`lg:w-[67px] lg:h-[71px] w-[44px] h-[46px] text-center flex justify-center items-center border border-gray12 rounded-lg text-lg ${
-            theme === "dark" ? "bg-white8 text-black0" : "bg-white8 text-gray12"
-          }`}
+          className='lg:w-[67px] lg:h-[71px] w-[44px] h-[46px] text-center flex justify-center items-center border border-gray12 outline-blue2 rounded-lg text-lg bg-white8 text-black0'
           inputMode="numeric"
         />
       ))}
