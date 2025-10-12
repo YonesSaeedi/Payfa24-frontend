@@ -23,6 +23,7 @@ import OTPModal from "../OTPModal";
 import OTPInputModal from "./OTPInputModal";
 import useGetUser from "../../hooks/useGetUser";
 import useGetSettings from "../../hooks/useGetSettings";
+import { formatTime } from "../../utils/formatTime";
 
 const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const countInputRef = useRef<HTMLInputElement | null>(null)
@@ -45,6 +46,8 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const [voucherCode, setVoucherCode] = useState<string>('')
   const [isOtpModalOpen, setIsOtpModalOpen] = useState<boolean>(false)
   const [otpCode, setOtpCode] = useState<string>('')
+  const [resendCodeIsSubmitting, setResendCodeIsSubmitting] = useState<boolean>(false)
+  const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState<number>(0)
   const [digitalIDOrder, setDigitalIDOrder] = useState<number | null>(null)
   const { currentCryptocurrency, setCurrentCryptocurrency } = useOutletContext<{ currentCryptocurrency: CryptoItem | null; setCurrentCryptocurrency: React.Dispatch<React.SetStateAction<CryptoItem | null>>; }>();
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
@@ -265,6 +268,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
           //   orderID: response?.id_order
           // })
           // setIsTradeConfirmationModalOpen(true)
+          setIsTradeSuccessModalOpen(true)
         } catch (err) {
           toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
         }
@@ -275,16 +279,10 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         try {
           setIsSubmitting(true)
           const response = await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue) } })
-          // setTradeConfirmationModalData({
-          //   coinAmount: response?.amount_coin,
-          //   tomanAmount: response?.amount,
-          //   symbol: currentCryptocurrency?.symbol ? currentCryptocurrency?.symbol : '',
-          //   unitPrice: response?.fee,
-          //   orderID: response?.id_order
-          // })
-          // setIsTradeConfirmationModalOpen(true)
           setDigitalIDOrder(response?.id_order)
+          setResendCodeTimeLeft(120)
           setIsOtpModalOpen(true)
+          toast.success(response?.msgOtp)
         } catch (err) {
           toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
         }
@@ -336,6 +334,8 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     try {
       setIsSubmitting(true)
       const response = await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue), codeOtp: otpCode, id_order: String(digitalIDOrder) } })
+      setIsOtpModalOpen(false)
+      setIsTradeSuccessModalOpen(true)
     } catch (err) {
       toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
     } finally {
@@ -362,6 +362,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   // compute if it's isDigitalCurrencySell or isDigitalCurrency =================================================================================================================
   const isDigitalCurrencySell = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') && isSell
   const isDigitalCurrency = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher')
+  // data of the OTP modal ======================================================================================================================================================
   const { data: settingsData, isLoading: isSettingsDataLoading } = useGetSettings()
   const { data: userData, isLoading: isUserDataLoading } = useGetUser()
   const OTPModalMainText = settingsData?.twofa?.type === 'sms' ? `کد ارسال شده به شماره ${userData?.user?.mobile} را وارد کنید.`
@@ -369,6 +370,13 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       : settingsData?.twofa?.type === 'telegram' ? `کد ارسال شده به تلگرام ${userData?.user?.mobile} را وارد کنید.`
         : settingsData?.twofa?.type === 'google' ? `کد ارسال شده به google authenticator را وارد کنید.`
           : ''
+  useEffect(() => {
+    if (resendCodeTimeLeft <= 0) return;
+    const interval = setInterval(() => {
+      setResendCodeTimeLeft(prev => prev - 1)
+    }, 1000);
+    return () => clearInterval(interval)
+  }, [resendCodeTimeLeft])
   // console.log(userData);
   // console.log(settingsData);
 
@@ -421,20 +429,25 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
             />}
           {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
           {isTradeSuccessModalOpen && <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} isSell={isSell} />}
-          {isOtpModalOpen &&
+          {/* {isOtpModalOpen &&
             <div className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.3)] backdrop-blur-sm flex items-center justify-center">
               <div className="bg-white8 rounded-2xl border border-white6 py-4 px-4 lg:py-8 lg:px-10 flex flex-col gap-8 w-[328px] lg:w-[448px]">
                 <OTPModal length={6} onChange={(value: string) => setOtpCode(value)} />
                 <button className="bg-blue2 p-2 " onClick={handleSubmitDigitalBuy}>ثبت</button>
               </div>
             </div>
-          }
-          {!isOtpModalOpen &&
+          } */}
+          {isOtpModalOpen &&
             <OTPInputModal
               titleText={`تایید ${isSell ? 'فروش' : 'خرید'} ${currentCryptocurrency?.locale?.fa?.name}`}
               mainText={OTPModalMainText}
               closeModal={handleCancelDigitalBuy}
               OTPLength={6}
+              onSubmit={handleSubmitDigitalBuy}
+              handleResendCode={handleBuyOrSell}
+              resendCodeIsSubmitting={resendCodeIsSubmitting}
+              resendCodeTimeLeft={formatTime(resendCodeTimeLeft)}
+              onChange={(value: string) => setOtpCode(value)}
             />
           }
           <div className={`flex items-center ${isDigitalCurrency ? 'justify-end' : 'justify-between'}`}>
@@ -529,7 +542,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         <PercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} isDisabled={isDisabled} />
       }
       <button
-        disabled={isDigitalCurrencySell ? !voucherCode : (isSubmitting || !countInputStr || !amountValue)}
+        disabled={isDigitalCurrencySell ? !voucherCode || isSubmitting : (isSubmitting || !countInputStr || !amountValue)}
         onClick={handleBuyOrSell}
         className={`rounded-lg py-2 lg:py-2.5 text-base font-medium lg:text-lg lg:font-bold transition duration-300
         ${isSubmitting

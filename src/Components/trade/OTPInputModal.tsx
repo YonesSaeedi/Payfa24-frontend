@@ -1,31 +1,36 @@
-import { useState } from "react"
 import IconClose from "../../assets/Icons/Login/IconClose"
 import OTPModal from "../OTPModal"
+import IconAgain from "../../assets/Icons/Login/IconAgain"
 
 interface OTPInputModalProps {
   onSubmit: () => void
   closeModal: () => void
+  onChange: (value: string) => void
+  submitButtonText?: string
   titleText?: string
   mainText?: string
   OTPLength?: number
-  editButtonFunctionality?: () => void
+  handleEdit?: () => void
   editButtonText?: string
-  resendCodeFunctionality?: () => void
-  resendCodeTimeLeft?: number
+  handleResendCode?: () => void
+  resendCodeTimeLeft?: string | number
+  resendCodeIsSubmitting?: boolean
 }
 
 const OTPInputModal = ({
   onSubmit,
   closeModal,
+  onChange,
+  submitButtonText = 'تایید',
   titleText = 'تایید کد',
   mainText = 'لطفا کد ارسال شده را وارد کنید',
   OTPLength = 6,
-  editButtonFunctionality,
+  handleEdit,
   editButtonText,
-  resendCodeFunctionality,
-  resendCodeTimeLeft
+  handleResendCode,
+  resendCodeTimeLeft,
+  resendCodeIsSubmitting
 }: OTPInputModalProps) => {
-  const [OTPCode, setOtpCode] = useState<string>('')
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center" onClick={closeModal}>
@@ -35,21 +40,25 @@ const OTPInputModal = ({
           <span className="icon-wrapper h-6 w-6 cursor-pointer text-gray12" onClick={closeModal}><IconClose /></span>
         </div>
         <p className="lg:mt-12 mt-8 mb-6 lg:mb-8 lg:text-lg text-sm font-normal text-gray15">{mainText}</p>
-        <div className="mb-8 lg:mb-12"><OTPModal length={OTPLength} onChange={resultCode => setOtpCode(resultCode)} /></div>
-        {resendCodeFunctionality &&
+        <div className="mb-8 lg:mb-12"><OTPModal length={OTPLength} onChange={resultCode => onChange(resultCode)} /></div>
+        {handleResendCode &&
           <div className="flex items-center justify-between gap-3 mb-2 lg:mb-4">
             <button
-              className="flex items-center gap-1 text-gray15"
+              onClick={handleResendCode}
+              disabled={resendCodeTimeLeft !== 0 || resendCodeIsSubmitting}
+              className="flex items-center gap-1 text-gray15 hover:text-blue2"
             >
-              <span className="w-[18px] h-[18px] lg:w-5 lg:h-5"></span>
+              <span className="w-[18px] h-[18px] lg:w-5 lg:h-5"><IconAgain /></span>
+              {resendCodeIsSubmitting ? 'در حال ارسال ...' : 'ارسال مجدد'}
             </button>
-            <span className="text-gray15"></span>
+            {resendCodeTimeLeft && <span className="text-gray15 font-normal lg:text-sm text-xs">ارسال مجدد کد تا {resendCodeTimeLeft}</span>}
           </div>
         }
         <div className="w-full flex items-center gap-2">
-          {editButtonFunctionality &&
+          {handleEdit &&
             <button
-              onClick={editButtonFunctionality}
+              disabled={resendCodeIsSubmitting}
+              onClick={handleEdit}
               className="w-full flex-1 text-base font-bold rounded-lg py-2.5 lg:py-3 border border-blue2 hover:border-transparent hover:text-white
             hover:bg-blue2 transition duration-200 ease-in"
             >
@@ -57,12 +66,12 @@ const OTPInputModal = ({
             </button>
           }
           <button
-            onClick={() => null}
+            onClick={onSubmit}
             className="w-full flex1 text-base font-bold bg-blue2 text-white rounded-lg py-2.5 lg:py-3 border border-transparent hover:border-blue2 hover:text-blue2
             hover:bg-transparent transition duration-200 ease-in"
-            disabled={false}
+            disabled={resendCodeIsSubmitting}
           >
-            aaa
+            {submitButtonText}
           </button>
         </div>
       </div>
