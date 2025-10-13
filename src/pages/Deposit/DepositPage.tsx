@@ -6,17 +6,15 @@ import IconConvertCard from "../../assets/Icons/Deposit/IconConvertCard";
 import IconWallet from "../../assets/Icons/Deposit/IconWallet";
 import IconLink from "../../assets/Icons/Deposit/IconLink";
 import IconArrowRight from "../../assets/Icons/Deposit/IconArrowRight";
-
 import DepositForm from "../../Components/Deposit/DepositForm";
 import CardToCardTransfer from "../../Components/Deposit/CardToCardTransfer";
-import WalletDeposit from "../../Components/Deposit/WalletDeposit";
 import DepositWithTxID from "../../Components/Deposit/DepositWithTxID";
 import IconIDentifier from "../../assets/Icons/Deposit/IconIDentifier";
-import IconReceipt from "../../assets/Icons/Deposit/Iconreceipt";
-import DepositwithIdentifier from "../../Components/Deposit/DepositwithIdentifier";
-import BankReceipt from "../../Components/Deposit/BankReceipt";
-import { useFetcher } from "react-router";
 import { apiRequest } from "../../utils/apiClient";
+import DepositDedicatedWallet from "../../Components/Deposit/DepositDedicatedWallet";
+import IconReceipt from "../../assets/Icons/Deposit/IconReceipt";
+import DepositwithIdentifier from "../../Components/Deposit/DepositWithIdentifier";
+import DepositBankReceipt from "../../Components/Deposit/DepositBankReceipt";
 
 export default function DepositPage() {
   const [step, setStep] = useState<number>(1);
@@ -80,7 +78,7 @@ export default function DepositPage() {
       IconMore: <IconArrowRight />,
     },
     {
-      id: "trade",
+      id: "DedicatedWallet",
       Icon: <IconWallet />,
       Title: "واریز با ولت اختصاصی",
       description: "بدون نیاز به TxID , واریز خودکار و سریع",
@@ -88,7 +86,7 @@ export default function DepositPage() {
       IconMore: <IconArrowRight />,
     },
     {
-      // id: "trade",
+      id: "DepositWithTxID",
       Icon: <IconLink />,
       Title: "واریز با TxID",
       description: "برای واریز از صرافی با کیف پول دیگر",
@@ -106,35 +104,35 @@ export default function DepositPage() {
       case "CardToCard":
         return <CardToCardTransfer />;
       case "Bank Receipt:":
-        return <BankReceipt />;
-      case "trade":
-        return <WalletDeposit />;
+        return <DepositBankReceipt />;
+      case "DedicatedWallet":
+        return <DepositDedicatedWallet />;
+      case "DepositWithTxID":
+        return <DepositWithTxID />;
       default:
         return <DepositForm />;
     }
   };
 
-
   useEffect(() => {
-     const fetchFiatData = async () => {
-   
-    try {
-      const response = await apiRequest({
-        url: "/api/wallets/fiat",
-        method: "GET",
-        params: { withdraw: null },
-      });
-      setFiatData(response);
-    } catch (err: any) {
-      // setError(`خطا: ${err.message} - جزئیات: ${JSON.stringify(err.response?.data)}`);
-      console.error("Error fetching fiat data:", err.response?.data || err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchFiatData = async () => {
+      try {
+        const response = await apiRequest({
+          url: "/api/wallets/fiat",
+          method: "GET",
+          params: { withdraw: null },
+        });
+        setFiatData(response);
+      } catch (err: any) {
+        // setError(`خطا: ${err.message} - جزئیات: ${JSON.stringify(err.response?.data)}`);
+        console.error("Error fetching fiat data:", err.response?.data || err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchFiatData();
-  },[])
+    fetchFiatData();
+  }, []);
   return (
     <>
       <HeaderLayout>
@@ -244,9 +242,3 @@ export default function DepositPage() {
     </>
   );
 }
-
-
-
-
-
-

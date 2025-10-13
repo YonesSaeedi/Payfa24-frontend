@@ -10,6 +10,16 @@ import IconCopy from "../../assets/Icons/AddFriend/IconCopy";
 import TextField from "../InputField/TextField";
 import Accordion from "../Withdrawal/Accordion";
 
+
+
+
+
+const networkOptions = [
+  { value: "trc20", label: "ترون (TRC20)" },
+  { value: "ton", label: "تن (TON)" },
+  { value: "erc20", label: "اتریوم (ERC20)" },
+  { value: "polygon", label: "پالیگان" },
+];
 const initialCurrency = {
   name: "مونوس",
   icon: <IconMonnos />,
@@ -17,9 +27,16 @@ const initialCurrency = {
 export default function DepositWithTxID() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState(initialCurrency); 
-  const { control } = useForm({
+  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
+  const { control ,watch} = useForm({
     resolver: yupResolver(),
   });
+
+
+   const selectedNetwork = watch("network");
+  const selectedNetworkLabel =
+    networkOptions.find((opt) => opt.value === selectedNetwork)?.label ||
+    "انتخاب شبکه";
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -66,21 +83,54 @@ export default function DepositWithTxID() {
           </div>
 
           <Controller
-            name="currency"
-            control={control}
-            rules={{ required: "لطفا یک ارز انتخاب کنید" }}
-            render={({ field }) => (
+          name="network" // ⭐️ نام فیلد به network تغییر داده شد
+          control={control}
+          rules={{ required: "لطفا یک شبکه انتخاب کنید" }}
+          render={({ field }) => (
+            <div className="relative">
               <FloatingSelect
-                placeholder="ترون (TRC20)"
-                label=" انتخاب شبکه "
+                placeholder={selectedNetworkLabel}
+                label="انتخاب شبکه"
                 options={[]}
                 value={field.value}
                 onChange={field.onChange}
-                onOpen={() => setIsModalOpen(true)}
-                placeholderClasses="text-black0 "
+                onOpen={() => setIsNetworkDropdownOpen((prev) => !prev)}
+                placeholderClasses="text-black0"
               />
-            )}
-          />
+
+              {isNetworkDropdownOpen && (
+                <div
+                  // ⭐️ تنظیم top-[68px] برای قرارگیری دقیق زیر FloatingSelect (تقریباً 14px فاصله از بالای عنصر relative)
+                  // ⭐️ اضافه کردن bg-white تا شفاف نباشد و روی متن زیر نیفتد
+                  className="absolute top-[68px] left-0 right-0 z-50 lg:bg-gray43 border border-gray-300 rounded-lg shadow-lg p-2"
+                >
+                  {networkOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className={`flex items-center justify-end gap-3 p-3 flex-row-reverse rounded-md transition-colors w-full cursor-pointer
+                      ${field.value === option.value ? " text-blue2" : ""}`}
+                      onClick={() => {
+                        field.onChange(option.value);
+                        setIsNetworkDropdownOpen(false);
+                      }}
+                    >
+                      <span className="text-base text-black0 ">
+                        {option.label}
+                      </span>
+                      <input
+                        type="radio"
+                        value={option.value}
+                        checked={field.value === option.value}
+                        readOnly
+                        className="h-5 w-5 text-blue2 border-gray-300 ring-blue2"
+                      />
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        />
           <div className="flex justify-between mt-2 mb-10">
             <span className="text-sm text-gray5">حداقل واریز </span>
             <span className="text-sm text-black0">Monos‌1</span>
@@ -143,3 +193,108 @@ export default function DepositWithTxID() {
     </>
   );
 }
+
+
+
+
+// import { useEffect, useState } from "react";
+// import { toast } from "react-toastify";
+// import { apiRequest } from "../../utils/apiClient";
+// import CurrencyModal from "./CurrencyModal";
+// import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
+
+// export default function DepositWithTxID() {
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [coinsList, setCoinsList] = useState([]); // داده‌ی واقعی که از API میاد
+//   const [loading, setLoading] = useState(false);
+//   const [selectedCurrency, setSelectedCurrency] = useState({
+//     name: "مونوس",
+//     icon: <IconMonnos />,
+//   });
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       setLoading(true);
+//       try {
+//         // 📡 همزمان دو API رو صدا می‌زنیم
+//         const [generalRes, depositRes] = await Promise.allSettled([
+//           apiRequest({ url: "/get-general-info", method: "GET" }),
+//           apiRequest({ url: "/wallets/crypto/deposit", method: "GET" }),
+//         ]);
+
+//         let generalCoins = [];
+//         let depositCoins = [];
+
+//         // ✅ بررسی پاسخ‌ها
+//         if (generalRes.status === "fulfilled") {
+//           generalCoins = generalRes.value?.cryptocurrency || [];
+//         } else {
+//           toast.error("خطا در دریافت اطلاعات عمومی ارزها");
+//         }
+
+//         if (depositRes.status === "fulfilled") {
+//           depositCoins = depositRes.value?.coins || [];
+//         } else {
+//           console.warn("API /wallets/crypto/deposit خطا داد (500)");
+//           toast.warn("برخی اطلاعات واریز در دسترس نیستند");
+//         }
+
+//         // ✅ ترکیب داده‌ها
+//         const merged = generalCoins
+//           .filter((c) => !c.isDisable)
+//           .map((c) => {
+//             const match = depositCoins.find((d) => d.symbol === c.symbol);
+//             return {
+//               id: c.id,
+//               symbol: c.symbol,
+//               name: c.locale?.fa?.name || c.name,
+//               icon: c.icon,
+//               color: c.color,
+//               price: match?.price || 0,
+//               percent: match?.priceChangePercent || 0,
+//               minDeposit: match?.network?.[0]?.deposit_min || 0,
+//             };
+//           });
+
+//         // ✅ ذخیره داده‌ها برای ارسال به Modal
+//         setCoinsList(merged);
+//       } catch (err) {
+//         console.error("❌ خطا در دریافت داده‌ها:", err);
+//         toast.error("خطا در ارتباط با سرور");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   // 🟢 تابعی که از Modal صدا زده می‌شه
+//   const handleCurrencySelect = (coin) => {
+//     setSelectedCurrency(coin);
+//     setIsModalOpen(false);
+//   };
+
+//   return (
+//     <div className="p-4">
+//       {/* نمایش ارز انتخاب‌شده */}
+//       <div
+//         onClick={() => setIsModalOpen(true)}
+//         className="cursor-pointer flex items-center gap-2 bg-gray-100 rounded-lg p-3 hover:bg-gray-200 transition"
+//       >
+//         {selectedCurrency.icon}
+//         <span className="font-medium">{selectedCurrency.name}</span>
+//       </div>
+
+//       {/* نمایش مدال (بدون تغییر در خودش) */}
+//       {isModalOpen && (
+//         <CurrencyModal
+//           onClose={() => setIsModalOpen(false)}
+//           onCurrencySelect={handleCurrencySelect} // این متد رو فقط parent مدیریت می‌کنه
+//           coins={coinsList} // ✅ ارسال لیست واقعی ارزها
+//           loading={loading} // ✅ برای کنترل وضعیت بارگذاری
+//         />
+//       )}
+//     </div>
+//   );
+// }

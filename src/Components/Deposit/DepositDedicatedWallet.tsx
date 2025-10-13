@@ -3,13 +3,13 @@ import { Controller, useForm } from "react-hook-form";
 import IconVideo from "../../assets/Icons/Deposit/IconVideo";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CurrencyModal from "../../Components/Deposit/CurrencyModal"; 
+import CurrencyModal from "./CurrencyModal";
 import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
 import Accordion from "../Withdrawal/Accordion";
 import QrCode from "../../assets/images/QRcode.png";
 import IconCopy from "../../assets/Icons/AddFriend/IconCopy";
 import IconMoneyTime from "../../assets/Icons/Deposit/IconMoneyTime";
-import IconTimer from "../../assets/Icons/Deposit/Icontimer";
+import IconTimer from "../../assets/Icons/Deposit/IconTimer";
 // اطلاعات اولیه برای نمایش پیش‌فرض
 const initialCurrency = {
   name: "مونوس",
@@ -24,27 +24,31 @@ const networkOptions = [
   { value: "polygon", label: "پالیگان" },
 ];
 
-export default function WalletDeposit() {
+export default function DepositDedicatedWallet() {
   const [isModalOpen, setIsModalOpen] = useState(false);
- const [isAddressCreated, setIsAddressCreated] = useState(false);
+  const [isAddressCreated, setIsAddressCreated] = useState(false);
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useState(initialCurrency); 
+  const [selectedCurrency, setSelectedCurrency] = useState(initialCurrency);
 
-  const { control, watch, setValue } = useForm({ // ⭐️ اضافه شدن setValue و watch
+  const { control, watch, setValue } = useForm({
+    // ⭐️ اضافه شدن setValue و watch
     resolver: yupResolver(),
-    defaultValues: { // ⭐️ تعریف مقدار پیش‌فرض برای network
-        currency: "",
-        network: "trc20" 
-    }
+    defaultValues: {
+      // ⭐️ تعریف مقدار پیش‌فرض برای network
+      currency: "",
+      network: "trc20",
+    },
   });
 
   // ⭐️ مشاهده مقدار انتخاب شده network
   const selectedNetwork = watch("network");
-  const selectedNetworkLabel = networkOptions.find(opt => opt.value === selectedNetwork)?.label || "انتخاب شبکه";
+  const selectedNetworkLabel =
+    networkOptions.find((opt) => opt.value === selectedNetwork)?.label ||
+    "انتخاب شبکه";
 
-const handleCreateAddress = () => {
-      // در یک سناریوی واقعی، باید اعتبارسنجی و فراخوانی API انجام شود
-      setIsAddressCreated(true);
+  const handleCreateAddress = () => {
+    // در یک سناریوی واقعی، باید اعتبارسنجی و فراخوانی API انجام شود
+    setIsAddressCreated(true);
   };
   const closeModal = () => {
     setIsModalOpen(false);
@@ -52,7 +56,7 @@ const handleCreateAddress = () => {
 
   const handleCurrencySelect = (currency) => {
     setSelectedCurrency(currency);
-    setValue('currency', currency.value, { shouldValidate: true }); // ⭐️ به‌روزرسانی مقدار فرم
+    setValue("currency", currency.value, { shouldValidate: true }); // ⭐️ به‌روزرسانی مقدار فرم
     closeModal();
   };
 
@@ -103,32 +107,34 @@ const handleCreateAddress = () => {
           render={({ field }) => (
             <div className="relative">
               <FloatingSelect
-                placeholder={selectedNetworkLabel} 
+                placeholder={selectedNetworkLabel}
                 label="انتخاب شبکه"
                 options={[]}
                 value={field.value}
                 onChange={field.onChange}
-                onOpen={() => setIsNetworkDropdownOpen(prev => !prev)} 
+                onOpen={() => setIsNetworkDropdownOpen((prev) => !prev)}
                 placeholderClasses="text-black0"
               />
 
               {isNetworkDropdownOpen && (
-                <div 
-                    // ⭐️ تنظیم top-[68px] برای قرارگیری دقیق زیر FloatingSelect (تقریباً 14px فاصله از بالای عنصر relative)
-                    // ⭐️ اضافه کردن bg-white تا شفاف نباشد و روی متن زیر نیفتد
-                    className="absolute top-[68px] left-0 right-0 z-50 lg:bg-gray43 border border-gray-300 rounded-lg shadow-lg p-2"
+                <div
+                  // ⭐️ تنظیم top-[68px] برای قرارگیری دقیق زیر FloatingSelect (تقریباً 14px فاصله از بالای عنصر relative)
+                  // ⭐️ اضافه کردن bg-white تا شفاف نباشد و روی متن زیر نیفتد
+                  className="absolute top-[68px] left-0 right-0 z-50 lg:bg-gray43 border border-gray-300 rounded-lg shadow-lg p-2"
                 >
                   {networkOptions.map((option) => (
                     <label
-                    key={option.value}
-                    className={`flex items-center justify-end gap-3 p-3 flex-row-reverse rounded-md transition-colors w-full cursor-pointer
+                      key={option.value}
+                      className={`flex items-center justify-end gap-3 p-3 flex-row-reverse rounded-md transition-colors w-full cursor-pointer
                       ${field.value === option.value ? " text-blue2" : ""}`}
                       onClick={() => {
                         field.onChange(option.value);
                         setIsNetworkDropdownOpen(false);
                       }}
-                      >
-                        <span className="text-base text-black0 ">{option.label}</span>
+                    >
+                      <span className="text-base text-black0 ">
+                        {option.label}
+                      </span>
                       <input
                         type="radio"
                         value={option.value}
@@ -150,51 +156,49 @@ const handleCreateAddress = () => {
           <span className="text-sm text-black0">Monos‌1</span>
         </div>
 
-
-
-
-    {isAddressCreated && (
-           <>
+        {isAddressCreated && (
+          <>
             <div className="rounded-lg border mb-10 border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
-            <img className="w-32 h-32" src={QrCode} alt="QrCode" />
-            <div className="flex justify-between w-full">
-              <span className="text-gray5 text-xs lg:text-sm">آدرس ولت</span>
-              <div className="flex items-center gap-1 justify-between ">
-                <span className="text-black0 lg:text-sm text-xs">
-                  373HD32HDKDIUWUEuyei877IIJDD
+              <img className="w-32 h-32" src={QrCode} alt="QrCode" />
+              <div className="flex justify-between w-full">
+                <span className="text-gray5 text-xs lg:text-sm">آدرس ولت</span>
+                <div className="flex items-center gap-1 justify-between ">
+                  <span className="text-black0 lg:text-sm text-xs">
+                    373HD32HDKDIUWUEuyei877IIJDD
+                  </span>
+                  <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
+                    <IconCopy />
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full">
+                <span className="text-gray5">
+                  زمان باقی‌مانده تا انقضای آدرس
                 </span>
-                <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
-                  <IconCopy />
-                </span>
+                <div className="flex items-center gap-1">
+                  <span className="text-black0 text-sm">06:00:00</span>
+                  <span className="icon-wrapper w-4 h-4 text-gray5">
+                    <IconTimer />
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="flex justify-between items-center w-full">
-              <span className="text-gray5">زمان باقی‌مانده تا انقضای آدرس</span>
-              <div className="flex items-center gap-1">
-                <span className="text-black0 text-sm">06:00:00</span>
-                <span className="icon-wrapper w-4 h-4 text-gray5"><IconTimer/></span>
-              </div>
-            </div>
-          </div>
-           </>
+          </>
         )}
-
-
 
         {/* دکمه ساخت آدرس */}
         <div className=" mb-10">
-         {!isAddressCreated && (
-            <button 
-                onClick={handleCreateAddress} 
-                className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg"
+          {!isAddressCreated && (
+            <button
+              onClick={handleCreateAddress}
+              className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg"
             >
-                ساخت آدرس
-            </button>
+              ساخت آدرس
+            </button>
           )}
 
           {/* آکاردئون راهنما */}
           <div className="mt-4" dir="ltr">
-            
             <Accordion title="راهنمای واریز رمز ارز">
               <ul className="list-disc pr-5 space-y-2 text-black1">
                 <li>
