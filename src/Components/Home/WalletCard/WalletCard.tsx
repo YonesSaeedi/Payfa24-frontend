@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "../../../assets/icons/Home/WalletCardIcon/VisibilityIcon";
 import CurrencyToggle from "./CurrencyToggle";
@@ -10,21 +10,36 @@ import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
 import WalletMines from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 import ReceiptText from "../../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
 import WithdrawModal from "../../Withdrawal/WithdrawModal";
+import { apiRequest } from "../../../utils/apiClient";
 
 interface WalletCardProps {
-  balance: number;
+  balance?: number;
   currency?: string;
   showBuySell?: boolean;
 }
 
+interface Wallet {
+  balance: number;
+}
+
+interface Wallets {
+  toman: Wallet;
+  crypto: Wallet;
+}
+
+interface WalletResponse {
+  wallets: Wallets;
+}
+
 const WalletCard = ({
-  balance,
+
   currency = "تومان",
   showBuySell = true,
 }: WalletCardProps) => {
   const [stateBlure, setStateBlure] = useState<boolean>(true);
   const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [selectedCurrency, setSelectedCurrency] = useState<"tether" | "toman">("toman");
 
 
 
@@ -71,7 +86,32 @@ const WalletCard = ({
   ];
 
   const handleCurrencyChange = (value: "tether" | "toman") => {
+    setSelectedCurrency(value);
   };
+
+
+  const [balance, setBalance] = useState<WalletResponse | null>(null)
+
+  async function getBalance() {
+    try {
+      const response = await apiRequest<WalletResponse>({
+        url: "/api//dashboard/web",
+        method: "GET",
+      });
+      setBalance(response); // مقدار رو داخل state ذخیره کن
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+    }
+  }
+
+  useEffect(() => {
+    getBalance();
+  }, []);
+
+  const displayBalance =
+    selectedCurrency === "tether"
+      ? balance?.wallets.crypto?.balance
+      : balance?.wallets.toman?.balance;
 
   return (
     <div>
@@ -99,7 +139,8 @@ const WalletCard = ({
               }`}
             dir="rtl"
           >
-            {balance.toLocaleString()} {currency}
+            {displayBalance}
+            {selectedCurrency === "tether" ? "تتر" : "تومان"}
           </p>
 
 
