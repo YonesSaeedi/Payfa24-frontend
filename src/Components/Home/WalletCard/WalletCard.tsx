@@ -32,7 +32,6 @@ interface WalletResponse {
 }
 
 const WalletCard = ({
-
   currency = "تومان",
   showBuySell = true,
 }: WalletCardProps) => {
