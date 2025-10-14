@@ -8,6 +8,7 @@ import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
 import { apiRequest } from "../../../utils/apiClient";
 import { ticketStatusMap } from "../../../utils/statusMap";
 import StatusBadge from "../../UI/Button/StatusBadge";
+import IconCircledAttach from "../../../assets/icons/ticket/IconCircledAttach";
 
 
 interface ChatPanelProps {
@@ -265,7 +266,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 text-blue-600 underline"
                           >
-                            <FileText className="w-5 h-5" />
+                            <IconCircledAttach/>
                             <span>دانلود PDF</span>
                           </a>
                         ) : (

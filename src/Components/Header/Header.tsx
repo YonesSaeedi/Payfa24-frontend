@@ -22,9 +22,10 @@ import groupIcon from "../../assets/images/HeaderIcon/Group 71185 (1).png";
 import NotificationDropDown from "../Notification/NotificationDropDown";
 import IconRingActive from "../../assets/icons/header/IconRingActive";
 import IconSun from "../../assets/icons/header/IconSun";
-
+import { useRef } from "react";
 import { Menu, X } from "lucide-react";
 import MobileMenu from "./MobileMenu";
+import  { useEffect} from "react";
 
 export default function Header() {
   const themeContext = useContext(ThemeContext);
@@ -35,6 +36,22 @@ export default function Header() {
   const [showServices, setShowServices] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setShowNotifications(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
 
   if (!themeContext) {
     throw new Error(
@@ -86,21 +103,23 @@ export default function Header() {
           </Link>
 
           {/* Notifications */}
-          <div className="relative">
-            <button
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="hover:text-blue2 transition flex items-center justify-center w-7 h-7"
-              aria-label="Notifications"
-            >
-              {showNotifications ? <IconRingActive /> : <RingIcon />}
-            </button>
+<div className="relative" ref={dropdownRef}>
+  <button
+    onClick={() => setShowNotifications(!showNotifications)}
+    className="hover:text-blue2 transition flex items-center justify-center w-7 h-7"
+    aria-label="Notifications"
+  >
+    {showNotifications ? <IconRingActive /> : <RingIcon />}
+  </button>
 
-            {showNotifications && (
-              <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
-                <NotificationDropDown />
-              </div>
-            )}
-          </div>
+  {showNotifications && (
+    <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
+      <NotificationDropDown />
+    </div>
+  )}
+</div>
+
+
 
           {/* Mobile Theme Toggle */}
           <button

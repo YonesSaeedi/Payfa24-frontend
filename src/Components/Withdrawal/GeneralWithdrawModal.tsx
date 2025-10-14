@@ -1,4 +1,3 @@
-
 import React, { Dispatch, SetStateAction, useMemo, useRef, useState } from "react";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import IconSearch from "../../assets/icons/market/IconSearch";
@@ -31,19 +30,29 @@ const GeneralWithdrawModal = ({
 
   // -------------------------------------------------------------------
   // 🔁 Merge general info with withdraw data
-  const mergedData: CryptoItem[] = useMemo(() => {
-    if (!generalData?.cryptocurrency || !cryptoWithdrawData) return [];
+// بعد از merge، هر CryptoItem علاوه بر فیلدهای خودش، یک فیلد networks هم دارد
+const mergedData: (CryptoItem & { networks: any[] })[] = useMemo(() => {
+  if (!generalData?.cryptocurrency || !cryptoWithdrawData) return [];
 
-    return generalData.cryptocurrency.map((item) => {
-      const withdrawInfo: Coin | undefined = cryptoWithdrawData[item.symbol];
-      return {
-        ...item,
-        balance: withdrawInfo?.balance || "0",
-        balance_available: withdrawInfo?.balance_available || "0",
-        networks: withdrawInfo?.network || [],
-      };
-    });
-  }, [generalData, cryptoWithdrawData]);
+  return generalData.cryptocurrency.map((item) => {
+    const withdrawInfo = cryptoWithdrawData[item.symbol]; // Coin | undefined
+    return {
+      ...item,
+      balance: withdrawInfo?.balance || "0",
+      balance_available: withdrawInfo?.balance_available || "0",
+      networks: withdrawInfo?.network || [], // اضافه کردن فیلد networks
+    };
+  });
+}, [generalData, cryptoWithdrawData]);
+
+  // -------------------------------------------------------------------
+  // ✅ فقط کوین‌هایی که شبکه دارند
+const filteredData = useMemo(() => {
+  if (!mergedData.length) return [];
+  return mergedData.filter(
+    coin => Array.isArray(coin.networks) && coin.networks.length > 0
+  );
+}, [mergedData]);
 
   // -------------------------------------------------------------------
   // 🔍 Search functionality
@@ -54,7 +63,7 @@ const GeneralWithdrawModal = ({
       setSearchResults([]);
       return;
     }
-    const filtered = mergedData.filter(
+    const filtered = filteredData.filter(
       (cryptoItem) =>
         cryptoItem?.symbol?.toLowerCase().includes(value.toLowerCase()) ||
         cryptoItem?.name?.toLowerCase().includes(value.toLowerCase()) ||
@@ -65,16 +74,17 @@ const GeneralWithdrawModal = ({
   };
 
   const displayList = isLoading
-    ? Array(10).fill(null)
+    ? null
     : searchTerm
     ? searchResults
-    : mergedData;
+    : filteredData;
 
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation();
 
   // -------------------------------------------------------------------
   return (
-    <div dir="rtl"
+    <div
+      dir="rtl"
       onClick={() => setIsModalOpen(false)}
       className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.3)] backdrop-blur-sm flex items-center justify-center"
     >
@@ -137,14 +147,24 @@ const GeneralWithdrawModal = ({
         </div>
 
         {/* Currency list */}
-        <CurrenciesVirtualizedList
-          items={displayList}
-          height={400}
-          itemHeight={60}
-          width="100%"
-          setCurrentCryptoCurrency={setCurrentCryptoCurrency}
-          closeModal={() => setIsModalOpen(false)}
-        />
+        {isLoading ? (
+          <div className="flex justify-center items-center h-[400px] text-gray-500">
+            در حال بارگذاری...
+          </div>
+        ) : displayList && displayList.length > 0 ? (
+          <CurrenciesVirtualizedList
+            items={displayList}
+            height={400}
+            itemHeight={60}
+            width="100%"
+            setCurrentCryptoCurrency={setCurrentCryptoCurrency}
+            closeModal={() => setIsModalOpen(false)}
+          />
+        ) : (
+          <div className="flex justify-center items-center h-[400px] text-gray-500">
+            موردی یافت نشد
+          </div>
+        )}
       </div>
     </div>
   );

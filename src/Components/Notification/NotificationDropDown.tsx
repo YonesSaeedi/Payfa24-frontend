@@ -3,6 +3,10 @@ import IconRingNotif from "../../assets/icons/Notifications/IconRingNotif";
 import IconCircle from "../../assets/icons/Notifications/IconCircle";
 import { apiRequest } from "../../utils/apiClient";
 import { useNavigate } from "react-router";
+import { useRef } from "react";
+
+
+
 
 interface NotificationItem {
   id: number;
@@ -27,12 +31,11 @@ interface NotificationItem {
   formattedTime?: string;
   title: string;
 }
-
 export default function NotificationsDropdown() {
   const navigate = useNavigate();
   const [tab, setTab] = useState("all");
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [loading, setLoading] = useState(true); // اضافه برای لودینگ
+  const [loading, setLoading] = useState(true);
 
   // فرمت زمان هنگام fetch
   const formatTime = (timestamp: number) => {
@@ -79,16 +82,13 @@ export default function NotificationsDropdown() {
 
   const filteredNotifications = useMemo(() => {
     if (!notifications.length) return [];
-
     return notifications.filter((item) => {
       if (item.seen !== "unseen") return false;
-
       if (tab === "news") return item.keyword === "message";
       if (tab === "activities") return item.keyword !== "message";
       return true;
     });
   }, [notifications, tab]);
-
 
   return (
     <div className="w-[500px] rounded-2xl shadow-lg bg-white8">
@@ -109,19 +109,16 @@ export default function NotificationsDropdown() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`flex-1 py-2 text-center ${tab === t ? "border-b-2 border-blue2 font-medium text-blue2" : "text-gray-500"
-              }`}
+            className={`flex-1 py-2 text-center ${tab === t ? "border-b-2 border-blue2 font-medium text-blue2" : "text-gray-500"}`}
           >
             {t === "all" ? "همه" : t === "news" ? "اعلانات و اخبار" : "فعالیت‌ها"}
           </button>
         ))}
       </div>
 
-
       {/* Notifications */}
       <div className="divide-y px-4 py-3">
         {loading ? (
-          // Skeleton placeholder هنگام لود
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="skeleton-bg h-6 w-full"></div>
@@ -153,13 +150,11 @@ export default function NotificationsDropdown() {
             </div>
           ))
         ) : (
-          // هیچ نوتیفیکیشنی وجود ندارد
           <div className="text-center text-gray-400 py-4 text-sm">
             اعلانی وجود ندارد
           </div>
         )}
       </div>
-
 
       <div
         onClick={() => navigate("/notifications")}
@@ -167,8 +162,7 @@ export default function NotificationsDropdown() {
       >
         مشاهده همه اعلانات
       </div>
-
-
     </div>
   );
 }
+

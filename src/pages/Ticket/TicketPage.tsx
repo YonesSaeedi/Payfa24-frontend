@@ -4,11 +4,12 @@ import TicketImage from "../../assets/images/Ticket/massegeIcon/415488451_80b315
 import IconCall from "../../assets/icons/ticket/IconCall";
 import SupportCallModal from "../../Components/Ticket/SupportCallModal";
 
+
 function TicketPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleSupportSubmit = (data: { phone: string; description: string }) => {
+  const handleSupportSubmit = (data: { number: string; description: string }) => {
     console.log("اطلاعات ارسال شد:", data);
   };
 

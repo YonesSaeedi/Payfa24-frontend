@@ -4,13 +4,14 @@ import BackgroundCardDark from "./../../assets/images/BankCards/BackgroundCardDa
 import IconAccept from "./../../assets/icons/BankCards/IconAccept";
 import IconInProgress from "./../../assets/icons/BankCards/IconInProgress";
 import IconDelete from "./../../assets/icons/BankCards/IconDelete";
+import useGetUser from "../../hooks/useGetUser"; 
 
 type Card = {
   id: number;
   number: string;
   holder: string;
   bankName: string;
-  status: "confirmed" | "pending" | "rejected";
+  status: "confirm" | "pending" | "rejected";
 };
 
 type BankCardListProps = {
@@ -66,6 +67,7 @@ const getBankLogo = (bankName: string) => {
 
 const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
   const [isDark, setIsDark] = useState(false);
+  const { data: userData } = useGetUser();
 
   useEffect(() => {
     const updateTheme = () => {
@@ -85,7 +87,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
 
   const statusColor = (status: Card["status"]) => {
     switch (status) {
-      case "confirmed":
+      case "confirm":
         return "text-green-500";
       case "pending":
         return "text-orange-500";
@@ -98,7 +100,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
 
   const statusIcon = (status: Card["status"]) => {
     switch (status) {
-      case "confirmed":
+      case "confirm":
         return (
           <span className="w-4 h-4">
             <IconAccept />
@@ -150,7 +152,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
                     <div className="h-6 w-6 rounded bg-gray-300"/>
                   )}
                 </div>
-                <div className="font-semibold mt-2">{card.bankName}</div>
+                <div className="font-semibold  text-black1">{card.bankName}</div>
               
               </div>
 
@@ -166,7 +168,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
                   )}`}
                 >
                   {statusIcon(card.status)}
-                  {card.status === "confirmed"
+                  {card.status === "confirm"
                     ? "تایید شده"
                     : card.status === "pending"
                     ? "درحال بررسی"
@@ -175,7 +177,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
 
                 <div className="flex flex-col">
                   <p className="text-black1">دارنده کارت</p>
-                  <div className="text-sm text-black1 mb-2">{card.holder}</div>
+                  <div className="text-sm text-black1 mb-2"> {card.holder || userData?.user.name_display || "—"}</div>
                 </div>
               </div>
             </div>

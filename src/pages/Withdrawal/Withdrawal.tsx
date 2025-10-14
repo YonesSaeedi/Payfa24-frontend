@@ -11,6 +11,7 @@ import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
 const WithdrawPage: React.FC = () => {
   const [showBox, setShowBox] = useState(false);
   const [withdrawType, setWithdrawType] = useState<"fiat" | "crypto">("fiat");
+  const [selected, setSelected] = useState(false);
 
   // 🔹 state برای هشدارها
   const [alertList, setAlertList] = useState<string[]>([
@@ -30,18 +31,11 @@ const WithdrawPage: React.FC = () => {
               {/* فرم اصلی */}
               <div className="flex-1 lg:p-8 pt-8">
                 {withdrawType === "fiat" ? (
-                <WithdrawForm />
-                ) : (
-                  <CryptoWithdrawForm />
-                )}
-              </div>
-
-              {/* بخش سمت راست */}
-              <div className="lg:flex-1 flex flex-col gap-6  pt-8 ">
-                {/* هشدارها */}
-                <div
+                  <div>
+                    <WithdrawForm />
+                     <div
                   dir="rtl"
-                  className="bg-orange5 rounded-xl p-4 text-sm text-left w-full "
+                  className="bg-orange5 rounded-xl p-4 text-sm text-left w-full mt-6"
                 >
                   <h3 className="text-orange1 flex items-left gap-1 mb-2">
                     <span dir="rtl" className="w-5 h-5 text-orange1">
@@ -58,107 +52,158 @@ const WithdrawPage: React.FC = () => {
                     ))}
                   </ul>
                 </div>
-
-                {/* انتخاب نوع برداشت */}
-                <div className="hidden lg:flex flex-col gap-4">
-                  {/* پرداخت در لحظه */}
-                  <div
-                    className="flex items-center justify-between rounded-xl p-4 mb-1 cursor-pointer border border-gray21 hover:border-blue2 transition"
-                    onClick={() => {
-                      setWithdrawType("fiat");
-                      setShowBox(false);
-                      // 🔹 برگشت به حالت هشدار پیش‌فرض
-                      setAlertList([
-                        "لطفا در صورت استفاده از فیلترشکن آن را خاموش کنید.",
-                        "سقف مجاز هر برداشت ۱۰۰ میلیون تومان است.",
-                        "سقف مجاز هر برداشت برای هر شماره شبا ۲۰۰ میلیون می‌باشد.",
-                      ]);
-                    }}
-                  >
-                    <div className="flex items-center justify-center">
-                      <span className="w-6 h-6 icon-wrapper mr-2">
-                        <IconArrowLeft />
-                      </span>
-                      <button className="text-gray5 border border-gray21 rounded-[8px] px-2 py-1.5 bg-gray27 text-sm hover:border-blue2 hover:text-blue2">
-                        پرداخت در لحظه
-                      </button>
-                    </div>
-
-                    <div className="flex flex-row-reverse">
-                      <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                        <span className="w-6 h-6 icon-wrapper text-blue2">
-                          <WalletMinesIcon />
-                        </span>
-                      </div>
-                      <div className="flex flex-col text-right">
-                        <span className="text-black1">برداشت تومان</span>
-                        <span className="text-sm text-gray-500">
-                          برداشت تومانی به کارت بانکی
-                        </span>
-                      </div>
-                    </div>
                   </div>
+                
+                ) : (
+                  <div>
+                     <CryptoWithdrawForm />
+                       {/* هشدارها */}
+                <div
+                  dir="rtl"
+                  className="bg-orange5 rounded-xl p-4 text-sm text-left w-full mt-6"
+                >
+                  <h3 className="text-orange1 flex items-left gap-1 mb-2">
+                    <span dir="rtl" className="w-5 h-5 text-orange1">
+                      <IconWarning />
+                    </span>
+                    توجه داشته باشید
+                  </h3>
 
-                  {/* پرداخت در ۲۰ دقیقه */}
-                  <div
-                    className="flex items-center justify-between rounded-xl p-4 cursor-pointer border border-gray21 hover:border-blue2 transition"
-                    onClick={() => {
-                      setWithdrawType("crypto");
-                      setShowBox(!showBox);
-                      // 🔹 تغییر هشدارها به یک آیتم
-                      setAlertList([
-                        "لطفا در صورت استفاده از فیلترشکن آن را خاموش کنید.",
-                      ]);
-                    }}
-                  >
-                    <div className="flex items-center justify-center">
-                      <span className="w-6 h-6 icon-wrapper mr-2">
-                        <IconArrowLeft />
-                      </span>
-                      <span className="text-gray5 border border-gray21 rounded-[8px] px-2 py-1.5 bg-gray27 text-sm hover:border-blue2 hover:text-blue2">
-                        پرداخت در ۲۰ دقیقه
-                      </span>
-                    </div>
-
-                    <div className="flex flex-row-reverse">
-                      <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded flex items-center justify-center">
-                        <span className="w-6 h-6 icon-wrapper text-blue2">
-                          <IconCurrency />
-                        </span>
-                      </div>
-                      <div className="flex flex-col text-right">
-                        <span className="text-black1">برداشت ارز</span>
-                        <span className="text-sm text-gray-500">
-                          برداشت از کیف پول از طریق شبکه بلاکچین
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* جزئیات سطح ۱ وقتی showBox فعال است */}
-                  {showBox && (
-                    <div className="border border-gray21 rounded-xl p-4 mt-2 text-right">
-                      <p className="font-semibold mb-2 text-blue2">
-                        سطح ۱: احراز هویت پایه
-                      </p>
-
-                      <div className="flex flex-col gap-2 pt-2 mb-4">
-                        <p className="text-sm text-right align-middle text-gray5">
-                          مجموع برداشت 24 ساعت اخیر
-                        </p>
-                        <p className="text-sm text-right align-middle text-black1">
-                          ۸۴۹,۰۰۰,۸۴۹ تومان از ۱۳۳,۹۰۴,۰۰۰,۰۰۰ تومان
-                        </p>
-                        <p className="text-sm text-right align-middle text-gray5 pt-5">
-                          مجموع برداشت 24 ساعت اخیر
-                        </p>
-                        <p className="text-black1">
-                          ۸۴۹,۰۰۰,۸۴۹ تومان از ۱۳۳,۹۰۴,۰۰۰,۰۰۰ تومان
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                  <ul className="list-disc list-inside text-black1 space-y-1 p-1">
+                    {alertList.map((alert, index) => (
+                      <li key={index} className="text-right">
+                        {alert}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
+                  </div>
+                )}
+              </div>
+
+              {/* بخش سمت راست */}
+              <div className="lg:flex-1 flex flex-col gap-6  p-8 ">
+       
+                {/* انتخاب نوع برداشت */}
+             {/* انتخاب نوع برداشت */}
+<div className="hidden lg:flex flex-col gap-10 mt-4">
+  {/* پرداخت در لحظه */}
+  <div>
+    <span className="flex justify-end mb-4">برداشت تومانی</span>
+
+    <div
+      className={`flex items-center justify-between rounded-xl p-4 mb-1 cursor-pointer border transition-all duration-300 ${
+        withdrawType === "fiat"
+          ? "border-blue-500 bg-blue-50 shadow-md"
+          : "border-gray21 hover:border-blue2"
+      }`}
+      onClick={() => {
+        setWithdrawType("fiat");
+        setShowBox(false);
+        setAlertList([
+          "لطفا در صورت استفاده از فیلترشکن آن را خاموش کنید.",
+          "سقف مجاز هر برداشت ۱۰۰ میلیون تومان است.",
+          "سقف مجاز هر برداشت برای هر شماره شبا ۲۰۰ میلیون می‌باشد.",
+        ]);
+      }}
+    >
+      <div className="flex items-center justify-center">
+        <span className="w-6 h-6 icon-wrapper mr-2">
+          <IconArrowLeft />
+        </span>
+
+        <button
+          className={`text-sm border rounded-[8px] px-2 py-1.5 transition-all duration-300 ${
+            withdrawType === "fiat"
+              ? "bg-blue-400 text-white border-blue-500 shadow"
+              : "text-gray5 border-gray21 bg-gray27 hover:border-blue2 hover:text-blue2"
+          }`}
+        >
+          پرداخت در لحظه
+        </button>
+      </div>
+
+      <div className="flex flex-row-reverse">
+        <div
+          className={`w-[52px] h-[52px] ml-2 rounded-[8px] flex items-center justify-center transition-all duration-300 ${
+            withdrawType === "fiat" ? "bg-blue-100" : "bg-blue14"
+          }`}
+        >
+          <span
+            className={`w-6 h-6 icon-wrapper ${
+              withdrawType === "fiat" ? "text-blue-600" : "text-blue2"
+            }`}
+          >
+            <WalletMinesIcon />
+          </span>
+        </div>
+        <div className="flex flex-col text-right">
+          <span className="text-black1">برداشت تومان</span>
+          <span className="text-sm text-gray-500 mt-2">
+            برداشت تومانی به کارت بانکی
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* پرداخت در ۲۰ دقیقه */}
+  <div>
+    <span className="flex justify-end mb-4">برداشت ارز</span>
+
+    <div
+      className={`flex items-center justify-between rounded-xl p-4 cursor-pointer border transition-all duration-300 ${
+        withdrawType === "crypto"
+          ? "border-blue-500 bg-blue-50 shadow-md"
+          : "border-gray21 hover:border-blue2"
+      }`}
+      onClick={() => {
+        setWithdrawType("crypto");
+        setShowBox(true);
+        setAlertList(["لطفا در صورت استفاده از فیلترشکن آن را خاموش کنید."]);
+      }}
+    >
+      <div className="flex items-center justify-center">
+        <span className="w-6 h-6 icon-wrapper mr-2">
+          <IconArrowLeft />
+        </span>
+
+        <button
+          className={`text-sm border rounded-[8px] px-2 py-1.5 transition-all duration-300 ${
+            withdrawType === "crypto"
+              ? "bg-blue-400 text-white border-blue-500 shadow"
+              : "text-gray5 border-gray21 bg-gray27 hover:border-blue2 hover:text-blue2"
+          }`}
+        >
+          پرداخت در ۲۰ دقیقه
+        </button>
+      </div>
+
+      <div className="flex flex-row-reverse">
+        <div
+          className={`w-[52px] h-[52px] ml-2 rounded-[8px] flex items-center justify-center transition-all duration-300 ${
+            withdrawType === "crypto" ? "bg-blue-100" : "bg-blue14"
+          }`}
+        >
+          <span
+            className={`w-6 h-6 icon-wrapper ${
+              withdrawType === "crypto" ? "text-blue-50" : "text-blue2"
+            }`}
+          >
+            <IconCurrency />
+          </span>
+        </div>
+        <div className="flex flex-col text-right">
+          <span className="text-black1">برداشت ارز</span>
+          <span className="text-sm text-gray-500 mt-2">
+            برداشت از کیف پول از طریق شبکه بلاکچین
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
               </div>
             </div>
           </div>

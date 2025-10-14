@@ -8,6 +8,7 @@ export const ROUTES = {
   FORGOT_PASSWORD_SET_PASSWORD: "/forgot-password-set-password",
   AUTHENTICATION_BASIC: "/kyc-basic",
   AUTHENTICATION_ADVANCED: "/kyc-advanced",
+  BANK_CARDS_CONTAINER: "/services/bank-cards",
   PROFILE: "/profile",
   USER_ACCOUNT: "./authProfile",
   BANK_ACCOUNT: "./authProfile",
@@ -38,4 +39,6 @@ export const ROUTES = {
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },
+
+
 };
