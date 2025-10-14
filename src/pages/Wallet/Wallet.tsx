@@ -36,21 +36,19 @@ export default function Wallet() {
   useEffect(() => {
     getBalance();
   }, []);
-  
+
   return (
-    <div className="h-full">
+    <div className="h-full w-full container-style">
       <HeaderLayout>
-        <div className="p-6 pt-16 container-style flex flex-col lg:flex-row-reverse gap-10">
-          <div className="w-full lg:w-auto text-right">
+        <div className=" pt-16 flex flex-col lg:flex-row-reverse gap-10">
+          <div className="w-full lg:w-5/12 text-right">
             <WalletCard
-                balance={balance?.balance ?? 0}
-              changeAmount={5000}
-              change={2.3}
+              balance={balance?.balance ?? 0}
               showBuySell={false}
             />
           </div>
-          <div className="w-full lg:w-auto">
-            <p className="pb-7 font-bold text-[18px] leading-[100%] tracking-[0%] text-right align-middle">
+          <div className="w-full lg:w-7/12">
+            <p className=" pb-7 font-bold text-[18px] leading-[100%] tracking-[0%] text-right align-middle">
               دارایی های شما
             </p>
 
