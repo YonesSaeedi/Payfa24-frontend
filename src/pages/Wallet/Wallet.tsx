@@ -9,9 +9,9 @@ export default function Wallet() {
 
 
   return (
-    <div className="h-full w-full container-style">
+    <div className="h-full w-full ">
       <HeaderLayout>
-        <div className=" pt-16 flex flex-col lg:flex-row-reverse gap-10">
+        <div className="container-style !px-0 pt-16 flex flex-col lg:flex-row-reverse gap-10">
           <div className="w-full lg:w-5/12 text-right">
             <WalletCard
               showBuySell={false}
