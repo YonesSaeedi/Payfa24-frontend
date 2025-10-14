@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
 import Pagination from "../History/Pagination";
 import { NewCryptoItem } from "./types";
+import IconStarGold from "../../assets/icons/market/CryptoMarketTable.tsx/IconStarGold";
+import { ROUTES } from "../../routes/routes";
 
 interface Props {
   data: NewCryptoItem[];
@@ -12,7 +14,12 @@ interface Props {
   isLoading?: boolean; // اضافه شد
 }
 
-const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading = false }) => {
+const CryptoMarketTable: React.FC<Props> = ({
+  data,
+  active,
+  setActive,
+  isLoading = false,
+}) => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -45,12 +52,26 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
 
   const filteredByTab = useMemo(() => {
     switch (active) {
-      case 1: return data.filter((item) => favorites.includes(item.symbol));
-      case 2: return [...data].sort((a, b) => parseFloat(a.priceChangePercent) - parseFloat(b.priceChangePercent));
-      case 3: return [...data].sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
-      case 4: return [...data].sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
-      case 5: return [...data].sort((a, b) => b.id - a.id);
-      default: return data;
+      case 1:
+        return data.filter((item) => favorites.includes(item.symbol));
+      case 2:
+        return [...data].sort(
+          (a, b) =>
+            parseFloat(a.priceChangePercent) - parseFloat(b.priceChangePercent)
+        );
+      case 3:
+        return [...data].sort(
+          (a, b) =>
+            parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent)
+        );
+      case 4:
+        return [...data].sort(
+          (a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume)
+        );
+      case 5:
+        return [...data].sort((a, b) => b.id - a.id);
+      default:
+        return data;
     }
   }, [active, data, favorites]);
 
@@ -109,7 +130,9 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
                 setCurrentPage(1);
               }}
               className={`cursor-pointer pb-2 mr-4 ${
-                active === index ? "text-blue-600 border-b-2 border-blue-600" : "text-black1"
+                active === index
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-black1"
               }`}
             >
               {tab}
@@ -119,12 +142,17 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
 
         {/* Table */}
         <div className="px-6 mt-6">
-          <table dir="rtl" className="w-full text-right border-collapse table-fixed">
+          <table
+            dir="rtl"
+            className="w-full text-right border-collapse table-fixed"
+          >
             <thead>
               <tr className="bg-gray0 text-black1 text-sm rounded-md">
                 <th className="py-3 text-center w-48">نام و نماد ارز</th>
                 <th className="py-3 px-4 hidden lg:table-cell">قیمت به USDT</th>
-                <th className="py-3 px-4 text-center lg:text-right">قیمت خرید</th>
+                <th className="py-3 px-4 text-center lg:text-right">
+                  قیمت خرید
+                </th>
                 <th className="py-3 px-4 hidden lg:table-cell">قیمت فروش</th>
                 <th className="py-3 px-4 text-center">تغییرات ۲۴h</th>
                 <th className="py-3 px-4 hidden lg:table-cell"></th>
@@ -133,7 +161,10 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
             <tbody>
               {isLoading
                 ? skeletonArray.map((_, idx) => (
-                    <tr key={idx} className="animate-pulse border-b border-gray21 last:border-b-0">
+                    <tr
+                      key={idx}
+                      className="animate-pulse border-b border-gray21 last:border-b-0"
+                    >
                       <td className="py-3 px-4 flex items-center gap-4">
                         <div className="flex-shrink-0 w-4 h-4 rounded-full bg-gray-200"></div>
                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200"></div>
@@ -172,27 +203,30 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
                         {/* Name and symbol */}
                         <td className="py-3 px-4 flex items-center gap-3 pr-8">
                           {/* ستاره */}
-<button
-  onClick={() => {
-    if (favorites.includes(item.symbol)) {
-      setFavorites(favorites.filter((s) => s !== item.symbol));
-    } else {
-      setFavorites([...favorites, item.symbol]);
-    }
-  }}
-  className=" flex-shrink-0 flex items-center justify-center transition-colors duration-200 overflow-hidden"
->
-  <div
-    className={`w-[22px] h-[22px] ${
-      favorites.includes(item.symbol) ? "text-yellow-400 overflow-hidden" : "text-gray-400"
-    }`}
-  >
-    <IconStar />
-  </div>
-</button>
-
-
-
+                          <button
+                            onClick={() => {
+                              if (favorites.includes(item.symbol)) {
+                                setFavorites(
+                                  favorites.filter((s) => s !== item.symbol)
+                                );
+                              } else {
+                                setFavorites([...favorites, item.symbol]);
+                              }
+                            }}
+                            className=" flex-shrink-0 flex items-center justify-center transition-colors duration-200 overflow-hidden"
+                          >
+                            <div className="w-[22px] h-[22px]">
+                              {favorites.includes(item.symbol) ? (
+                                <span className="border-gray-400 text-gray-400 w-[22px] h-[22px]">
+                                  <IconStarGold />
+                                </span>
+                              ) : (
+                                <span className="border-gray-400 text-gray-400 w-[22px] h-[22px]">
+                                  <IconStar />
+                                </span>
+                              )}
+                            </div>
+                          </button>
 
                           {/* آیکون */}
                           <div className="w-8 h-8 flex-shrink-0 rounded-full">
@@ -213,29 +247,42 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
                           {/* نام و نماد */}
                           <div className="flex flex-col min-w-0">
                             <div className="font-medium text-black1 truncate max-w-[150px]">
-                              {(item.locale?.fa?.name ?? item.name) || "0 تومان"}
+                              {(item.locale?.fa?.name ?? item.name) ||
+                                "0 تومان"}
                             </div>
-                            <span className="text-xs text-gray-500">{item.symbol}</span>
+                            <span className="text-xs text-gray-500">
+                              {item.symbol}
+                            </span>
                           </div>
                         </td>
 
                         {/* USDT Price */}
                         <td className="py-3 px-4 text-black1 hidden lg:table-cell items-center">
-                          {item.fee != null && item.fee !== "" ? `${item.fee} USDT` : "0 تومان"}
+                          {item.fee != null && item.fee !== ""
+                            ? `${item.fee} USDT`
+                            : "0 تومان"}
                         </td>
 
                         {/* Buy Price */}
                         <td className="py-3 px-4 text-center lg:text-right text-black1 items-center">
-                          {buyPrice ? `${buyPrice.toLocaleString()} تومان ` : "0 تومان"}
+                          {buyPrice
+                            ? `${buyPrice.toLocaleString()} تومان `
+                            : "0 تومان"}
                         </td>
 
                         <td className="py-3 px-4 text-black1 hidden lg:table-cell">
-                          {sellPrice ? `${sellPrice.toLocaleString()} تومان ` : "0 تومان"}
+                          {sellPrice
+                            ? `${sellPrice.toLocaleString()} تومان `
+                            : "0 تومان"}
                         </td>
 
                         {/* Change Percent */}
                         <td className="py-3 px-4 text-center">
-                          <span className={`${priceChange >= 0 ? "text-green4" : "text-red1"}`}>
+                          <span
+                            className={`${
+                              priceChange >= 0 ? "text-green4" : "text-red1"
+                            }`}
+                          >
                             {priceChange >= 0 ? "+" : ""}
                             {priceChange}%
                           </span>
@@ -243,17 +290,17 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
 
                         {/* Action */}
                         <td className="py-3 px-4 text-end hidden lg:table-cell">
-                          <button
-                            onClick={() => navigate("/trade/buy")}
-                            className="bg-blue-600 text-white rounded-lg px-4 py-1.5 text-sm hover:bg-blue-700 transition"
+                          <Link
+                            to={ROUTES.TRADE.BUY}
+                            className="inline-block bg-blue-600 text-white rounded-lg px-4 py-1.5 text-sm hover:bg-blue-700 transition"
                           >
                             خرید/فروش
-                          </button>
+                          </Link>
                         </td>
                       </tr>
                     );
                   })}
-              {(!isLoading && paginatedData.length === 0) && (
+              {!isLoading && paginatedData.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center py-6 text-gray-500">
                     هیچ داده‌ای موجود نیست

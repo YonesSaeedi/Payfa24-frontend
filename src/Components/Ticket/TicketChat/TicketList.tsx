@@ -8,6 +8,7 @@ interface TicketListProps {
   tickets: Ticket[];
   activeTicket: Ticket | null;
   onSelect: (ticket: Ticket) => void;
+  
 }
 
 const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect }) => (
@@ -26,7 +27,7 @@ const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect
   </div>
 
   <div className="mt-4 flex flex-col gap-2">
-    <button className="w-full bg-blue-600 text-white py-2 rounded-xl shadow hover:bg-blue-700">
+    <button    className="w-full bg-blue-600 text-white py-2 rounded-xl shadow hover:bg-blue-700">
       <span className="w-7 h-7 icon-wrapper">
         <Iconplus/>
       </span>

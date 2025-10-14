@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { toast } from "react-toastify"; // ✅ اضافه شده
-import "react-toastify/dist/ReactToastify.css"; // ✅ برای اطمینان از استایل‌ها
+import { toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 import IconCloseButtun from "../../assets/icons/services/IconCloseButtun";
 import FloatingInput from "../FloatingInput/FloatingInput";
+
+
 
 interface SupportCallModalProps {
   isOpen: boolean;
@@ -11,7 +13,7 @@ interface SupportCallModalProps {
 }
 
 interface SupportCallFormInputs {
-  phone: string;
+  number: string;
   description: string;
 }
 
@@ -45,7 +47,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
         toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید ");
       }
     } catch (error) {
-      console.error("Error posting data:", error);
+      console.log(error);
+      
       toast.error("ارتباط با سرور برقرار نشد ");
     } finally {
       setLoading(false);
@@ -70,7 +73,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
          
           <div>
             <Controller
-              name="phone"
+              name="number"
               control={control}
               rules={{ required: "شماره موبایل الزامی است" }}
               render={({ field }) => (

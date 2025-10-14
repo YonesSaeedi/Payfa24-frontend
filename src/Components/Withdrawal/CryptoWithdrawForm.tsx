@@ -9,6 +9,9 @@ import { CryptoItem } from "../../types/crypto";
 import GeneralWithdrawModal from "./GeneralWithdrawModal";
 import OtpModal from "./OtpModal";
 import OTPInputModal from "../trade/OTPInputModal";
+import CryptoListModal from "../trade/CryptoListModal";
+import useMergedCryptoList from "../Withdrawal/MergedCryptoData";
+import TradeSuccessModal from "../trade/TradeSuccessModal";
 
 interface CoinNetworkRef {
   id: number;
@@ -31,7 +34,6 @@ interface FullNetwork {
   memoRegex?: string;
   locale?: any;
 }
-
 const CryptoWithdrawForm: FC = () => {
   const [crypto, setCrypto] = useState<string>("");
   const [selectedNetworkId, setSelectedNetworkId] = useState<string>("");
@@ -42,27 +44,125 @@ const CryptoWithdrawForm: FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
   const [allNetworks, setAllNetworks] = useState<FullNetwork[]>([]);
-  const [availableNetworks, setAvailableNetworks] = useState<
-    (FullNetwork & CoinNetworkRef & { displayName?: string })[]
-  >([]);
-  const [selectedNetwork, setSelectedNetwork] = useState<
-    (FullNetwork & CoinNetworkRef & { displayName?: string }) | undefined
-  >(undefined);
-  const [activeTab, setActiveTab] = useState<"withdraw" | "transfer">(
-    "withdraw"
-  );
-
-  /////////otp modal
+  const [availableNetworks, setAvailableNetworks] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string })[]>([]);
+  const [selectedNetwork, setSelectedNetwork] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string }) | undefined>(undefined);
+  const [activeTab, setActiveTab] = useState<"withdraw" | "transfer">("withdraw");
+  const { data: mergedCryptosData, isLoading: isCryptoListLoading} = useMergedCryptoList();
+  const [withdrawData, setWithdrawData] = useState<any>(null);
+  const [levelUsed, setLevelUsed] = useState<{daily_withdrawal_crypto?: number;}>({});
+  const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [otpCode, setOtpCode] = useState<string>("");
-  const [withdrawData, setWithdrawData] = useState<any>(null);
-  const [levelUsed, setLevelUsed] = useState<{
-    daily_withdrawal_crypto?: number;
-  }>({});
+  const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState<number>(0);
+  const [isResending, setIsResending] = useState(false);
+  const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState(false);
 
-  // 👇 state برای کنترل باز/بسته بودن مودال
-  const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
 
+  // crypto > symbol 
+  const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
+    setCrypto(currency.symbol);
+    setIsCurrencyModalOpen(false);
+  };
+
+
+  const handleCloseOtpModal = () => {
+    setIsOtpModalOpen(false);
+    setOtpCode("")
+  };
+
+ //تابعی که بعد از  کد تایید otp اجرا میشه 
+// const handleSubmitOtp = async () => {
+//   if (!otpCode) return;
+
+//   try {
+//     const res = await apiRequest({
+//       url: `/api/wallets/crypto/withdraw/${crypto}`,
+//       method: "POST",
+//       data: {
+//         ...withdrawData,
+//          codeOtp:  parseInt(otpCode, 10), // فقط OTP اضافه می‌شود
+//       },
+//     });
+
+//    if (res.status) {
+//   toast.success("برداشت با موفقیت انجام شد ✅");
+  
+//   // OTP modal را ببند
+//   setIsOtpModalOpen(false);
+//   setOtpCode("");
+
+//   // TradeSuccessModal را باز کن (یکبار کافی است)
+//   setIsTradeSuccessModalOpen(true);
+// }
+// else {
+//       toast.error(res.msg || "کد وارد شده معتبر نیست ❌");
+//     }
+//   } catch (err: any) {
+//     toast.error(err?.response?.data?.msg || "خطا در تأیید برداشت!");
+//   }
+// };
+const handleSubmitOtp = async () => {
+  if (!otpCode) return;
+
+  try {
+    const res = await apiRequest({
+      url: `/api/wallets/crypto/withdraw/${crypto}`,
+      method: "POST",
+      data: {
+        ...withdrawData,
+        codeOtp: parseInt(otpCode, 10),
+      },
+    });
+
+    if (res.status) {
+      toast.success("برداشت با موفقیت انجام شد ✅");
+      
+      // OTP modal را ببند
+      setIsOtpModalOpen(false);
+      setOtpCode("");
+      setIsTradeSuccessModalOpen(true);
+      setTimeout(() => {
+    setIsTradeSuccessModalOpen(true);
+  }, 200);
+    } else {
+      toast.error(res.msg || "کد وارد شده معتبر نیست ❌");
+    }
+  } catch (err: any) {
+    toast.error(err?.response?.data?.msg || "خطا در تأیید برداشت!");
+  }
+};
+
+//ارسال دوباره کد OTP
+const handleResendCode = async () => {
+  try {
+    setIsResending(true);
+    // فقط تایمر و toast
+    setResendCodeTimeLeft(120);
+    toast.success("کد جدید ارسال شد");
+  } finally {
+    setIsResending(false);
+  }
+};
+
+
+//شمارنده OTP
+useEffect(() => {
+  if (!isOtpModalOpen) return;
+  let timer: NodeJS.Timeout | undefined;
+  if (resendCodeTimeLeft > 0) { 
+    timer = setInterval(() => {
+      setResendCodeTimeLeft((prev) => {
+        return Math.max(prev - 1, 0);
+      });
+    }, 1000);
+  }
+  return () => {
+    if (timer) clearInterval(timer);
+  };
+}, [isOtpModalOpen, resendCodeTimeLeft]);
+
+
+//دریافت اطلاعات اولیه کوین‌ها و شبکه‌ها
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -120,7 +220,7 @@ const CryptoWithdrawForm: FC = () => {
     setTag("");
   }, [crypto, coins, allNetworks]);
 
-  // انتخاب شبکه
+  
   const handleNetworkChange = (id: string) => {
     setSelectedNetworkId(id);
     const net = availableNetworks.find((n) => String(n.id) === id);
@@ -128,61 +228,249 @@ const CryptoWithdrawForm: FC = () => {
     setTag(""); // پاک کردن مقدار قبلی Tag/Memo
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+ 
+  //ارسال فرم برداشت قبل از otp
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    if (!amount || isNaN(parseFloat(amount))) {
-      toast.error("لطفاً مقدار برداشت را وارد کنید");
+  if (!selectedNetwork) {
+    toast.error("لطفاً شبکه را انتخاب کنید");
+    setIsLoading(false);
+    return;
+  }
+
+  const withdrawAmount = parseFloat(amount);
+  const minAmount = parseFloat(selectedNetwork.withdraw_min || "0");
+  const maxAmount = parseFloat(coins.find(c => c.symbol === crypto)?.balance_available || "0");
+
+  if (!amount || isNaN(withdrawAmount)) {
+    toast.error("لطفاً مقدار برداشت را وارد کنید");
+    setIsLoading(false);
+    return;
+  }
+
+  if (withdrawAmount < minAmount) {
+    toast.error(`حداقل مقدار برداشت ${minAmount} ${crypto} است`);
+    setIsLoading(false);
+    return;
+  }
+
+  if (withdrawAmount > maxAmount) {
+    toast.error(`موجودی کافی نیست`);
+    setIsLoading(false);
+    return;
+  }
+
+  // اعتبارسنجی Tag/Memo
+  if (selectedNetwork.tag === 1 && selectedNetwork.memoRegex) {
+    const regex = new RegExp(selectedNetwork.memoRegex);
+    if (!regex.test(tag)) {
+      toast.error("مقدار Tag/Memo معتبر نیست");
       setIsLoading(false);
       return;
     }
+  }
 
-    if (selectedNetwork?.tag === 1 && selectedNetwork?.memoRegex) {
-      const regex = new RegExp(selectedNetwork.memoRegex);
-      if (!regex.test(tag)) {
-        toast.error("مقدار Tag/Memo معتبر نیست");
-        setIsLoading(false);
-        return;
-      }
-    }
+  try {
+    await apiRequest({
+      url: `/api/wallets/crypto/withdraw/${crypto}`,
+      method: "POST",
+      data: {
+        network: selectedNetwork.symbol,
+        withdrawAmount,
+        withdrawAddressWallet: address,
+        withdrawAddressWalletTag: tag,
+      },
+    });
 
-    try {
-      const res = await apiRequest({
-        url: `/api/wallets/crypto/withdraw/${crypto}`,
-        method: "POST",
-        data: {
-          network: selectedNetwork?.symbol || selectedNetworkId,
-          withdrawAmount: parseFloat(amount),
-          withdrawAddressWallet: address,
-          withdrawAddressWalletTag: tag,
-        },
-      });
+    setWithdrawData({
+      network: selectedNetwork.symbol,
+      withdrawAmount,
+      withdrawAddressWallet: address,
+      withdrawAddressWalletTag: tag,
+    });
 
-      if (res.status) {
-        // اگر موفق بود مودال OTP باز شود
-        setWithdrawData({
-          network: selectedNetwork?.symbol || selectedNetworkId,
-          withdrawAmount: parseFloat(amount),
-          withdrawAddressWallet: address,
-          withdrawAddressWalletTag: tag,
-        });
-        setIsOtpModalOpen(true);
-      } else {
-        // خطا را نشان بده
-        toast.error(res.msg || "خطا در برداشت");
-      }
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err?.response?.data?.msg || "خطا در برداشت!");
-    } finally {
-      setIsLoading(false);
-    }
+    setIsOtpModalOpen(true);
+    setResendCodeTimeLeft(120);
+  } catch (err: any) {
+    toast.error(err?.response?.data?.msg || "خطا در برداشت!");
+  } finally {
+    setIsLoading(false);
+  }
+};
+///////////انتقال به کاربر 
+// ارسال فرم انتقال قبل از OTP
+const handleSubmitTransfer = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  const withdrawAmount = parseFloat(amount);
+  const maxAmount = parseFloat(coins.find(c => c.symbol === crypto)?.balance_available || "0");
+
+  if (!amount || isNaN(withdrawAmount)) {
+    toast.error("لطفاً مقدار انتقال را وارد کنید");
+    setIsLoading(false);
+    return;
+  }
+
+  if (withdrawAmount > maxAmount) {
+    toast.error(`موجودی کافی نیست`);
+    setIsLoading(false);
+    return;
+  }
+
+  if (!address) {
+    toast.error("لطفاً موبایل یا ایمیل دریافت‌کننده را وارد کنید");
+    setIsLoading(false);
+    return;
+  }
+
+  try {
+    await apiRequest({
+      url: `/api/wallets/crypto/withdraw-transfer/${crypto}`,
+      method: "POST",
+      data: {
+        withdrawAmount,
+        mobile: address.includes("@") ? "" : address,
+        email: address.includes("@") ? address : "",
+      },
+    });
+
+    setWithdrawData({
+      withdrawAmount,
+      mobile: address.includes("@") ? "" : address,
+      email: address.includes("@") ? address : "",
+    });
+
+    setIsOtpModalOpen(true);
+    setResendCodeTimeLeft(120);
+  } catch (err: any) {
+    toast.error(err?.response?.data?.msg || "خطا در انتقال!");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+// ارسال OTP برای انتقال به کاربر پی‌فا
+const handleSubmitTransfers = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  const withdrawAmount = parseFloat(amount);
+  if (!amount || isNaN(withdrawAmount)) {
+    toast.error("لطفاً مقدار انتقال را وارد کنید");
+    setIsLoading(false);
+    return;
+  }
+
+  if (!address) {
+    toast.error("لطفاً موبایل یا ایمیل دریافت‌کننده را وارد کنید");
+    setIsLoading(false);
+    return;
+  }
+
+  // regex برای ایمیل
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const mobileRegex = /^[0-9]{10,11}$/; // موبایل‌های ایران
+
+  const dataToSend: any = {
+    withdrawAmount,
   };
+
+  if (emailRegex.test(address)) {
+    // ایمیل
+    dataToSend.email = address;
+  } else if (mobileRegex.test(address)) {
+    // موبایل
+    dataToSend.mobile = address;
+  } else {
+    toast.error("مقدار وارد شده موبایل یا ایمیل معتبر نیست");
+    setIsLoading(false);
+    return;
+  }
+
+  try {
+    await apiRequest({
+      url: `/api/wallets/crypto/withdraw-transfer/${crypto}`,
+      method: "POST",
+      data: dataToSend,
+    });
+
+    setWithdrawData(dataToSend);
+    setIsOtpModalOpen(true);
+    setResendCodeTimeLeft(120);
+  } catch (err: any) {
+    toast.error(err?.response?.data?.msg || "خطا در انتقال!");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+// const handleSubmitTransferOtp = async () => {
+//   if (!otpCode) return;
+
+//   try {
+//     const res = await apiRequest({
+//       url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // endpoint تایید OTP
+//       method: "POST",
+//       data: {
+//         ...withdrawData,
+//         codeOtp: parseInt(otpCode, 10),
+//       },
+//     });
+
+//     if (res.status) {
+//       toast.success("انتقال با موفقیت انجام شد ✅");
+
+//       // بستن مودال OTP
+//       setIsOtpModalOpen(false);
+//       setOtpCode("");
+
+//       // باز کردن مودال Success
+//       setIsTradeSuccessModalOpen(true);
+//     } else {
+//       toast.error(res.msg || "کد وارد شده معتبر نیست ❌");
+//     }
+//   } catch (err: any) {
+//     toast.error(err?.response?.data?.msg || "خطا در تایید انتقال!");
+//   }
+// };
+ // تایید کد OTP برای انتقال به کاربر پی فا
+const handleSubmitTransferOtp = async () => {
+  if (!otpCode) return;
+
+  try {
+    const res = await apiRequest({
+      url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // endpoint تایید OTP
+      method: "POST",
+      data: {
+        ...withdrawData,
+        codeOtp: parseInt(otpCode, 10),
+      },
+    });
+
+    if (res.status) {
+      toast.success("انتقال با موفقیت انجام شد ✅");
+
+      // بستن مودال OTP
+      setIsOtpModalOpen(false);
+      setOtpCode("");
+
+      // باز کردن مودال موفقیت
+      setIsTradeSuccessModalOpen(true);
+    } else {
+      toast.error(res.msg || "کد وارد شده معتبر نیست ❌");
+    }
+  } catch (err: any) {
+    toast.error(err?.response?.data?.msg || "خطا در تأیید انتقال!");
+  }
+};
+
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={activeTab === "withdraw" ? handleSubmit :  handleSubmitTransfers}
       className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between h-[860px] overflow-y-auto"
     >
       <div>
@@ -352,54 +640,48 @@ const CryptoWithdrawForm: FC = () => {
               </div>
             </div>
             {/* مقدار برداشت */}
-            
-              <div className="mt-4 relative z-10 flex flex-col gap-6">
-                <div>
-                  <FloatingInput
-                    label="مقدار"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    type="number"
-                    className="border border-gray12 mb-6"
-                  />
-                  {/* 🔹 توضیحات زیر input */}
-                  <div className="text-md text-gray-500 mt-3 space-y-2">
-                    {/* ردیف اول */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span>موجودی قابل برداشت</span>
-                      <span className="font-medium text-gray-700">
-                        {parseFloat(
-                          coins.find((c) => c.symbol === crypto)
-                            ?.balance_available || "0"
-                        ).toFixed(3)}{" "}
-                        {crypto}
-                      </span>
-                    </div>
-                    {/* ردیف دوم */}
-                    <div className="flex items-center justify-between ">
-                      <span>مقدار برداشت روزانه معادل</span>
-                      <span className="font-medium text-gray-700">
-                        {selectedNetwork?.withdraw_fee || "—"} تومان
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {/* موبایل یا ایمیل دریافت کننده */}
-                <div className="pt-4">
-                  <FloatingInput
-                    label="موبایل یا ایمیل دریافت کننده"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    type="text"
-                    className="border border-gray12"
-                  />
-                  <p className="text-xs text-gray-500 mt-2">
-                    با درج کردن موبایل یا ایمیل ا اشتباه ممکن است باعث از دست
-                    رفتن دارایی شما شود.
-                  </p>
+
+            <div className="mt-4 relative z-10 flex flex-col gap-6">
+              <div>
+                <FloatingInput
+                  label="مقدار"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  type="number"
+                  className="border border-gray12 mb-6"
+                />
+                {/* 🔹 توضیحات زیر input */}
+                <div className="text-md text-gray-500 mt-3 space-y-2">
+                <div className="flex items-center justify-between mb-4">
+  <span>موجودی قابل برداشت</span>
+  <span className="font-medium text-gray-700">
+    {parseFloat(coins.find(c => c.symbol === crypto)?.balance_available || "0").toFixed(8)} {crypto}
+  </span>
+</div>
+<div className="flex items-center justify-between">
+  <span>مقدار برداشت روزانه معادل</span>
+  <span className="font-medium text-gray-700">
+    {levelUsed.daily_withdrawal_crypto?.toLocaleString() || "—"} تومان
+  </span>
+</div>
+
                 </div>
               </div>
-            
+              {/* موبایل یا ایمیل دریافت کننده */}
+              <div className="pt-4">
+                <FloatingInput
+                  label="موبایل یا ایمیل دریافت کننده"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  type="text"
+                  className="border border-gray12"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  با درج کردن موبایل یا ایمیل ا اشتباه ممکن است باعث از دست رفتن
+                  دارایی شما شود.
+                </p>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -447,36 +729,40 @@ const CryptoWithdrawForm: FC = () => {
         </div>
       </div>
 
-      {/* 🔹 مودال انتخاب رمز ارز */}
+    
       {isCurrencyModalOpen && (
-        <GeneralWithdrawModal
-          setIsModalOpen={setIsCurrencyModalOpen}
-          setCurrentCryptoCurrency={(item: CryptoItem) => {
-            setCrypto(item.symbol);
-            setIsCurrencyModalOpen(false);
-          }}
-        />
+        <div dir="rtl">
+          <CryptoListModal
+            setIsCryptoListModalOpen={setIsCurrencyModalOpen}
+            cryptoListData={mergedCryptosData}
+            setCurrentCryptoCurrency={handleSetCurrentCryptoCurrency}
+            isCryptoListLoading={isCryptoListLoading}
+          />
+        </div>
       )}
-      {/* {isOtpModalOpen && (
-        <OTPInputModal
-          closeModal={}
-          onChange={(value: string) => setOtpCode(value)}
-          onSubmit={}
-          OTPLength={6}
-          handleResendCode={}
-          mainText=""
-          resendCodeIsSubmitting={}
-          resendCodeTimeLeft={}
-          submitButtonText=""
-          titleText=""
-        />
-      )} */}
-      <OtpModal
-        isOpen={isOtpModalOpen}
-        onClose={() => setIsOtpModalOpen(false)}
-        crypto={crypto}
-        data={withdrawData}
+
+     {isOtpModalOpen && (
+  <OTPInputModal
+    closeModal={handleCloseOtpModal}
+    onChange={(value: string) => setOtpCode(value)}
+    onSubmit={activeTab === "withdraw" ? handleSubmitOtp : handleSubmitTransferOtp} // ← اینجا
+    OTPLength={6}
+    handleResendCode={handleResendCode}
+    resendCodeIsSubmitting={isResending}
+    resendCodeTimeLeft={resendCodeTimeLeft}
+    mainText="کد تأیید ارسال‌شده به خود را وارد کنید"
+    submitButtonText="تأیید"
+    titleText="تأیید برداشت"
+  />
+)}
+
+
+    {isTradeSuccessModalOpen && (
+      <TradeSuccessModal
+        setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen}
+        isSell={false}
       />
+    )}
     </form>
   );
 };

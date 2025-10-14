@@ -63,7 +63,6 @@ function BankCardManager() {
         setError("دریافت کارت‌ها ناموفق بود");
       }
     } catch (err: any) {
-      console.error(err);
       setError("خطا در برقراری ارتباط با سرور");
     } finally {
       setLoading(false);

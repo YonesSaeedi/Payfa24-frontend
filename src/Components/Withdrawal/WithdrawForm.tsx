@@ -1,177 +1,18 @@
-// import { useForm, Controller } from "react-hook-form";
-// import { apiRequest } from "../../utils/apiClient";
-// import FloatingInput from "./../FloatingInput/FloatingInput";
-// import FloatingSelect from "../FloatingInput/FloatingSelect";
-// import IconVideo from "./../../assets/icons/Withdrawal/IconVideo";
-// import IconBankMelliLogo from "./../../assets/icons/BankCards/IconBankMelliLogo";
-// import IconBankMellatLogo from "./../../assets/icons/BankCards/IconBankMellatLogo";
-// import BankAnsarLogo from "../../assets/icons/BankCards/IconBankAnsarLogo";
-// import { toast } from "react-toastify";
-// import { useEffect, useState } from "react";
 
-// interface BankOption {
-//   bank: string;
-//   card: string;
-//    id: number;
-   
-// }
-
-// interface WithdrawFormValues {
-//   amount: string;
-//  bank: BankOption | null;
-// }
-
-// export default function WithdrawForm() {
-
-//   const [listCards, setListCards] = useState<{ id: number; card: string; bank: string }[]>([]);
-
-//   useEffect(() => {
-//   const fetchCards = async () => {
-//     try {
-//       const response = await apiRequest<any>({ url: "/api/wallets/fiat?withdraw=true", method: "GET" });
-//       setListCards(response.list_cards || []);
-//     } catch (err) {
-//       console.error("Failed to fetch cards", err);
-//     }
-//   };
-//   fetchCards();
-// }, []);
-
-//   const { handleSubmit, control } = useForm<WithdrawFormValues>({
-//     defaultValues: {
-//       amount: "",
-//       bank: null, // پیش‌فرض null
-//     },
-//   });
-
-//   const isTwoFactorEnabled = false;
-
-//   const onSubmit = async (data: WithdrawFormValues) => {
-//     if (!data.bank) return;
-//      const amountNumber = Number(data.amount);
-
-//      // شرط ۱: حداقل مقدار برداشت
-//     if (amountNumber < 100000) {
-//     toast.error("حداقل مقدار برداشت 100,000 تومان میباشد.");
-//     return;
-//     }
-//      // شرط ۲: فعال بودن ورود دو مرحله‌ای
-//     if (!isTwoFactorEnabled) {
-//       toast.error("برای خرید لازم است یکی از روش‌های ورود دو مرحله‌ای را فعال کنید.");
-//       return;
-//     }
-
-
-//     try {
-//       const response = await apiRequest({
-//         url: "/api/wallets/fiat/withdraw",
-//         method: "POST",
-//         data: {
-//           amount: amountNumber,
-//         card: data.bank?.id,
-//     // codeOtp: otpValue,
-//         },
-//       });
-//       console.log("Withdraw Response:", response);
-//     } catch (err) {
-//       console.error("Withdraw Error:", err);
-//     }
-//   };
-
-// const bankOptions = listCards.map(card => ({
-//   value:  {
-//     ...card,
-//     bankName: card.bank, // ← اضافه کردن بانک داخل value
-//   },
-//   label: (
-//    <div className="flex  justify-between items-center w-full">
-//         <span>{card.bank}</span>
-//       <span className="text-sm text-gray-700">{card.card.replace(/(\d{4})(?=\d)/g, "$1-")}</span>
-    
-//     </div>
-//   ),
-// }));
-
-
-//   return (
-//     <form
-//       onSubmit={handleSubmit(onSubmit)}
-//       className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray43 flex flex-col justify-between h-[644px] w-full"
-//     >
-//       <div>
-//         <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center">
-//           <span className="w-6 h-6 icon-wrapper ml-2">
-//             <IconVideo />
-//           </span>
-//           <h2 className="font-normal text-blue2">ویدیو آموزشی برداشت تومانی</h2>
-//         </div>
-
-//         <div dir="rtl" className="mb-6">
-//           <Controller
-//             name="amount"
-//             control={control}
-//             rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
-//             render={({ field }) => (
-//               <FloatingInput
-//                 label="مقدار برداشت (تومان)"
-//                 value={field.value}
-//                 onChange={field.onChange}
-//                 type="number"
-//                 placeholder="0 تومان"
-//               />
-//             )}
-//           />
-//         </div>
-
-//       <div className="mb-6">
-//   {bankOptions.length > 0 ? (
-//     <Controller
-//       name="bank"
-//       control={control}
-//       rules={{ required: "لطفا بانک را انتخاب کنید" }}
-//       render={({ field }) => (
-//         <FloatingSelect<BankOption>
-//           label="انتخاب بانک"
-//           value={field.value}
-//           onChange={field.onChange}
-//           options={bankOptions}
-//           isBankSelect={true}
-//         />
-//       )}
-//     />
-//   ) : (
-//     <div className="w-full border rounded-lg p-3 text-center text-gray-500 bg-gray-100">
-//       هیچ کارت بانکی موجود نمی‌ باشد
-//     </div>
-//   )}
-// </div>
-
-//       </div>
-
-//       <div>
-//         <button
-//           type="submit"
-//           className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg"
-//         >
-//           برداشت
-//         </button>
-//       </div>
-//     </form>
-//   );
-// }
 import { useForm, Controller } from "react-hook-form";
 import { apiRequest } from "../../utils/apiClient";
 import FloatingInput from "./../FloatingInput/FloatingInput";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import IconVideo from "./../../assets/icons/Withdrawal/IconVideo";
-// import IconClose from "./../../assets/icons/";
-// import IconAgain from "./../../assets/icons/IconAgain";
-import OTPModal from "../OTPModal";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import IconAgain from "../../assets/Icons/Login/IconAgain";
+import TradeSuccessModal from "../trade/TradeSuccessModal";
+import OTPInputModal from "../trade/OTPInputModal";
+
+
 
 interface BankOption {
   bank: string;
@@ -191,6 +32,14 @@ export default function WithdrawForm() {
   const [pendingWithdrawData, setPendingWithdrawData] = useState<WithdrawFormValues | null>(null);
   const [resendTimer, setResendTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
+  const [selectedCoin, setSelectedCoin] = useState<typeof coin | null>(null);
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+  const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState(false);
+  const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState(120);
+  const [isResending, setIsResending] = useState(false);
+  const [walletBalance, setWalletBalance] = useState<number>(0);
+
+
 
   const { handleSubmit, control } = useForm<WithdrawFormValues>({
     defaultValues: { amount: "", bank: null },
@@ -200,7 +49,9 @@ export default function WithdrawForm() {
     const fetchCards = async () => {
       try {
         const response = await apiRequest<any>({ url: "/api/wallets/fiat?withdraw=true", method: "GET" });
-        setListCards(response.list_cards || []);
+      console.log("API Response:", response); // ← برای بررسی
+      setListCards(response.list_cards || []);
+     setWalletBalance(Number(response.wallet.balance_available) || 0);
       } catch (err) {
         console.error("Failed to fetch cards", err);
       }
@@ -221,54 +72,93 @@ export default function WithdrawForm() {
 
   const isTwoFactorEnabled = true;
 
-  const onSubmit = (data: WithdrawFormValues) => {
-    const amountNumber = Number(data.amount);
-    if (amountNumber < 100000) {
-      toast.error("حداقل مقدار برداشت 100,000 تومان میباشد.");
-      return;
-    }
-    if (!isTwoFactorEnabled) {
-      toast.error("برای برداشت لازم است ورود دو مرحله‌ای فعال باشد.");
-      return;
-    }
+ const onSubmit = async (data: WithdrawFormValues) => {
+  const amountNumber = Number(data.amount);
+  if (amountNumber < 100000) {
+    toast.error("حداقل مقدار برداشت 100,000 تومان میباشد.");
+    return;
+  }
 
-    // فرضاً در اینجا درخواست ارسال OTP به کاربر می‌فرستیم
-    setPendingWithdrawData(data);
-    setIsOpen(true);
-    setResendTimer(120);
-    setCanResend(false);
-  };
+  try {
+    // درخواست اولیه بدون OTP
+    const response = await apiRequest({
+      url: "/api/wallets/fiat/withdraw",
+      method: "POST",
+      data: {
+        amount: amountNumber,
+        card: data.bank?.id,
+      },
+    });
 
-  const handleModalConfirm = async () => {
-    if (!otpCode || otpCode.length < 5) {
-      toast.error("کد تایید را کامل وارد کنید.");
-      return;
+    if (response.status) {
+      toast.success("کد تأیید ارسال شد ✅");
+      setPendingWithdrawData(data);
+      setIsOtpModalOpen(true);
+      setResendCodeTimeLeft(120);
+      setIsResending(false);
+    } else {
+      toast.error(response.msg || "خطا در ارسال درخواست برداشت");
     }
+  } catch (err: any) {
+    console.error("Withdraw error:", err);
+    toast.error(err?.response?.data?.msg || "خطا در ارسال درخواست برداشت");
+  }
+};
 
-    try {
-      const response = await apiRequest({
-        url: "/api/wallets/fiat/withdraw",
-        method: "POST",
-        data: {
-          amount: Number(pendingWithdrawData?.amount),
-          card: pendingWithdrawData?.bank?.id,
-          codeOtp: otpCode,
-        },
-      });
-      toast.success("برداشت با موفقیت انجام شد!");
-      console.log("Withdraw Response:", response);
-      setIsOpen(false);
-    } catch (err) {
-      console.error("Withdraw Error:", err);
-      toast.error("کد تایید اشتباه است یا منقضی شده.");
+
+
+const handleOtpSubmit = async () => {
+  if (!otpCode || !pendingWithdrawData) {
+    toast.error("کد OTP وارد نشده است.");
+    return;
+  }
+
+  try {
+    const response = await apiRequest({
+      url: "/api/wallets/fiat/withdraw",
+      method: "POST",
+      data: {
+        amount: Number(pendingWithdrawData.amount),
+        card: pendingWithdrawData.bank?.id,
+        codeOtp: otpCode,
+      },
+    });
+
+    if (response.status) {
+      toast.success("برداشت با موفقیت انجام شد ✅");
+      setIsOtpModalOpen(false);
+      setOtpCode("");
+      setIsTradeSuccessModalOpen(true);
+    } else {
+      toast.error(response.msg || "کد وارد شده معتبر نیست ❌");
     }
-  };
+  } catch (err: any) {
+    toast.error(err?.response?.data?.msg || "خطا در برداشت!");
+  }
+};
 
-  const handleModalResend = () => {
-    setResendTimer(120);
-    setCanResend(false);
-    toast.info("کد جدید ارسال شد.");
-  };
+
+
+  
+
+ const handleResendCode = () => {
+  setResendCodeTimeLeft(120);
+  setIsResending(true);
+  toast.success("کد جدید ارسال شد");
+  setIsResending(false);
+};
+
+useEffect(() => {
+  if (!isOtpModalOpen) return;
+  let timer: NodeJS.Timeout;
+  if (resendCodeTimeLeft > 0) {
+    timer = setInterval(() => {
+      setResendCodeTimeLeft((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+  }
+  return () => clearInterval(timer);
+}, [isOtpModalOpen, resendCodeTimeLeft]);
+
 
   const bankOptions = listCards.map(card => ({
     value: { ...card, bankName: card.bank },
@@ -310,7 +200,14 @@ export default function WithdrawForm() {
                 />
               )}
             />
+             <div dir="rtl" className="flex items-center justify-between mb-4 mt-2">
+                      <span className="text-gray-400 text-md">موجودی قابل برداشت</span>
+                      <span className="font-medium text-blue-400 text-md">
+                       {walletBalance.toLocaleString()} تومان
+                      </span>
+                      </div>
           </div>
+           
 
           <div className="mb-6">
             {bankOptions.length > 0 ? (
@@ -334,6 +231,28 @@ export default function WithdrawForm() {
               </div>
             )}
           </div>
+          <div>
+            
+
+
+               <div dir="rtl" className="text-md text-gray-500 mt-3 space-y-2">
+                    {/* ردیف اول */}
+                    <div className="flex items-center justify-between mb-4">
+                      <span>کارمزد</span>
+                      <span className="font-medium text-gray-700">
+                       
+                      </span>
+                    </div>
+                    {/* ردیف دوم */}
+                    <div className="flex items-center justify-between ">
+                      <span>مبلغ نهایی واریز به کیف پول </span>
+                      <span className="font-medium text-gray-700">
+                       
+                      </span>
+                    </div>
+                  
+                  </div>
+          </div>
         </div>
 
         <div>
@@ -347,81 +266,31 @@ export default function WithdrawForm() {
       </form>
 
       {/* مودال OTP دقیقاً با همان استایل دوستت */}
-      {isOpen && (
-        <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
-          <div
-            className="fixed inset-0 flex items-center justify-center z-50"
-            onClick={() => setIsOpen(false)}
-          >
-            <div
-              className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* هدر مودال */}
-              <div className="flex items-center flex-row-reverse justify-between">
-                <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
-                  تایید دو مرحله‌ای برداشت
-                </h2>
-                <span
-                  className="icon-wrapper h-6 w-6 cursor-pointer"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <IconClose />
-                </span>
-              </div>
+     {isOtpModalOpen && (
+  <OTPInputModal
+    closeModal={() => {
+      setIsOtpModalOpen(false);
+      setOtpCode("");
+    }}
+    onChange={(value: string) => setOtpCode(value)}
+    onSubmit={handleOtpSubmit}
+    OTPLength={5}
+    handleResendCode={handleResendCode}
+    resendCodeIsSubmitting={isResending}
+    resendCodeTimeLeft={resendCodeTimeLeft}
+    mainText="کد تأیید ارسال‌شده به خود را وارد کنید"
+    submitButtonText="تأیید"
+    titleText="تأیید برداشت"
+  />
+)}
 
-              <p
-                className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24"
-                dir="rtl"
-              >
-                لطفا کد ارسال شده به شماره موبایل خود را وارد کنید.
-              </p>
+{isTradeSuccessModalOpen && (
+  <TradeSuccessModal
+    setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen}
+    isSell={false}
+  />
+)}
 
-              <div className="mt-[32px] mb-[48px]">
-                <OTPModal length={5} onChange={(code) => setOtpCode(code)} />
-              </div>
-
-              {/* ارسال مجدد */}
-              <div className="flex justify-between flex-row-reverse mb-4">
-                <div
-                  className={`flex gap-2 items-center ${
-                    canResend ? "cursor-pointer" : "opacity-50 cursor-not-allowed"
-                  }`}
-                  onClick={canResend ? handleModalResend : undefined}
-                >
-                  <span className="text-gray12">ارسال مجدد</span>
-                  <span className="icon-wrapper h-5 w-5">
-                    <IconAgain />
-                  </span>
-                </div>
-                <p className="text-gray12">
-                  ارسال مجدد کد تا {Math.floor(resendTimer / 60)}:
-                  {String(resendTimer % 60).padStart(2, "0")}
-                </p>
-              </div>
-
-              {/* دکمه‌ها */}
-              <div className="flex gap-2 mb-8">
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="mt-4 w-[180px] h-[48px] border border-blue2 rounded-lg text-blue2 text-sm lg:text-medium"
-                >
-                  ویرایش شماره
-                </button>
-                <Link to="">
-                  <button
-                    onClick={handleModalConfirm}
-                    className="mt-4 w-[200px] h-[48px] font-bold bg-blue2 text-white1 rounded-lg"
-                  >
-                    تایید
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
     </>
   );
 }

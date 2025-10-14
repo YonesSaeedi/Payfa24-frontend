@@ -10,7 +10,7 @@ interface OrderModalProps {
 
 export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModalProps) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div dir="rtl" className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
       <div className="bg-white8 w-full max-w-md rounded-2xl shadow-lg p-4 h-[585px]">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold p-4 text-black1">انتخاب سفارش</h3>
@@ -21,7 +21,13 @@ export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModa
   <p className="text-center text-gray-500">سفارشی موجود نیست</p>
 ) : (
 
-        <div className="space-y-2">
+    <div
+  className={`space-y-2 overflow-y-auto pl-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent ${
+    orders.length > 4 ? "max-h-[450px]" : ""
+  }`}
+  style={{ scrollbarGutter: "stable" }}
+>
+
         
           {orders.map((order) => (
             <button
