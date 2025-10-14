@@ -168,7 +168,7 @@ const otherItems: ServiceItem[] = [
       onClick={handleClose} // کلیک روی پس‌زمینه -> بستن مودال
     >
       <div
-        className={`bg-white8 rounded-xl shadow-lg p-6 w-[500px] h-[700] transform transition-all duration-300 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+        className={` max-h-[90%] overflow-auto bg-white8 rounded-xl shadow-lg p-6 w-[500px] h-[700] transform transition-all duration-300 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
           } relative`}
         onClick={(e) => e.stopPropagation()} // جلوگیری از بسته شدن مودال با کلیک داخلش
       >

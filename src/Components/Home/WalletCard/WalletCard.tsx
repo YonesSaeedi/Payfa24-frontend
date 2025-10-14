@@ -71,7 +71,6 @@ const WalletCard = ({
   ];
 
   const handleCurrencyChange = (value: "tether" | "toman") => {
-    console.log("Selected currency:", value);
   };
 
   return (
