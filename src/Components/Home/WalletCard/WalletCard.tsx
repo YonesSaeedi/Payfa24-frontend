@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "../../../assets/icons/Home/WalletCardIcon/VisibilityIcon";
 import CurrencyToggle from "./CurrencyToggle";
-import ChartIcon from "../../../assets/icons/Home/WalletCardIcon/chartIcon";
 import ReceivedIcon from "../../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import WalletAdd from "../../../assets/icons/Home/WalletCardIcon/WalletAddIcon";
 import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
@@ -11,6 +10,8 @@ import WalletMines from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIc
 import ReceiptText from "../../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
 import WithdrawModal from "../../Withdrawal/WithdrawModal";
 import { apiRequest } from "../../../utils/apiClient";
+import { formatPersianDigits } from "../../../utils/formatPersianDigits";
+import IconEyeClosed from "../../../assets/Icons/Login/IconEyeClosed";
 
 interface WalletCardProps {
   balance?: number;
@@ -123,7 +124,7 @@ const WalletCard = ({
             onClick={() => setStateBlure((prev) => !prev)}
           >
             <span className="w-[22px] h-[22px] text-gray-500 group-hover:text-gray-800">
-              <VisibilityIcon />
+              {stateBlure ?   <VisibilityIcon /> :   <IconEyeClosed/>}            
             </span>
             <span className="font-sans text-black1 text-base font-semibold">
               موجودی کیف پول شما
@@ -133,14 +134,14 @@ const WalletCard = ({
 
 
         <div className="text-center mb-6">
-          <p
-            className={`text-3xl font-bold text-black1 ${!stateBlure ? "blur-md" : ""
+          <div
+            className={`text-3xl flex items-center justify-center gap-3 font-bold text-black1 ${!stateBlure ? "blur-md" : ""
               }`}
             dir="rtl"
           >
-            {displayBalance}
-            {selectedCurrency === "tether" ? "تتر" : "تومان"}
-          </p>
+            <span>{formatPersianDigits(displayBalance ?? '0')}</span>
+           <span> {selectedCurrency === "tether" ? "تتر" : "تومان"}</span>
+          </div>
 
 
         </div>
