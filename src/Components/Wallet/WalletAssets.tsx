@@ -7,6 +7,8 @@ import { apiRequest } from "../../utils/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes"; // مسیر دقیق فایل routes را چک کنید
+import WalletAddIcon from "../../assets/icons/Home/WalletCardIcon/WalletAddIcon";
+import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 
 
 interface Wallet {
@@ -84,9 +86,9 @@ const CryptoTable: React.FC = () => {
     []
   );
 
-useEffect(() => {
-  fetchData(search, selectedSortKey);
-}, [search, selectedSortKey, fetchData]);
+  useEffect(() => {
+    fetchData(search, selectedSortKey);
+  }, [search, selectedSortKey, fetchData]);
 
   // 📌 هندل تغییر sort
   const handleSort = (key: string) => {
@@ -104,47 +106,47 @@ useEffect(() => {
     },
   });
 
-// 📌 ترکیب داده‌ها: merge walletsData + generalData
-const cryptoData = walletsData.map((wallet) => {
-  const generalItem = generalData?.cryptocurrency.find(
-    (item: any) => item.symbol === wallet.symbol
-  );
+  // 📌 ترکیب داده‌ها: merge walletsData + generalData
+  const cryptoData = walletsData.map((wallet) => {
+    const generalItem = generalData?.cryptocurrency.find(
+      (item: any) => item.symbol === wallet.symbol
+    );
 
-  // 📌 شرط برای آیکون
-  const renderIcon = generalItem?.isFont ? (
-    <i
-      className={`cf cf-${wallet.symbol.toLowerCase()}`}
-      style={{ color: generalItem?.color || "#000", fontSize: "24px" }}
-    ></i>
-  ) : (
-    <img
-      src={
-        generalItem?.icon
-          ? `https://api.payfa24.org/images/currency/${generalItem.icon}`
-          : "/default-coin.png"
-      }
-      alt={wallet.symbol}
-      className="w-6 h-6 rounded-full"
-      onError={(e) => {
-        (e.currentTarget as HTMLImageElement).src = "/default-coin.png";
-      }}
-    />
-  );
+    // 📌 شرط برای آیکون
+    const renderIcon = generalItem?.isFont ? (
+      <i
+        className={`cf cf-${wallet.symbol.toLowerCase()}`}
+        style={{ color: generalItem?.color || "#000", fontSize: "24px" }}
+      ></i>
+    ) : (
+      <img
+        src={
+          generalItem?.icon
+            ? `https://api.payfa24.org/images/currency/${generalItem.icon}`
+            : "/default-coin.png"
+        }
+        alt={wallet.symbol}
+        className="w-6 h-6 rounded-full"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = "/default-coin.png";
+        }}
+      />
+    );
 
-  return {
-    ...wallet, 
-    name: generalItem?.locale?.fa?.name || generalItem?.name || wallet.name,
-    color: generalItem.color ,
-    isFont: generalItem.isFont ,
-    icon: renderIcon, 
-    percent: generalItem?.percent ?? wallet.percent,
-  };
-});
+    return {
+      ...wallet,
+      name: generalItem?.locale?.fa?.name || generalItem?.name || wallet.name,
+      color: generalItem.color,
+      isFont: generalItem.isFont,
+      icon: renderIcon,
+      percent: generalItem?.percent ?? wallet.percent,
+    };
+  });
 
 
 
   return (
-    <div dir="rtl" className="p-4 bg-white1 rounded-xl border border-gray21 w-full max-w-2xl mx-auto">
+    <div dir="rtl" className="p-4 bg-white1 rounded-xl border border-gray21 w-full ">
       {/* Search و Dropdown */}
       <div className="flex items-center justify-between mb-3">
         <input
@@ -155,10 +157,10 @@ const cryptoData = walletsData.map((wallet) => {
           className="border rounded-lg px-3 py-2 text-sm w-1/2 bg-white1 border-gray19"
         />
 
-        <div className="relative inline-block text-right" ref={dropdownRef}>
+        <div className="relative  inline-block text-right max-w-[50%]" ref={dropdownRef}>
           <button
             onClick={() => setOpenDropdown(!openDropdown)}
-            className="border border-gray19 rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-52 justify-between text-black1"
+            className="border border-gray19 rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1"
           >
             {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
             <ChevronDown
@@ -184,38 +186,40 @@ const cryptoData = walletsData.map((wallet) => {
 
       {/* جدول */}
       <div>
-        <table className="w-full text-sm text-right border-collapse text-black1">
-          <thead>
-            <tr className="bg-gray41 text-black1">
-              <th className="px-4 py-3 text-[14px] font-medium text-center whitespace-nowrap">نام و نماد ارز</th>
-              <th className="px-4 py-3 text-[14px] font-medium text-center whitespace-nowrap">قیمت تومانی</th>
-              <th className="px-4 py-3 text-[14px] font-medium text-center whitespace-nowrap">تغییرات ۲۴h</th>
-              <th className="px-4 py-3 text-[12px] font-medium text-center whitespace-nowrap"></th>
-              <th className="py-3 text-[12px] font-medium text-center whitespace-nowrap"></th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className="w-full text-sm text-right border-collapse text-black1">
+          <div>
+            <div className="hidden lg:grid grid-cols-5 bg-gray41 text-black1 text-sm font-medium h-12 items-center rounded-lg">
+              <span className="text-center">نام و نماد ارز</span>
+              <span className="text-center">نرخ جهانی</span>
+              <span className="text-center">نرخ تومان</span>
+              <span className="text-center">موجودی شما</span>
+              <span className="text-center">معادل موجودی</span>
+            </div>
+          </div>
+          <div className="">
             {cryptoData.map((item, index) => (
-              <tr key={index} className="border-b border-b-gray21 hover:bg-gray41 last:border-b-0">
-                <td className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
+              <div key={index} className="border-b grid grid-cols-2 lg:grid-cols-5 border rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21  hover:bg-gray41 last:border-b-0 mb-2 lg:m-0 ">
+                <div className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
                   {item.icon}
                   <div>
                     <div className="font-medium truncate max-w-[100px]">{item.name}</div>
                     <div className="text-xs text-gray-500">{item.symbol}</div>
                   </div>
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">{item.price.toLocaleString()} تومان</td>
-                <td className={`px-4 py-3 whitespace-nowrap ${item.change && item.change >= 0 ? "text-green-600" : "text-red-600"}`}>
-                  {item.change && item.change > 0 ? "+" : ""}
-                  {item.change ?? 0}%
-                </td>
-                <td className="px-4 py-3 flex gap-2 whitespace-nowrap">
-                  <button  onClick={() => navigate(ROUTES.Deposit)} className="w-[84px] h-[34px] rounded-[8px] border text-sm text-blue2 hover:bg-blue-100 border-blue2">واریز</button>
-                  <button  onClick={() => navigate(ROUTES.WITHDRAWAL.CREATE)} className="w-[84px] h-[34px] rounded-[8px] text-sm bg-blue2 text-white1 hover:bg-blue-100">برداشت</button>
-                </td>
-                <td className="px-4 py-3 text-center relative whitespace-nowrap group">
+                </div>
+                <span className="px-4 py-3 whitespace-nowrap  hidden lg:flex justify-center items-center">{item.price.toLocaleString()} </span>
+
+                <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center">{item.fee_toman.toLocaleString()}</span>
+                <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center ">{item.balance.toLocaleString()} {item.symbol}</span>
+
+
+                <div className="px-2 py-3 text-center relative whitespace-nowrap group flex items-center justify-between">
+                  <span></span>
+                  <div className="flex flex-col items-end justify-center">
+                    <span className="whitespace-nowrap">{item.price.toLocaleString()} دلار</span>
+                    <span className="whitespace-nowrap lg:hidden">معادل {item.balance.toLocaleString()} تومان</span>
+                  </div>
                   <button
-                    className="p-2 rounded-full hover:bg-gray-100 transition"
+                    className=" rounded-full hover:bg-gray-100 transition"
                     onClick={() => isMobile && setOpenModalId(index)}
                   >
                     <MoreVertical className="w-4 h-4 text-blue2 block group-hover:hidden" />
@@ -225,7 +229,7 @@ const cryptoData = walletsData.map((wallet) => {
                   {!isMobile && (
                     <div className="absolute left-[41px] mt-2 top-6 w-[226px] bg-white rounded-lg shadow-md flex flex-col z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                       <button className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
-                       onClick={() => navigate(ROUTES.TRADE.BUY)}
+                        onClick={() => navigate(ROUTES.TRADE.BUY)}
                       >
                         <span className="text-blue1 w-5 h-5 flex items-center justify-center"><ReceivedIcon /></span>
                         <span className="text-blue1">خرید</span>
@@ -236,6 +240,18 @@ const cryptoData = walletsData.map((wallet) => {
                         <span className="text-blue1 w-5 h-5 flex items-center justify-center"><SendIcon /></span>
                         <span className="text-blue1">فروش</span>
                       </button>
+                      <button className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                        onClick={() => navigate(ROUTES.DEPOSIT)}
+                      >
+                        <span className="text-blue1 w-5 h-5 flex items-center justify-center"><WalletAddIcon /></span>
+                        <span className="text-blue1">واریز</span>
+                      </button>
+                      <button className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                        onClick={() => navigate(ROUTES.WITHDRAWAL)}
+                      >
+                        <span className="text-blue1 w-5 h-5 flex items-center justify-center"><WalletMinesIcon /></span>
+                        <span className="text-blue1">برداشت</span>
+                      </button>
                     </div>
                   )}
 
@@ -245,11 +261,11 @@ const cryptoData = walletsData.map((wallet) => {
                     name={item.name}
                     symbol={item.symbol}
                   />
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     </div>
   );

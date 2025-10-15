@@ -186,12 +186,11 @@ export default function LoginPage() {
   };
 
 const handleLoginResponse = (data: LoginResponse) => {
-  console.log("google",data);
-
+ 
   
   // 🔐 اگر ورود نیاز به تأیید دو مرحله‌ای دارد
   if (data?.id_user && data?.token2fa) {
-        console.log("ورود دو مرحله ای");
+      
 
     setIdUser(data.id_user);
     setToken2fa(data.token2fa);
@@ -203,7 +202,7 @@ const handleLoginResponse = (data: LoginResponse) => {
 
   // ✅ اگر ورود موفق بود (access_token + status === true)
   if (data?.access_token && data?.status) {
-    console.log("ورود");
+   
     
     localStorage.setItem("accessToken", data.access_token);
     localStorage.setItem("refreshToken", data.refresh_token || "");
