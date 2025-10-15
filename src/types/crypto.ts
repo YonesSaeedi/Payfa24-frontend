@@ -25,6 +25,7 @@ export interface CryptoItem {
   priceSell?: string
   priceChangePercent?: string
   priceBuy?: string
+  fee?: string // '112835.20'
   // digital currencies
   type?: string
 }
