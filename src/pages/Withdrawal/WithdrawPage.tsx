@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import IconWarning from "../../assets/icons/trade/IconWarning";
 import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
@@ -7,11 +7,15 @@ import WithdrawForm from "../../Components/Withdrawal/WithdrawForm";
 import CryptoWithdrawForm from "../../Components/Withdrawal/CryptoWithdrawForm";
 import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
+import { Route, useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routes/routes";
+import { useLocation } from "react-router-dom";
 
 const WithdrawPage: React.FC = () => {
   const [showBox, setShowBox] = useState(false);
   const [withdrawType, setWithdrawType] = useState<"fiat" | "crypto">("fiat");
   const [selected, setSelected] = useState(false);
+  const navigate = useNavigate();
 
   // 🔹 state برای هشدارها
   const [alertList, setAlertList] = useState<string[]>([
@@ -19,6 +23,15 @@ const WithdrawPage: React.FC = () => {
     "سقف مجاز هر برداشت ۱۰۰ میلیون تومان است.",
     "سقف مجاز هر برداشت برای هر شماره شبا ۲۰۰ میلیون می‌باشد.",
   ]);
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.pathname.includes("crypto")) {
+      setWithdrawType("crypto");
+    } else {
+      setWithdrawType("fiat");
+    }
+  }, [location.pathname]);
 
   return (
     <div className="h-full">
@@ -29,7 +42,7 @@ const WithdrawPage: React.FC = () => {
 
             <div className="bg-white1 rounded-[16px] lg:shadow-[0_0_12px_0_#00000029] p-6 flex flex-col flex-col-reverse lg:flex-row pt-8 mb-9">
               {/* فرم اصلی */}
-              <div className="flex-1 lg:p-8 pt-8">
+              <div className="flex-1 lg:p-8 pt-8 ">
                 {withdrawType === "fiat" ? (
                   <div>
                     <WithdrawForm />
@@ -55,7 +68,7 @@ const WithdrawPage: React.FC = () => {
                   </div>
                 
                 ) : (
-                  <div>
+                  <div >
                      <CryptoWithdrawForm />
                        {/* هشدارها */}
                 <div
@@ -86,7 +99,7 @@ const WithdrawPage: React.FC = () => {
        
                 {/* انتخاب نوع برداشت */}
              {/* انتخاب نوع برداشت */}
-<div className="hidden lg:flex flex-col gap-10 mt-4">
+<div className="hidden lg:flex flex-col gap-10">
   {/* پرداخت در لحظه */}
   <div>
     <span className="flex justify-end mb-4">برداشت تومانی</span>
@@ -94,12 +107,13 @@ const WithdrawPage: React.FC = () => {
     <div
       className={`flex items-center justify-between rounded-xl p-4 mb-1 cursor-pointer border transition-all duration-300 ${
         withdrawType === "fiat"
-          ? "border-blue-500 bg-blue-50 shadow-md"
+          ? "border-blue-500 light:bg-blue-50 shadow-md"
           : "border-gray21 hover:border-blue2"
       }`}
       onClick={() => {
         setWithdrawType("fiat");
         setShowBox(false);
+        navigate(ROUTES.WITHDRAWAL_FIAT);
         setAlertList([
           "لطفا در صورت استفاده از فیلترشکن آن را خاموش کنید.",
           "سقف مجاز هر برداشت ۱۰۰ میلیون تومان است.",
@@ -125,15 +139,11 @@ const WithdrawPage: React.FC = () => {
 
       <div className="flex flex-row-reverse">
         <div
-          className={`w-[52px] h-[52px] ml-2 rounded-[8px] flex items-center justify-center transition-all duration-300 ${
-            withdrawType === "fiat" ? "bg-blue-100" : "bg-blue14"
-          }`}
+          className="w-[52px] h-[52px] ml-2 rounded-[8px] flex items-center justify-center transition-all duration-300 bg-blue14
+          "
         >
           <span
-            className={`w-6 h-6 icon-wrapper ${
-              withdrawType === "fiat" ? "text-blue-600" : "text-blue2"
-            }`}
-          >
+           className="w-6 h-6 icon-wrapper text-blue-600">
             <WalletMinesIcon />
           </span>
         </div>
@@ -154,13 +164,14 @@ const WithdrawPage: React.FC = () => {
     <div
       className={`flex items-center justify-between rounded-xl p-4 cursor-pointer border transition-all duration-300 ${
         withdrawType === "crypto"
-          ? "border-blue-500 bg-blue-50 shadow-md"
+          ? "border-blue-500  shadow-md"
           : "border-gray21 hover:border-blue2"
       }`}
       onClick={() => {
         setWithdrawType("crypto");
         setShowBox(true);
         setAlertList(["لطفا در صورت استفاده از فیلترشکن آن را خاموش کنید."]);
+         navigate(ROUTES.WITHDRAWAL_CRYPTO);
       }}
     >
       <div className="flex items-center justify-center">
@@ -181,14 +192,10 @@ const WithdrawPage: React.FC = () => {
 
       <div className="flex flex-row-reverse">
         <div
-          className={`w-[52px] h-[52px] ml-2 rounded-[8px] flex items-center justify-center transition-all duration-300 ${
-            withdrawType === "crypto" ? "bg-blue-100" : "bg-blue14"
-          }`}
+          className="w-[52px] h-[52px] ml-2 rounded-[8px] flex items-center justify-center transition-all duration-300 bg-blue14"
         >
           <span
-            className={`w-6 h-6 icon-wrapper ${
-              withdrawType === "crypto" ? "text-blue-50" : "text-blue2"
-            }`}
+          className="w-6 h-6 icon-wrapper"
           >
             <IconCurrency />
           </span>

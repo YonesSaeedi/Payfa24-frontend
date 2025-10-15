@@ -174,14 +174,21 @@ useEffect(() => {
       {/* فرم برداشت */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray43 flex flex-col justify-between h-[644px] w-full"
+        className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray43 flex flex-col justify-between  w-full border border-gray26"
       >
         <div>
-          <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center">
-            <span className="w-6 h-6 icon-wrapper ml-2">
+          <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex flex-row justify-between items-center text-blue17">
+            <div className="flex flex-row">
+              <span className="w-6 h-6 icon-wrapper ml-2 text-blue17">
               <IconVideo />
             </span>
-            <h2 className="font-normal text-blue2">ویدیو آموزشی برداشت تومانی</h2>
+            <h2 className="font-normal text-blue17">ویدیو آموزشی برداشت تومانی</h2>
+            </div>
+            
+            <span className="w-6 h-6 icon-wrapper  text-blue17 ">
+              <IconClose/>
+            </span>
+            
           </div>
 
           <div dir="rtl" className="mb-6">
@@ -196,10 +203,12 @@ useEffect(() => {
                   onChange={field.onChange}
                   type="number"
                   placeholder="0 تومان"
+                   borderClass="border-gray12"
+                   className="text-black0"
                 />
               )}
             />
-             <div dir="rtl" className="flex items-center justify-between mb-4 mt-2">
+             <div dir="rtl" className="flex items-center justify-between mb-4 mt-3">
                       <span className="text-gray-400 text-md">موجودی قابل برداشت</span>
                       <span className="font-medium text-blue-400 text-md">
                        {walletBalance.toLocaleString()} تومان
@@ -225,7 +234,7 @@ useEffect(() => {
                 )}
               />
             ) : (
-              <div className="w-full border rounded-lg p-3 text-center text-gray-500 bg-gray-100">
+              <div className="w-full border rounded-lg p-3 text-center text-gray-500 border-gray12">
                 هیچ کارت بانکی موجود نمی‌ باشد
               </div>
             )}
@@ -257,7 +266,7 @@ useEffect(() => {
         <div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg mt-6"
           >
             برداشت
           </button>

@@ -6,12 +6,11 @@ import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { CryptoItem } from "../../types/crypto";
-import GeneralWithdrawModal from "./GeneralWithdrawModal";
-import OtpModal from "./OtpModal";
 import OTPInputModal from "../trade/OTPInputModal";
 import CryptoListModal from "../trade/CryptoListModal";
 import useMergedCryptoList from "../Withdrawal/MergedCryptoData";
 import TradeSuccessModal from "../trade/TradeSuccessModal";
+import IconClose from "../../assets/Icons/Login/IconClose";
 
 interface CoinNetworkRef {
   id: number;
@@ -466,29 +465,58 @@ const handleSubmitTransferOtp = async () => {
     toast.error(err?.response?.data?.msg || "خطا در تأیید انتقال!");
   }
 };
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await apiRequest({
+        url: "/api/wallets/crypto/withdraw",
+        method: "GET",
+      });
+      const coinList = res.coins || [];
+      setCoins(coinList);
+      setAllNetworks(res.networks || []);
+      setLevelUsed(res.level_used || {});
+
+      // ✅ مقدار پیش‌فرض crypto = اولین ارز لیست
+      if (coinList.length > 0) {
+        setCrypto(coinList[0].symbol);
+      }
+    } catch (err) {
+      console.error("خطا در گرفتن اطلاعات:", err);
+    }
+  };
+  fetchData();
+}, []);
+
 
 
   return (
     <form
       onSubmit={activeTab === "withdraw" ? handleSubmit :  handleSubmitTransfers}
-      className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between h-[860px] overflow-y-auto"
+      className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between  overflow-y-auto border border-gray26"
     >
       <div>
         {/* 🔹 بخش ویدیو آموزشی */}
         <div
           dir="rtl"
-          className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2"
+          className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2  justify-between"
         >
-          <span className="w-6 h-6 icon-wrapper">
+           <div className="flex flex-row">
+             <span className="w-6 h-6 icon-wrapper text-blue17">
             <IconVideo />
           </span>
-          <h2 className="font-normal text-blue2">
+          <h2 className="font-normal text-blue17">
             ویدیو آموزشی برداشت رمز ارز
           </h2>
+           </div>
+         
+            <span className="w-6 h-6 icon-wrapper  text-blue17 ">
+                        <IconClose/>
+                      </span>
         </div>
 
         {/* 🔹 تب‌ها */}
-        <div dir="rtl" className="flex mb-6 border-b border-gray-300">
+        <div dir="rtl" className="flex mb-6 ">
           {/*تب "برداشت از کیف پول"*/}
           <button
             type="button"
@@ -520,7 +548,7 @@ const handleSubmitTransferOtp = async () => {
         {activeTab === "withdraw" && (
           <div dir="rtl" className="mb-6 relative">
             {/* انتخاب رمز ارز 1-*/}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <label className="block text-sm text-gray-600 mb-1">
                 انتخاب رمز ارز
               </label>
@@ -528,9 +556,26 @@ const handleSubmitTransferOtp = async () => {
                 className="p-3 border rounded-lg cursor-pointer border-gray12"
                 onClick={() => setIsCurrencyModalOpen(true)}
               >
-                {crypto || "انتخاب کنید"}
+                {crypto}
               </div>
-            </div>
+            </div> */}
+            <div className="mb-6">
+<FloatingSelect
+  label="انتخاب رمز ارز"
+  value={crypto || (coins[0]?.symbol || "")}
+  options={coins.map((c) => ({
+    value: c.symbol,
+    label: c.symbol,
+    icon: c.icon ? <c.icon /> : undefined,
+  }))}
+  onChange={setCrypto}
+  placeholder={coins[0]?.symbol } // fallback
+  placeholderClasses="text-gray-900"
+  onOpen={() => setIsCurrencyModalOpen(true)} 
+/>
+
+</div>
+
             {/* شبکه برداشت*/}
             {crypto ? (
               <div className="mb-6">
@@ -547,7 +592,7 @@ const handleSubmitTransferOtp = async () => {
                 />
               </div>
             ) : (
-              <div className="w-full border rounded-lg p-3 text-center text-gray-500 bg-gray-100 mb-6">
+              <div className="w-full border rounded-lg p-3 text-center text-gray-500 border-gray12 mb-6">
                 ابتدا رمز ارز مورد نظر را انتخاب کنید
               </div>
             )}

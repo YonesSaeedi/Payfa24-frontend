@@ -21,7 +21,7 @@ import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
 import BankCardsPage from "../Components/BankCards/BankcardsPage";
 import Wallet from "../pages/Wallet/Wallet";
-import WithdrawPage from "../pages/Withdrawal/Withdrawal";
+import WithdrawPage from "../pages/Withdrawal/WithdrawPage";
 import ChangePassword from "../pages/Profile/ChangePassword";
 import MultiFactor from "../pages/Profile/MultiFactor";
 import GoogleAuthFlow from "../pages/Profile/GoogleAuthFlow";
@@ -62,7 +62,8 @@ export default function AppRouter() {
         <Route path={ROUTES.ADD_FRIEND} element={<AddFriend />} />
         <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
         <Route path={ROUTES.WALLET} element={<Wallet />} />
-        <Route path={ROUTES.WITHDRAWAL} element={<WithdrawPage />} />
+        <Route path={ROUTES.WITHDRAWAL_FIAT} element={<WithdrawPage />} />
+        <Route path={ROUTES.WITHDRAWAL_CRYPTO} element={<WithdrawPage />} />
         <Route path={ROUTES.TRADE.ROOT} element={<TradeLayout />}>
           <Route index element={<Navigate to={ROUTES.TRADE.BUY} replace />} />
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
