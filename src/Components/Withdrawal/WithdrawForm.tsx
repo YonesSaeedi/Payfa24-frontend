@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import IconClose from "../../assets/Icons/Login/IconClose";
-import IconAgain from "../../assets/Icons/Login/IconAgain";
 import TradeSuccessModal from "../trade/TradeSuccessModal";
 import OTPInputModal from "../trade/OTPInputModal";
 
@@ -267,7 +266,8 @@ useEffect(() => {
 
       {/* مودال OTP دقیقاً با همان استایل دوستت */}
      {isOtpModalOpen && (
-  <OTPInputModal
+      <div dir="rtl" className="flex justify-end">
+         <OTPInputModal
     closeModal={() => {
       setIsOtpModalOpen(false);
       setOtpCode("");
@@ -282,13 +282,18 @@ useEffect(() => {
     submitButtonText="تأیید"
     titleText="تأیید برداشت"
   />
+      </div>
+ 
 )}
 
 {isTradeSuccessModalOpen && (
-  <TradeSuccessModal
+  <div dir="rtl">
+    <TradeSuccessModal
     setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen}
     isSell={false}
   />
+  </div>
+  
 )}
 
     </>
