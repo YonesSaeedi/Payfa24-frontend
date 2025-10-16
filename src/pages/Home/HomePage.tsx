@@ -1,192 +1,87 @@
-
-import { useState } from "react";
-
+import { useEffect, useMemo } from "react";
 import Fire from "../../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
-import YoYowIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/YoYowIcon";
 import TrendDownIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendDownIcon";
-import TrinityIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrinityIcon";
 import TrendIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendIcon";
-import Titan from "../../assets/icons/Home/SynchronizedSlidersIcon/TitanIcon";
-
-import TokoTokenIcon from "../../assets/icons/Home/CryptoTableIcon/TokoTokenIcon";
-import TornIcon from "../../assets/icons/Home/CryptoTableIcon/TornIcon";
-import Ultra from "../../assets/icons/Home/CryptoTableIcon/UltraIconIcon";
-import VeChain from "../../assets/icons/Home/CryptoTableIcon/VeChainIcon";
-import Veil from "../../assets/icons/Home/CryptoTableIcon/VeilIcon";
-
 import HeaderFooterLayout from "../../layouts/HeaderFooterLayout";
 import img1 from "../../assets/images/Home/image copy (1).jpg"
-
-import WalletCard from "../../Components/Home/WalletCard/WalletCard";
-import IdentityCard from "../../Components/Home/IdentityCard";
-import PosterSlider from "../../Components/Home/PosterSlider";
-import InvitationCard from "../../Components/Home/InvitationCard";
-import SyncSlider from "../../Components/Home/SynchronizedSliders";
-import CryptoTable from "../../Components/Home/CryptoTable";
-import QuestionBox from "../../Components/Home/QuestionBox/QuestionBox";
-
-import TetherTopIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TetherTopIcon";
+import WalletCard from "../../components/Home/WalletCard/WalletCard";
+import IdentityCard from "../../components/Home/IdentityCard";
+import PosterSlider from "../../components/Home/PosterSlider";
+import InvitationCard from "../../components/Home/InvitationCard";
+import SyncSlider from "../../components/Home/SynchronizedSliders";
+import CryptoTable from "../../components/Home/CryptoTable";
+import QuestionBox from "../../components/Home/QuestionBox/QuestionBox";
 import MostDeal from "../../assets/icons/Home/SynchronizedSlidersIcon/MostDeal";
-import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
 import { toast } from "react-toastify";
 import { apiRequest } from "../../utils/apiClient";
-
-
-
-const boxes = [
-  {
-    header: "تازه های بازار",
-    headerIcon: <Fire />,
-    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Yoyow (Yoyow).png",
-    slides: [
-      {
-        title: "یویوو",
-        subtitle: "YOYOW",
-        price: 88901,
-        changePct: 23.54,
-        iconSrc: <YoYowIcon />,
-      },
-      {
-        title: "یویوو",
-        subtitle: "YOYOW",
-        price: 91000,
-        changePct: 24.12,
-        iconSrc: <YoYowIcon />,
-      },
-    ],
-  },
-  {
-    header: "بیشترین افت قیمت",
-    headerIcon: <span className="w-6 h-6 icon-wrapper text-red1"><TrendDownIcon /></span>,
-    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Trinity Network Credit (Tnc).png",
-    slides: [
-      {
-        title: "ترینیتی نتورک",
-        subtitle: "TNC",
-        price: 88901,
-        changePct: -23.54,
-
-        iconSrc: <TrinityIcon />,
-
-      },
-      {
-        title: "ترینیتی نتورک",
-        subtitle: "TNC",
-        price: 85000,
-        changePct: -25.12,
-        iconSrc: <TrinityIcon />,
-      },
-    ],
-  },
-  {
-    header: "بیشترین افزایش قیمت",
-
-    headerIcon: <span className="text-green2 icon-wrapper"><TrendIcon /></span>,
-
-    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/TitanSwap (TITAN).png",
-    slides: [
-      {
-        title: "تیتان سوآپ",
-        subtitle: "TITAN",
-        price: 88901,
-        changePct: 23.54,
-        iconSrc: <Titan />,
-      },
-      {
-        title: "یویوو",
-        subtitle: "YOYOW",
-        price: 91000,
-        changePct: 24.12,
-        iconSrc: <Titan />,
-      },
-    ],
-  },
-  {
-    header: "بیشترین معامله",
-
-    headerIcon: <span className="w-6 h-6 icon-wrapper"><MostDeal /></span>,
-
-    bgShape: "../../src/assets/images/Home/SynchronizedSlidersIcon/Tetherbackground (USDT).png",
-    slides: [
-      {
-        title: "تتر",
-        subtitle: "USDT",
-        price: 88901,
-        changePct: 23.54,
-        iconSrc: <TetherTopIcon />,
-      },
-      {
-        title: "تتر",
-        subtitle: "USDT",
-        price: 91000,
-        changePct: 24.12,
-        iconSrc: <TetherTopIcon />,
-      },
-    ],
-  },
-];
-
+import { requestFirebaseToken } from "../../firebase/messaging";
+import { getMessaging, isSupported, onMessage } from "firebase/messaging";
+import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import useGetCryptoData from "../../hooks/useGetCryptoData";
+import { CryptoDataMap } from "../../types/crypto";
 
 function HomePage() {
-  const [active, setActive] = useState(0);
-  const data = [
+  const { data: generalData, isLoading: generalDataIsLoading } = useGetGeneralInfo()
+  const { data: cryptoData, isLoading: cryptoDataIsLoading } = useGetCryptoData()
+  const isLoading = generalDataIsLoading || cryptoDataIsLoading
+  // computes an object with keys of crypto symbols and memoize it ======================================================================================
+  const mappedGeneralData = useMemo(() => {
+    return generalData?.cryptocurrency?.reduce((acc, item) => {
+      acc[item.symbol] = item
+      return acc
+    }, {} as CryptoDataMap)
+  }, [generalData])
+  // function that returns merged data (general info + list-cryptocurrencies) about crypto currencies; and memoizing ======================================
+  function mergeCryptoData(cryptosConstantInfo: CryptoDataMap, cryptosVariableInfo: CryptoDataMap) {
+    const result: CryptoDataMap = {}
+    for (const key of Object.keys(cryptosVariableInfo)) {
+      if (cryptosConstantInfo[key])
+        result[key] = {
+          ...cryptosConstantInfo[key],
+          ...cryptosVariableInfo[key],
+        }
+    }
+    return result
+  }
+  const mergedCryptosData = useMemo(() => {
+    if (
+      mappedGeneralData &&
+      Object.keys(mappedGeneralData).length > 0 &&
+      cryptoData &&
+      Object.keys(cryptoData).length > 0
+    ) {
+      return mergeCryptoData(mappedGeneralData, cryptoData)
+    }
+    return {}
+  }, [mappedGeneralData, cryptoData])
+  // preparing lists ====================================================================================================================================
+  const gainers = Object.values(mergedCryptosData).sort((item1, item2) => Number(item2.priceChangePercent) - Number(item1.priceChangePercent))
+  const losers = Object.values(mergedCryptosData).sort((item1, item2) => Number(item1.priceChangePercent) - Number(item2.priceChangePercent))
+  const mostTraded = Object.values(mergedCryptosData).sort((item1, item2) => Number(item2.quoteVolume) - Number(item1.quoteVolume))
+  const newest = Object.values(mergedCryptosData).sort((item1, item2) => Number(item2.id) - Number(item1.id))
+  const cryptoBoxes = [
     {
-      name: "ننننننننننننتوکو توکن",
-      symbol: "TKO",
-      priceUSDT: 489.7,
-      sellPrice: 489700,
-      buyPrice: 485000,
-      change24h: -12,
-      logo: <TokoTokenIcon />,
+      header: "تازه های بازار",
+      headerIcon: <Fire />,
+      slides: newest.slice(0, 4),
     },
     {
-      name: "تورِن",
-      symbol: "TURN",
-      priceUSDT: 489.7,
-      sellPrice: 489700,
-      buyPrice: 485000,
-      change24h: +12,
-      logo: <TornIcon />,
+      header: "بیشترین افت قیمت",
+      headerIcon: <span className="w-6 h-6 icon-wrapper text-red1"><TrendDownIcon /></span>,
+      slides: losers.slice(0, 4),
     },
     {
-      name: "تراولا",
-      symbol: "AVA",
-      priceUSDT: 489.7,
-      sellPrice: 489700,
-      buyPrice: 485000,
-      change24h: +12,
-      logo: <TravelaIcon />,
+      header: "بیشترین افزایش قیمت",
+      headerIcon: <span className="text-green2 icon-wrapper"><TrendIcon /></span>,
+      slides: gainers.slice(0, 4)
     },
     {
-      name: "آلترا",
-      symbol: "UOS",
-      priceUSDT: 489.7,
-      sellPrice: 489700,
-      buyPrice: 485000,
-      change24h: -12,
-      logo: <Ultra />,
-    },
-    {
-      name: "وی چین",
-      symbol: "VET",
-      priceUSDT: 489.7,
-      sellPrice: 489700,
-      buyPrice: 485000,
-      change24h: -12,
-      logo: <VeChain />,
-    },
-    {
-      name: "ولی",
-      symbol: "VAI",
-      priceUSDT: 489.7,
-      sellPrice: 489700,
-      buyPrice: 485000,
-      change24h: -12,
-      logo: <Veil />,
+      header: "بیشترین معامله",
+      headerIcon: <span className="w-6 h-6 icon-wrapper"><MostDeal /></span>,
+      slides: mostTraded.slice(0, 4),
     },
   ];
-
-  const slidesData = [
+  const slidesData = [ // banner slider data, to be removed after connecting to api ==
     {
       title: "کارمزد رایگان",
       subtitle: "بر روی معاملات بیت‌کوین",
@@ -207,18 +102,40 @@ function HomePage() {
     },
   ];
 
-  // example ==============================================================================
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await apiRequest({ url: '/api/account/get-usersdf' })
-  //     // console.log(response)
-  //   } catch (err: any) {
-  //     console.log(err)
-  //   } finally {
-  //     // console.log('enddddd')
-  //   }
-  // }
-  // fetchData()
+  // firebase stuff, Javad knows =================================================================================================================
+  // 1️⃣ ارسال توکن به سرور (فقط اگر مرورگر پشتیبانی کند)
+  useEffect(() => {
+    const sendTokenToServer = async () => {
+      if (typeof window === "undefined") return; // SSR safe
+      const supported = await isSupported();
+      if (!supported) return; // مرورگر FCM را پشتیبانی نمی‌کند
+      try {
+        const fcmTokenValue = await requestFirebaseToken();
+        if (!fcmTokenValue) return;
+        const savedToken = localStorage.getItem("fcmToken");
+        if (savedToken && savedToken === fcmTokenValue) return;
+        await apiRequest({ url: "/api/token-firebase", method: "PUT", data: { token: fcmTokenValue } });
+        localStorage.setItem("fcmToken", fcmTokenValue);
+      } catch (err) {
+        console.error("Failed to send token to server", err);
+      }
+    };
+    sendTokenToServer();
+  }, []);
+  // 2️⃣ گوش دادن به پیام‌های foreground
+  useEffect(() => {
+    const initMessaging = async () => {
+      if (typeof window === "undefined") return;
+      const supported = await isSupported();
+      if (!supported) return;
+      const messaging = getMessaging();
+      const unsubscribe = onMessage(messaging, (payload) => {
+        toast.info(payload.notification?.title || "پیام جدید دریافت شد");
+      });
+      return () => unsubscribe();
+    };
+    initMessaging();
+  }, []);
 
   return (
     <div>
@@ -234,25 +151,21 @@ function HomePage() {
                 onClick={() => console.log("start identity")}
               />
             </div>
-
             <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
               <PosterSlider slides={slidesData} />
               <InvitationCard />
             </div>
-
             <div id="SyncSlider" className="pt-12 pb-12">
-              <SyncSlider boxes={boxes} />
+              <SyncSlider boxes={cryptoBoxes} isLoading={isLoading} />
             </div>
-
             <div className="w-full pt-7">
-              <CryptoTable data={data} active={active} setActive={setActive} />
+              <CryptoTable data={Object.values(mergedCryptosData)} isLoading={isLoading} />
             </div>
             <div id="qustionBox" className="pt-12 lg:pb-28 pb-14">
               <QuestionBox />
             </div>
           </div>
         </div>
-
       </HeaderFooterLayout>
     </div>
   );

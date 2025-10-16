@@ -14,15 +14,22 @@ import { toast } from "react-toastify";
 import useGetUser from "../../hooks/useGetUser";
 import { useMemo } from "react";
 import { ROUTES } from "../../routes/routes";
+import IconAgain from "../../assets/Icons/Login/IconAgain";
+import OTPModal from "../../Components/OTPModal";
+import IconClose from "../../assets/Icons/Login/IconClose";
+import { apiRequest } from "../../utils/apiClient";
 
 
 export default function MultiFactor() {
-  const { data: twoFAData } = UseTwoStepVerification()
+  const { data: twoFAData, refresh } = UseTwoStepVerification()
   const { data: userData } = useGetUser();
 
 
   const [modalType, setModalType] = useState(null);
   const navigate = useNavigate();
+  const [otpCode, setOtpCode] = useState("");
+  const [isOpenActive, setIsOpenActive] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
 
   const MultiInfo = useMemo(() => [
@@ -30,7 +37,7 @@ export default function MultiFactor() {
       type: "google",
       img: Google,
       button: "فعال کردن",
-      Title: "تایید دو مرحله‌ای گوگل",
+      Title: " ",
       text: "میتوانید با نصب اپلیکیشن google Authenticator هنگام ورود کد دو مرحله‌ای را دریافت کنید.",
     },
     {
@@ -58,6 +65,7 @@ export default function MultiFactor() {
 
 
   const handleCardClick = (type: string, isActive: boolean) => {
+    setModalType(type)
     // چک کردن وجود اطلاعات لازم قبل از ارسال درخواست
     if (type === "sms" && !userData?.user?.mobile) {
       toast.info("شماره موبایل شما ثبت نشده است.");
@@ -75,21 +83,47 @@ export default function MultiFactor() {
       return;
     }
 
-    if (isActive) {
+    if (!isActive) {
       // یعنی کارت فعال است → مودال غیرفعال‌سازی باز شود
-      setModalType(type);
-    } else {
-      // هنوز فعال نشده
       if (type === "google") {
         navigate(ROUTES.GOOGLE_AUTH_FLOW);
       } else if (type === "telegram") {
         navigate('/TelegramAuthFlow');
       } else {
-        setModalType(type);
+        setIsOpen(true);
       }
+    } else {
+      setIsOpenActive(true);
+      // هنوز فعال نشده
     }
   };
 
+  // ---------- هندل تغییر OTP ----------
+  const handleOtpChange = (code: string) => {
+    setOtpCode(code);
+  };
+
+  const handleConfirm = async () => {
+    try {
+      const type = modalType; // نوع OTP
+
+      const res = await apiRequest({
+        url: `/api/account/2fa/verify/${type}`, // url داینامیک
+        method: "POST",
+        data: { code: otpCode }, // otpCode ارسال شود
+      });
+      refresh()
+      toast.success(res.msg);
+      setIsOpen(false);
+
+
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "خطا در تایید کد.");
+    }
+  };
+
+
+  console.log("modalType", modalType);
 
 
   return (
@@ -129,11 +163,61 @@ export default function MultiFactor() {
         </div>
       </HeaderLayout>
 
-      {modalType && (
+      {isOpen && (
         <TwoFactorModal
           type={modalType}
-          closeModal={() => setModalType(null)}
+          closeModal={() => setIsOpen(null)}
         />
+      )}
+
+      {isOpenActive && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
+          <div
+            className="fixed inset-0 flex items-center justify-center z-50"
+            onClick={() => setIsOpenActive(false)}
+          >
+            <div
+              className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center flex-row-reverse justify-between">
+
+                <span
+                  className="icon-wrapper h-6 w-6 cursor-pointer"
+                  onClick={() => setIsOpenActive(false)}
+                >
+                  <IconClose />
+                </span>
+              </div>
+
+              <p
+                className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24"
+                dir="rtl"
+              >
+                لطفا کد ارسالی را وارد کنید
+              </p>
+
+              <div className="mt-[32px] mb-[48px]">
+                <OTPModal length={6} onChange={handleOtpChange} />
+              </div>
+
+
+
+              <div className="flex gap-2 mb-8">
+
+                <button
+                  onClick={handleConfirm}
+                  disabled={otpCode.length < 6}
+                  className={`mt-4 w-full h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${otpCode.length < 6 ? "bg-gray5 cursor-not-allowed" : "bg-blue2 hover:bg-blue3"
+                    }`}
+                >
+                  تایید
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </>
   );

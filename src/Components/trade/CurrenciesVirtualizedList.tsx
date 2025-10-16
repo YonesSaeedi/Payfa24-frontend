@@ -19,24 +19,28 @@ const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ h
     const item = data[index];
 
     if (!item) return (
-      <div className="p-3 rounded-lg bg-gray-200 animate-pulse">
+      <div className="p-3 rounded-lg bg-gray-200 animate-pulse mb-2">
         <div className="h-4 w-2/3 bg-gray-300 rounded mb-2"></div>
         <div className="h-4 w-1/2 bg-gray-300 rounded"></div>
       </div>
     )
     return (
       <div style={{ ...style, top: (style.top as number) + 4, paddingRight: 6 }}>
-        <button onClick={() => {
-          setCurrentCryptoCurrency(item)
-          closeModal()
-        }} dir="rtl" className="w-full px-3 lg:px-4 py-1 lg:py-2 rounded-lg border border-gray26 bg-gray33 flex items-center hover:bg-gray6">
+        <button
+          onClick={() => {
+            setCurrentCryptoCurrency(item)
+            closeModal()
+          }}
+          dir="rtl"
+          className="w-full px-3 lg:px-4 py-1 lg:py-2 rounded-lg border border-gray26 bg-gray33 flex items-center hover:bg-gray6 hover:border-blue2"
+        >
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-1">
               <div className="w-8 h-8 rounded-full">
                 {item.isFont ?
                   <i className={`cf cf-${item.symbol.toLowerCase()}`} style={{ color: item.color, fontSize: '32px' }}></i>
                   :
-                  <img src={`https://api.payfa24.org/images/currency/${item.icon}`} alt={item.symbol} className="object-contain" />
+                  <img src={`https://api.payfa24.org/images/currency/${item.icon}`} alt={item.symbol} className="object-contain w-full h-full" />
                 }
               </div>
               <div className="flex flex-col gap-0.5">

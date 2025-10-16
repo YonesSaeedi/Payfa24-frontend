@@ -67,12 +67,12 @@ const TradeLayout = () => {
                     <span className="icon-wrapper w-5 h-5 lg:w-6 lg:h-6 text-text3"><IconWarning /></span>
                     <h4 className="text-sm lg:text-lg font-medium text-text3">توجه داشته باشید</h4>
                   </div>
-                  <ul className="font-normal text-xs lg:text-base text-text4 list-disc pr-6">
+                  <ul className="font-normal text-xs lg:text-base text-black1 list-disc pr-6">
                     <li className="">سقف خرید و فروش از این بخش 5 میلیون تومان است.</li>
                     <li className="">کارمزد پی‌فا 24 برای معاملات آسان همیشه 0 است.</li>
                   </ul>
                 </div>
-                <h4 className="lg:hidden text-base font-bold mb-3 text-text4">سوالات متداول</h4>
+                <h4 className="lg:hidden text-base font-bold mb-3 text-black1">سوالات متداول</h4>
                 <TradeLayoutFAQ items={FAQData} />
               </div>
             </div>

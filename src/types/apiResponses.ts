@@ -105,3 +105,19 @@ export interface KycGetInfo {
   };
   [key: string]: unknown
 }
+
+// ===============================================================================================================================================================================
+
+export interface OrderGetInfoCoin {
+  id?: number
+  symbol: string
+  price?: TradePrices
+}
+export interface OrderGetInfoDigitalCurrency {
+  name?: string
+  symbol: string
+}
+export interface OrderGetInfo {
+  coins?: OrderGetInfoCoin[]
+  digitalCurrency?: OrderGetInfoDigitalCurrency[]
+}

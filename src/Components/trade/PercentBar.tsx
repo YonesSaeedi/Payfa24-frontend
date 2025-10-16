@@ -5,12 +5,13 @@ type PercentBarProps = {
   selectedPercent: number;
   setSelectedPercent: (percent: number) => void;
   lastChangedRef: RefObject<"percent" | "input" | null>;
+  isDisabled: boolean
 }
 
-const PercentBar = ({ setSelectedPercent, selectedPercent, lastChangedRef }: PercentBarProps) => {
+const PercentBar = ({ setSelectedPercent, selectedPercent, lastChangedRef, isDisabled }: PercentBarProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const handleMove = (clientX: number) => {
-    if (!trackRef.current) return;
+    if (isDisabled || !trackRef.current) return;
     const rect = trackRef.current.getBoundingClientRect();
     let percent = ((clientX - rect.left) / rect.width) * 100;
     percent = Math.min(100, Math.max(0, percent));
@@ -18,6 +19,7 @@ const PercentBar = ({ setSelectedPercent, selectedPercent, lastChangedRef }: Per
     setSelectedPercent(percent);
   };
   const handlePointerDown = (e: React.PointerEvent) => {
+    if (isDisabled) return
     e.preventDefault();
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
     handleMove(e.clientX);

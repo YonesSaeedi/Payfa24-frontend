@@ -6,11 +6,12 @@ const useGetCryptoData = () => {
   return useQuery<CryptoItem[], Error, Record<string, CryptoItem>>({
     queryKey: ['crypto-data'],
     queryFn: async () => {
-      const response = await apiRequest<{ list: CryptoItem[] }>({ url: '/api/list-cryptocurrencies', params: { 'sort': 1, 'limit': 2000, 'page': 1 } })
+      const response = await apiRequest<{ list: CryptoItem[] }>({ url: '/api/list-cryptocurrencies', params: { 'limit': 2000, 'page': 1 } })
       return response.list
     },
-    staleTime: 30_000,
-    gcTime: 5 * 60 * 1000,
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
+    refetchInterval: 60_000,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     select: (data) =>
