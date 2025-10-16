@@ -140,7 +140,7 @@ const CryptoTable: React.FC = () => {
     return {
       ...wallet,
       name: generalItem?.locale?.fa?.name || generalItem?.name || wallet.name,
-      color: generalItem.color,
+      color: generalItem?.color,
       isFont: generalItem.isFont,
       icon: renderIcon,
       percent: generalItem?.percent ?? wallet.percent,
@@ -255,7 +255,7 @@ const CryptoTable: React.FC = () => {
               cryptoData.map((item, index) => (
                 <div
                   key={index}
-                  className="border-b grid grid-cols-2 lg:grid-cols-5 border rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 last:border-b-0 mb-2 lg:m-0"
+                  className="border-b grid grid-cols-2 lg:grid-cols-5 border rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 lg:last:border-b-0 mb-2 lg:m-0"
                 >
                   <div className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
                     {item.icon}

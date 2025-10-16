@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import IconAlert from "../assets/Icons/Login/IconAlert";
-import IconGoogle from "../assets/Icons/Login/IconGoogle";
 import { ThemeContext } from "../Context/ThemeContext";
 import IconEyeOpen from "../assets/Icons/Login/IconEyeOpen";
 import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
@@ -9,11 +8,7 @@ import imageLoginDark from "../assets/Login ImageDark.png";
 import imageLoginLight from "../assets/Login imageLight.png";
 import TextField from "../Components/InputField/TextField";
 import { Link, useNavigate } from "react-router-dom";
-import IconClose from "../assets/Icons/Login/IconClose";
-import IconAgain from "../assets/Icons/Login/IconAgain";
-import OTPModal from "../Components/OTPModal";
 import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getLoginSchema } from "../utils/validationSchemas";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
@@ -21,6 +16,7 @@ import { toast } from "react-toastify";
 import { apiRequest } from "../utils/apiClient";
 import { ROUTES } from "../routes/routes";
 import { GoogleLoginButton } from "../firebase/GoogleLoginButton";
+import OTPInputModal from "../Components/trade/OTPInputModal";
 
 type LoginFormData = {
   email: string;
@@ -72,16 +68,24 @@ export default function LoginPage() {
     },
   });
 
-  // 🕒 تایمر ۲ دقیقه‌ای برای ارسال مجدد
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isOpen && !canResend && resendTimer > 0) {
-      interval = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
-    } else if (resendTimer === 0) {
-      setCanResend(true);
-    }
+    if (!isOpen) return;
+
+    const interval = setInterval(() => {
+      setResendTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
     return () => clearInterval(interval);
-  }, [isOpen, resendTimer, canResend]);
+  }, [isOpen]);
+
+
 
   // 🧩 مرحله ۱: ارسال اطلاعات ورود
   const onSubmit = async (data: LoginFormData) => {
@@ -185,46 +189,50 @@ export default function LoginPage() {
     }
   };
 
-const handleLoginResponse = (data: LoginResponse) => {
- 
-  
-  // 🔐 اگر ورود نیاز به تأیید دو مرحله‌ای دارد
-  if (data?.id_user && data?.token2fa) {
-      
+  const handleLoginResponse = (data: LoginResponse) => {
 
-    setIdUser(data.id_user);
-    setToken2fa(data.token2fa);
-    setResendTimer(120);
-    setCanResend(false);
-    setIsOpen(true);
-    return;
-  }
 
-  // ✅ اگر ورود موفق بود (access_token + status === true)
-  if (data?.access_token && data?.status) {
-   
-    
-    localStorage.setItem("accessToken", data.access_token);
-    localStorage.setItem("refreshToken", data.refresh_token || "");
-    localStorage.setItem("expiresAt", data.expires_in?.toString() || "");
-    toast.success(data?.msg || "ورود با گوگل با موفقیت انجام شد 🎉");
-    navigate(ROUTES.HOME);
-    return;
-  }
+    // 🔐 اگر ورود نیاز به تأیید دو مرحله‌ای دارد
+    if (data?.id_user && data?.token2fa) {
 
-  // ⚠️ در غیر اینصورت خطا
-  toast.error(data?.msg || "پاسخ نامعتبر از سرور دریافت شد");
-};
+
+      setIdUser(data.id_user);
+      setToken2fa(data.token2fa);
+      setResendTimer(120);
+      setCanResend(false);
+      setIsOpen(true);
+      return;
+    }
+
+    // ✅ اگر ورود موفق بود (access_token + status === true)
+    if (data?.access_token && data?.status) {
+
+
+      localStorage.setItem("accessToken", data.access_token);
+      localStorage.setItem("refreshToken", data.refresh_token || "");
+      localStorage.setItem("expiresAt", data.expires_in?.toString() || "");
+      toast.success(data?.msg || "ورود با گوگل با موفقیت انجام شد 🎉");
+      navigate(ROUTES.HOME);
+      return;
+    }
+
+    // ⚠️ در غیر اینصورت خطا
+    toast.error(data?.msg || "پاسخ نامعتبر از سرور دریافت شد");
+  };
 
 
 
   // 🧩 هندل کلیک‌ها در UI بدون تغییر JSX
   const handleModalConfirm = () => handleConfirm();
   const handleModalResend = () => handleResend();
+  const handelClose = () => setIsOpen(false);
+
+
+  console.log("resendTimer", resendTimer);
 
   return (
     <AuthLayout image={theme === "dark" ? imageLoginDark : imageLoginLight}>
-      {/* 👇 کل JSX بدون تغییر */}
+
       <div className="flex items-center justify-center" dir="rtl">
         <div className="w-full max-w-md px-4">
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -312,80 +320,24 @@ const handleLoginResponse = (data: LoginResponse) => {
       </div>
 
       {isOpen && (
-        <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
-          <div
-            className="fixed inset-0 flex items-center justify-center z-50"
-            onClick={() => {
-              setIsOpen(false);
-            }}
-          >
-            <div
-              className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center flex-row-reverse justify-between">
-                <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
-                  {contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
-                </h2>
-                <span
-                  className="icon-wrapper h-6 w-6 cursor-pointer"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <IconClose />
-                </span>
-              </div>
 
-              <p
-                className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24"
-                dir="rtl"
-              >
-                لطفا کد ارسالی به
-                {contactMethod === "phone"
-                  ? `شماره ${getValues("email")}`
-                  : `ایمیل ${getValues("email")}`}
-                را وارد کنید.
-              </p>
+        <div dir="rtl">
 
-              <div className="mt-[32px] mb-[48px]">
-                <OTPModal length={6} onChange={(code) => setOtpCode(code)} />
-              </div>
-
-              <div className="flex justify-between flex-row-reverse mb-4">
-                <div
-                  className={`flex gap-2 items-center ${canResend ? "cursor-pointer" : "opacity-50 cursor-not-allowed"}`}
-                  onClick={canResend ? handleModalResend : undefined}
-                >
-                  <span className="text-gray12">ارسال مجدد</span>
-                  <span className="icon-wrapper h-5 w-5">
-                    <IconAgain />
-                  </span>
-                </div>
-                <p className="text-gray12">
-                  ارسال مجدد کد تا {Math.floor(resendTimer / 60)}:
-                  {String(resendTimer % 60).padStart(2, "0")}
-                </p>
-              </div>
-
-              <div className="flex gap-2 mb-8">
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="mt-4 w-[180px] h-[48px] border border-blue2 rounded-lg text-blue2 text-sm lg:text-medium"
-                >
-                  {contactMethod === "phone" ? "ویرایش شماره همراه" : "ویرایش ایمیل"}
-                </button>
-                <Link to={""}>
-                  <button
-                    onClick={handleModalConfirm}
-                    className="mt-4 w-[200px] h-[48px] font-bold bg-blue2 text-white1 rounded-lg"
-                  >
-                    تایید
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </>
+          <OTPInputModal
+            titleText={contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
+            mainText={`لطفاً کد ارسالی به ${contactMethod === "phone"
+              ? `شماره ${getValues("email")}`
+              : `ایمیل ${getValues("email")}`
+              } را وارد کنید.`}
+            closeModal={handelClose}
+            OTPLength={6}
+            onSubmit={handleModalConfirm}
+            handleResendCode={handleModalResend}
+            resendCodeIsSubmitting={isLoading}
+            resendCodeTimeLeft={resendTimer}
+            onChange={(value: string) => setOtpCode(value)}
+          />
+        </div>
       )}
     </AuthLayout>
   );
