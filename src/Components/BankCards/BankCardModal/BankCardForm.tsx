@@ -111,7 +111,7 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
 
       {/* کارت */}
       <div
-        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6"
+        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6 max-w-[600px]"
         style={{
           backgroundImage: `url(${
             isDark ? BackgroundCardDark : BackgroundCard
@@ -153,7 +153,7 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
       flex items-center justify-center
     bg-transparent
     text-center
-    text-base text-black
+    text-base text-black0
     placeholder:text-gray-400
     placeholder:text-2xl
      placeholder:tracking-[0.1em]

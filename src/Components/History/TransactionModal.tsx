@@ -203,12 +203,12 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl p-6 w-[90%] max-w-md relative shadow-xl border border-gray-100 max-h-[85vh] overflow-y-auto animate-fadeIn"
+        className="bg-white8 rounded-2xl p-6 w-[90%] max-w-md relative shadow-xl  max-h-[85vh] overflow-y-auto animate-fadeIn"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-4">
-          <h2 className="font-semibold text-lg text-gray-800">جزئیات تراکنش</h2>
+        <div className="flex justify-between items-center   pb-4 mb-4">
+          <h2 className="font-semibold text-lg text-black0">جزئیات تراکنش</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 transition w-7"
@@ -234,7 +234,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
             </div>
 
             {/* Detail grid */}
-            <div className="grid grid-cols-1 gap-3 text-sm text-gray-700">
+            <div className="grid grid-cols-1 gap-3 text-sm text-black0">
               {detail.status && (
                 <DetailRow
                   label="وضعیت"
@@ -296,7 +296,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
             </div>
           </>
         ) : (
-          <div className="text-center py-10 text-gray-500">
+          <div className="text-center py-10 text-black0">
             داده‌ای برای نمایش وجود ندارد
           </div>
         )}
@@ -317,18 +317,19 @@ const DetailRow = ({
   symbol?: string;
   isCopyable?: boolean;
 }) => (
-  <div className="flex justify-between items-center border-b border-gray-100 pb-2">
-    <span className="font-medium text-gray-600">{label}:</span>
-    <div className="flex gap-3 text-gray-800 text-left">
+  <div className="flex justify-between items-center pb-2">
+    <span className="font-medium text-gray12">{label}:</span>
+    <div className="flex items-end justify-end gap-1 min-w-[120px] text-right">
       <span
-        className={` ${typeof value === "string" && value.length > 20 ? "break-all" : ""
+        className={`break-words ${typeof value === "string" && value.length > 20 ? "break-all" : ""
           }`}
       >
         {value}
       </span>
-      <span>{symbol}</span>
+      {symbol && <span>{symbol}</span>}
     </div>
   </div>
 );
+
 
 export default TransactionModal;

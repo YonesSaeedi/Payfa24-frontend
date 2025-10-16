@@ -20,6 +20,7 @@ interface Order {
 export default function TicketForm() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isOrderSelectorOpen, setIsOrderSelectorOpen] = useState(false);
 
   const {
     register,
@@ -93,8 +94,9 @@ export default function TicketForm() {
               onChange={field.onChange}
               type="text"
               placeholder=""
-              placeholderColor="text-black0"
+              placeholderColor="gray9"
               borderClass="border-gray12"
+
             />
           )}
         />
@@ -106,6 +108,7 @@ export default function TicketForm() {
           setSelectedOrder={setSelectedOrder}
           register={register}
           setValue={setValue}
+           onClose={() => setIsOrderSelectorOpen(false)} 
         />
 
         {/* توضیحات */}
@@ -134,7 +137,7 @@ export default function TicketForm() {
 
         {/* قسمت آپلود فایل */}
         <div className="relative w-full mt-5">
-  <label className="absolute right-3 text-xs -top-2 px-1 duration-200 z-40 lg:bg-gray43 bg-gray38">
+  <label className="absolute right-3 text-xs -top-2 px-1 duration-200 z-40 lg:bg-gray43 bg-gray38 text-gray12">
     فایل پیوست
   </label>
 

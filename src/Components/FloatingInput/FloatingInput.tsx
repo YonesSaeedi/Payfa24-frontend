@@ -7,7 +7,7 @@ interface FloatingInputProps {
   type?: string;
   className?: string;         // کلاس اضافی برای input
   placeholder?: string;
-  placeholderColor?: string;
+ placeholderColor?: string;
   borderClass?: string;       // ✅ رنگ و استایل border
   heightClass?: string;       // ✅ ارتفاع سفارشی
 
@@ -21,7 +21,8 @@ const FloatingInput: FC<FloatingInputProps> = ({
   placeholder = "گزینه‌ای را انتخاب کنید",
   className = "",
   borderClass = "border-gray-300",   // پیشفرض
-  heightClass = "py-4"              // پیشفرض ارتفاع
+  heightClass = "py-4"  ,
+  placeholderColor       =" "     // پیشفرض ارتفاع
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -46,8 +47,7 @@ const FloatingInput: FC<FloatingInputProps> = ({
         className={`
           block w-full px-3 ${heightClass} border rounded-md z-10
           focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 
-          ${borderClass} ${className}
-        `}
+          ${borderClass} ${className} ${placeholderColor ? `placeholder-${placeholderColor}` : "placeholder-black0"}`}
       />
     </div>
   );

@@ -327,7 +327,7 @@ const CryptoTable: React.FC = () => {
                         </button>
                         <button
                           className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
-                          onClick={() => navigate(ROUTES.WITHDRAWAL)}
+                          onClick={() => navigate(ROUTES.WITHDRAWAL_FIAT)}
                         >
                           <span className="text-blue1 w-5 h-5 flex items-center justify-center">
                             <WalletMinesIcon />

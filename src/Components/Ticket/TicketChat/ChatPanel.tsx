@@ -256,7 +256,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
 
                   {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
 
-                  {msg.file && (
+                   {/* {msg.file && (
                     <div className="rounded-2xl w-fit shadow bg-white p-2 mt-2">
                       {imageCache[msg.id] ? (
                         msg.file.endsWith(".pdf") ? (
@@ -281,7 +281,35 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
                         <div className="skeleton-bg w-30 h-10 rounded" />
                       )}
                     </div>
-                  )}
+                  )}  */}
+        {msg.file && (
+  <div className="rounded-2xl w-fit p-2 mt-2">
+    {imageCache[msg.id] ? (
+      msg.file.endsWith(".pdf") ? (
+        <a
+          href={imageCache[msg.id]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-blue-600 underline"
+        >
+          <IconCircledAttach />
+          <span>دانلود PDF</span>
+        </a>
+      ) : (
+        <img
+          src={imageCache[msg.id]}
+          alt="attachment"
+          className="rounded-xl object-contain max-h-[150px] max-w-[200px] cursor-pointer"
+          onClick={() => setFullscreenImage(imageCache[msg.id])}
+        />
+      )
+    ) : (
+      // اسکلتون مشابه جدول کریپتو
+      <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
+    )}
+  </div>
+)}
+
 
 
                   <span

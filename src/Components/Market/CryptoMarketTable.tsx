@@ -101,7 +101,7 @@ const CryptoMarketTable: React.FC<Props> = ({
       {/* Search input */}
       <div className="items-center gap-4">
         <div className="w-full flex justify-between">
-          <div className="flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">
+          <div className="lg:hidden flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">
             <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
               <IconSearch />
             </span>
@@ -121,24 +121,46 @@ const CryptoMarketTable: React.FC<Props> = ({
 
       {/* Tabs */}
       <div className="bg-white1 rounded-2xl shadow border border-gray21 overflow-hidden">
-        <div className="flex flex-row-reverse gap-4 text-sm text-gray24 px-4 pt-8">
-          {tabs.map((tab, index) => (
-            <span
-              key={index}
-              onClick={() => {
-                setActive(index);
+      {/* Tabs + Search */}
+<div className="flex flex-row-reverse justify-between items-center px-4 pt-8">
+  {/* Tabs */}
+  <div className="flex flex-row-reverse gap-4 text-sm text-gray24">
+    {tabs.map((tab, index) => (
+      <span
+        key={index}
+        onClick={() => {
+          setActive(index);
+          setCurrentPage(1);
+        }}
+        className={`cursor-pointer pb-2 ${
+          active === index
+            ? "text-blue-600 border-b-2 border-blue-600"
+            : "text-black1"
+        }`}
+      >
+        {tab}
+      </span>
+    ))}
+  </div>
+
+  {/* Search input */}
+   <div className="hidden lg:flex flex-row-reverse items-center  lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">
+            <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
+              <IconSearch />
+            </span>
+            <input
+              type="text"
+              placeholder="...جستجو"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              className={`cursor-pointer pb-2 mr-4 ${
-                active === index
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-black1"
-              }`}
-            >
-              {tab}
-            </span>
-          ))}
-        </div>
+              className="flex-1 text-sm outline-none text-right bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
+            />
+          </div>
+</div>
+
 
         {/* Table */}
         <div className="px-6 mt-6">
@@ -158,38 +180,49 @@ const CryptoMarketTable: React.FC<Props> = ({
                 <th className="py-3 px-4 hidden lg:table-cell"></th>
               </tr>
             </thead>
-            <tbody>
-              {isLoading
-                ? skeletonArray.map((_, idx) => (
-                    <tr
-                      key={idx}
-                      className="animate-pulse border-b border-gray21 last:border-b-0"
-                    >
-                      <td className="py-3 px-4 flex items-center gap-4">
-                        <div className="flex-shrink-0 w-4 h-4 rounded-full bg-gray-200"></div>
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200"></div>
-                        <div className="flex flex-col  gap-1">
-                          <div className="h-3 w-24 bg-gray-200 rounded"></div>
-                          <div className="h-3 w-16 bg-gray-200 rounded"></div>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4 hidden lg:table-cell">
-                        <div className="h-3 w-20 bg-gray-200 rounded mx-auto"></div>
-                      </td>
-                      <td className="py-3 px-4 text-center lg:text-right">
-                        <div className="h-3 w-20 bg-gray-200 rounded mx-auto"></div>
-                      </td>
-                      <td className="py-3 px-4 hidden lg:table-cell">
-                        <div className="h-3 w-20 bg-gray-200 rounded mx-auto"></div>
-                      </td>
-                      <td className="py-3 px-4 text-center">
-                        <div className="h-3 w-14 bg-gray-200 rounded mx-auto"></div>
-                      </td>
-                      <td className="py-3 px-4 hidden lg:table-cell">
-                        <div className="h-6 w-24 bg-gray-200 rounded mx-auto"></div>
-                      </td>
-                    </tr>
-                  ))
+          <tbody>
+  {isLoading
+    ? skeletonArray.map((_, idx) => (
+        <tr
+          key={idx}
+          className="animate-pulse border-b border-gray21 last:border-b-0"
+        >
+          {/* ستون ۱: ستاره + آیکون + نام */}
+          <td className="py-3 px-4 flex items-center gap-3">
+            <div className="w-[22px] h-[22px] rounded-full bg-gray19"></div>
+            <div className="w-8 h-8 rounded-full bg-gray19"></div>
+            <div className="flex flex-col gap-1 min-w-0">
+              <div className="h-3 w-24 rounded-md bg-gray19"></div>
+              <div className="h-3 w-16 rounded-md bg-gray19"></div>
+            </div>
+          </td>
+
+          {/* ستون ۲: USDT Price */}
+          <td className="py-3 px-4 hidden lg:table-cell">
+            <div className="h-3 w-20 rounded-md bg-gray19 mx-auto"></div>
+          </td>
+
+          {/* ستون ۳: Buy Price */}
+          <td className="py-3 px-4 text-center lg:text-right">
+            <div className="h-3 w-20 rounded-md bg-gray19 mx-auto"></div>
+          </td>
+
+          {/* ستون ۴: Sell Price */}
+          <td className="py-3 px-4 hidden lg:table-cell">
+            <div className="h-3 w-20 rounded-md bg-gray19 mx-auto"></div>
+          </td>
+
+          {/* ستون ۵: Change Percent */}
+          <td className="py-3 px-4 text-center">
+            <div className="h-3 w-14 rounded-md bg-gray19 mx-auto"></div>
+          </td>
+
+          {/* ستون ۶: Action */}
+          <td className="py-3 px-4 hidden lg:table-cell">
+            <div className="h-6 w-24 rounded-md bg-gray19 mx-auto"></div>
+          </td>
+        </tr>
+      ))
                 : paginatedData.map((item) => {
                     const buyPrice = Number(item.priceBuy);
                     const sellPrice = Number(item.priceSell);

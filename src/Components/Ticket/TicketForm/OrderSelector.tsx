@@ -1,5 +1,5 @@
 // OrderSelector.tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import { X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { TicketFormInputs, Order } from "../../../types/Ticket";
@@ -17,6 +17,7 @@ interface OrderSelectorProps {
   setSelectedOrder: (order: Order | null) => void;
   register: UseFormRegister<TicketFormInputs>;
   setValue: UseFormSetValue<TicketFormInputs>;
+  onClose: () => void;
 }
 
 export default function OrderSelector({
@@ -24,6 +25,7 @@ export default function OrderSelector({
   setSelectedOrder,
   register,
   setValue,
+   onClose,
 }: OrderSelectorProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [apiOrders, setApiOrders] = useState<Order[]>([]);
@@ -67,7 +69,7 @@ export default function OrderSelector({
     setSelectedOrder(null);
     setValue("orderId", ""); // پاک کردن مقدار فرم
   };
-
+   
   return (
     <div>
       <button
@@ -76,16 +78,16 @@ export default function OrderSelector({
         className="w-full border rounded-lg p-5 text-sm text-right bg-gray37 flex items-center justify-between border-gray12 mt-4 mb-3"
       >
         <span className="text-gray12">انتخاب سفارش (اختیاری)</span>
-        <span className="w-4 h-4"><IconOrderSelection /></span>
+        <span   className="w-4 h-4"><IconOrderSelection /></span>
       </button>
 
       {/* hidden input برای orderId */}
       <input type="hidden" {...register("orderId" as any)} />
 
       {selectedOrder && (
-        <div className="mt-2 flex items-center justify-between border rounded-lg p-3 bg-gray-50">
+        <div className="mt-2 flex items-center justify-between border rounded-lg p-3 bg-gray27 h-[61px] border-gray12">
           <div>
-            <p className="text-sm font-medium">{selectedOrder.amount} {selectedOrder.coin}</p>
+            <p className="text-sm font-medium text-black0">{selectedOrder.amount} {selectedOrder.coin}</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-blue-600 text-sm">{selectedOrder.type}</span>

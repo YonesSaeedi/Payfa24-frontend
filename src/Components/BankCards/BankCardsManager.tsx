@@ -122,18 +122,18 @@ const handleAddCard = async (cardNumber: string) => {
   return (
     <HeaderLayout>
       <div dir="rtl" className="bg-backgroundMain min-h-[400px] w-full">
-        <div className="container-style flex flex-col gap-8 lg:gap-12">
+        <div className="container-style grid grid-col2 gap-8 lg:gap-12 !pr-0 ">
           <div className="mt-7 lg:mt-4">
             <BreadcrumbNavigation />
           </div>
-          <div className=" flex gap-8 lg:gap-12 ">
+          <div className=" flex gap-2 lg:gap-12 ">
             {/* 📋 فرم افزودن کارت */}
-            <div>
+            <div className="w-2/5">
               <BankCardForm onSave={handleAddCard} />
             </div>
 
             {/* 💳 نمایش کارت‌ها */}
-            <div className="w-full lg:w-1/2 pt-10 lg:pt-0">
+            <div className="w-3/5 pt-10 lg:pt-0 pr-4">
               {loading ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {Array.from({ length: 4 }).map((_, i) => (

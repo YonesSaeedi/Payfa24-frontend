@@ -24,7 +24,12 @@ const ContactBox: React.FC = () => {
               ایمیل
             </span>
             <span className="text-sm font-medium text-black1">
-              info@payfa.com
+            <a
+        href="mailto:info@payfa.com"
+        className="text-sm font-medium text-blue-600 hover:underline"
+      >
+        info@payfa.com
+      </a>
             </span>
           </div>
         </div>
@@ -40,7 +45,12 @@ const ContactBox: React.FC = () => {
             >
               تماس
             </span>
-            <span className="text-sm font-medium text-black1">04433721037</span>
+            <span className="text-sm font-medium text-black1"> <a
+        href="tel:04433721037"
+        className="text-sm font-medium text-blue-600 hover:underline"
+      >
+        04433721037
+      </a></span>
           </div>
         </div>
       </div>

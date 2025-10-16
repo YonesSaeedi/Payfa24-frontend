@@ -70,14 +70,35 @@ const FAQPage: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-col lg:flex-row-reverse gap-8 items-center lg:items-start text-center lg:text-right">
-        <div dir="rtl" className="flex flex-col items-center lg:items-start">
-          <div className="pt-6">
-            <FAQTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-          </div>
-          <TradeLayoutFAQ items={FAQData.account} />
-        </div>
+      <div
+  dir="rtl"
+  className="flex flex-col items-center lg:items-start w-full max-w-[900px] mx-auto px-4 lg:px-0"
+>
+  <div className="pt-6 w-full lg:w-auto">
+    <FAQTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+  </div>
 
-        <div className="pt-6 lg:pt-0">
+  <div className="w-full lg:w-auto mt-6 pb-16">
+   <TradeLayoutFAQ
+  items={
+    activeTab === "all"
+      ? [...FAQData.home, ...FAQData.trade, ...FAQData.account]
+      : activeTab === "general"
+      ? FAQData.home
+      : activeTab === "buy-sell"
+      ? FAQData.trade
+      : activeTab === "deposit-withdraw"
+      ? FAQData.trade // یا یک دسته جداگانه برای واریز و برداشت بساز
+      : activeTab === "register"
+      ? FAQData.account
+      : []
+  }
+/>
+
+  </div>
+</div>
+
+        <div className="pt-6 lg:pt-0 pb-6">
           <ContactBox />
         </div>
       </div>

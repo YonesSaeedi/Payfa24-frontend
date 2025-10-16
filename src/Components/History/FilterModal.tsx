@@ -36,13 +36,13 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-      <div className="bg-white w-11/12 max-w-lg rounded-2xl p-4 shadow-lg">
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50"  onClick={onClose} >
+      <div className="bg-white8 w-11/12 max-w-lg rounded-2xl p-4 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-base font-medium">فیلترها</h2>
+          <h2 className="text-base font-medium text-black0">فیلترها</h2>
           <button
             onClick={onClose}
-            className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100"
+            className="w-6 h-6 flex items-center justify-center rounded-full text-black0"
           >
             <IconClose />
           </button>

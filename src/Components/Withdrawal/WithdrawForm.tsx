@@ -48,7 +48,6 @@ export default function WithdrawForm() {
     const fetchCards = async () => {
       try {
         const response = await apiRequest<any>({ url: "/api/wallets/fiat?withdraw=true", method: "GET" });
-      console.log("API Response:", response); // ← برای بررسی
       setListCards(response.list_cards || []);
      setWalletBalance(Number(response.wallet.balance_available) || 0);
       } catch (err) {
@@ -174,7 +173,7 @@ useEffect(() => {
       {/* فرم برداشت */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray43 flex flex-col justify-between  w-full border border-gray26"
+        className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray43 flex flex-col justify-between  w-full lg:border lg:border-gray26"
       >
         <div>
           <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex flex-row justify-between items-center text-blue17">
@@ -209,7 +208,7 @@ useEffect(() => {
               )}
             />
              <div dir="rtl" className="flex items-center justify-between mb-4 mt-3">
-                      <span className="text-gray-400 text-md">موجودی قابل برداشت</span>
+                      <span className="text-gray5 text-md">موجودی قابل برداشت</span>
                       <span className="font-medium text-blue-400 text-md">
                        {walletBalance.toLocaleString()} تومان
                       </span>
@@ -219,20 +218,29 @@ useEffect(() => {
 
           <div className="mb-6">
             {bankOptions.length > 0 ? (
-              <Controller
-                name="bank"
-                control={control}
-                rules={{ required: "لطفا بانک را انتخاب کنید" }}
-                render={({ field }) => (
-                  <FloatingSelect<BankOption>
-                    label="انتخاب بانک"
-                    value={field.value}
-                    onChange={field.onChange}
-                    options={bankOptions}
-                    isBankSelect={true}
-                  />
-                )}
-              />
+             <Controller
+  name="bank"
+  control={control}
+  rules={{ required: "لطفا بانک را انتخاب کنید" }}
+  render={({ field }) => (
+    <FloatingSelect
+      placeholder={bankOptions.length === 0 ? "در حال بارگذاری کارت‌ها..." : "کارت بانکی را انتخاب کنید"}
+      label="کارت بانکی"
+      value={field.value?.id?.toString() || ""} // مقدار را به string تبدیل کن
+      onChange={(val) => {
+        const selected = listCards.find((c) => c.id.toString() === val);
+        field.onChange(selected || null); // حالا react-hook-form مقدار درست را دارد
+        // اگر لازم است state محلی هم بروزرسانی شود
+        // setSelectedCard(selected?.id || null);
+      }}
+      options={listCards.map((card) => ({
+        value: card.id.toString(),
+        label: `${card.bank} - ${card.card.replace(/(\d{4})(?=\d)/g, "$1-")}`,
+      }))}
+    />
+  )}
+/>
+
             ) : (
               <div className="w-full border rounded-lg p-3 text-center text-gray-500 border-gray12">
                 هیچ کارت بانکی موجود نمی‌ باشد
@@ -243,18 +251,18 @@ useEffect(() => {
             
 
 
-               <div dir="rtl" className="text-md text-gray-500 mt-3 space-y-2">
+               <div dir="rtl" className=" text-gray-500 mt-3 space-y-2">
                     {/* ردیف اول */}
                     <div className="flex items-center justify-between mb-4">
-                      <span>کارمزد</span>
-                      <span className="font-medium text-gray-700">
+                      <span className="text-md text-gray5">کارمزد</span>
+                      <span className="text-md text-gray-700">
                        
                       </span>
                     </div>
                     {/* ردیف دوم */}
                     <div className="flex items-center justify-between ">
-                      <span>مبلغ نهایی واریز به کیف پول </span>
-                      <span className="font-medium text-gray-700">
+                      <span className="text-md text-gray5">مبلغ نهایی واریز به کیف پول </span>
+                      <span className="text-md text-gray-700">
                        
                       </span>
                     </div>
@@ -266,7 +274,7 @@ useEffect(() => {
         <div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg mt-6"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg mt-6  font-bold text-[18px] "
           >
             برداشت
           </button>

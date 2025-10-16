@@ -39,21 +39,21 @@ export default function CryptoBox({
       <ul className="grid grid-cols-3 gap-y-2 pt-2" dir="rtl">
         {isLoading
           ? skeletonArray.map((_, i) => (
-              <li key={i} className="contents animate-pulse">
+            <li key={i} className="contents animate-pulse">
                 <div className="flex items-center gap-2">
-                  <div className="w-[34px] h-[34px] bg-gray-200 rounded-full"></div>
+                  <div className="w-[34px] h-[34px] bg-gray19 rounded-full"></div>
                   <div className="flex flex-col text-right leading-tight">
-                    <div className="h-3 w-16 bg-gray-200 rounded mb-1"></div>
-                    <div className="h-3 w-10 bg-gray-200 rounded"></div>
+                    <div className="h-3 w-16 bg-gray19 rounded mb-1"></div>
+                    <div className="h-3 w-10 bg-gray19 rounded"></div>
                   </div>
                 </div>
 
                 <div className="flex justify-center w-[150px] pt-2">
-                  <div className="h-3 w-16 bg-gray-200 rounded"></div>
+                  <div className="h-3 w-16 bg-gray19 rounded"></div>
                 </div>
 
                 <div className="w-full flex justify-end">
-                  <div className="h-6 w-[68px] bg-gray-200 rounded mt-2"></div>
+                  <div className="h-6 w-[68px] bg-gray19 rounded mt-2"></div>
                 </div>
               </li>
             ))

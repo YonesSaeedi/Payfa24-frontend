@@ -36,7 +36,7 @@ export const ROUTES = {
   },
   TRANSACTION: {
     ROOT: "/history",
-    CRYPTO_HISTORY: "/history/crypto",
+    CRYPTO_HISTORY: "/history/Cryptocurrency",
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },

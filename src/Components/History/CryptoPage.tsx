@@ -115,9 +115,7 @@ const CryptoPage: React.FC = () => {
       {/* هدر */}
       <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end container-style">
         <h1 className="hidden lg:block">تاریخچه تراکنش ها</h1>
-        <span className="w-6 h-6 icon-wrapper text-gray12 lg:hidden" onClick={() => setIsFilterModalOpen(true)}>
-          <IconFilterTable />
-        </span>
+      
       </div>
 
       {/* فیلترها */}
@@ -135,7 +133,7 @@ const CryptoPage: React.FC = () => {
             placeholder="جستجو..."
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
-            className="border rounded px-2 py-1 text-sm"
+            className="border px-2 py-1 text-sm bg-white1 border-gray20 rounded-lg"
           />
 
           {/* Dropdown ها */}
@@ -281,9 +279,7 @@ const CryptoPage: React.FC = () => {
         <Pagination current={page} total={Math.ceil((totalPages ?? 0) / 15)} onPageChange={setPage} />
       )}
 
-      {/* مودال‌ها */}
-      {selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)} />}
-      <FilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
+     
     </div>
   );
 };

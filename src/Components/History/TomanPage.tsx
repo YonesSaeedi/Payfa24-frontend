@@ -90,9 +90,7 @@ const TomanPage: React.FC = () => {
             {/* هدر */}
             <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end container-style">
                 <h1 className="hidden lg:block">تاریخچه تراکنش ها</h1>
-                <span className="w-6 h-6 icon-wrapper text-gray12 lg:hidden" onClick={() => setIsFilterModalOpen(true)}>
-                    <IconFilterTable />
-                </span>
+              
             </div>
 
             {/* فیلترها */}
@@ -266,7 +264,7 @@ const TomanPage: React.FC = () => {
 
             {/* مودال‌ها */}
             {selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)} />}
-            <FilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
+          
         </div>
     );
 };
