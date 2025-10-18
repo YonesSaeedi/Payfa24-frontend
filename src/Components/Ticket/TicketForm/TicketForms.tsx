@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { apiRequest } from "../../../utils/apiClient";
 import { TicketFormInputs, TicketNewResponse } from "../../../types/Ticket";
 import type { AxiosProgressEvent } from "axios";
+import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
 
 interface Order {
   id: string;
@@ -17,8 +18,10 @@ interface Order {
 }
 
 export default function TicketForm() {
+  
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isOrderSelectorOpen, setIsOrderSelectorOpen] = useState(false);
 
   const {
     register,
@@ -69,11 +72,12 @@ export default function TicketForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      dir="rtl"
-      className="w-full flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl p-6"
-    >
+   <form
+  onSubmit={handleSubmit(onSubmit)}
+  dir="rtl"
+  className="w-full h-full flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl p-6"
+>
+
       <div className="flex flex-col">
         <h2 className="text-xl font-semibold text-center text-black1 mt-2 mb-12">
           ایجاد تیکت جدید
@@ -91,8 +95,9 @@ export default function TicketForm() {
               onChange={field.onChange}
               type="text"
               placeholder=""
-              placeholderColor="text-black0"
+              placeholderColor="gray9"
               borderClass="border-gray12"
+
             />
           )}
         />
@@ -104,6 +109,7 @@ export default function TicketForm() {
           setSelectedOrder={setSelectedOrder}
           register={register}
           setValue={setValue}
+           onClose={() => setIsOrderSelectorOpen(false)} 
         />
 
         {/* توضیحات */}
@@ -132,29 +138,41 @@ export default function TicketForm() {
 
         {/* قسمت آپلود فایل */}
         <div className="relative w-full mt-5">
-          <label className="absolute right-3 text-xs -top-2 px-1 duration-200 z-40 lg:bg-gray43 bg-gray38">بارگذاری فایل (اختیاری)</label>
-          <Controller
-            name="file"
-            control={control}
-            render={({ field }) => (
-              <div className="w-full  border rounded-md z-10 px-3 py-4 flex justify-between items-center
-          focus:outline-none focus:ring-0 border-gray12   ">
-                <label className="bg-secondary font-normal text-sm w-24 h-[30px] rounded-[10px] flex items-center justify-center cursor-pointer transition duration-200">
-                  upload
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={(e) => field.onChange(e.target.files)}
-                  />
-                </label>
-                <span className="truncate text-xs text-gray-300">
-                  {field.value && field.value.length > 0
-                    ? field.value[0].name
-                    : "فایلی انتخاب نشده"}
-                </span>
-              </div>
-            )}
+  <label className="absolute right-3 text-xs -top-2 px-1 duration-200 z-40 lg:bg-gray43 bg-gray38 text-gray12">
+    فایل پیوست
+  </label>
+
+  <Controller
+    name="file"
+    control={control}
+    render={({ field }) => (
+      <div
+        className="w-full border rounded-md z-10 px-3 py-4 flex justify-between items-center
+          focus:outline-none focus:ring-0 border-gray12"
+      >
+        <label
+          className="bg-secondary font-normal text-sm flex items-center gap-2 h-[36px] rounded-[10px]  cursor-pointer transition duration-200"
+        >
+        <span className="w-5 h-5 text-gray-400"><IconAttachFile  /></span>
+          
+          <span className="text-sm text-gray-400">هنوز فایلی انتخاب نکرده‌اید</span>
+          <input
+            type="file"
+            className="hidden"
+            onChange={(e) => field.onChange(e.target.files)}
           />
+        </label>
+
+        <span className="truncate text-xs text-gray-400 max-w-[150px] text-left">
+          {field.value && field.value.length > 0
+            ? field.value[0].name
+            : ""}
+        </span>
+      </div>
+    )}
+  />
+
+
 
           {/* نوار پیشرفت آپلود */}
           {uploadProgress > 0 && (

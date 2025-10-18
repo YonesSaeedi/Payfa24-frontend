@@ -1,6 +1,7 @@
 
 import IconClose from "../../../assets/Icons/Login/IconClose";
 import { Order } from "../../../types/Ticket";
+import { useEffect, useRef } from "react";
 
 interface OrderModalProps {
   orders: Order[];
@@ -9,19 +10,41 @@ interface OrderModalProps {
 }
 
 export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModalProps) {
+    const modalRef = useRef<HTMLDivElement>(null);
+
+  // تشخیص کلیک خارج از مودال
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-      <div className="bg-white8 w-full max-w-md rounded-2xl shadow-lg p-4 h-[585px]">
+    <div dir="rtl" className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+      <div  ref={modalRef} className="bg-white8 w-full max-w-md rounded-2xl shadow-lg p-4 h-[585px]">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold p-4 text-black1">انتخاب سفارش</h3>
-          <button onClick={onClose} className="w-6 h-6 icon-wrapper"><IconClose/></button>
+          <button onClick={onClose} className="w-6 h-6 icon-wrapper text-gray12"><IconClose/></button>
         </div>
 
         {orders.length === 0 ? (
   <p className="text-center text-gray-500">سفارشی موجود نیست</p>
 ) : (
 
-        <div className="space-y-2">
+    <div
+  className={`space-y-2 overflow-y-auto pl-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent ${
+    orders.length > 4 ? "max-h-[450px]" : ""
+  }`}
+  style={{ scrollbarGutter: "stable" }}
+>
+
+        
           {orders.map((order) => (
             <button
               key={order.id}

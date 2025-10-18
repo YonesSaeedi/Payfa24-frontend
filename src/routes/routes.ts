@@ -17,11 +17,13 @@ export const ROUTES = {
   VERIFY_GOOGLE: "/verify/google",
   MULTI_FACTOR: "/multi-factor",
   GOOGLE_AUTH_FLOW: "/google-auth-flow",
-  DEPOSIT: "/wallet/deposit",
+  ADD_FRIEND: "/add-friend",
+  DEPOSIT: "/deposit",
   CONNECTED_DEVICES: "/services/connected-devices",
   FAQ: "/services/faq",
   BANK_CARDS: "/services/bank-cards",
-  WITHDRAWAL: "/withdrawal",
+  WITHDRAWAL_FIAT: "/withdraw/fiat",
+  WITHDRAWAL_CRYPTO: "/withdraw/crypto",
   MARKET_VIEW: '/services/market-view',
   TRADE: {
     ROOT: "/trade",
@@ -34,15 +36,10 @@ export const ROUTES = {
   },
   TRANSACTION: {
     ROOT: "/history",
-    CRYPTO_HISTORY: "/history/crypto",
+    CRYPTO_HISTORY: "/history/Cryptocurrency",
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },
-  
-
-ADD_FRIEND: {
-  ROOT:"/services/add-friend", // مسیر اصلی را به زیرمجموعه خدمات ببرید
-},
 
 
 };

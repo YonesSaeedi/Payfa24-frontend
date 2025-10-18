@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import BackgroundCard from "./../../assets/images/BankCards/BackgroundCard.png";
 import BackgroundCardDark from "./../../assets/images/BankCards/BackgroundCardDark.png";
+import IconAccept from "./../../assets/icons/BankCards/IconAccept";
+import IconInProgress from "./../../assets/icons/BankCards/IconInProgress";
+import IconDelete from "./../../assets/icons/BankCards/IconDelete";
 import useGetUser from "../../hooks/useGetUser"; 
-import IconAccept from "../../assets/Icons/BankCards/IconAccept";
-import IconInProgress from "../../assets/Icons/BankCards/IconInProgress";
-import IconDelete from "../../assets/Icons/BankCards/IconDelete";
 
 type Card = {
   id: number;
@@ -109,7 +109,8 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
       case "pending":
         return (
           <span className="w-4 h-4">
-            <IconInProgress /></span>
+            <IconInProgress />
+          </span>
         );
       case "rejected":
         return (
@@ -123,7 +124,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
   };
 
   return (
-    <div dir="rtl">
+    <div dir="rtl ">
       <h2 className="text-xl font-bold mb-8">کارت‌های من</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {cards.map((card) => {

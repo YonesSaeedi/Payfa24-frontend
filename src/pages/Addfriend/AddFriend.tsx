@@ -27,7 +27,6 @@ import {
   TransactionItem,
   ReferralReportResponse,
 } from "../../utils/api/referralApi";
-import { spawn } from "child_process";
 
 // =============================================================
 
@@ -68,7 +67,7 @@ export default function AddFriend() {
   // =============================================================
 
   const fetchReferralReportData = async () => {
-    setIsLoading(true);
+    setIsLoading(true); // لودینگ برای گزارش اصلی
     try {
       const reportResponse = await getReferralReport();
 
@@ -105,7 +104,7 @@ export default function AddFriend() {
 
     if (tab === "transactions") {
       setIsLoading(true);
-      setTransactions([]);
+      setTransactions([]); 
       try {
         const response = await getReferralTransactions(page);
 
@@ -152,12 +151,12 @@ export default function AddFriend() {
     }
   };
 
+  
   useEffect(() => {
     fetchReferralReportData();
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
     if (referralReport) {
       fetchReferralData(currentPage, activeTab);
     }
@@ -168,12 +167,12 @@ export default function AddFriend() {
   const LinkInvite = [
     {
       Title: "لینک دعوت شما :",
-      Link: referralReport?.reflink,
+      Link: referralReport?.reflink || "درحال بارگذاری...",
       Icon: <IconCopy />,
     },
     {
       Title: "کد دعوت شما :",
-      Link: referralReport?.refid?.toString() ,
+      Link: referralReport?.refid?.toString() || "درحال بارگذاری...",
       Icon: <IconCopy />,
     },
   ];
@@ -182,7 +181,7 @@ export default function AddFriend() {
     {
       Icon: <IconGiftBox />,
       Text: "مجموع درآمد شما",
-
+ 
       count:
         (referralReport?.referral_transaction_amount?.toLocaleString() || "0") +
         " تومان",
@@ -243,32 +242,18 @@ export default function AddFriend() {
                     <h3 className="font-medium text-black1">{e.Title}</h3>
                     <div
                       onClick={() => {
-                        // شرط کپی کردن: فقط زمانی که لودینگ نباشد و لینک وجود داشته باشد.
-                        if (!isLoading && e.Link) {
+                        // افزودن شرط برای جلوگیری از کپی "درحال بارگذاری..."
+                        if (e.Link && e.Link !== "درحال بارگذاری...") {
                           navigator.clipboard.writeText(e.Link);
-                          toast.info(`${e.Title} کپی شد`);
+                          toast.info(`${e.Title} کپی شد.`);
                         }
                       }}
-                      // کلاس cursor-pointer فقط زمانی اعمال می‌شود که لودینگ نباشد.
-                      className={`items-center gap-1 inline-block text-gray5 lg:text-lg text-sm font-normal ${
-                        !isLoading ? "cursor-pointer" : ""
-                      }`}
+                      className="items-center cursor-pointer gap-1 inline-block text-gray5 lg:text-lg text-sm font-normal"
                     >
-                      {isLoading ? (
-                        // 👈 حالت Skeleton
-                        <div className="flex items-center gap-1">
-                          <div className="skeleton-bg h-6 w-72 rounded-md"></div>
-                        </div>
-                      ) : (
-                        <>
-                          <div>
-                            <span>{e.Link}</span>
-                            <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4">
-                              {e.Icon}
-                            </span>
-                          </div>
-                        </>
-                      )}
+                      <span>{e.Link}</span>
+                      <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4">
+                        {e.Icon}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -276,42 +261,36 @@ export default function AddFriend() {
                   {BoxInvite.map((item, index) => (
                     <div
                       key={index}
-                      className="lg:w-2/4 lg:h-[142px] w-[145px] h-[107px] border border-gray12 rounded-xl flex gap-1 items-center flex-col justify-center text-black1 font-medium "
+                      className="lg:w-[258px] lg:h-[142px] w-[145px] h-[107px] border border-gray12 rounded-xl flex gap-1 items-center flex-col justify-center text-black1 font-medium "
                     >
                       <span className="icon-wrapper lg:w-9 lg:h-9 w-7 h-7 text-blue2">
                         {item.Icon}
                       </span>
                       <p className="lg:text-base text-xs">{item.Text}</p>
-                      {isLoading ? (
-                        <span className="skeleton-bg w-16 h-4 rounded-sm"></span>
-                      ) : (
-                        <span className="lg:text-base text-xs font-medium">
-                          {item.count}
-                        </span>
-                      )}
+                      <span className="lg:text-base text-xs font-medium">
+                        {item.count}
+                      </span>
                     </div>
                   ))}
                 </div>
 
                 <div className="flex flex-row justify-between w-full py-6 border border-gray21 rounded-xl text-black0">
                   <div className="flex flex-col items-center gap-2 w-1/2">
-                    <div className="font-medium text-sm">
-                      سهم دریافتی دوستتان
+                    <div className="font-medium text-sm">سهم دریافتی شما</div>
+                    <div className="">
+                      {/* درصد شما (Caller) */}
+                      {currentCallerPercent}%
                     </div>
-                    {isLoading ? (
-                      <span className="skeleton-bg w-12 h-4 rounded-sm"></span>
-                    ) : (
-                      <p className="">{currentCallerPercent}%</p>
-                    )}
                   </div>
                   <div className="border-l border-gray21 h-14 "></div>
                   <div className="flex flex-col items-center gap-2 w-1/2">
-                    <div className="font-medium text-sm">سهم دریافتی شما</div>
-                    {isLoading ? (
-                      <span className="skeleton-bg w-14 h-4 rounded-sm"></span>
-                    ) : (
-                      <p>{currentFriendPercent}%</p>
-                    )}
+                    <div className="font-medium text-sm">
+                      سهم دریافتی دوستتان
+                    </div>
+                    <div className="">
+                      {/* درصد دوست (Referral) */}
+                      {currentFriendPercent}%
+                    </div>
                   </div>
                 </div>
 
@@ -320,7 +299,7 @@ export default function AddFriend() {
                     setSelectedPercent(currentFriendPercent);
                     setIsOpenModal(!IsOpenModal);
                   }}
-                  className="w-full font-bold text-lg text-white2 bg-blue2 py-3 rounded-lg  hover:bg-blue1"
+                  className="w-full font-bold text-lg text-white2 bg-blue2 py-3 rounded-lg "
                 >
                   تنظیم درصد سود
                 </button>
@@ -430,93 +409,22 @@ export default function AddFriend() {
                 {/* جدول تراکنش‌ها */}
                 {activeTab === "transactions" && (
                   <div className="w-full overflow-hidden">
-                    {/* 1. هدر دسکتاپ (ثابت بماند چون Skeleton زیر آن قرار می‌گیرد) */}
-                    <div className="hidden lg:grid lg:grid-cols-6 bg-gray41 p-3 text-black0 font-medium items-center text-center text-base">
-                      <span>شناسه</span>
-                      <span>تاریخ و زمان</span>
-                      <span>نام کاربر</span>
-                      <span>کل کارمزد</span>
-                      <span>پورسانت شما</span>
-                      <span>پورسانت دوستان</span>
-                    </div>
-
-                    {/* 2. منطق نمایش (لودینگ / داده واقعی / خالی) */}
+                    {/* 👈 لودینگ و حالت خالی */}
                     {isLoading && transactions.length === 0 ? (
-                      <div className="w-full">
-                        {/* شبیه‌سازی 5 ردیف Skeleton */}
-                        {Array.from({ length: 3 }).map((_, index) => (
-                          <div
-                            key={index}
-                            // کلاس‌های ردیف جدول واقعی (برای حفظ مرزها و چیدمان)
-                            className="lg:grid lg:grid-cols-6 mt-3 lg:mt-0 lg:p-3 p-4 gap-4 lg:gap-0 rounded-2xl lg:rounded-none lg:space-y-0 space-y-4 text-sm items-center text-center border lg:border-b-0 border-gray21"
-                          >
-                            {/* شناسه (ID) */}
-                            <div className="hidden lg:flex justify-center items-center h-6">
-                              <span className="skeleton-bg h-4 w-1/4 rounded"></span>
-                            </div>
-                            {/* تاریخ و زمان */}
-                            <div className="hidden lg:flex justify-center items-center h-6">
-                              <span className="skeleton-bg h-4 w-3/4 rounded"></span>
-                            </div>
-                            {/* نام کاربر */}
-                            <div className="hidden lg:flex justify-center items-center h-6">
-                              <span className="skeleton-bg h-4 w-1/3 rounded"></span>
-                            </div>
-                            {/* کل کارمزد */}
-                            <div className="hidden lg:flex justify-center items-center h-6">
-                              <span className="skeleton-bg h-4 w-2/3 rounded"></span>
-                            </div>
-                            {/* پورسانت شما */}
-                            <div className="hidden lg:flex justify-center items-center h-6">
-                              <span className="skeleton-bg h-4 w-1/4 rounded"></span>
-                            </div>
-                            {/* پورسانت دوستان */}
-                            <div className="hidden lg:flex justify-center items-center h-6">
-                              <span className="skeleton-bg h-4 w-1/4 rounded"></span>
-                            </div>
-
-                            {/* ---------------------------------------------------- */}
-                            <div className="flex flex-col space-y-2 lg:hidden border-b pb-3 border-gray21">
-                              <div className="flex flex-row justify-between items-center">
-                                <span className="font-medium lg:text-black0 text-gray5 text-xs">
-                                  تاریخ و زمان
-                                </span>
-                                <span className="skeleton-bg h-4 w-1/3 rounded"></span>
-                              </div>
-                              <div className="flex flex-row justify-between items-center">
-                                <span className="font-medium lg:text-black0 text-gray5">
-                                  نام کاربر
-                                </span>
-                                <span className="skeleton-bg h-4 w-1/4 rounded"></span>
-                              </div>
-                              <div className="flex flex-row justify-between items-center">
-                                <span className="font-medium lg:text-black0 text-gray5">
-                                  کل کارمزد
-                                </span>
-                                <span className="skeleton-bg h-4 w-1/3 rounded"></span>
-                              </div>
-                            </div>
-                            <div className="lg:hidden flex flex-row items-center justify-between w-full pt-3">
-                              <div className="flex items-center flex-col gap-2 w-1/2">
-                                <span className="font-medium lg:text-black0 text-gray5">
-                                  پورسانت شما
-                                </span>
-                                <span className="skeleton-bg h-4 w-1/4 rounded"></span>
-                              </div>
-                              <div className="border-l border-gray21 h-10 mx-2"></div>
-                              <div className="flex items-center flex-col gap-2 w-1/2">
-                                <span className="font-medium lg:text-black0 text-gray5">
-                                  پورسانت دوستان
-                                </span>
-                                <span className="skeleton-bg h-4 w-1/4 rounded"></span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                      <div className="py-10 text-center text-blue2 font-medium">
+                        درحال بارگذاری تراکنش‌ها...
                       </div>
                     ) : transactions.length > 0 ? (
-                      // 👈 حالت نمایش داده‌های واقعی (بدون تغییر)
                       <div className="w-full">
+                        {/* هدر دسکتاپ */}
+                        <div className="hidden lg:grid lg:grid-cols-6 bg-gray41 p-3 text-black0 font-medium items-center text-center text-base">
+                          <span>شناسه</span>
+                          <span>تاریخ و زمان</span>
+                          <span>نام کاربر</span>
+                          <span>کل کارمزد</span>
+                          <span>پورسانت شما</span>
+                          <span>پورسانت دوستان</span>
+                        </div>
                         {/* آیتم‌های تراکنش */}
                         {transactions.map((item, index) => (
                           <div
@@ -591,6 +499,7 @@ export default function AddFriend() {
                         {totalTransactionPages > 1 && (
                           <div className="flex justify-center mt-4">
                             {/* دکمه‌های صفحه‌بندی اینجا اضافه می‌شوند */}
+                            {/* به عنوان مثال: */}
                             <button
                               onClick={() =>
                                 setCurrentPage((prev) => Math.max(1, prev - 1))
@@ -618,7 +527,6 @@ export default function AddFriend() {
                         )}
                       </div>
                     ) : (
-                      // 👈 حالت خالی بودن (No data)
                       <div
                         style={{ backgroundImage: `url(${Gift})` }}
                         className="bg-center bg-no-repeat flex flex-col items-center justify-center gap-3 mt-6 py-20 rounded-lg"
@@ -639,7 +547,7 @@ export default function AddFriend() {
                 {activeTab === "invited" &&
                   (isLoading && invitedUsers.length === 0 ? (
                     <div className="py-10 text-center text-blue2 font-medium">
-                      <span className="skeleton-bg w-10"></span>
+                      درحال بارگذاری کاربران دعوت شده...
                     </div>
                   ) : invitedUsers.length > 0 ? (
                     <div className="w-full overflow-hidden">
@@ -731,73 +639,74 @@ export default function AddFriend() {
         {/* مودال تنظیم درصد سود */}
         {IsOpenModal && (
           <>
-            <div className="fixed inset-0 bg-black/25 z-30 cursor-pointer"></div>
             <div
               onClick={() => setIsOpenModal(false)}
-              className="fixed inset-0 flex items-center justify-center z-50"
+              className="fixed inset-0 bg-black/25 z-40 "
             >
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white8 w-full max-w-md rounded-xl shadow-lg overflow-hidden lg:py-6 py-4 px-7 mx-2"
+                className="fixed inset-0 flex items-center justify-center z-50"
               >
-                {/* هدر */}
-                <div className="flex justify-between items-center border-b border-gray21 pb-4">
-                  <span
-                    className="icon-wrapper w-6 h-6 cursor-pointer text-gray5 hover:text-black0"
-                    onClick={() => setIsOpenModal(false)}
-                  >
-                    <IconClose />
-                  </span>
-                  <span className="text-black0 font-medium text-base">
-                    تنظیم درصد سود
-                  </span>
-                </div>
-
-                {/* متن راهنما */}
-                <p className="text-black0 text-xs lg:text-sm text-end mt-6">
-                  . میزان سود خود و دوستتان را از کارمزد معاملات مشخص کنید
-                </p>
-
-                {/* اسلایدر */}
-                <div className="mt-14">
-                  <ReferralPercentBar
-                    selectedPercent={selectedPercent}
-                    setSelectedPercent={setSelectedPercent}
-                    lastChangedRef={lastChangedRef}
-                    // maxPercent={maxPercent}
-                  />
-                </div>
-
-                {/* نمایش پورسانت‌ها */}
-                <div className="flex flex-col items-center mt-14 mb-14">
-                  <div className="grid grid-cols-2 w-full text-center gap-y-2">
-                    <span className="text-gray5 lg:text-sm text-xs font-medium">
-                      پورسانت شما
+                <div className="bg-white8 w-full max-w-md lg:rounded-xl shadow-lg overflow-hidden p-6">
+                  {/* هدر */}
+                  <div className="flex justify-between items-center border-b border-gray21 pb-4">
+                    <span
+                      className="icon-wrapper w-6 h-6 cursor-pointer text-gray5 hover:text-black0"
+                      onClick={() => setIsOpenModal(false)}
+                    >
+                      <IconClose />
                     </span>
-                    <span className="text-gray5 lg:text-sm text-xs font-medium">
-                      پورسانت دوستان
+                    <span className="text-black0 font-medium text-base">
+                      تنظیم درصد سود
                     </span>
+                  </div>
 
-                    <span className="text-black0 text-lg font-bold">
-                      {maxPercent - selectedPercent}%
-                    </span>
-                    <div className="relative">
-                      <span className="text-black0 text-lg font-bold">
-                        {selectedPercent}%
+                  {/* متن راهنما */}
+                  <p className="text-black0 text-xs lg:text-sm text-end mt-6">
+                    . میزان سود خود و دوستتان را از کارمزد معاملات مشخص کنید
+                  </p>
+
+                  {/* اسلایدر */}
+                  <div className="mt-14">
+                    <ReferralPercentBar
+                      selectedPercent={selectedPercent}
+                      setSelectedPercent={setSelectedPercent}
+                      lastChangedRef={lastChangedRef}
+                      // maxPercent={maxPercent}
+                    />
+                  </div>
+
+                  {/* نمایش پورسانت‌ها */}
+                  <div className="flex flex-col items-center mt-14 mb-14">
+                    <div className="grid grid-cols-2 w-full text-center gap-y-2">
+                      <span className="text-gray5 lg:text-sm text-xs font-medium">
+                        پورسانت شما
                       </span>
-                      <div className="absolute left-[-10px] top-1/4 w-px h-10 bg-gray2 transform -translate-y-1/2"></div>
+                      <span className="text-gray5 lg:text-sm text-xs font-medium">
+                        پورسانت دوستان
+                      </span>
+
+                      <span className="text-black0 text-lg font-bold">
+                        {maxPercent - selectedPercent}%
+                      </span>
+                      <div className="relative">
+                        <span className="text-black0 text-lg font-bold">
+                          {selectedPercent}%
+                        </span>
+                        <div className="absolute left-[-10px] top-1/4 w-px h-10 bg-gray2 transform -translate-y-1/2"></div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <button
-                  onClick={handleSaveCommissionSplit}
-                  disabled={isLoading}
-                  className="w-full font-bold text-base text-white2 bg-blue2 lg:py-3 py-2 rounded-lg "
-                >
-                  {" "}
-                  {isLoading ? "درحال ذخیره..." : "تایید"}
-                </button>
+                  <button
+                    onClick={handleSaveCommissionSplit}
+                    disabled={isLoading}
+                    className="w-full font-bold text-base text-white2 bg-blue2 lg:py-3 py-2 rounded-lg "
+                  >
+                    {" "}
+                    {isLoading ? "درحال ذخیره..." : "تایید"}
+                  </button>
+                </div>
               </div>
             </div>
           </>

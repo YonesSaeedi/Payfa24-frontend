@@ -4,6 +4,8 @@ import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesI
 import IconClose from "../../assets/Icons/Login/IconClose";
 import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
 import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
+import { ROUTES } from "../../routes/routes";
+import { log } from "console";
 
 interface WithdrawModalProps {
   isOpen: boolean;
@@ -17,8 +19,14 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
 
   const handleInstantWithdraw = () => {
     onClose();
-    navigate("/withdrawal"); 
+    navigate(ROUTES.WITHDRAWAL_FIAT); 
   };
+   const handleInstantWithdrawCrypto = () => {
+    onClose();
+    navigate(ROUTES.WITHDRAWAL_CRYPTO); 
+  };
+
+  
 
   return (
     <div
@@ -73,7 +81,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
         <div className="flex items-center justify-between rounded-[8px] p-2 ">
            <div className="flex items-center justify-center">
             <span className="w-6 h-6 icon-wrapper mr-2 "><IconArrowLeft/></span>
-          <span className="hidden lg:block text-gray17 text-sm  border px-2 py-2 rounded-[8px] bg-gray27 border-gray21 mr-10 hover:border-blue2  hover:text-blue2 cursor-pointer">
+          <span   onClick={handleInstantWithdrawCrypto} className="hidden lg:block text-gray17 text-sm  border px-2 py-2 rounded-[8px] bg-gray27 border-gray21 mr-10 hover:border-blue2  hover:text-blue2 cursor-pointer">
             برداشت در ۲۰ دقیقه
           </span>
           </div>

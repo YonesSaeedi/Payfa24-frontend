@@ -14,6 +14,24 @@ import HeaderLayout from "../../layouts/HeaderLayout";
 
 const FAQPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
+
+ const filteredItems = (
+  activeTab === "all"
+    ? [...FAQData.home, ...FAQData.trade, ...FAQData.account]
+    : activeTab === "general"
+    ? FAQData.home
+    : activeTab === "buy-sell"
+    ? FAQData.trade
+    : activeTab === "deposit-withdraw"
+    ? FAQData.trade
+    : activeTab === "register"
+    ? FAQData.account
+    : []
+).filter(item =>
+  item.question.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
 
   return (
 
@@ -36,16 +54,19 @@ const FAQPage: React.FC = () => {
             </h1>
             <div className="w-full max-w-md">
               <p className="text-gray-500 text-center md:text-right pt-4 w-full">
-                پاسخ سوالات خود را در این بخش جستجو کنید. در صورت نیافتن پاسخ از
+                 سوالات خود را در این بخش جستجو کنید. در صورت نیافتن پاسخ از
                 طریق راه‌های ارتباطی سوال خود را با ما در میان بگذارید.
               </p>
               <div className="w-full relative mt-10">
-                <input
-                  dir="rtl"
-                  type="text"
-                  placeholder="...جستجو"
-                  className="w-full border rounded-lg px-4 pr-10 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white1 border-gray21"
-                />
+              <input
+  dir="rtl"
+  type="text"
+  placeholder="...جستجو"
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  className="w-full border rounded-lg px-4 pr-10 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white1 border-gray21"
+/>
+
                 <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none w-5 h-5 top-[9px] text-gray-400">
                   <IconSearch />
                 </span>
@@ -70,14 +91,28 @@ const FAQPage: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-col lg:flex-row-reverse gap-8 items-center lg:items-start text-center lg:text-right">
-        <div dir="rtl" className="flex flex-col items-center lg:items-start">
-          <div className="pt-6">
-            <FAQTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-          </div>
-          <TradeLayoutFAQ items={FAQData.account} />
-        </div>
+      <div
+  dir="rtl"
+  className="flex flex-col items-center lg:items-start w-full max-w-[900px] mx-auto px-4 lg:px-0"
+>
+  <div className="pt-6 w-full lg:w-auto">
+    <FAQTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+  </div>
 
-        <div className="pt-6 lg:pt-0">
+  <div className="w-full lg:w-auto mt-6 pb-16">
+    {filteredItems.length > 0 ? (
+  <TradeLayoutFAQ items={filteredItems} />
+) : (
+  <p className="text-center text-gray-500 mt-4">
+    موردی یافت نشد.
+  </p>
+)}
+
+  
+  </div>
+</div>
+
+        <div className="pt-6 lg:pt-0 pb-6">
           <ContactBox />
         </div>
       </div>

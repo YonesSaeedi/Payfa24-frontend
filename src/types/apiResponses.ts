@@ -23,11 +23,13 @@ export interface DepositMethodInfo {
 export type DepositMethods = Record<string, DepositMethodInfo>
 // general info =========================================================================================
 export interface GeneralInfo {
-  application: ApplicationInfo
-  cryptocurrency: CryptoItem[]
-  depositMethods: DepositMethods
-  [key: string]: unknown // allows extra keys without breaking type-check
+  application: ApplicationInfo;
+  cryptocurrency: CryptoItem[];
+  depositMethods: DepositMethods;
+  [key: string]: unknown; // بقیه کلیدهای احتمالی
 }
+
+
 
 // ===============================================================================================================================================================================
 
@@ -106,6 +108,8 @@ export interface KycGetInfo {
   [key: string]: unknown
 }
 
+
+
 // ===============================================================================================================================================================================
 
 export interface OrderGetInfoCoin {
@@ -121,3 +125,4 @@ export interface OrderGetInfo {
   coins?: OrderGetInfoCoin[]
   digitalCurrency?: OrderGetInfoDigitalCurrency[]
 }
+

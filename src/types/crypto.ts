@@ -28,6 +28,8 @@ export interface CryptoItem {
   fee?: string // '112835.20'
   // digital currencies
   type?: string
+  balance?: string                   
+  balance_available?: string  
 }
 export type CryptoDataMap = Record<string, CryptoItem>
 

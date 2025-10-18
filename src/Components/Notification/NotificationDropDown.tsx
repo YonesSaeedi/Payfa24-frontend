@@ -129,7 +129,7 @@ export default function NotificationsDropdown() {
             <div
               key={item.id}
               className="py-3 text-right text-sm cursor-pointer"
-              onClick={() =>handleNotificationClick(item)}
+              onClick={() => handleNotificationClick(item)}
             >
               <div className="flex justify-between">
                 <div className="flex items-center justify-start text-gray-400 text-xs mb-1">
@@ -165,3 +165,4 @@ export default function NotificationsDropdown() {
     </div>
   );
 }
+

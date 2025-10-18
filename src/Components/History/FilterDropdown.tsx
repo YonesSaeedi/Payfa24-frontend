@@ -46,10 +46,10 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   }, [isOpen, id, onToggle]);
 
   return (
-    <div ref={dropdownRef} className={`relative text-sm ${className || "w-44"}`}>
+    <div ref={dropdownRef} className={`relative text-sm  ${className || "w-44"}`}>
       <button
         onClick={() => onToggle(id)}
-        className="flex justify-between items-center w-full px-3 py-2 border border-gray20 rounded-lg bg-white1  text-black1"
+        className="flex justify-between items-center w-full px-3 py-2 border border-gray20 rounded-lg bg-white1  text-black0"
       >
         <span dir="rtl" className="justify-start">{selected || label}</span>
         <ChevronDown
@@ -61,7 +61,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       {isOpen && (
         <div
           dir="rtl"
-          className={`absolute top-full mt-1 w-full bg-white8 rounded-lg z-20 ${withBorder ? "border border-gray2" : ""}`}
+          className={`absolute top-full mt-1 w-full bg-white8 rounded-lg z-20  border border-gray12 text-black0`}
         >
           {options.map((option, idx) => (
             <div

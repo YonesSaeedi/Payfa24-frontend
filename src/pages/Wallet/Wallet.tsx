@@ -1,21 +1,23 @@
 import WalletCard from "../../Components/Home/WalletCard/WalletCard";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import WalletAssets from "../../Components/Wallet/WalletAssets"
+
+
+
 export default function Wallet() {
+
+
   return (
-    <div className="h-full">
+    <div className="h-full w-full">
       <HeaderLayout>
-        <div className="p-6 container-style flex flex-col lg:flex-row-reverse gap-10">
-          <div className="w-full lg:w-auto text-right">
+        <div className="container-style lg:px-4 w-full  pt-16 flex flex-col lg:flex-row-reverse gap-10 overflow-hidden pb-5">
+          <div className="w-full lg:w-5/12 text-right">
             <WalletCard
-              balance={1000000}
-              changeAmount={5000}
-              change={2.3}
               showBuySell={false}
             />
           </div>
-          <div className="w-full lg:w-auto">
-            <p className="pb-7 font-bold text-[18px] leading-[100%] tracking-[0%] text-right align-middle">
+          <div className="w-full lg:w-7/12">
+            <p className="text-black2 pb-7 font-bold text-[18px] leading-[100%] tracking-[0%] text-right align-middle">
               دارایی های شما
             </p>
 

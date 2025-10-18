@@ -1,87 +1,81 @@
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import TextField from "../InputField/TextField";
-import IconEyeOpen from "../../assets/Icons/Login/IconEyeOpen";
-import IconEyeClosed from "../../assets/Icons/Login/IconEyeClosed";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import { useForm } from "react-hook-form";
 import OTPModal from "../OTPModal";
+import { apiRequest } from "../../utils/apiClient";
 import tickCircle from "../../assets/Icons/MultiFactor/tick-circle.png";
+import IconClose from "../../assets/Icons/Login/IconClose";
 import IconAgain from "../../assets/Icons/Login/IconAgain";
-
-type ModalData = {
-  password: string;
-};
+import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
+import { toast } from "react-toastify";
 
 interface PropModal {
   type: "sms" | "email";
   closeModal: () => void;
 }
 
-export default function TwoFactorModal({ type, closeModal }: PropModal) {
-  const [step, setStep] = useState(1);
-  const [showPassword, setShowPassword] = useState(false);
+interface ModalForm {
+  code: string;
+}
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<ModalData>({
-    defaultValues: {
-      password: "",
-    },
+export default function TwoFactorModal({ type, closeModal }: PropModal) {
+  const { data: twoFAData, refresh } = UseTwoStepVerification()
+  const [step, setStep] = useState(1);
+
+  const { handleSubmit, setValue, watch } = useForm<ModalForm>({
+    defaultValues: { code: "" },
   });
 
-  const onSubmit = (data: ModalData) => {
-    if (step === 1) setStep(2);
+  const code = watch("code");
+
+  const onSubmit = async () => {
+    try {
+      if (step === 1) {
+        // مرحله 1: ارسال کد بدون body
+        await apiRequest({ url: `/api/account/2fa/verify/${type}`, method: "POST" });
+        setStep(2);
+      } else if (step === 2) {
+        // مرحله 2: تأیید کد همراه body
+        await apiRequest({
+          url: `/api/account/2fa/verify/${type}`,
+          method: "POST",
+          data: { code },
+        });
+        setStep(3);
+        refresh()
+      }
+    } catch (error) {
+      toast.error(  error?.response?.data?.msg || "خطایی رخ داده است.");
+    }
   };
 
   const getContent = () => {
     if (step === 1) {
       return (
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+        <div className="w-full">
           <p className="mb-8 lg:mt-12 mt-8 lg:text-lg text-sm font-normal text-gray5">
-            لطفا رمز عبور خود را وارد کنید
+            برای فعال سازی ابتدا بر روی دکمه ارسال کد تایید بزنید تا پیامک یا ایمیل حاوی کد فعالسازی برای شما ارسال شود.
           </p>
-          <Controller
-            name="password"
-            control={control}
-            rules={{ required: "رمز عبور را وارد کنید." }}
-            render={({ field }) => (
-              <TextField
-                label="رمز عبور خود را وارد کنید"
-                type={showPassword ? "text" : "password"}
-                icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
-                error={errors.password?.message}
-                onIconClick={() => setShowPassword((prev) => !prev)}
-                labelBgClass="bg-black4"
-                {...field}
-              />
-            )}
-          />
           <button
-            type="submit"
+            onClick={handleSubmit(onSubmit)}
             className="lg:mt-12 mt-8 w-full py-3 rounded-lg bg-blue2 text-white2 font-medium text-sm"
           >
-            تأیید
+            ارسال کد تایید
           </button>
-        </form>
+        </div>
       );
     } else if (step === 2) {
       return (
-        <div className="w-full ">
-          <p className="lg:mb-8 mb-6 lg:mt-12 mt-8 lg:text-lg text-sm font-normal text-gray5 ">
+        <div className="w-full">
+          <p className="lg:mb-8 mb-6 lg:mt-12 mt-8 lg:text-lg text-sm font-normal text-gray5">
             {type === "sms"
               ? "لطفاً کد ارسالی به شماره 0939934883 را وارد کنید"
               : "لطفاً کد ارسالی به ایمیل شما را وارد کنید"}
           </p>
-          <div className="flex justify-center ">
-            <OTPModal
-              length={5}
-              onChange={(code) => console.log("کد:", code)}
-            />
+          <div className="flex justify-center">
+            <OTPModal length={6} onChange={(val) => setValue("code", val)} />
           </div>
           <div className="flex items-center justify-between text-gray12 mb-4">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 cursor-pointer" onClick={handleSubmit(onSubmit)}>
               <span className="icon-wrapper w-5 h-5">
                 <IconAgain />
               </span>
@@ -90,7 +84,7 @@ export default function TwoFactorModal({ type, closeModal }: PropModal) {
             <span>ارسال مجدد کد تا 2:30</span>
           </div>
           <button
-            onClick={() => setStep(3)}
+            onClick={handleSubmit(onSubmit)}
             className="w-full py-3 rounded-lg text-white2 bg-blue2 font-bold"
           >
             تأیید
@@ -122,28 +116,22 @@ export default function TwoFactorModal({ type, closeModal }: PropModal) {
         dir="rtl"
       >
         <div className="flex items-center justify-between flex-row-reverse">
-          {step === 1 || step === 2 ? (
+          {(step === 1 || step === 2) && (
             <button onClick={closeModal}>
               <span className="icon-wrapper w-6 h-6">
                 <IconClose />
               </span>
             </button>
-          ) : (
-            " "
           )}
           <h2 className="lg:text-lg lg:font-bold text-black1 text-sm font-normal">
-            {(step === 1 || step === 2) && type === "sms"
-              ? "تأیید دو مرحله‌ای پیامک"
-              : (step === 1 || step === 2) && type === "email"
-              ? "تأیید دو مرحله‌ای ایمیل"
-              : ""}
+            {(step === 1 || step === 2) &&
+              (type === "sms"
+                ? "تأیید دو مرحله‌ای پیامک"
+                : "تأیید دو مرحله‌ای ایمیل")}
           </h2>
         </div>
-        <div className="flex flex-col w-full ">{getContent()}</div>
+        <div className="flex flex-col w-full">{getContent()}</div>
       </div>
     </div>
   );
 }
-
-
-

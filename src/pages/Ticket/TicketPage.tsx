@@ -4,11 +4,12 @@ import TicketImage from "../../assets/images/Ticket/massegeIcon/415488451_80b315
 import IconCall from "../../assets/icons/ticket/IconCall";
 import SupportCallModal from "../../Components/Ticket/SupportCallModal";
 
+
 function TicketPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleSupportSubmit = (data: { phone: string; description: string }) => {
+  const handleSupportSubmit = (data: { number: string; description: string }) => {
     console.log("اطلاعات ارسال شد:", data);
   };
 
@@ -20,7 +21,7 @@ function TicketPage() {
         onSubmit={handleSupportSubmit}
       />
 
-      <div className="flex flex-col items-center justify-center flex-1 bg-white1 px-4 overflow-x-hidden">
+      <div className="flex flex-col items-center justify-center flex-1 pb-5 px-4 overflow-x-hidden">
         <img src={TicketImage} alt="Empty Ticket" className="mb-6" />
 
         <h2 className="text-center text-[24px] font-medium text-black1 mb-4 max-w-[600px] mx-auto">
@@ -33,7 +34,7 @@ function TicketPage() {
           می‌توانید با تیم پشتیبانی ما در جریان بگذارید.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 max-w-[600px] mx-auto w-full">
+        <div className="flex flex-col sm:flex-row gap-4 max-w-[600px] mx-auto w-full ">
           <button
             className="flex-1 flex items-center justify-center gap-2 px-6 py-2 rounded-xl border border-blue2 text-blue2"
             onClick={() => setIsModalOpen(true)}

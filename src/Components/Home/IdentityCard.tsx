@@ -21,16 +21,19 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
 
 }) => {
   return (
-    <div className="border rounded-xl p-6 flex items-center justify-between  border-gray21 shadow">
+ <div className="border rounded-xl p-6 flex flex-col lg:flex-row items-right lg:justify-between border-gray21 shadow ">
 
 
-      <div className=" rounded-lg flex items-center justify-center ">
+
+
+
+      <div className="hidden rounded-lg lg:flex items-center justify-center ">
         <img src={ValidationlightIcon} className="block dark:hidden" />
 
         <img src={ValidationDarkIcon} className="hidden dark:block" />
       </div>
 
-      <div className="w-1/2 flex flex-col gap-2 text-right">
+      <div className="lg:w-1/2 flex  flex-col gap-2 text-right">
     
         <h2 className="text-xl font-semibold text-blue2 pb-4">{title}</h2>
         <ul className="list-disc text-black1">
@@ -53,7 +56,6 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
 
 
      
-
 
         <Link to="/kyc-basic" className=" mt-4 bg-blue-500 text-white rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full">
 

@@ -1,38 +1,47 @@
-import React, { useState, useMemo,useEffect } from "react";
+import React, { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
-import { ICryptoItem } from "../Market/types";
-import Pagination from "../History/Pagination"; 
-import { useNavigate } from "react-router-dom"; 
-
-type TabType =
-  | "همه"
-  | "بیشترین معامله"
-  | "تازه‌های بازار"
-  | "مورد علاقه ها"
-  | "پرضررترین"
-  | "پرسودترین";
+import Pagination from "../History/Pagination";
+import { NewCryptoItem } from "./types";
+import IconStarGold from "../../assets/icons/market/CryptoMarketTable.tsx/IconStarGold";
+import { ROUTES } from "../../routes/routes";
 
 interface Props {
-  data: ICryptoItem[];
+  data: NewCryptoItem[];
   active: number;
   setActive: React.Dispatch<React.SetStateAction<number>>;
-   isLoading: boolean;  
+  isLoading?: boolean; // اضافه شد
 }
 
-const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading  }) => {
+const CryptoMarketTable: React.FC<Props> = ({
+  data,
+  active,
+  setActive,
+  isLoading = false,
+}) => {
   const [search, setSearch] = useState("");
-  const [cryptoList, setCryptoList] = useState<ICryptoItem[]>(data);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12; // تعداد آیتم در هر صفحه
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const stored = localStorage.getItem("favorites");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const itemsPerPage = 12;
   const navigate = useNavigate();
+  const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
- useEffect(() => {
-    setCryptoList(data);
-  }, [data]);
+  const toggleRow = (id: number) => {
+    setExpandedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+    );
+  };
 
-
-  const tabs: TabType[] = [
+  const tabs: string[] = [
     "همه",
     "مورد علاقه ها",
     "پرضررترین",
@@ -41,104 +50,61 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
     "تازه‌های بازار",
   ];
 
-  const toggleFavorite = (symbol: string) => {
-    setCryptoList((prev) =>
-      prev.map((item) =>
-        item.symbol === symbol ? { ...item, favorite: !item.favorite } : item
-      )
-    );
-  };
-
-  const filteredData = useMemo(() => {
-    let filtered = [...cryptoList];
-
-    if (search.trim() !== "") {
-      filtered = filtered.filter(
-        (item) =>
-          item.name.toLowerCase().includes(search.toLowerCase()) ||
-          item.symbol.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    switch (tabs[active]) {
-      case "مورد علاقه ها":
-        filtered = filtered.filter((item) => item.favorite);
-        break;
-      case "پرضررترین":
-        filtered = filtered
-          .sort((a, b) => a.change24h - b.change24h)
-          .slice(0, 10);
-        break;
-      case "پرسودترین":
-        filtered = filtered
-          .sort((a, b) => b.change24h - a.change24h)
-          .slice(0, 10);
-        break;
-      case "بیشترین معامله":
-        filtered = filtered
-          .sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0))
-          .slice(0, 10);
-        break;
-      case "تازه‌های بازار":
-        filtered = filtered.filter((item) => item.isNew);
-        break;
+  const filteredByTab = useMemo(() => {
+    switch (active) {
+      case 1:
+        return data.filter((item) => favorites.includes(item.symbol));
+      case 2:
+        return [...data].sort(
+          (a, b) =>
+            parseFloat(a.priceChangePercent) - parseFloat(b.priceChangePercent)
+        );
+      case 3:
+        return [...data].sort(
+          (a, b) =>
+            parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent)
+        );
+      case 4:
+        return [...data].sort(
+          (a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume)
+        );
+      case 5:
+        return [...data].sort((a, b) => b.id - a.id);
       default:
-        break;
+        return data;
     }
+  }, [active, data, favorites]);
 
-    return filtered;
-  }, [cryptoList, active, search]);
+  const filteredBySearch = useMemo(() => {
+    return filteredByTab.filter((item) => {
+      const query = search.toLowerCase();
+      return (
+        item.name?.toLowerCase().includes(query) ||
+        item.symbol?.toLowerCase().includes(query) ||
+        item.locale?.fa?.name?.includes(query)
+      );
+    });
+  }, [search, filteredByTab]);
 
-  // 🟢 داده‌های صفحه فعلی
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return filteredData.slice(start, end);
-  }, [filteredData, currentPage]);
+    return filteredBySearch.slice(start, start + itemsPerPage);
+  }, [filteredBySearch, currentPage]);
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredBySearch.length / itemsPerPage);
 
-  // 🟢 Skeleton Loader
-  const TableSkeleton = () => (
-    <tbody>
-      {Array.from({ length: 8 }).map((_, i) => (
-        <tr key={i} className="animate-pulse border-b border-gray21">
-          <td className="py-4 px-4">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-gray-200"></div>
-              <div>
-                <div className="h-3 w-24 bg-gray-200 rounded mb-2"></div>
-                <div className="h-3 w-12 bg-gray-200 rounded"></div>
-              </div>
-            </div>
-          </td>
-          <td className="py-4 px-4 hidden lg:table-cell">
-            <div className="h-3 w-20 bg-gray-200 rounded"></div>
-          </td>
-          <td className="py-4 px-4">
-            <div className="h-3 w-24 bg-gray-200 rounded"></div>
-          </td>
-          <td className="py-4 px-4 hidden lg:table-cell">
-            <div className="h-3 w-24 bg-gray-200 rounded"></div>
-          </td>
-          <td className="py-4 px-4">
-            <div className="h-3 w-12 bg-gray-200 rounded mx-auto"></div>
-          </td>
-          <td className="py-4 px-4 hidden lg:table-cell">
-            <div className="h-8 w-20 bg-gray-200 rounded"></div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  );
+  // اسکلتون
+  const skeletonArray = Array.from({ length: itemsPerPage });
 
   return (
     <div className="w-full flex flex-col gap-6 lg:mt-16">
-      {/*باکس سرچ */}
-     <div className="items-center gap-4">
+      {/* Search input */}
+      <div className="items-center gap-4">
         <div className="w-full flex justify-between">
-          <div className="flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 px-3">
-            <span className=" w-5 h-5 ml-2 text-gray-400"><IconSearch  /></span>
+          <div className="lg:hidden flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">
+            <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
+              <IconSearch />
+            </span>
             <input
               type="text"
               placeholder="...جستجو"
@@ -147,34 +113,56 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              className="flex-1 text-sm outline-none text-right bg-transparent"
+              className="flex-1 text-sm outline-none text-right bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
             />
           </div>
         </div>
       </div>
 
-      {/* تب‌ها */}
+      {/* Tabs */}
       <div className="bg-white1 rounded-2xl shadow border border-gray21 overflow-hidden">
-        <div className="flex flex-row-reverse gap-4 text-sm text-gray24 px-4 pt-8">
-          {tabs.map((tab, index) => (
-            <span
-              key={index}
-              onClick={() => {
-                setActive(index);
+      {/* Tabs + Search */}
+<div className="flex flex-row-reverse justify-between items-center px-4 pt-8">
+  {/* Tabs */}
+  <div className="flex flex-row-reverse gap-4 text-sm text-gray24">
+    {tabs.map((tab, index) => (
+      <span
+        key={index}
+        onClick={() => {
+          setActive(index);
+          setCurrentPage(1);
+        }}
+        className={`cursor-pointer pb-2 ${
+          active === index
+            ? "text-blue-600 border-b-2 border-blue-600"
+            : "text-black1"
+        }`}
+      >
+        {tab}
+      </span>
+    ))}
+  </div>
+
+  {/* Search input */}
+   <div className="hidden lg:flex flex-row-reverse items-center  lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">
+            <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
+              <IconSearch />
+            </span>
+            <input
+              type="text"
+              placeholder="...جستجو"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              className={`cursor-pointer pb-2 mr-4 ${
-                active === index
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-black1"
-              }`}
-            >
-              {tab}
-            </span>
-          ))}
-        </div>
+              className="flex-1 text-sm outline-none text-right bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
+            />
+          </div>
+</div>
 
-        {/* جدول */}
+
+        {/* Table */}
         <div className="px-6 mt-6">
           <table
             dir="rtl"
@@ -182,95 +170,182 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive,isLoading 
           >
             <thead>
               <tr className="bg-gray0 text-black1 text-sm rounded-md">
-                <th className="py-3 text-center rounded-tr-lg rounded-br-lg">
-                  نام و نماد ارز
-                </th>
+                <th className="py-3 text-center w-48">نام و نماد ارز</th>
                 <th className="py-3 px-4 hidden lg:table-cell">قیمت به USDT</th>
-                <th className="py-3 px-4">قیمت خرید</th>
+                <th className="py-3 px-4 text-center lg:text-right">
+                  قیمت خرید
+                </th>
                 <th className="py-3 px-4 hidden lg:table-cell">قیمت فروش</th>
                 <th className="py-3 px-4 text-center">تغییرات ۲۴h</th>
-                <th className="py-3 px-4 rounded-tl-lg rounded-bl-lg hidden lg:table-cell"></th>
+                <th className="py-3 px-4 hidden lg:table-cell"></th>
               </tr>
             </thead>
-            {/* 🟢 اینجا شرط برای اسکلتون/داده اصلی */}
-            {isLoading ? (
-              <TableSkeleton />
-            ) : (
-              <tbody>
-                {paginatedData.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-gray21 hover:bg-gray0 text-sm last:border-b-0"
-                  >
-                   <td className="py-3 px-4 flex items-center gap-3 pr-8">
-  <button
-    onClick={() => toggleFavorite(item.symbol)}
-    className={`w-[22px] h-[22px] ${
-      item.favorite ? "text-yellow-400" : "text-gray-400"
-    }`}
-  >
-    <IconStar />
-  </button>
-  <span className="h-9 w-9 flex items-center justify-center">
-    {item.icon}
-  </span>
-  <div>
-    <div className="font-medium text-black1">
-      {((item.locale?.fa ?? item.name) || "").length > 10
-        ? ((item.locale?.fa ?? item.name) || "").slice(0, 10) + "..."
-        : (item.locale?.fa ?? item.name) || ""}
-    </div>
-    <span className="text-xs text-gray-500">
-      {item.symbol}
-    </span>
-  </div>
-</td>
+          <tbody>
+  {isLoading
+    ? skeletonArray.map((_, idx) => (
+        <tr
+          key={idx}
+          className="animate-pulse border-b border-gray21 last:border-b-0"
+        >
+          {/* ستون ۱: ستاره + آیکون + نام */}
+          <td className="py-3 px-4 flex items-center gap-3">
+            <div className="w-[22px] h-[22px] rounded-full bg-gray19"></div>
+            <div className="w-8 h-8 rounded-full bg-gray19"></div>
+            <div className="flex flex-col gap-1 min-w-0">
+              <div className="h-3 w-24 rounded-md bg-gray19"></div>
+              <div className="h-3 w-16 rounded-md bg-gray19"></div>
+            </div>
+          </td>
 
+          {/* ستون ۲: USDT Price */}
+          <td className="py-3 px-4 hidden lg:table-cell">
+            <div className="h-3 w-20 rounded-md bg-gray19 mx-auto"></div>
+          </td>
 
+          {/* ستون ۳: Buy Price */}
+          <td className="py-3 px-4 text-center lg:text-right">
+            <div className="h-3 w-20 rounded-md bg-gray19 mx-auto"></div>
+          </td>
 
-                    <td className="py-3 px-4 text-black1 hidden lg:table-cell">
-                      USDT {item.priceUSDT.toLocaleString()}
-                    </td>
-                    <td className="py-3 px-4 text-black1">
-                      {item.buyPrice != null
-                        ? `تومان ${item.buyPrice.toLocaleString()}`
-                        : "-"}
-                    </td>
-                    <td className="py-3 px-4 text-black1 hidden lg:table-cell">
-                      تومان {item.sellPrice.toLocaleString()}
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <span
-                        className={`${
-                          item.change24h >= 0 ? "text-green4" : "text-red1"
-                        }`}
+          {/* ستون ۴: Sell Price */}
+          <td className="py-3 px-4 hidden lg:table-cell">
+            <div className="h-3 w-20 rounded-md bg-gray19 mx-auto"></div>
+          </td>
+
+          {/* ستون ۵: Change Percent */}
+          <td className="py-3 px-4 text-center">
+            <div className="h-3 w-14 rounded-md bg-gray19 mx-auto"></div>
+          </td>
+
+          {/* ستون ۶: Action */}
+          <td className="py-3 px-4 hidden lg:table-cell">
+            <div className="h-6 w-24 rounded-md bg-gray19 mx-auto"></div>
+          </td>
+        </tr>
+      ))
+                : paginatedData.map((item) => {
+                    const buyPrice = Number(item.priceBuy);
+                    const sellPrice = Number(item.priceSell);
+                    const priceChange = Number(item.priceChangePercent);
+
+                    return (
+                      <tr
+                        key={item.id}
+                        className="border-b border-gray21 hover:bg-gray0 text-sm last:border-b-0"
                       >
-                        {item.change24h >= 0 ? "+" : ""}
-                        {item.change24h}%
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-end hidden lg:table-cell">
-                      <button onClick={() => navigate("/trade/buy")}  className="bg-blue-600 text-white rounded-lg px-4 py-1.5 text-sm hover:bg-blue-700 transition">
-                        خرید/فروش
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                        {/* Name and symbol */}
+                        <td className="py-3 px-4 flex items-center gap-3 pr-8">
+                          {/* ستاره */}
+                          <button
+                            onClick={() => {
+                              if (favorites.includes(item.symbol)) {
+                                setFavorites(
+                                  favorites.filter((s) => s !== item.symbol)
+                                );
+                              } else {
+                                setFavorites([...favorites, item.symbol]);
+                              }
+                            }}
+                            className=" flex-shrink-0 flex items-center justify-center transition-colors duration-200 overflow-hidden"
+                          >
+                            <div className="w-[22px] h-[22px]">
+                              {favorites.includes(item.symbol) ? (
+                                <span className="border-gray-400 text-gray-400 w-[22px] h-[22px]">
+                                  <IconStarGold />
+                                </span>
+                              ) : (
+                                <span className="border-gray-400 text-gray-400 w-[22px] h-[22px]">
+                                  <IconStar />
+                                </span>
+                              )}
+                            </div>
+                          </button>
 
-                {paginatedData.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="text-center py-6 text-gray-500">
-                      هیچ نتیجه‌ای یافت نشد
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            )}
+                          {/* آیکون */}
+                          <div className="w-8 h-8 flex-shrink-0 rounded-full">
+                            {item.isFont ? (
+                              <i
+                                className={`cf cf-${item.symbol.toLowerCase()}`}
+                                style={{ color: item.color, fontSize: "32px" }}
+                              ></i>
+                            ) : (
+                              <img
+                                src={`https://api.payfa24.org/images/currency/${item.icon}`}
+                                alt={item.symbol}
+                                className="object-contain w-full h-full"
+                              />
+                            )}
+                          </div>
+
+                          {/* نام و نماد */}
+                          <div className="flex flex-col min-w-0">
+                            <div className="font-medium text-black1 truncate max-w-[150px]">
+                              {(item.locale?.fa?.name ?? item.name) ||
+                                "0 تومان"}
+                            </div>
+                            <span className="text-xs text-gray-500">
+                              {item.symbol}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* USDT Price */}
+                        <td className="py-3 px-4 text-black1 hidden lg:table-cell items-center">
+                          {item.fee != null && item.fee !== ""
+                            ? `${item.fee} USDT`
+                            : "0 تومان"}
+                        </td>
+
+                        {/* Buy Price */}
+                        <td className="py-3 px-4 text-center lg:text-right text-black1 items-center">
+                          {buyPrice
+                            ? `${buyPrice.toLocaleString()} تومان `
+                            : "0 تومان"}
+                        </td>
+
+                        <td className="py-3 px-4 text-black1 hidden lg:table-cell">
+                          {sellPrice
+                            ? `${sellPrice.toLocaleString()} تومان `
+                            : "0 تومان"}
+                        </td>
+
+                        {/* Change Percent */}
+                        <td className="py-3 px-4 text-center">
+                          <span
+                            className={`${
+                              priceChange >= 0 ? "text-green4" : "text-red1"
+                            }`}
+                          >
+                            {priceChange >= 0 ? "+" : ""}
+                            {priceChange}%
+                          </span>
+                        </td>
+
+                        {/* Action */}
+                        <td className="py-3 px-4 text-end hidden lg:table-cell">
+                          <Link
+                            to={ROUTES.TRADE.BUY}
+                            className="inline-block bg-blue-600 text-white rounded-lg px-4 py-1.5 text-sm hover:bg-blue-700 transition"
+                          >
+                            خرید/فروش
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              {!isLoading && paginatedData.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-center py-6 text-gray-500">
+                    هیچ داده‌ای موجود نیست
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
       </div>
-      
-      {/* 🟢 استفاده از کامپوننت Pagination خودت */}
+
+      {/* Pagination */}
       <Pagination
         current={currentPage}
         total={totalPages}

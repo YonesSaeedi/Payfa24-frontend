@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Moon, Sun, LogOut } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../../Context/ThemeContext";
 
@@ -14,6 +13,10 @@ import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconProfileMenu from "../../assets/icons/Login/IconProfileMenu";
 import { apiRequest } from "../../utils/apiClient";
+import useGetUser from "../../hooks/useGetUser"; // مسیر رو متناسب با پروژه درست کن
+import IconSun from "../../assets/icons/header/IconSun";
+import MoonIcon from "../../assets/Icons/HeaderLogin/MoonIcon";
+
 
 type MobileMenuProps = {
   open: boolean;
@@ -29,6 +32,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
 
   const { theme, toggleTheme } = themeContext;
 
+ const { data: userData, isLoading } = useGetUser();
 
   const handleLogout = async () => {
     try {
@@ -67,10 +71,14 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-            <div>
-              <p className="font-semibold text-black1">کوثر محمدی</p>
-              <p className="text-xs text-gray-500 pt-1">سطح کاربری 1</p>
-            </div>
+             <div >
+  <p className="font-semibold text-black1">
+    {isLoading ? "در حال بارگذاری..." : userData?.user.name_display || "—"}
+  </p>
+  <p className="text-xs text-gray-500 pt-1">
+    {isLoading ? "" : `سطح کاربری ${userData?.user.level_account || "—"}`}
+  </p>
+</div>
           </div>
           <button className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition w-full mt-4">
             ارتقا سطح
@@ -115,7 +123,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             معامله
           </Link>
         </nav>
-
+       
         {/* پروفایل */}
         <div className="p-4 text-right">
           <details className="w-full group">
@@ -154,7 +162,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             onClick={toggleTheme}
             className="flex items-center gap-2 text-gray-700 dark:text-gray-300"
           >
-            {theme === "dark" ? <Sun /> : <Moon />} حالت شب
+            {theme === "dark" ? <IconSun /> : <MoonIcon />} حالت شب
           </button>
 
         </div>

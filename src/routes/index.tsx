@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import { ROUTES } from "./routes";
@@ -20,9 +19,9 @@ import CryptoPage from "../components/History/CryptoPage";
 import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
-import BankCardsPage from "../pages/BankCards/BankcardsPage2";
+import BankCardsPage from "../Components/BankCards/BankcardsPage";
 import Wallet from "../pages/Wallet/Wallet";
-import WithdrawPage from "../pages/Withdrawal/Withdrawal";
+import WithdrawPage from "../pages/Withdrawal/WithdrawPage";
 import ChangePassword from "../pages/Profile/ChangePassword";
 import MultiFactor from "../pages/Profile/MultiFactor";
 import GoogleAuthFlow from "../pages/Profile/GoogleAuthFlow";
@@ -33,12 +32,15 @@ import MarketViewPage from "../pages/market-view/MarketViewPage";
 import TomanPage from "../components/History/TomanPage";
 import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
+import CardsManager from "../Components/BankCards/BankCardsManager";
+import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
+
+
 
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
-
       <Routes>
         {/* recaptcha provider */}
         <Route element={<RecaptchaWrapper />}>
@@ -57,11 +59,11 @@ export default function AppRouter() {
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
         <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />
-        <Route path={ROUTES.ADD_FRIEND.ROOT} element={<AddFriend />} />
+        <Route path={ROUTES.ADD_FRIEND} element={<AddFriend />} />
         <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
-
         <Route path={ROUTES.WALLET} element={<Wallet />} />
-        <Route path={ROUTES.WITHDRAWAL} element={<WithdrawPage />} />
+        <Route path={ROUTES.WITHDRAWAL_FIAT} element={<WithdrawPage />} />
+        <Route path={ROUTES.WITHDRAWAL_CRYPTO} element={<WithdrawPage />} />
         <Route path={ROUTES.TRADE.ROOT} element={<TradeLayout />}>
           <Route index element={<Navigate to={ROUTES.TRADE.BUY} replace />} />
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
@@ -79,7 +81,12 @@ export default function AppRouter() {
         </Route>
         <Route path={ROUTES.FAQ} element={<FaqLayout />} />
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevices />} />
-        <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
+        {/* <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
+        <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
+        <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />
+
+
+
         <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />
         {/* header + Footer pages ==================================================================================================== */}
         <Route path={ROUTES.HOME} element={<HomePage />} />
