@@ -122,7 +122,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             معامله
           </Link>
         </nav>
-
+       
         {/* پروفایل */}
         <div className="p-4 text-right">
           <details className="w-full group">

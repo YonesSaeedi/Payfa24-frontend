@@ -45,7 +45,6 @@ export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModa
 >
 
         
-
           {orders.map((order) => (
             <button
               key={order.id}

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import UploadImage from "../../../../assets/Icons/authentication/UploadImage";
+import UploadImage from "../../../../assets/icons/authentication/UploadImage";
 import IconAlert from "../../../../assets/Icons/Login/IconAlert";
 import { toast } from "react-toastify";
 import StepperComponent from "../Stepper";
@@ -8,7 +8,6 @@ type IdentificationDocumentProps = {
   handleUploadImageFiles: (key: "idCardImageFile" | "identityVerifyImageFile", imageFile: File | undefined) => void
   setStep: React.Dispatch<React.SetStateAction<0 | 1 | 2>>;
 };
-
 
 export default function IdentificationDocument({ handleUploadImageFiles, setStep }: IdentificationDocumentProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);

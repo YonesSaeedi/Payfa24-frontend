@@ -150,6 +150,3 @@ export const getContactSchema = () => {
 
 
 
-export const DepositwithIdentifierSchema = () => yup.object().shape({
-    bank: yup.string().required("لطفا حساب بانکی را انتخاب کنید"),
-});

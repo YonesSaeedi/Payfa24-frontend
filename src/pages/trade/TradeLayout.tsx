@@ -4,11 +4,10 @@ import IconWarning from "../../assets/icons/trade/IconWarning"
 import TradeLayoutFAQ from "../../Components/trade/TradeLayoutFAQ"
 import { FAQData } from "../../Data/faqData"
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation"
+import { useState } from "react"
+import { CryptoItem } from "../../types/crypto"
 
-
-
-
-  const FAQData = [
+const FAQData = [
   {
     id: 1,
     question: "چگونه در پی‌فا24 ارز دیجیتال بفروشیم؟",
@@ -36,12 +35,8 @@ import BreadcrumbNavigation from "../../components/BreadcrumbNavigation"
   },
 ];
 
-
-
-
-
-
 const TradeLayout = () => {
+  const [currentCryptocurrency, setCurrentCryptocurrency] = useState<CryptoItem | null>(null)
 
   return (
     <div className="h-full">
@@ -58,7 +53,7 @@ const TradeLayout = () => {
             <div className="lg:bg-gray25 rounded-2xl w-full lg:shadow-[0_0_12px_0_#00000029] lg:p-16 flex flex-col lg:flex-row gap-8 lg:gap-10" dir="rtl">
               {/* child pages will render here ==================================================================================================== */}
               <div className="lg:w-1/2">
-                <Outlet />
+                <Outlet context={{ currentCryptocurrency, setCurrentCryptocurrency }} />
               </div>
               {/* layout content ==================================================================================================== */}
               <div className="lg:w-1/2 flex flex-col" dir="rtl">

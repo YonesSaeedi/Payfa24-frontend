@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "../../../assets/icons/Home/WalletCardIcon/VisibilityIcon";
 import CurrencyToggle from "./CurrencyToggle";
@@ -140,10 +139,8 @@ const WalletCard = ({
               }`}
             dir="rtl"
           >
-
             <span>{formatPersianDigits(displayBalance ?? '0')}</span>
            <span> {selectedCurrency === "tether" ? "تتر" : "تومان"}</span>
-
           </div>
 
 
@@ -175,3 +172,18 @@ const WalletCard = ({
 };
 
 export default WalletCard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

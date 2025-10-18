@@ -4,19 +4,15 @@ import WalletAssets from "../../Components/Wallet/WalletAssets"
 
 
 
-
 export default function Wallet() {
-
 
 
   return (
     <div className="h-full w-full">
       <HeaderLayout>
-
         <div className="container-style lg:px-4 w-full  pt-16 flex flex-col lg:flex-row-reverse gap-10 overflow-hidden pb-5">
           <div className="w-full lg:w-5/12 text-right">
             <WalletCard
-
               showBuySell={false}
             />
           </div>

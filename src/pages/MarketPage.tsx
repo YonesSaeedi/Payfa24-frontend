@@ -120,7 +120,6 @@ const newest = useMemo(
             />
           </div>
 
-
           {/* 📈 جدول بازار */}
           <div className="pb-[87px]">
             <CryptoMarketTable
