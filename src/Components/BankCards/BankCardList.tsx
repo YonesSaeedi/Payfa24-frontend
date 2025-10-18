@@ -124,7 +124,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
   };
 
   return (
-    <div dir="rtl">
+    <div dir="rtl ">
       <h2 className="text-xl font-bold mb-8">کارت‌های من</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {cards.map((card) => {

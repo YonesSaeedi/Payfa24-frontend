@@ -46,7 +46,7 @@ export default function DeviceList() {
     fetchActiveSessions();
   }, []);
 
-  console.log("activeSessions", activeSessions);
+ 
 
 
   const handleEndAllSessions = async () => {

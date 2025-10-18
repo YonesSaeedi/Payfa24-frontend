@@ -74,12 +74,7 @@ const useMergedCryptoList = () => {
       (item) => Number(item.balance_available) > 0
     )
 
-    // 🔹 مرحله ۳: لاگ‌های شفاف
-    console.log("🔹 Withdraw API:", withdrawQuery.data)
-    console.log("🔹 General Info API:", generalInfo.data)
-    console.log("🔹 Market API:", cryptoData.data)
-    console.log("✅ تعداد کل ارزها در Withdraw API:", withdrawQuery.data?.coins?.length ?? 0)
-    console.log("✅ تعداد ارزهای با موجودی قابل برداشت:", merged.length)
+   
   }
 
   return {

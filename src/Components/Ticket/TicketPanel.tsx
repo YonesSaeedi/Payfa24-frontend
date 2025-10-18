@@ -85,7 +85,7 @@ const TicketPanel: React.FC = () => {
 
               {/* سوالات متداول */}
               <div className="mt-6 flex flex-col flex-1 order-3">
-                <h3 className="text-lg font-semibold text-right mb-2">
+                <h3 className="text-lg font-semibold text-right pt-4 text-black0 pb-6">
                   سوالات متداول پیگیری سفارش
                 </h3>
                 <div dir="rtl" className="w-full flex-1">

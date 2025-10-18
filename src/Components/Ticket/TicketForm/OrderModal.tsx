@@ -30,7 +30,7 @@ export default function OrderModal({ orders, onSelectOrder, onClose }: OrderModa
       <div  ref={modalRef} className="bg-white8 w-full max-w-md rounded-2xl shadow-lg p-4 h-[585px]">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold p-4 text-black1">انتخاب سفارش</h3>
-          <button onClick={onClose} className="w-6 h-6 icon-wrapper"><IconClose/></button>
+          <button onClick={onClose} className="w-6 h-6 icon-wrapper text-gray12"><IconClose/></button>
         </div>
 
         {orders.length === 0 ? (

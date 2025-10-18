@@ -10,7 +10,8 @@ import { Link } from "react-router-dom";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import TradeSuccessModal from "../trade/TradeSuccessModal";
 import OTPInputModal from "../trade/OTPInputModal";
-
+import { useWatch } from "react-hook-form";
+import useGetUser from "../../hooks/useGetUser";
 
 
 interface BankOption {
@@ -37,12 +38,19 @@ export default function WithdrawForm() {
   const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState(120);
   const [isResending, setIsResending] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number>(0);
+  
+    const { data: userData, isLoading: isUserLoading } = useGetUser();
+  const userMobile = userData?.user?.mobile || "شماره شما";
 
 
 
   const { handleSubmit, control } = useForm<WithdrawFormValues>({
     defaultValues: { amount: "", bank: null },
   });
+const watchAmount = useWatch({ control, name: "amount" });
+const watchBank = useWatch({ control, name: "bank" });
+// const allFieldsFilled = watchAmount && watchBank;
+const allFieldsFilled = !!watchBank && !!watchAmount && Number(watchAmount) > 0;
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -69,13 +77,19 @@ export default function WithdrawForm() {
   }, [isOpen, resendTimer]);
 
   const isTwoFactorEnabled = true;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
  const onSubmit = async (data: WithdrawFormValues) => {
   const amountNumber = Number(data.amount);
-  if (amountNumber < 100000) {
-    toast.error("حداقل مقدار برداشت 100,000 تومان میباشد.");
-    return;
-  }
+  setIsSubmitting(true);
+if (amountNumber < 100000) {
+  
+  toast.error("حداقل مقدار برداشت 100,000 تومان میباشد.");
+  setIsSubmitting(false); // ✅ باید همین‌جا باشد
+  return;
+}
+
 
   try {
     // درخواست اولیه بدون OTP
@@ -101,6 +115,11 @@ export default function WithdrawForm() {
     console.error("Withdraw error:", err);
     toast.error(err?.response?.data?.msg || "خطا در ارسال درخواست برداشت");
   }
+finally {
+    // ✅ این تضمین می‌کند که دکمه همیشه دوباره فعال شود
+    setIsSubmitting(false);
+  }
+
 };
 
 
@@ -272,12 +291,18 @@ useEffect(() => {
         </div>
 
         <div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg mt-6  font-bold text-[18px] "
-          >
-            برداشت
-          </button>
+        <button
+  type="submit"
+  disabled={!allFieldsFilled || isSubmitting}
+  className={`w-full py-3 rounded-lg mt-6 font-bold text-[18px] transition-colors duration-300 ${
+    !allFieldsFilled || isSubmitting
+      ? "bg-gray12  text-white cursor-not-allowed"
+      : "bg-blue-500 hover:bg-blue-600 text-white"
+  }`}
+>
+  {isSubmitting ? "درحال برداشت وجه" : "برداشت"}
+</button>
+
         </div>
       </form>
 
@@ -291,11 +316,11 @@ useEffect(() => {
     }}
     onChange={(value: string) => setOtpCode(value)}
     onSubmit={handleOtpSubmit}
-    OTPLength={5}
+    OTPLength={6}
     handleResendCode={handleResendCode}
     resendCodeIsSubmitting={isResending}
     resendCodeTimeLeft={resendCodeTimeLeft}
-    mainText="کد تأیید ارسال‌شده به خود را وارد کنید"
+    mainText={`لطفاً کد ارسال شده به شماره ${userMobile} را وارد کنید`}
     submitButtonText="تأیید"
     titleText="تأیید برداشت"
   />

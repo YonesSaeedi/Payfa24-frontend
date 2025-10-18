@@ -31,7 +31,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   };
 
   const handleApplyFilters = () => {
-    console.log("فیلترهای انتخاب‌شده:", selectedFilters);
+   
     onClose();
   };
 

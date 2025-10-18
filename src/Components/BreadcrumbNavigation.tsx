@@ -14,7 +14,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   services: 'خدمات',
   transaction: 'تاریخچه تراکنش ها',
   ConnectedDevices: 'دستگاه های متصل',
-  faq: 'سوالات متدال',
+  faq: 'سوالات متداول',
 "bank-cards": 'کارت های بانکی',
   withdraw: 'برداشت',
   'market-view': 'نمای بازار',

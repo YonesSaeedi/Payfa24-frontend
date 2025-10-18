@@ -5,6 +5,7 @@ import IconClose from "../../assets/Icons/Login/IconClose";
 import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
 import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import { ROUTES } from "../../routes/routes";
+import { log } from "console";
 
 interface WithdrawModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
     onClose();
     navigate(ROUTES.WITHDRAWAL_CRYPTO); 
   };
+
   
 
   return (

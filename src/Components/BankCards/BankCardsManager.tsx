@@ -75,37 +75,6 @@ function BankCardManager() {
   }, []);
 
 
-//   const cleanedNumber = cardNumber.replace(/-/g, "").trim();
-
-//   try {
-//     const response = await apiRequest<
-//       { status: boolean; msg: string },
-//       { CardNumber: string }
-//     >({
-//       url: "/api/account/credit-card",
-//       method: "POST",
-//       data: { CardNumber: cleanedNumber },
-//     });
-
-//     if (response.status) {
-//       const newCard: Card = {
-//         id: Date.now(),
-//         number: cleanedNumber,
-//         holder: "مالک کارت",
-//         bankName,
-//         status: "pending",
-//       };
-//       setCards((prev) => [...prev, newCard]);
-//       toast.success("کارت با موفقیت ثبت شد!");
-//     } else {
-//       toast.error(response.msg); // پیام خطا یا کارت تکراری از سرور
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت کارت مشکلی پیش آمد.');
-//   }
-// };
-
 const handleAddCard = async (cardNumber: string) => {
   const result = await AddCardApi(cardNumber);
   if (result) {
@@ -114,26 +83,24 @@ const handleAddCard = async (cardNumber: string) => {
   }
 };
 
-
-
   const { data: userData } = useGetUser();
   console.log(userData);
 
   return (
     <HeaderLayout>
       <div dir="rtl" className="bg-backgroundMain min-h-[400px] w-full">
-        <div className="container-style grid grid-col2 gap-8 lg:gap-12 !pr-0 ">
+        <div className="container-style grid grid-col2 gap-8 lg:gap-12  ">
           <div className="mt-7 lg:mt-4">
             <BreadcrumbNavigation />
           </div>
-          <div className=" flex gap-2 lg:gap-12 ">
+          <div className=" flex flex-col lg:flex-row gap-4 lg:gap-12 pb-8">
             {/* 📋 فرم افزودن کارت */}
-            <div className="w-2/5">
+            <div className="w-full lg:w-2/5">
               <BankCardForm onSave={handleAddCard} />
             </div>
 
             {/* 💳 نمایش کارت‌ها */}
-            <div className="w-3/5 pt-10 lg:pt-0 pr-4">
+            <div className=" lg:w-3/5 pt-10 lg:pt-0 pr-4">
               {loading ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {Array.from({ length: 4 }).map((_, i) => (
@@ -143,7 +110,8 @@ const handleAddCard = async (cardNumber: string) => {
               ) : error ? (
                 <p className="text-red-500 animate-fade-in">{error}</p>
               ) : (
-                <BankCardList
+                <div className="p-4 lg:p-0">
+                       <BankCardList
                   cards={cards}
                   onAddCard={() =>
                     console.log(
@@ -151,6 +119,8 @@ const handleAddCard = async (cardNumber: string) => {
                     )
                   }
                 />
+                </div>
+           
               )}
             </div>
           </div>

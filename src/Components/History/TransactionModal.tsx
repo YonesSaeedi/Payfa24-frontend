@@ -195,7 +195,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
 
   if (!tx) return null;
 
-  console.log("detail", detail);
+  
 
   return (
     <div

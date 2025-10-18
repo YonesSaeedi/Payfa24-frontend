@@ -47,7 +47,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
         toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید ");
       }
     } catch (error) {
-      console.log(error);
+       toast.error(  error?.response?.data?.msg || "خطایی رخ داده است.");
       
       toast.error("ارتباط با سرور برقرار نشد ");
     } finally {
