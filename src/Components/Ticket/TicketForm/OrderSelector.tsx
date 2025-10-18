@@ -1,12 +1,12 @@
 // OrderSelector.tsx
 import { useState, useEffect} from "react";
-import { X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { TicketFormInputs, Order } from "../../../types/Ticket";
 import IconOrderSelection from "../../../assets/icons/ticket/IconOrderSelection";
 import OrderModal from "./OrderModal";
 import { apiRequest } from "../../../utils/apiClient";
 import type { UseFormSetValue, UseFormRegister } from "react-hook-form";
+import IconClose from "../../../assets/Icons/Login/IconClose";
 
 interface TicketInfoResponse {
   last_orders: { id: number; title: string }[];
@@ -91,8 +91,8 @@ export default function OrderSelector({
           </div>
           <div className="flex items-center gap-2">
             <span className="text-blue-600 text-sm">{selectedOrder.type}</span>
-            <button type="button" onClick={handleRemoveOrder} className="text-gray-500 hover:text-red-500">
-              <X size={16} />
+            <button type="button" onClick={handleRemoveOrder} className="text-gray-500 hover:text-red-500 w-5 h-5 ">
+        <IconClose/>
             </button>
           </div>
         </div>

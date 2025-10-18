@@ -1,5 +1,4 @@
 import React from "react";
-import {  Hourglass } from "lucide-react";
 import IconComplete from "../../../assets/icons/StatusBadge/IconButtomComplete"
 import IconButtonReject from "../../../assets/icons/StatusBadge/IconButtonReject";
 import IconButtonOnHold from "../../../assets/icons/StatusBadge/IconButtonOnHold";
@@ -43,7 +42,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text }) => {
     statusConfig[text] || {
       textColor: "text-gray-600",
       bgColor: "bg-gray-100",
-      icon: <Hourglass className="w-5 h-5 text-gray-600" />,
+      icon: "",
     };
 
   return (

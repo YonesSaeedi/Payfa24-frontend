@@ -1,4 +1,4 @@
-import { BitcoinIcon, SearchIcon } from "lucide-react";
+
 import React, { useState, useMemo } from "react";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";

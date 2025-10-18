@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { Ticket } from "./types";
 import bgChat from "../../../assets/images/Ticket/bgchat.jpg";
 import supportAvatar from "../../../assets/images/Ticket/avator.jpg";
-import { FileText } from "lucide-react";
 import IconSendMessage from "../../../assets/icons/ticket/IconSendMessage";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
 import { apiRequest } from "../../../utils/apiClient";

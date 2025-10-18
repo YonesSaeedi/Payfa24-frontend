@@ -1,10 +1,11 @@
-import { SendIcon } from "lucide-react";
+
 import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 import WalletAddIcon from "../../assets/icons/Home/WalletCardIcon/WalletAddIcon";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes"; // مسیر دقیق فایل routes را چک کنید
+import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
 
 type ActionModalProps = {
   open: boolean;
@@ -47,7 +48,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name, s
           >
             <span className="w-10 h-10 bg-blue7 rounded-[8px] flex items-center justify-center text-blue2">
               <span className="w-5 h-5 flex items-center justify-center">
-                <SendIcon />
+                <SendIcon/>
               </span>
             </span>
 
