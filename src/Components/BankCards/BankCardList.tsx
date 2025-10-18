@@ -6,6 +6,7 @@ import IconInProgress from "./../../assets/icons/BankCards/IconInProgress";
 import IconDelete from "./../../assets/icons/BankCards/IconDelete";
 import useGetUser from "../../hooks/useGetUser"; 
 
+
 type Card = {
   id: number;
   number: string;
@@ -109,8 +110,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
       case "pending":
         return (
           <span className="w-4 h-4">
-            <IconInProgress />
-          </span>
+            <IconInProgress /></span>
         );
       case "rejected":
         return (

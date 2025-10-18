@@ -5,7 +5,7 @@ function IconShetab() {
   
 
     return (
-<svg width="100%" height="100%" viewBox="0 0 114 79" fill="none" xmlns="http://www.w3.org/2000/svg" xlinkHref="http://www.w3.org/1999/xlink">
+<svg width="114" height="79" viewBox="0 0 114 79" fill="none" xmlns="http://www.w3.org/2000/svg" xlinkHref="http://www.w3.org/1999/xlink">
 <rect width="114" height="79" fill="url(#pattern0_15449_149678)"/>
 <defs>
 <pattern id="pattern0_15449_149678" patternContentUnits="objectBoundingBox" width="1" height="1">

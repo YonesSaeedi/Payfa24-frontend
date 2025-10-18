@@ -117,7 +117,7 @@ export default function DeviceList() {
 //                   ) : (
 //                     <span className="text-red-500">پایان نشست</span>
 //                   )}
-//                 </td>
+//</td>
 //               </tr>
 //             ))}
 //           </tbody>
@@ -209,8 +209,7 @@ export default function DeviceList() {
                 key={i}
                 className="w-full flex flex-col bg-third p-2 rounded-[10px] my-2 gap-2"
               >
-                <div className="flex w-full items-center justify-between text-xs font-normal">
-                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                <div className="flex w-full items-center justify-between text-xs font-normal"><span className="w-1/2 h-3 skeleton-bg rounded" />
                   <span className="w-1/2 h-3 skeleton-bg rounded" />
                 </div>
 
@@ -318,7 +317,7 @@ export default function DeviceList() {
                   handleEndAllSessions()
                   setShowModal(false);
                 }}
-                className="flex-1 py-2 rounded-[12px] bg-blue-500 text-white hover:bg-blue-600"
+                className="flex-1  py-2 rounded-[12px] bg-blue-500 text-white hover:bg-blue-600"
               >
                 پایان نشست
               </button>
@@ -329,3 +328,6 @@ export default function DeviceList() {
     </div>
   );
 }
+
+
+                

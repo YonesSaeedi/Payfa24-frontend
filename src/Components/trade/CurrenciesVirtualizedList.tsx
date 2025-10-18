@@ -3,6 +3,8 @@ import { CryptoItem } from "../../types/crypto";
 import React from "react";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 
+
+
 interface CurrenciesVirtualizedListProps {
   items: (CryptoItem | null)[];
   height: number;

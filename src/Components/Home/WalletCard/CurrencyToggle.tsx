@@ -22,17 +22,21 @@ const CurrencyToggle: FC<Props> = ({ onChange }) => {
       <button
         onClick={() => handleSelect("tether")}
         className={`flex items-center gap-1 px-3 py-1 rounded-md transition
+
           ${selected === "tether" ? "bg-blue-500 text-white1" : "bg-transparent text-black1"}`}
       >
         <span>تتر</span>
         <span className="w-4 h-4  rounded-sm inline-block"><TetherIcon/></span>
+
        
+        <span className="w-4 h-4 rounded-sm inline-block text-gray12"><TetherIcon/></span>
+        <span className="text-gray12">تتر</span>
       </button>
 
       <button
         onClick={() => handleSelect("toman")}
         className={`flex items-center gap-1 px-3 py-1 rounded-md transition
-          ${selected === "toman" ? "bg-blue-500 text-white1" : "bg-transparent text-black1"}`}
+          ${selected === "toman" ? "bg-blue-500 text-white2" : "bg-transparent"}`}
       >
       
        <span>تومان</span>
