@@ -1,29 +1,25 @@
-
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
-
-// ⚠️ مسیر ایمپورت apiRequest را با توجه به پروژه خود اصلاح کنید
 import { apiRequest } from "../../utils/apiClient"; 
-
-// کامپوننت‌های UI (بدون تغییر)
 import Accordion from "../Withdrawal/Accordion";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import IconVideo from "../../assets/Icons/Deposit/IconVideo";
+import IconClose from "../../assets/Icons/Login/IconClose";
 
 
 interface PaymentGatewayRequestData {
-    amount: number; // مقدار واریزی (تومان/ریال بسته به توافق با بک‌اند)
-    card: string;   // فیلدی که ممکن است بک‌اند انتظارش را بکشد
+    amount: number; 
+    card: string; 
 }
 
 interface PaymentGatewayResponse {
     status: boolean;
     msg: string;
-    link?: string; // لینک هدایت به درگاه پرداخت
-    url?: string; // ممکن است بک‌اند شما از 'url' به جای 'link' استفاده کند (من هر دو را می‌نویسم)
+    link?: string; 
+    url?: string;
     id: number;
 }
 
@@ -31,8 +27,8 @@ interface PaymentGatewayResponse {
 const validationSchema = yup.object().shape({
     amount: yup
         .number()
-        .typeError("مبلغ باید عدد باشد")
-        .required("وارد کردن مبلغ الزامی است")
+        .typeError("وارد کردن مبلغ الزامی است")
+        // .required("وارد کردن مبلغ الزامی است")
         // حداقل و حداکثر به تومان (۲۵ هزار تا ۲۵ میلیون تومان)
         .min(25000, "حداقل مبلغ واریز ۲۵,۰۰۰ تومان است") 
         .max(25000000, "حداکثر مبلغ واریز ۲۵ میلیون تومان است"),
@@ -112,7 +108,7 @@ export default function DepositForm() {
             };
 
             const response = await apiRequest<PaymentGatewayResponse, PaymentGatewayRequestData>({
-                url: "/api/wallets/fiat/deposit/gateway", // API برای دریافت لینک درگاه
+                url: "/api/wallets/fiat/deposit/gateway", 
                 method: "POST",
                 data: requestData,
             });
@@ -136,16 +132,20 @@ export default function DepositForm() {
     
     // --- ۴. رندر UI ---
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full lg:px-7" dir="rtl">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full px-5" dir="rtl">
             
             {/* ... (بخش‌های UI بدون تغییر) ... */}
-            
-            <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
+            <div className="my-10 bg-blue14 px-3 py-[14px] rounded-lg text-blue2 flex items-center justify-between">
+            <div className="flex items-center  gap-2">
                 <span className="icon-wrapper w-6 h-6 text-blue2"><IconVideo /></span>
                 <span>ویدیو آموزشی واریز با درگاه پرداخت</span>
             </div>
+            <span className=" icon-wrapper w-5 h-5  text-blue2">
+                <IconClose/>
+            </span>
+            </div>
 
-            <div dir="rtl" className="mb-1.5">
+            <div className="mb-2">
                 <Controller
                     name="amount"
                     control={control}
@@ -157,7 +157,6 @@ export default function DepositForm() {
                                 onChange={field.onChange}
                                 type="number"
                                 placeholder="0 تومان "
-                                placeholderColor="text-black0"
                             />
                             {errors.amount && <p className="text-red1 text-sm mt-1">{errors.amount.message}</p>}
                         </>
@@ -165,31 +164,27 @@ export default function DepositForm() {
                 />
             </div>
             
-            {/* 💡 فیلد کنترلر bank به صورت مخفی برای سازگاری با بک‌اند */}
-            <Controller name="bank" control={control} render={({ field }) => <input type="hidden" {...field} />} />
-
-
             <p className="text-gray12 text-sm mb-5">
-                میزان واریزی حداقل ۲۵ هزار تومان و حداکثر تا سقف ۲۵ میلیون تومان{" "}
+                میزان واریزی حداقل ۲۵ هزار تومان و حداکثر تا سقف ۲۵ میلیون تومان
             </p>
             
             {/* دکمه‌های مبلغ پیشنهادی */}
-            <div className="flex gap-2 items-center mb-12 flex-wrap justify-center">
+            <div className="flex gap-2 items-center mb-40 flex-wrap justify-center ">
                 {amounts.map((amount, index) => (
                     <button
                         type="button" 
                         key={index}
                         onClick={() => setPresetAmount(amount)}
-                        className={`border rounded-lg px-7 py-2 text-sm transition ${
+                        className={`border rounded-lg lg:px-7 px-4 py-2 lg:text-sm text-xs  ${
                             Number(amountValue) === amount ? 'border-blue2 text-blue2' : 'border-gray12 text-gray12 hover:border-blue2 hover:text-blue2'
                         }`}
                     >
-                        {amount / 1000000} میلیون
+                        {amount/1000000} میلیون
                     </button>
                 ))}
             </div>
 
-            <div className="mt-16">
+            <div>
                 <button
                     type="submit"
                     disabled={isSubmitting}

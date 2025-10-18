@@ -153,3 +153,23 @@ export const getContactSchema = () => {
 export const DepositwithIdentifierSchema = () => yup.object().shape({
     bank: yup.string().required("لطفا حساب بانکی را انتخاب کنید"),
 });
+
+
+
+
+
+
+export const getValidationSchemaCardtoCard = () => {
+  return yup.object().shape({
+    amount: yup
+      .number()
+      .typeError("مبلغ باید عدد باشد")
+      .required("وارد کردن مبلغ الزامی است")
+      .min(500000, "حداقل مبلغ واریز ۵۰۰,۰۰۰ تومان است")
+      .max(25000000, "حداکثر مبلغ واریز ۲۵,۰۰۰,۰۰۰ تومان است"),
+    card: yup
+      .number()
+      .min(1, "لطفاً یک کارت معتبر انتخاب کنید")
+      .required("لطفاً یک کارت معتبر انتخاب کنید"),
+  });
+};

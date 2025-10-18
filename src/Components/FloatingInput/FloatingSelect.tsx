@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { useState, FC, useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface Option {
@@ -12,7 +12,6 @@ interface FloatingSelectProps {
   value: string;
   options: Option[];
   onChange: (value: string) => void;
-
   placeholder?: string;
   placeholderColor?: string;
   onOpen?: () => void;
@@ -29,10 +28,13 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
   placeholder = "گزینه‌ای را انتخاب کنید",
   placeholderColor = "text-gray12",
   onOpen,
-  placeholderIcon, // دریافت پراپ جدید
-  placeholderClasses, // دریافت پراپ جدید
+  placeholderIcon,
+  placeholderClasses,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const selectRef = useRef<HTMLDivElement>(null);
+
+  // مقدار پیش‌فرض رو فقط اگه گزینه‌ای وجود داشته باشه تنظیم کن
   const selected = options.find((o) => o.value === value);
 
   const handleButtonClick = () => {
@@ -43,26 +45,34 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div dir="rtl" className="relative w-full">
+    <div dir="rtl" className="relative w-full" ref={selectRef}>
       <button
         type="button"
         onClick={handleButtonClick}
         className={`peer flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray12 lg:bg-gray43 focus:outline-none focus:ring-1 focus:ring-blue2`}
       >
         <span
-          className={`flex items-center gap-2 ${
-            placeholderClasses || placeholderColor
-          }`}
+          className={`flex items-center gap-2 ${placeholderClasses || placeholderColor}`}
         >
-          {/* نمایش آیکون و متن placeholder */}
           {!selected && placeholderIcon && (
             <span className="w-6 h-6">{placeholderIcon}</span>
           )}
-          {/* نمایش مقدار انتخاب شده یا placeholder */}
           {selected?.label || placeholder}
         </span>
-
         <ChevronDown className="w-4 h-4 text-gray12" />
       </button>
 
@@ -70,7 +80,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
         {label}
       </label>
 
-      {!onOpen && isOpen && (
+      {!onOpen && isOpen && options.length > 0 && (
         <div className="absolute z-50 w-full mt-1 bg-gray43 border border-gray21 rounded-lg shadow-lg overflow-hidden">
           {options.map((option) => (
             <button
@@ -81,7 +91,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
                 setIsOpen(false);
               }}
               className={`flex items-center justify-start w-full px-3 py-2 text-right hover:text-blue2 transition ${
-                value === option.value ? "text-blue2" : "text-blue2"
+                value === option.value ? "text-blue2" : "text-gray12"
               }`}
             >
               <span
