@@ -168,12 +168,12 @@ export default function AddFriend() {
   const LinkInvite = [
     {
       Title: "لینک دعوت شما :",
-      Link: referralReport?.reflink || "درحال بارگذاری...",
+      Link: referralReport?.reflink,
       Icon: <IconCopy />,
     },
     {
       Title: "کد دعوت شما :",
-      Link: referralReport?.refid?.toString() || "درحال بارگذاری...",
+      Link: referralReport?.refid?.toString() ,
       Icon: <IconCopy />,
     },
   ];
@@ -246,7 +246,7 @@ export default function AddFriend() {
                         // شرط کپی کردن: فقط زمانی که لودینگ نباشد و لینک وجود داشته باشد.
                         if (!isLoading && e.Link) {
                           navigator.clipboard.writeText(e.Link);
-                          toast.info(`${e.Title} کپی شد.`);
+                          toast.info(`${e.Title} کپی شد`);
                         }
                       }}
                       // کلاس cursor-pointer فقط زمانی اعمال می‌شود که لودینگ نباشد.
