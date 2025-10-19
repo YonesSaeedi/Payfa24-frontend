@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -32,6 +32,8 @@ export default function ProfileMenu({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [IsModal, setIsModal] = useState(false);
   const { data: userData, isLoading } = useGetUser();
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -101,8 +103,8 @@ export default function ProfileMenu({
   </p>
 </div>
 
-          </div>
-          <button className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition">
+          </div> 
+          <button onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)} className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition shadow-md  hover:shadow-gray12">
             ارتقا سطح
             <span className="w-5 h-5 icon-wrapper mr-1">
               <IconArrowLeft />

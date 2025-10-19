@@ -8,10 +8,11 @@ interface TicketListProps {
   tickets: Ticket[];
   activeTicket: Ticket | null;
   onSelect: (ticket: Ticket) => void;
-  
+  onNewTicket: () => void;
+  onSupportCall: () => void;
 }
 
-const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect }) => (
+const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect,onNewTicket, onSupportCall }) => (
 <div dir="rtl" className="w-[500px] bg-gray38 flex flex-col rounded-[16px] h-[790px]">
   <h2 className="text-lg font-semibold mb-6 text-black1">تیکت‌های شما</h2>
 
@@ -27,14 +28,14 @@ const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect
  
   </div>
    
-  <div className="mt-4 flex flex-col gap-2">
-    <button    className="w-full bg-blue-600 text-white py-2 rounded-xl shadow hover:bg-blue-700">
+  <div className="mt-4 flex flex-col gap-2 ">
+    <button  onClick={onNewTicket}   className="w-full bg-blue-600 text-white py-2 rounded-xl shadow hover:bg-blue-700">
       <span className="w-7 h-7 icon-wrapper">
         <Iconplus/>
       </span>
       ایجاد تیکت جدید
     </button>
-    <button className="w-full border py-2 rounded-xl hover:bg-gray-50 text-blue2 border-blue2">
+    <button  onClick={onSupportCall}  className="w-full border py-2 rounded-xl hover:bg-gray-50 text-blue2 border-blue2">
       <span className="w-7 h-7 icon-wrapper pl-1">
         <IconCall/>
       </span>

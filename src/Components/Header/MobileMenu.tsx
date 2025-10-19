@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeContext } from "../../Context/ThemeContext";
 
@@ -16,14 +16,16 @@ import { apiRequest } from "../../utils/apiClient";
 import useGetUser from "../../hooks/useGetUser"; // مسیر رو متناسب با پروژه درست کن
 import IconSun from "../../assets/icons/header/IconSun";
 import MoonIcon from "../../assets/Icons/HeaderLogin/MoonIcon";
+import { ROUTES } from "../../routes/routes";
 
 
 type MobileMenuProps = {
   open: boolean;
   onClose: () => void;
+   onOpenServicesModal: () => void; 
 };
 
-export default function MobileMenu({ open, onClose }: MobileMenuProps) {
+export default function MobileMenu({ open, onClose, onOpenServicesModal }: MobileMenuProps) {
   const themeContext = useContext(ThemeContext);
 
   if (!themeContext) {
@@ -45,6 +47,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
       window.location.replace("/login");
     }
   };
+   const navigate = useNavigate();
 
   return (
     <>
@@ -65,9 +68,9 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         {/* هدر پروفایل */}
         <div
           dir="rtl"
-          className="bg-gray33 py-4 px-3 flex-col items-center justify-between border border-gray21 m-4 rounded-[8px]"
+          className=" py-4 px-3 flex-col items-center justify-between border shadow-md m-4 rounded-[20px] mt-12"
         >
-          <div className="flex ">
+          <div className="flex  ">
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
@@ -80,43 +83,49 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
   </p>
 </div>
           </div>
-          <button className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition w-full mt-4">
+          <button onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)} className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition w-full mt-4  shadow-md  hover:shadow-gray12">
             ارتقا سطح
             <span className="w-5 h-5 icon-wrapper mr-1">
               <IconArrowLeft />
             </span>
-          </button>
+          </button> 
         </div>
 
         {/* منو اصلی */}
         <nav className="flex flex-col gap-6 p-4 space-y-3 text-right">
           <Link to="/" className="  flex items-center justify-start gap-2 hover:text-blue-600">
-            <span className=" flex items-center justify-center w-6 h-6">
+            <span className=" flex items-center justify-center w-6 h-6 text-blue2">
               <HomeIcon />
             </span>
             خانه
           </Link>
-          <Link to="/services" className=" flex items-center justify-start gap-2 hover:text-blue-600">
-            <span className=" flex items-center justify-center w-6 h-6">
-              <CategoryIcon />
-            </span>
+         <button
+  onClick={() => {
+    onClose();              // بستن منوی موبایل
+    onOpenServicesModal();   // باز کردن مودال خدمات
+  }}
+  className="flex items-center justify-start gap-2 hover:text-blue-600 w-full text-left"
+>
+  <span className="flex items-center justify-center w-6 h-6 text-blue2">
+    <CategoryIcon />
+  </span>
+  خدمات
+</button>
 
-            خدمات
-          </Link>
           <Link to="/wallet" className="flex items-center justify-start gap-2 hover:text-blue-600">
-            <span className=" flex items-center justify-center w-6 h-6">
+            <span className=" flex items-center justify-center w-6 h-6 text-blue2">
               <WalletIcon />
             </span>
             کیف پول
           </Link>
           <Link to="/market" className=" flex items-center justify-start gap-2 hover:text-blue-600">
-            <span className=" flex items-center justify-center w-6 h-6">
+            <span className=" flex items-center justify-center w-6 h-6 text-blue2">
               <ChartIcon />
             </span>
             بازارها
           </Link>
           <Link to="/trade" className=" flex items-center justify-start gap-2 hover:text-blue-600">
-            <span className=" flex items-center justify-center w-6 h-6">
+            <span className=" flex items-center justify-center w-6 h-6 text-blue2">
               <BitcoinIcon />
             </span>
 
@@ -129,7 +138,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
           <details className="w-full group">
             <summary className="flex items-center justify-between cursor-pointer font-medium text-blue-600">
               <span className="flex">
-                <span className=" flex items-center justify-center w-6 h-6 ml-2">
+                <span className=" flex items-center justify-center w-6 h-6 ml-2 text-black0">
                   <IconProfileMenu />
                 </span>
                 پروفایل
@@ -146,7 +155,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
               </svg>
             </summary>
             <ul className=" pr-4 mt-2  text-gray-600 dark:text-gray-300">
-              <li className="mb-4">تنظیمات امنیت</li>
+              <li className="mb-4 mt-6">تنظیمات امنیت</li>
               <li className="mb-4">احراز هویت</li>
               <li className="mb-4">حساب‌های بانکی</li>
               <li className="mb-4">تاریخچه معاملات</li>
@@ -162,7 +171,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             onClick={toggleTheme}
             className="flex items-center gap-2 text-gray-700 dark:text-gray-300"
           >
-            {theme === "dark" ? <IconSun /> : <MoonIcon />} حالت شب
+            {theme === "dark" ? <span className="w-6 h-6"><IconSun /></span> : <span className="w-6 h-6"><MoonIcon /></span>}حالت شب
           </button>
 
         </div>

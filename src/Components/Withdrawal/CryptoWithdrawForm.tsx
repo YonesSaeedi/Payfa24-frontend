@@ -329,17 +329,7 @@ const handleSubmitTransfers = async (e: React.FormEvent) => {
       method: "POST",
       data: dataToSend,
     });
-//  setWithdrawData({
-//   withdrawAmount,
-//   mobile: address.includes("@") ? "" : address,
-//   email: address.includes("@") ? address : "",
-// });
-
-//     // setWithdrawData(dataToSend);
-//     setIsOtpModalOpen(true);
-//     setResendCodeTimeLeft(120);
- setWithdrawData(dataToSend);
-
+    setWithdrawData(dataToSend);
     setIsOtpModalOpen(true);
     setResendCodeTimeLeft(120);
   } catch (err: any) {
@@ -709,7 +699,7 @@ useEffect(() => {
                   className="border border-gray12"
                 />
                 <p className="text-xs text-gray5 mt-2">
-                  با درج کردن موبایل یا ایمیل ا اشتباه ممکن است باعث از دست رفتن
+                  با درج کردن موبایل یا ایمیل  اشتباه ممکن است باعث از دست رفتن
                   دارایی شما شود.
                 </p>
               </div>

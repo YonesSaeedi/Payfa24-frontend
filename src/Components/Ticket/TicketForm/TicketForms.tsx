@@ -75,10 +75,10 @@ export default function TicketForm() {
    <form
   onSubmit={handleSubmit(onSubmit)}
   dir="rtl"
-  className="w-full h-full flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl p-6"
+  className="h-full flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl p-6"
 >
 
-      <div className="flex flex-col">
+      <div className="flex flex-col ">
         <h2 className="text-xl font-semibold text-center text-black1 mt-2 mb-12">
           ایجاد تیکت جدید
         </h2>

@@ -219,7 +219,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
 
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 w-full h-full">
       <div className="border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
         {ticket && <ChatHeader ticket={ticket} />}
 
@@ -356,7 +356,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
           <input
             type="text"
             placeholder="پیام خود را بنویسید..."
-            className="flex-1 px-3 py-2 focus:outline-none bg-white8"
+            className="flex-1 px-3 py-2 focus:outline-none bg-white8 text-black0"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { ChevronDown } from "lucide-react";
+import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 
 interface FilterDropdownProps {
   id: string;
@@ -52,10 +52,9 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
         className="flex justify-between items-center w-full px-3 py-2 border border-gray20 rounded-lg bg-white1  text-black0"
       >
         <span dir="rtl" className="justify-start">{selected || label}</span>
-        <ChevronDown
-          size={18}
-          className={`transition-transform duration-200 justify-end ${isOpen ? "rotate-180" : ""} `}
-        />
+        <span 
+          className={`w-4 h-4 transition-transform duration-200 justify-end ${isOpen ? "rotate-180" : ""} `}><IconChervDown/></span>
+        
       </button>
 
       {isOpen && (

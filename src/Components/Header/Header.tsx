@@ -23,9 +23,9 @@ import NotificationDropDown from "../Notification/NotificationDropDown";
 import IconRingActive from "../../assets/icons/header/IconRingActive";
 import IconSun from "../../assets/icons/header/IconSun";
 import { useRef } from "react";
-import { Menu, X } from "lucide-react";
 import MobileMenu from "./MobileMenu";
 import  { useEffect} from "react";
+import IconMobileMenue from "../../assets/icons/header/IconMobileMenue";
 
 export default function Header() {
   const themeContext = useContext(ThemeContext);
@@ -62,7 +62,7 @@ useEffect(() => {
   const { toggleTheme } = themeContext;
 
   return (
-    <header className="bg-white dark:bg-gray-900 dark:text-white sticky top-0 z-50 ">
+    <header className="bg-white dark:bg-gray29  dark:text-white sticky top-0 z-50 ">
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-4 lg:px-6">
         {/* Left Section */}
         <div className="flex gap-3 md:gap-4 text-gray-600 items-center">
@@ -245,58 +245,14 @@ useEffect(() => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle Menu"
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileMenuOpen ? <IconMobileMenue/> : <IconMobileMenue/>}
           </button>
-          <MobileMenu open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+          <MobileMenu open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}   onOpenServicesModal={() => setShowServices(true)}/>
+            {showServices && <ServicesBox onClose={() => setShowServices(false)} />}
+
         </div>
      </nav>
     </header>
   );
 }
 
-
-
-
-
- {/* </nav> */}
-
-      {/* Mobile Menu Drawer */}
-      {/* // {mobileMenuOpen && ( */}
-      //   <div className="lg:hidden absolute top-full left-0 w-full max-w-full overflow-x-hidden bg-white dark:bg-gray-800 shadow-md z-40">
-      //     <Link
-      //       to="/"
-      //       onClick={() => setMobileMenuOpen(false)}
-      //       className="block text-gray-700 dark:text-gray-200"
-      //     >
-      //       خانه
-      //     </Link>
-      //     <Link
-      //       to="/market"
-      //       onClick={() => setMobileMenuOpen(false)}
-      //       className="block text-gray-700 dark:text-gray-200"
-      //     >
-      //       بازارها
-      //     </Link>
-      //     <Link
-      //       to="/wallet"
-      //       onClick={() => setMobileMenuOpen(false)}
-      //       className="block text-gray-700 dark:text-gray-200"
-      //     >
-      //       کیف پول
-      //     </Link>
-      //     <Link
-      //       to="/trade"
-      //       onClick={() => setMobileMenuOpen(false)}
-      //       className="block text-gray-700 dark:text-gray-200"
-      //     >
-      //       معامله
-      //     </Link>
-      //     <button
-      //       onClick={() => setShowServices(!showServices)}
-      //       className="block w-full text-left text-gray-700 dark:text-gray-200"
-      //     >
-      //       خدمات
-      //     </button>
-      //     {showServices && <ServicesBox onClose={() => setShowServices(false)} />}
-      //   </div>
-      // )}

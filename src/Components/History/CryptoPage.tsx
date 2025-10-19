@@ -101,14 +101,32 @@ const CryptoPage: React.FC = () => {
   }, [mergedTransactions, searchText]);
 
   // باز کردن مودال جزئیات
+  // const handleOpenModal = (tx: MergedCryptoHistory) => {
+  //   setSelectedTx({
+  //     id: tx.id.toString(),
+  //     source: "crypto",
+  //     faName: tx.locale?.fa?.name || tx.name,
+  //     image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
+  //   });
+  // };
+
   const handleOpenModal = (tx: MergedCryptoHistory) => {
-    setSelectedTx({
-      id: tx.id.toString(),
-      source: "crypto",
-      faName: tx.locale?.fa?.name || tx.name,
-      image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
-    });
-  };
+  setSelectedTx({
+    id: tx.id.toString(),
+    source: "crypto",
+    faName: tx.locale?.fa?.name || tx.name,
+    image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
+    date: tx.DateTime,
+    symbol: tx.coin.symbol,
+    description: tx.description,
+    amount: tx.amount,
+    status: tx.status,
+    type: tx.type,
+    fee: tx.fee,
+    // اگر فیلدهای دیگه‌ای لازم داری اضافه کن
+  });
+};
+
 
   return (
     <div dir="rtl">
@@ -133,7 +151,7 @@ const CryptoPage: React.FC = () => {
             placeholder="جستجو..."
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
-            className="border px-2 py-1 text-sm bg-white1 border-gray20 rounded-lg"
+            className="border px-2 py-1 text-sm bg-white1 border-gray20 rounded-lg "
           />
 
           {/* Dropdown ها */}
@@ -279,7 +297,11 @@ const CryptoPage: React.FC = () => {
         <Pagination current={page} total={Math.ceil((totalPages ?? 0) / 15)} onPageChange={setPage} />
       )}
 
-     
+     {/* مودال جزییات تراکنش */}
+{selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)} />}
+
+
+
     </div>
   );
 };

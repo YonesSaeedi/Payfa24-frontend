@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
-import ChatPanel from "./ChatPanel";
-import TicketList from "./TicketList";
+
 import { Ticket } from "./types";
 import { apiRequest } from "../../../utils/apiClient";
+import TicketForm from "../TicketForm/TicketForms";
+import ChatPanel from "./ChatPanel";
+import TicketList from "./TicketList";
+import SupportCallModal from "../SupportCallModal";
 
 const TicketsDashboard: React.FC = () => {
   const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [showNewTicketForm, setShowNewTicketForm] = useState(false);
+  const [isSupportCallModalOpen, setIsSupportCallModalOpen] = useState(false);
+
 
   // گرفتن تیکت‌ها از سرور
   const fetchTickets = async () => {
@@ -43,16 +49,35 @@ const TicketsDashboard: React.FC = () => {
     fetchTickets();
   }, []);
 
-  return (
-    <div className="flex h-screen w-full gap-4 mt-4">
+    return (
+<div className="flex gap-4 mt-4 mb-12 h-[790px]"> {/* ارتفاع کل container همان TicketList */}
+  {/* ستون سمت چپ: ChatPanel یا TicketForm */}
+  <div className="flex-1 flex justify-center">
+    {!showNewTicketForm ? (
       <ChatPanel ticket={activeTicket} />
+    ) : (
+      <div className="w-full lg:max-w-[543px] h-full">
+        <TicketForm /> {/* h-full باعث می‌شود ارتفاع فرم با container برابر شود */}
+      </div>
+    )}
+  </div>
 
-      <TicketList
-        tickets={tickets}
-        activeTicket={activeTicket}
-        onSelect={setActiveTicket}
-      />
-    </div>
+  {/* ستون سمت راست همیشه TicketList */}
+  <TicketList
+    tickets={tickets}
+    activeTicket={activeTicket}
+    onSelect={setActiveTicket}
+    onNewTicket={() => setShowNewTicketForm(true)}
+    onSupportCall={() => setIsSupportCallModalOpen(true)}
+  />
+
+  <SupportCallModal
+    isOpen={isSupportCallModalOpen}
+    onClose={() => setIsSupportCallModalOpen(false)}
+  />
+</div>
+
+
   );
 };
 

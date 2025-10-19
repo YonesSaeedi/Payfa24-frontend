@@ -132,7 +132,7 @@ const CryptoMarketTable: React.FC<Props> = ({
           setActive(index);
           setCurrentPage(1);
         }}
-        className={`cursor-pointer pb-2 ${
+        className={`cursor-pointer pb-2 pr-2 ${
           active === index
             ? "text-blue-600 border-b-2 border-blue-600"
             : "text-black1"
