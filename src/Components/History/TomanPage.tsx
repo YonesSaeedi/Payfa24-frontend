@@ -149,7 +149,7 @@ const TomanPage: React.FC = () => {
                 {/* لیست تراکنش‌ها */}
                 <div className="hidden lg:block">
                     {/* هدر جدول */}
-                    <div className="grid grid-cols-7 bg-gray41 text-black1 text-right py-4 px-3 font-medium">
+                    <div className="grid grid-cols-7 bg-gray41 text-black1 text-right py-4 px-3 font-medium rounded-lg">
                         <div className="px-10">ارز</div>
                         <div className="text-center">مقدار</div>
                         <div className="text-center">نوع</div>

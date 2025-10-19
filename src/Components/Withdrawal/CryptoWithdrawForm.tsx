@@ -719,7 +719,7 @@ useEffect(() => {
                   ? !allWithdrawFieldsFilled
                   : !allTransferFieldsFilled)
               }
-              className={`w-full py-3 rounded-lg mb-2 font-bold text-[18px] transition-colors duration-300 ${
+              className={`w-full py-3 rounded-lg mb-2 mt-24 font-bold text-[18px] transition-colors duration-300 ${
                 isLoading ||
                 (activeTab === "withdraw"
                   ? !allWithdrawFieldsFilled

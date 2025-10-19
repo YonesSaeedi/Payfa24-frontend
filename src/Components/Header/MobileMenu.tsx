@@ -17,6 +17,11 @@ import useGetUser from "../../hooks/useGetUser"; // مسیر رو متناسب �
 import IconSun from "../../assets/icons/header/IconSun";
 import MoonIcon from "../../assets/Icons/HeaderLogin/MoonIcon";
 import { ROUTES } from "../../routes/routes";
+import IconAuthentication from "../../assets/icons/ProfileMenue/IconAuthentication";
+import IconBankAccounts from "../../assets/icons/ProfileMenue/IconBankAccounts";
+import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransactionhistory";
+import IconConnecteddevices from "../../assets/icons/ProfileMenue/IconConnecteddevices";
+import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
 
 
 type MobileMenuProps = {
@@ -61,7 +66,7 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
 
       {/* منو سمت راست */}
       <div
-        className={`fixed top-0 right-0 h-full z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"
+        className={`fixed top-0 right-0 h-full z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 ${open ? "translate-x-0" : "translate-x-full" 
           }`}
         dir="rtl"
       >
@@ -136,9 +141,9 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
         {/* پروفایل */}
         <div className="p-4 text-right">
           <details className="w-full group">
-            <summary className="flex items-center justify-between cursor-pointer font-medium text-blue-600">
+            <summary className="flex items-center justify-between cursor-pointer  hover:text-blue2">
               <span className="flex">
-                <span className=" flex items-center justify-center w-6 h-6 ml-2 text-black0">
+                <span className=" flex items-center justify-center w-6 h-6 ml-2 text-blue2">
                   <IconProfileMenu />
                 </span>
                 پروفایل
@@ -154,14 +159,50 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </summary>
-            <ul className=" pr-4 mt-2  text-gray-600 dark:text-gray-300">
-              <li className="mb-4 mt-6">تنظیمات امنیت</li>
-              <li className="mb-4">احراز هویت</li>
-              <li className="mb-4">حساب‌های بانکی</li>
-              <li className="mb-4">تاریخچه معاملات</li>
-              <li className="mb-4">دستگاه‌های متصل</li>
-              <li className="text-red-500">خروج از حساب کاربری</li>
-            </ul>
+                <ul dir="rtl" className="pr-4 mt-2 text-gray-600 dark:text-gray-300 space-y-4">
+  <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full mt-6">
+    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
+      <span className="w-6 h-6"> <IconSecurity  /></span>
+     
+      تنظیمات امنیت
+    </li>
+  </Link>
+
+  <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full">
+    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
+       <span className="w-6 h-6"> <IconAuthentication /></span>
+      احراز هویت
+    </li>
+  </Link>
+
+  <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 ">
+    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer">
+       <span className="w-6 h-6"> <IconBankAccounts /></span>
+      حساب‌های بانکی
+    </li>
+  </Link>
+
+  <Link to={ROUTES.TRANSACTION.ROOT} className="flex items-center gap-2 w-full">
+    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
+       <span className="w-6 h-6"> <IconTransactionhistory /></span>
+      تاریخچه معاملات
+    </li>
+  </Link>
+
+  <Link to={ROUTES.CONNECTED_DEVICES} className="flex items-center gap-2 ">
+    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
+      <span className="w-6 h-6">  <IconConnecteddevices /></span>
+      دستگاه‌های متصل
+    </li>
+  </Link>
+
+  <Link to={ROUTES.LOGIN} className="flex items-center gap-2 w-full">
+    <li className="flex items-center gap-2 text-red-500 hover:text-red-600 cursor-pointer ">
+      
+      خروج از حساب کاربری
+    </li>
+  </Link>
+</ul>
           </details>
         </div>
 
@@ -169,16 +210,16 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
         <div className="p-4 flex-col items-center justify-between dark:border-gray-700">
           <button
             onClick={toggleTheme}
-            className="flex items-center gap-2 text-gray-700 dark:text-gray-300"
+            className="flex items-center gap-2 font-medium text-gray-700 dark:text-gray-300"
           >
-            {theme === "dark" ? <span className="w-6 h-6"><IconSun /></span> : <span className="w-6 h-6"><MoonIcon /></span>}حالت شب
+            {theme === "dark" ? <span className="w-6 h-6 text-blue2"><IconSun /></span> : <span className="w-6 h-6 text-blue2"><MoonIcon /></span>}حالت شب
           </button>
 
         </div>
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 p-4">
-          <span className="w-6 h-6 text-black1"><IconExit /></span>
+          <span className="w-6 h-6 text-blue2"><IconExit /></span>
           خروج از حساب کاربری
         </button>
       </div>

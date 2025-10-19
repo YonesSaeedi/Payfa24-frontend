@@ -294,7 +294,7 @@ useEffect(() => {
         <button
   type="submit"
   disabled={!allFieldsFilled || isSubmitting}
-  className={`w-full py-3 rounded-lg mt-6 font-bold text-[18px] transition-colors duration-300 ${
+  className={`w-full py-3 rounded-lg mt-24 font-bold text-[18px] transition-colors duration-300 ${
     !allFieldsFilled || isSubmitting
       ? "bg-gray12  text-white cursor-not-allowed"
       : "bg-blue-500 hover:bg-blue-600 text-white"
