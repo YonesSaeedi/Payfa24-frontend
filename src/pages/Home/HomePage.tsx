@@ -76,32 +76,11 @@ function HomePage() {
       slides: gainers.slice(0, 4)
     },
     {
-      header: "بیشترین معامله",
+      header: "بیشترین حجم معامله",
       headerIcon: <span className="w-6 h-6 icon-wrapper"><MostDeal /></span>,
       slides: mostTraded.slice(0, 4),
     },
   ];
-  const slidesData = [ // banner slider data, to be removed after connecting to api ==
-    {
-      title: "کارمزد رایگان",
-      subtitle: "بر روی معاملات بیت‌کوین",
-      buttonText: "ورود به دنیای رمز ارز",
-      imageSrc: img1,
-    },
-    {
-      title: "آینده مالی خود را بسازید",
-      subtitle: "با سرمایه‌گذاری روی ارزهای دیجیتال",
-      buttonText: "شروع کنید",
-      imageSrc: "../assets/images/Home/Screenshot 2025-08-20 141154.png",
-    },
-    {
-      title: "سریع و امن",
-      subtitle: "انتقال ارز در کمترین زمان",
-      buttonText: "ثبت‌نام",
-      imageSrc: "../assets/images/Home/Screenshot 2025-08-20 141154.png",
-    },
-  ];
-
   // firebase stuff, Javad knows =================================================================================================================
   // 1️⃣ ارسال توکن به سرور (فقط اگر مرورگر پشتیبانی کند)
   useEffect(() => {
@@ -152,7 +131,7 @@ function HomePage() {
               />
             </div>
             <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
-              <PosterSlider slides={slidesData} />
+              <PosterSlider />
               <InvitationCard />
             </div>
             <div id="SyncSlider" className="pt-12 pb-12">
