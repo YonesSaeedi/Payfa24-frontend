@@ -37,7 +37,7 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
 
         {/* بخش چپ -  (ستون فرم‌ها)
         */}
-        <div className="w-full lg:w-1/2 lg:px-4   lg:bg-gray43 rounded-2xl">
+        <div className="w-full lg:w-1/2 lg:px-4 pb-8  lg:bg-gray43 rounded-2xl ">
           
           {/* ۱. محتوای اصلی (فرم‌های واریز) */}
           {React.Children.map(children, (child, index) => {

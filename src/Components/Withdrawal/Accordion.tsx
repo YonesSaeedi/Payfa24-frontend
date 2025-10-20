@@ -21,12 +21,12 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
       >
         
         {isOpen ? (
-          <div  className="w-5 h-5 text-gray-600">
+          <div  className="w-4 h-4 text-gray5">
              <IconChervDown />
           </div>
          
         ) : (
-           <div  className="w-5 h-5 text-gray-600">
+           <div  className="w-4 h-4 text-gray5">
              <IconChervUp />
           </div>
         )}

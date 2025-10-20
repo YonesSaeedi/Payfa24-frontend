@@ -42,4 +42,10 @@ export const ROUTES = {
   },
 
 
+  DEPOSIT_GATEWAY: "/deposit/gateway",
+  DEPOSIT_IDENTIFIER: "/deposit/identifier",
+  DEPOSIT_CARD: "/deposit/card",
+  DEPOSIT_RECEIPT: "/deposit/receipt",
+  DEPOSIT_WALLET: "/deposit/wallet",
+  DEPOSIT_TXID: "/deposit/txid",
 };
