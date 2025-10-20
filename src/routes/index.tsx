@@ -34,6 +34,7 @@ import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
 import CardsManager from "../Components/BankCards/BankCardsManager";
 import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
+import DepositForm from "../components/Deposit/DepositForm";
 
 
 
@@ -84,7 +85,12 @@ export default function AppRouter() {
         {/* <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
         <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
         <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />
-
+         <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm />} />
+         <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
+         <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />
+         <Route path={ROUTES.DEPOSIT_RECEIPT} element={<DepositPage selected="receipt" />} />
+         <Route path={ROUTES.DEPOSIT_WALLET} element={<DepositPage selected="wallet" />} />
+         <Route path={ROUTES.DEPOSIT_TXID} element={<DepositPage selected="txid" />} /> 
 
 
         <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />

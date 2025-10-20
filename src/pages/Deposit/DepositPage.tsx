@@ -18,10 +18,33 @@ import DepositBankReceipt from "../../Components/Deposit/DepositBankReceipt";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
 import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
 
-export default function DepositPage() {
+
+interface DepositPageProps {
+  selected?: "gateway" | "identifier" | "card" | "receipt" | "wallet" | "txid";
+}
+
+export default function DepositPage({ selected = "gateway" }: DepositPageProps) {
   const [step, setStep] = useState<number>(1);
-  const [selectedOption, setSelectedOption] = useState<string>("closeDeal");
+  // const [selectedOption, setSelectedOption] = useState<string>("closeDeal");
   const [started, setStarted] = useState<boolean>(false);
+
+  const [selectedOption, setSelectedOption] = useState<string>(() => {
+  switch (selected) {
+    case "identifier":
+      return "Identifier";
+    case "card":
+      return "CardToCard";
+    case "receipt":
+      return "Bank Receipt:";
+    case "wallet":
+      return "DedicatedWallet";
+    case "txid":
+      return "DepositWithTxID";
+    default:
+      return "closeDeal"; // gateway
+  }
+});
+
 
   const handleStart = () => {
     setStarted(true);
