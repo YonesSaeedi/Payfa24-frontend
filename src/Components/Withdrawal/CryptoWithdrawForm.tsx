@@ -89,14 +89,12 @@ const handleSubmitOtp = async () => {
       },
     });
 
-    if (res.status) {
+   
       setIsOtpModalOpen(false);   // اول مودال OTP بسته شود
       setOtpCode("");             // کد OTP پاک شود
       setIsTradeSuccessModalOpen(true); // سپس مودال موفقیت باز شود
       setWithdrawData(null);      // (اختیاری) پاک کردن داده‌ها
-    } else {
-      toast.error(res.msg || "کد وارد شده معتبر نیست ❌");
-    }
+   
   } catch (err: any) {
     toast.error(err?.response?.data?.msg || "خطا در تأیید برداشت!");
   }
@@ -353,15 +351,13 @@ const handleSubmitTransferOtp = async () => {
       },
     });
 
-    if (res.status) {
+   
    toast.success("انتقال با موفقیت انجام شد ✅");
      setIsOtpModalOpen(false);
       setOtpCode("");
       setWithdrawData(null);          // پاک کردن داده بعد از موفقیت
       setIsTradeSuccessModalOpen(true); // مودال موفقیت
-    } else {
-      toast.error(res.msg || "کد وارد شده معتبر نیست ❌");
-    }
+   
   } catch (err: any) {
     toast.error(err?.response?.data?.msg || "خطا در تأیید انتقال!");
   }

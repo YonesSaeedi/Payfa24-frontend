@@ -53,13 +53,14 @@ export default function SocialLinks({
   return (
     <div className="flex gap-4">
       {socialLinks.map(({ icon, href }, i) => (
-        <a
-          key={i}
-          href={href}
-          className={`w-10 h-10 flex items-center justify-center rounded-full border ${borderColor} transition`}
-        >
-          {icon}
-        </a>
+      <a
+  key={i}
+  href={href}
+  className={`w-10 h-10 flex items-center justify-center rounded-full border ${borderColor} transition transform hover:shadow-lg hover:scale-110`}
+>
+  {icon}
+</a>
+
       ))}
     </div>
   );

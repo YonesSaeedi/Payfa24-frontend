@@ -86,7 +86,8 @@ const newest = useMemo(
   return (
     <div className="bg-white1">
       <HeaderFooterLayout>
-        <div className="container-style mx-auto">
+        <div className="container-style mx-auto px-1 sm:px-4 lg:px-10">
+
           <div className="text-right mt-[24px] lg:mt-[57px] mb-[24px]">
             <h1 className="hidden lg:block font-bold text-2xl text-black1">
               قیمت ارزهای دیجیتال

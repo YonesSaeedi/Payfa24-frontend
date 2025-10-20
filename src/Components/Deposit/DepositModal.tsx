@@ -23,7 +23,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
   // 👉 هندلرها
   const handleDepositGateway = () => {
     onClose();
-    navigate(ROUTES.DEPOSIT_GATEWAY);
+    navigate(ROUTES.DEPOSIT);
   };
 
   const handleDepositIdentifier = () => {

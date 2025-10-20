@@ -102,18 +102,14 @@ if (amountNumber < 100000) {
       },
     });
 
-    if (response.status) {
+  
       toast.success("کد تأیید ارسال شد ✅");
       setPendingWithdrawData(data);
       setIsOtpModalOpen(true);
       setResendCodeTimeLeft(120);
       setIsResending(false);
-    } else {
-      toast.error(response.msg || "خطا در ارسال درخواست برداشت");
-    }
-  } catch (err: any) {
-    console.error("Withdraw error:", err);
-    toast.error(err?.response?.data?.msg || "خطا در ارسال درخواست برداشت");
+  }catch (err: any) {
+    toast.error(err?.response?.data?.msg || "خطا در برداشت!");
   }
 finally {
     // ✅ این تضمین می‌کند که دکمه همیشه دوباره فعال شود
@@ -121,7 +117,6 @@ finally {
   }
 
 };
-
 
 
 const handleOtpSubmit = async () => {
@@ -141,14 +136,12 @@ const handleOtpSubmit = async () => {
       },
     });
 
-    if (response.status) {
-      toast.success("برداشت با موفقیت انجام شد ✅");
-      setIsOtpModalOpen(false);
-      setOtpCode("");
-      setIsTradeSuccessModalOpen(true);
-    } else {
-      toast.error(response.msg || "کد وارد شده معتبر نیست ❌");
-    }
+    
+    toast.success("درخواست برداشت ثبت شد ✅");
+    setIsOtpModalOpen(false);
+    setOtpCode("");
+    setIsTradeSuccessModalOpen(true);
+
   } catch (err: any) {
     toast.error(err?.response?.data?.msg || "خطا در برداشت!");
   }
