@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useOutletContext } from "react-router";
+import { Link, useOutletContext, useSearchParams } from "react-router";
 import IconArrowBottomLeft from "../../assets/icons/trade/IconArrowBottomLeft";
 import IconArrowTopLeft from "../../assets/icons/trade/IconArrowTopLeft";
 import IconBorderedPlus from "../../assets/icons/trade/IconBorderedPlus";
@@ -19,11 +19,9 @@ import TradeCancelModal from "./TradeCancelModal";
 import TradeSuccessModal from "./TradeSuccessModal";
 import useGetOrderInfo from "../../hooks/useGetOrderInfo";
 import { mappedDigitalGeneralData } from "../../constants/ListdigitalCoins";
-import OTPModal from "../OTPModal";
 import OTPInputModal from "./OTPInputModal";
 import useGetUser from "../../hooks/useGetUser";
 import useGetSettings from "../../hooks/useGetSettings";
-import { formatTime } from "../../utils/formatTime";
 
 const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const countInputRef = useRef<HTMLInputElement | null>(null)
@@ -50,6 +48,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState<number>(0)
   const [digitalIDOrder, setDigitalIDOrder] = useState<number | null>(null)
   const { currentCryptocurrency, setCurrentCryptocurrency } = useOutletContext<{ currentCryptocurrency: CryptoItem | null; setCurrentCryptocurrency: React.Dispatch<React.SetStateAction<CryptoItem | null>>; }>();
+  const [searchParams] = useSearchParams()
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
   // handles count input change ============================================================================================================================
   const handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -245,7 +244,9 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   }, [mappedGeneralData, orderInfoData])
   // assign BTC to the current cryptocurrency at first
   useEffect(() => {
-    if ((mergedCryptosData['BTC'] && currentCryptocurrency === null)) setCurrentCryptocurrency(mergedCryptosData['BTC'])
+    const coinSymbol = searchParams.get('coin')
+    if (coinSymbol && !currentCryptocurrency && mergedCryptosData[coinSymbol]) setCurrentCryptocurrency(mergedCryptosData[coinSymbol]);
+    else if ((mergedCryptosData['BTC'] && currentCryptocurrency === null)) setCurrentCryptocurrency(mergedCryptosData['BTC'])
   }, [mergedCryptosData, currentCryptocurrency, setCurrentCryptocurrency])
   // buy/sell functionality ==========================================================================================================================================================
   // buy/sell functionality ==========================================================================================================================================================

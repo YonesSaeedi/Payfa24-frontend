@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router"
 import IconChevron from "../assets/Icons/trade/IconChevron";
 
 const BREADCRUMB_LABELS: Record<string, string> = {
+
   trade: "معامله",
   buy: "خرید",
   sell: "فروش",
@@ -25,6 +26,7 @@ toman:"تاریخچه تراکنش های تومانی",
  Cryptocurrency:"تاریخچه تراکنش های رمز ارز",
  fiat:"برداشت تومانی",
  crypto:"برداشت رمز ارز"
+
 
 };
 
