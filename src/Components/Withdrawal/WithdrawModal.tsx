@@ -87,7 +87,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className="flex flex-row-reverse ">
-            <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded flex items-center justify-center">
+            <div className="w-[52px] h-[52px] ml-2 bg-blue14  rounded-[8px] flex items-center justify-center">
               <span className="w-8 h-8 icon-wrapper text-blue2">
                 <IconCurrency/>
               </span>

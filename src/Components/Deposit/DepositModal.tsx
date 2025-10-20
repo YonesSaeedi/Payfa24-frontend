@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import { ROUTES } from "../../routes/routes";
+import IconBank from "../../assets/icons/Deposit/IconBank";
+import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
+import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
+import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
+import IconWallet from "../../assets/icons/Deposit/IconWallet";
+import IconLink from "../../assets/icons/Deposit/IconLink";
 
 interface DepositModalProps {
   isOpen: boolean;
@@ -86,7 +92,10 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
             <div className="flex flex-row-reverse">
               <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                {/* آیکون درگاه پرداخت */}
+                <span className="icon-wrapper w-7 h-7 text-blue2">
+                      <IconBank />
+                </span>
+              
               </div>
               <div className="flex flex-col text-right">
                 <span className="font-semibold text-black1">واریز با درگاه پرداخت</span>
@@ -113,7 +122,10 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
             <div className="flex flex-row-reverse">
               <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                {/* آیکون شناسه */}
+                  <span className="icon-wrapper w-7 h-7 text-blue2">
+                     <IconIDentifier />
+                  </span>
+             
               </div>
               <div className="flex flex-col text-right">
                 <span className="font-semibold text-black1">واریز با شناسه</span>
@@ -140,7 +152,9 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
             <div className="flex flex-row-reverse">
               <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                {/* آیکون کارت */}
+                 <span className="icon-wrapper w-7 h-7 text-blue2">
+                      <IconConvertCard />
+                  </span>
               </div>
               <div className="flex flex-col text-right">
                 <span className="font-semibold text-black1">واریز کارت به کارت</span>
@@ -167,7 +181,9 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
             <div className="flex flex-row-reverse">
               <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                {/* آیکون فیش بانکی */}
+                <span className="icon-wrapper w-7 h-7 text-blue2">
+                     <IconReceipt />
+                  </span>
               </div>
               <div className="flex flex-col text-right">
                 <span className="font-semibold text-black1">فیش بانکی</span>
@@ -196,7 +212,10 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
               <div className="flex flex-row-reverse">
                 <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                  {/* آیکون والت اختصاصی */}
+                
+                <span className="icon-wrapper w-7 h-7 text-blue2">
+                     <IconWallet />
+                  </span>
                 </div>
                 <div className="flex flex-col text-right">
                   <span className="font-semibold text-black1">واریز با والت اختصاصی</span>
@@ -223,7 +242,9 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
               <div className="flex flex-row-reverse">
                 <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                  {/* آیکون TxID */}
+                   <span className="icon-wrapper w-7 h-7 text-blue2">
+                   <IconLink />
+                  </span>
                 </div>
                 <div className="flex flex-col text-right">
                   <span className="font-semibold text-black1">واریز با TxID</span>
