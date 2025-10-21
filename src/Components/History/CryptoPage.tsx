@@ -101,23 +101,39 @@ const CryptoPage: React.FC = () => {
   }, [mergedTransactions, searchText]);
 
   // باز کردن مودال جزئیات
+  // const handleOpenModal = (tx: MergedCryptoHistory) => {
+  //   setSelectedTx({
+  //     id: tx.id.toString(),
+  //     source: "crypto",
+  //     faName: tx.locale?.fa?.name || tx.name,
+  //     image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
+  //   });
+  // };
+
   const handleOpenModal = (tx: MergedCryptoHistory) => {
-    setSelectedTx({
-      id: tx.id.toString(),
-      source: "crypto",
-      faName: tx.locale?.fa?.name || tx.name,
-      image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
-    });
-  };
+  setSelectedTx({
+    id: tx.id.toString(),
+    source: "crypto",
+    faName: tx.locale?.fa?.name || tx.name,
+    image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
+    date: tx.DateTime,
+    symbol: tx.coin.symbol,
+    description: tx.description,
+    amount: tx.amount,
+    status: tx.status,
+    type: tx.type,
+    fee: tx.fee,
+    // اگر فیلدهای دیگه‌ای لازم داری اضافه کن
+  });
+};
+
 
   return (
     <div dir="rtl">
       {/* هدر */}
       <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end container-style">
         <h1 className="hidden lg:block">تاریخچه تراکنش ها</h1>
-        <span className="w-6 h-6 icon-wrapper text-gray12 lg:hidden" onClick={() => setIsFilterModalOpen(true)}>
-          <IconFilterTable />
-        </span>
+      
       </div>
 
       {/* فیلترها */}
@@ -135,7 +151,7 @@ const CryptoPage: React.FC = () => {
             placeholder="جستجو..."
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
-            className="border rounded px-2 py-1 text-sm"
+            className="border px-2 py-1 text-sm bg-white1 border-gray20 rounded-lg "
           />
 
           {/* Dropdown ها */}
@@ -176,7 +192,7 @@ const CryptoPage: React.FC = () => {
 
         {/* لیست تراکنش‌ها */}
         <div className="hidden lg:block">
-          <div className="grid grid-cols-6 bg-gray41 text-black1 text-right py-4 px-3 font-medium">
+          <div className="grid grid-cols-6 bg-gray41 text-black1 text-right py-4 px-3 font-medium rounded-lg">
             <div className="px-10">ارز</div>
             <div className="text-center">مقدار</div>
             <div className="text-center">نوع</div>
@@ -281,9 +297,11 @@ const CryptoPage: React.FC = () => {
         <Pagination current={page} total={Math.ceil((totalPages ?? 0) / 15)} onPageChange={setPage} />
       )}
 
-      {/* مودال‌ها */}
-      {selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)} />}
-      <FilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
+     {/* مودال جزییات تراکنش */}
+{selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)} />}
+
+
+
     </div>
   );
 };

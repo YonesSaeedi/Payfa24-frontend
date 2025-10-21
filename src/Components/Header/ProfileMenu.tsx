@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -13,6 +13,8 @@ import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 // import LogOut from "../../assets/images/logout.png";
 import { ROUTES } from "../../routes/routes"; // مسیر را متناسب با پروژه خود اصلاح کنید
 import { apiRequest } from "../../utils/apiClient";
+import useGetUser from "../../hooks/useGetUser"; // مسیر رو متناسب با پروژه درست کن
+
 
 
 interface ProfileMenuProps {
@@ -29,6 +31,9 @@ export default function ProfileMenu({
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [IsModal, setIsModal] = useState(false);
+  const { data: userData, isLoading } = useGetUser();
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -75,7 +80,7 @@ export default function ProfileMenu({
 
 
       <div
-        className={`hidden lg:block absolute top-full left-0 mt-2 w-80 rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${open
+        className={`hidden lg:block absolute top-full left-0 mt-2 w-96 rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${open
           ? "scale-100 opacity-100"
           : "scale-95 opacity-0 pointer-events-none"
           }`}
@@ -89,12 +94,17 @@ export default function ProfileMenu({
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-            <div>
-              <p className="font-semibold text-black1">کوثر محمدی</p>
-              <p className="text-xs text-gray-500 pt-1">سطح کاربری 1</p>
-            </div>
-          </div>
-          <button className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition">
+           <div >
+  <p className="font-semibold text-black1">
+    {isLoading ? "در حال بارگذاری..." : userData?.user.name_display || "—"}
+  </p>
+  <p className="text-xs text-gray-500 pt-1">
+    {isLoading ? "" : `سطح کاربری ${userData?.user.level_account || "—"}`}
+  </p>
+</div>
+
+          </div> 
+          <button onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)} className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition shadow-md  hover:shadow-gray12">
             ارتقا سطح
             <span className="w-5 h-5 icon-wrapper mr-1">
               <IconArrowLeft />
@@ -157,6 +167,7 @@ export default function ProfileMenu({
 
           </Link>
         </ul>
+ 
 
         <div
           onClick={() => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { ChevronDown } from "lucide-react";
+import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 
 interface FilterDropdownProps {
   id: string;
@@ -46,22 +46,21 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   }, [isOpen, id, onToggle]);
 
   return (
-    <div ref={dropdownRef} className={`relative text-sm ${className || "w-44"}`}>
+    <div ref={dropdownRef} className={`relative text-sm  ${className || "w-44"}`}>
       <button
         onClick={() => onToggle(id)}
-        className="flex justify-between items-center w-full px-3 py-2 border border-gray20 rounded-lg bg-white1  text-black1"
+        className="flex justify-between items-center w-full px-3 py-2 border border-gray20 rounded-lg bg-white1  text-black0"
       >
         <span dir="rtl" className="justify-start">{selected || label}</span>
-        <ChevronDown
-          size={18}
-          className={`transition-transform duration-200 justify-end ${isOpen ? "rotate-180" : ""} `}
-        />
+        <span 
+          className={`w-4 h-4 transition-transform duration-200 justify-end ${isOpen ? "rotate-180" : ""} `}><IconChervDown/></span>
+        
       </button>
 
       {isOpen && (
         <div
           dir="rtl"
-          className={`absolute top-full mt-1 w-full bg-white8 rounded-lg z-20 ${withBorder ? "border border-gray2" : ""}`}
+          className={`absolute top-full mt-1 w-full bg-white8 rounded-lg z-20  border border-gray12 text-black0`}
         >
           {options.map((option, idx) => (
             <div

@@ -5,13 +5,13 @@ import SocialLinks from "../Footer/SocialLinks";
 
 const ContactBox: React.FC = () => {
   return (
-    <div className="flex flex-col justify-end items-end ">
-      <h2 className="text-lg font-semibold text-black1 pb-8">
-        راه‌های ارتباط با ما
+    <div className="flex flex-col justify-end items-end lg:pt-24">
+      <h2 className=" text-black1 pb-8 text-xl font-medium">
+        راه‌های ارتباطی با ما
       </h2>
 
       <div className="flex justify-between gap-5">
-        <div className="w-[190px] h-[130px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2">
+        <div className="w-[190px] h-[130px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2   hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
           <div className="w-12 h-12 ">
             <IconEmail />
           </div>{" "}
@@ -24,12 +24,17 @@ const ContactBox: React.FC = () => {
               ایمیل
             </span>
             <span className="text-sm font-medium text-black1">
-              info@payfa.com
+            <a
+        href="mailto:info@payfa.com"
+        className="text-sm font-medium text-blue-600 "
+      >
+        info@payfa.com
+      </a>
             </span>
           </div>
         </div>
 
-        <div className="w-[190px] h-[130px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2">
+        <div className="w-[190px] h-[130px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2   hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
           <div className="w-12 h-12 ">
             <IconCall />
           </div>
@@ -40,12 +45,17 @@ const ContactBox: React.FC = () => {
             >
               تماس
             </span>
-            <span className="text-sm font-medium text-black1">04433721037</span>
+            <span className="text-sm font-medium text-black1"> <a
+        href="tel:04433721037"
+        className="text-sm font-medium text-blue-600 "
+      >
+        04433721037
+      </a></span>
           </div>
         </div>
       </div>
 
-      <div className="w-[400px] h-[110px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center mt-4">
+      <div className="w-[400px] h-[110px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center mt-4  hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
        <p className="text-black1 text-md ">ما را در شبکه های اجتماعی دنبال کنید </p>
 
      

@@ -19,9 +19,9 @@ import CryptoPage from "../components/History/CryptoPage";
 import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
-import BankCardsPage from "../pages/BankCards/BankcardsPage2";
+import BankCardsPage from "../Components/BankCards/BankcardsPage";
 import Wallet from "../pages/Wallet/Wallet";
-import WithdrawPage from "../pages/Withdrawal/Withdrawal";
+import WithdrawPage from "../pages/Withdrawal/WithdrawPage";
 import ChangePassword from "../pages/Profile/ChangePassword";
 import MultiFactor from "../pages/Profile/MultiFactor";
 import GoogleAuthFlow from "../pages/Profile/GoogleAuthFlow";
@@ -32,6 +32,13 @@ import MarketViewPage from "../pages/market-view/MarketViewPage";
 import TomanPage from "../components/History/TomanPage";
 import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
+import CardsManager from "../Components/BankCards/BankCardsManager";
+import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
+import DepositForm from "../components/Deposit/DepositForm";
+import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
+
+
+
 
 export default function AppRouter() {
   return (
@@ -57,7 +64,8 @@ export default function AppRouter() {
         <Route path={ROUTES.ADD_FRIEND} element={<AddFriend />} />
         <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
         <Route path={ROUTES.WALLET} element={<Wallet />} />
-        <Route path={ROUTES.WITHDRAWAL} element={<WithdrawPage />} />
+        <Route path={ROUTES.WITHDRAWAL_FIAT} element={<WithdrawPage />} />
+        <Route path={ROUTES.WITHDRAWAL_CRYPTO} element={<WithdrawPage />} />
         <Route path={ROUTES.TRADE.ROOT} element={<TradeLayout />}>
           <Route index element={<Navigate to={ROUTES.TRADE.BUY} replace />} />
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
@@ -74,8 +82,18 @@ export default function AppRouter() {
           <Route path={ROUTES.TRANSACTION.ORDER_HISTORY} element={<OrderPage />} />    {/* /history/order */}
         </Route>
         <Route path={ROUTES.FAQ} element={<FaqLayout />} />
-        <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevices />} />
-        <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
+        <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevicesLayout />} />
+        {/* <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
+        <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
+        <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />
+         <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm />} />
+         <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
+         <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />
+         <Route path={ROUTES.DEPOSIT_RECEIPT} element={<DepositPage selected="receipt" />} />
+         <Route path={ROUTES.DEPOSIT_WALLET} element={<DepositPage selected="wallet" />} />
+         <Route path={ROUTES.DEPOSIT_TXID} element={<DepositPage selected="txid" />} /> 
+
+
         <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />
         {/* header + Footer pages ==================================================================================================== */}
         <Route path={ROUTES.HOME} element={<HomePage />} />

@@ -21,7 +21,13 @@ export default function ContactInfo(): React.JSX.Element {
              </span>
             
           </div>
-          <span>۰۲۱-۱۲۳۴۵۶۷۸۹</span>
+          <a href="tel:021123456789" className="transition-colors duration-300 hover:text-gray-200">
+  <span className="w-[22px] h-[22px] icon-wrapper">
+    <TelephoneIcon />
+  </span>
+  <span>۰۲۱-۱۲۳۴۵۶۷۸۹</span>
+</a>
+
         </div>
 
 
@@ -34,9 +40,19 @@ export default function ContactInfo(): React.JSX.Element {
             
           </div>
           <div className="flex">
-            <span>support@payfa24.com</span>
+           <a href="mailto:support@payfa24.com" className="transition-colors duration-300 hover:text-gray-200">
+  <span className="w-[22px] h-[22px] icon-wrapper">
+    <EmailIcon />
+  </span>
+  <span>support@payfa24.com</span>
+</a>
              <div className="w-px h-[20px] bg-gray-400 mx-4"></div>
-          <span>info@payfa24.com</span>
+         <a href="mailto:info@payfa24.com" className="transition-colors duration-300 hover:text-gray-200">
+  <span className="w-[22px] h-[22px] icon-wrapper">
+    <EmailIcon />
+  </span>
+  <span>info@payfa24.com</span>
+</a>
           </div>
           
         </div>

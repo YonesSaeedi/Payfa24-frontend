@@ -17,7 +17,7 @@ const TicketItem: React.FC<TicketItemProps> = ({ ticket, active, onClick }) => {
   return (
     <div
       className={`p-3 mb-4 rounded-xl cursor-pointer border transition hover:shadow-md ${
-        active ? "border-blue-500 bg-blue-50" : "border-gray21 bg-gray27"
+        active ? "border-blue-500 bg-gray27" : "border-gray21 bg-gray27"
       }`}
       onClick={onClick}
     >

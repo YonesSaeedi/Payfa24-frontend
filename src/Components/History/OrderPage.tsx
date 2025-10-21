@@ -151,16 +151,14 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
       {/* هدر */}
       <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end container-style">
         <h1 className="hidden lg:block">تاریخچه تراکنش ها</h1>
-        <span className="w-6 h-6 icon-wrapper text-gray12 lg:hidden" onClick={() => setIsFilterModalOpen(true)}>
-          <IconFilterTable />
-        </span>
+        
       </div>
 
       {/* فیلترها */}
       <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-4 text-black1">
         <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-6">
           <div className="flex items-center gap-1">
-            <span className="w-5 h-5 icon-wrapper text-gray12"><IconFilterTable /></span>
+           
             <span className="text-gray12">فیلترها</span>
           </div>
           <div className="w-px h-6 bg-gray-400 self-center"></div>
@@ -194,7 +192,7 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
 
         {/* لیست تراکنش‌ها دسکتاپ */}
         <div className="hidden lg:block">
-          <div className="grid grid-cols-7 bg-gray41 text-black1 text-right py-4 px-3 font-medium">
+          <div className="grid grid-cols-7 bg-gray41 text-black1 text-right py-4 px-3 font-medium rounded-lg">
             <div className="px-10">ارز</div>
             <div className="text-center">مقدار</div>
             <div className="text-center">نوع</div>
@@ -318,7 +316,7 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
 
       {/* مودال‌ها */}
       {selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)} />}
-      <FilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
+ 
     </div>
   );
 };

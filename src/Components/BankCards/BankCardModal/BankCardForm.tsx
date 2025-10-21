@@ -3,6 +3,7 @@ import BackgroundCard from "./../../../assets/images/BankCards/BackgroundCard.pn
 import BackgroundCardDark from "./../../../assets/images/BankCards/backgroundCardDark.png";
 import IconAlarmLogo from "../../../assets/icons/BankCards/IconAlarmLogo";
 import IconShetab from "../../../assets/icons/BankCards/IconShetab";
+import useGetUser from "../../../hooks/useGetUser";
 
 type BankCardFormProps = {
   onSave: (cardNumber: string, bankName: string) => void;
@@ -23,12 +24,16 @@ const getBankByCardNumber = (cardNumber: string) => {
 
 const formatCardNumber = (value: string) => {
   const cleaned = value.replace(/\D/g, "");
-  return cleaned.replace(/(.{4})/g, "$1-").slice(0, 19).replace(/-$/, "");
+  return cleaned
+    .replace(/(.{4})/g, "$1-")
+    .slice(0, 19)
+    .replace(/-$/, "");
 };
 
 const BankCardForm = ({ onSave }: BankCardFormProps) => {
   const [cardNumber, setCardNumber] = useState<string>("");
   const [bank, setBank] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // حالت دارک رو چک می‌کنیم
   const [isDark, setIsDark] = useState(false);
@@ -51,16 +56,24 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
     return () => observer.disconnect();
   }, []);
 
-  const handleSave = () => {
-    if (!cardNumber.trim()) return;
-    onSave(cardNumber.replace(/-/g, ""), bank);
-    setCardNumber("");
-    setBank("");
+  const handleSave = async () => {
+    const digitsOnly = cardNumber.replace(/-/g, "");
+    if (digitsOnly.length !== 16) return;
+
+    try {
+      setIsSubmitting(true);
+      await onSave(digitsOnly, bank);
+      setCardNumber("");
+      setBank("");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  const { data: userData } = useGetUser();
 
-
-  
   return (
     <div dir="rtl" className="flex flex-col w-full  ">
       {/* بخش هشدار */}
@@ -74,16 +87,35 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
           </p>
         </div>
         <p className="text-sm text-black1 leading-6">
-          کارت بانکی باید با کد ملی ۹۳۹۰۳۸۵۸۳۸۳ و شماره موبایل ۹۰۴****۹۵۵ تعلق
-          داشته باشد
+          {userData ? (
+            <>
+              کارت بانکی باید به کد ملی{" "}
+              <span className="font-semibold">
+                {userData.user.national_code}
+              </span>{" "}
+              و شماره موبایل{" "}
+              <span className="font-semibold">
+                {userData.user.mobile
+                  ? `${userData.user.mobile.slice(
+                      -3
+                    )} ****${userData.user.mobile.slice(0, 3)}`
+                  : ""}
+              </span>{" "}
+              تعلق داشته باشد
+            </>
+          ) : (
+            "در حال بارگذاری اطلاعات کاربر..."
+          )}
         </p>
       </div>
 
       {/* کارت */}
       <div
-        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6"
+        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6 max-w-[600px]"
         style={{
-          backgroundImage: `url(${isDark ? BackgroundCardDark : BackgroundCard})`,
+          backgroundImage: `url(${
+            isDark ? BackgroundCardDark : BackgroundCard
+          })`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -95,40 +127,63 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
 
         {/* شماره کارت با label ثابت بالا */}
         <div className="relative w-full mb-2">
-       <input
-  id="cardNumber"
-  type="text"
-  value={cardNumber}
-  onChange={(e) => {
-    const formatted = formatCardNumber(e.target.value);
-    setCardNumber(formatted);
-    if (formatted.replace(/-/g, "").length >= 6) {
-      setBank(getBankByCardNumber(formatted));
-    } else {
-      setBank("");
-    }
-  }}
-  placeholder=" ____ ____ ____ "
-  className="peer w-full  rounded-md border-gray15 bg-transparent text-center border h-[56px]  focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-none  text-base placeholder-transparent text-black1"
-/>
-<label
-  htmlFor="cardNumber"
-  className="absolute -top-2 right-3 text-gray1 px-1 bg-[#eaf2ff] dark:bg-[#25354d] font-medium text-base "
->
-  شماره کارت
-</label>
+          <input
+            id="cardNumber"
+            type="text"
+            value={cardNumber}
+            onChange={(e) => {
+              const formatted = formatCardNumber(e.target.value);
+              setCardNumber(formatted);
 
+              const digitsOnly = formatted.replace(/-/g, "");
+              if (digitsOnly.length >= 6) {
+                setBank(getBankByCardNumber(formatted));
+              } else {
+                setBank("");
+              }
+            }}
+            placeholder=" ____ ____ ____ ____ "
+            className="
+    peer
+    w-full
+    h-[56px]
+    rounded-md
+    border border-gray-300
+     placeholder:leading-[56px]
+      flex items-center justify-center
+    bg-transparent
+    text-center
+    text-base text-black0
+    placeholder:text-gray-400
+    placeholder:text-2xl
+     placeholder:tracking-[0.1em]
+    placeholder:text-center
+    focus:outline-none
+    focus:ring-2 focus:ring-blue-400
+    focus:border-none
+  "
+          />
+
+          <label
+            htmlFor="cardNumber"
+            className="absolute -top-2 right-3 text-gray1 px-1 bg-[#eaf2ff] dark:bg-[#25354d] font-medium text-base "
+          >
+            شماره کارت
+          </label>
         </div>
-         {/* دکمه ثبت کارت */}
-      <button
-        className="mt-4 mb-8 w-full bg-[#197BFF] text-white py-3 rounded-lg font-medium text-base hover:bg-blue-700 transition"
-        onClick={handleSave}
-      >
-        ثبت کارت
-      </button>
+        {/* دکمه ثبت کارت */}
+        <button
+          disabled={isSubmitting || cardNumber.replace(/-/g, "").length !== 16}
+          className={`mt-4 mb-8 w-full py-3 rounded-lg font-medium text-base transition ${
+            isSubmitting || cardNumber.replace(/-/g, "").length !== 16
+              ? "bg-gray12 cursor-not-allowed text-white"
+              : "bg-[#197BFF] hover:bg-blue-700 text-white"
+          }`}
+          onClick={handleSave}
+        >
+          {isSubmitting ? "در حال ثبت کارت..." : "ثبت کارت"}
+        </button>
       </div>
-
-     
     </div>
   );
 };

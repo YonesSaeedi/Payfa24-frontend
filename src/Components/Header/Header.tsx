@@ -22,9 +22,10 @@ import groupIcon from "../../assets/images/HeaderIcon/Group 71185 (1).png";
 import NotificationDropDown from "../Notification/NotificationDropDown";
 import IconRingActive from "../../assets/icons/header/IconRingActive";
 import IconSun from "../../assets/icons/header/IconSun";
-
-import { Menu, X } from "lucide-react";
+import { useRef } from "react";
 import MobileMenu from "./MobileMenu";
+import  { useEffect} from "react";
+import IconMobileMenue from "../../assets/icons/header/IconMobileMenue";
 
 export default function Header() {
   const themeContext = useContext(ThemeContext);
@@ -36,6 +37,22 @@ export default function Header() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setShowNotifications(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+
   if (!themeContext) {
     throw new Error(
       "ThemeContext is undefined. Did you forget to wrap in ThemeProvider?"
@@ -45,7 +62,7 @@ export default function Header() {
   const { toggleTheme } = themeContext;
 
   return (
-    <header className="bg-white dark:bg-gray-900 dark:text-white sticky top-0 z-50 ">
+    <header className="bg-white dark:bg-gray29  dark:text-white sticky top-0 z-50 ">
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-4 lg:px-6">
         {/* Left Section */}
         <div className="flex gap-3 md:gap-4 text-gray-600 items-center">
@@ -86,21 +103,23 @@ export default function Header() {
           </Link>
 
           {/* Notifications */}
-          <div className="relative">
-            <button
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="hover:text-blue2 transition flex items-center justify-center w-7 h-7"
-              aria-label="Notifications"
-            >
-              {showNotifications ? <IconRingActive /> : <RingIcon />}
-            </button>
+<div className="relative" ref={dropdownRef}>
+  <button
+    onClick={() => setShowNotifications(!showNotifications)}
+    className="hover:text-blue2 transition flex items-center justify-center w-7 h-7"
+    aria-label="Notifications"
+  >
+    {showNotifications ? <IconRingActive /> : <RingIcon />}
+  </button>
 
-            {showNotifications && (
-              <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
-                <NotificationDropDown />
-              </div>
-            )}
-          </div>
+  {showNotifications && (
+    <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
+      <NotificationDropDown />
+    </div>
+  )}
+</div>
+
+
 
           {/* Mobile Theme Toggle */}
           <button
@@ -226,58 +245,14 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle Menu"
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileMenuOpen ? <IconMobileMenue/> : <IconMobileMenue/>}
           </button>
-          <MobileMenu open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+          <MobileMenu open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}   onOpenServicesModal={() => setShowServices(true)}/>
+            {showServices && <ServicesBox onClose={() => setShowServices(false)} />}
+
         </div>
      </nav>
     </header>
   );
 }
 
-
-
-
-
- {/* </nav> */}
-
-      {/* Mobile Menu Drawer */}
-      {/* // {mobileMenuOpen && ( */}
-      //   <div className="lg:hidden absolute top-full left-0 w-full max-w-full overflow-x-hidden bg-white dark:bg-gray-800 shadow-md z-40">
-      //     <Link
-      //       to="/"
-      //       onClick={() => setMobileMenuOpen(false)}
-      //       className="block text-gray-700 dark:text-gray-200"
-      //     >
-      //       خانه
-      //     </Link>
-      //     <Link
-      //       to="/market"
-      //       onClick={() => setMobileMenuOpen(false)}
-      //       className="block text-gray-700 dark:text-gray-200"
-      //     >
-      //       بازارها
-      //     </Link>
-      //     <Link
-      //       to="/wallet"
-      //       onClick={() => setMobileMenuOpen(false)}
-      //       className="block text-gray-700 dark:text-gray-200"
-      //     >
-      //       کیف پول
-      //     </Link>
-      //     <Link
-      //       to="/trade"
-      //       onClick={() => setMobileMenuOpen(false)}
-      //       className="block text-gray-700 dark:text-gray-200"
-      //     >
-      //       معامله
-      //     </Link>
-      //     <button
-      //       onClick={() => setShowServices(!showServices)}
-      //       className="block w-full text-left text-gray-700 dark:text-gray-200"
-      //     >
-      //       خدمات
-      //     </button>
-      //     {showServices && <ServicesBox onClose={() => setShowServices(false)} />}
-      //   </div>
-      // )}

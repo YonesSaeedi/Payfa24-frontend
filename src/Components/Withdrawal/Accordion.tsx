@@ -1,5 +1,6 @@
 import { useState, useRef, ReactNode } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
+import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 
 interface AccordionProps {
   title: string;
@@ -20,9 +21,14 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
       >
         
         {isOpen ? (
-          <ChevronUp className="w-5 h-5 text-gray-600" />
+          <div  className="w-5 h-5 text-gray-600">
+             <IconChervDown />
+          </div>
+         
         ) : (
-          <ChevronDown className="w-5 h-5 text-gray-600" />
+           <div  className="w-5 h-5 text-gray-600">
+             <IconChervUp />
+          </div>
         )}
         <span className="font-medium text-black1">{title}</span>
       </button>
