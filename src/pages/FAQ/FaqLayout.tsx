@@ -49,11 +49,11 @@ const FAQPage: React.FC = () => {
                  <div className="lg:flex items-center">
                      <div className="flex-col  flex justify-between gap-24 lg:flex-row-reverse">
                       <div className="flex flex-col items-center justify-center">
-            <h1 className="text-2xl font-bold mb-2 text-black1">
+            <h1 className=" mb-2 text-black1 text-4xl font-bold">
               سوالات متداول
             </h1>
             <div className="w-full max-w-md">
-              <p className="text-gray-500 text-center md:text-right pt-4 w-full">
+              <p className="text-gray-500 text-center md:text-right pt-4 w-full text-lg font-normal">
                  سوالات خود را در این بخش جستجو کنید. در صورت نیافتن پاسخ از
                 طریق راه‌های ارتباطی سوال خود را با ما در میان بگذارید.
               </p>
@@ -61,7 +61,7 @@ const FAQPage: React.FC = () => {
               <input
   dir="rtl"
   type="text"
-  placeholder="...جستجو"
+  placeholder="جستجو"
   value={searchTerm}
   onChange={(e) => setSearchTerm(e.target.value)}
   className="w-full border rounded-lg px-4 pr-10 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white1 border-gray21"
@@ -95,11 +95,12 @@ const FAQPage: React.FC = () => {
   dir="rtl"
   className="flex flex-col items-center lg:items-start w-full max-w-[900px] mx-auto px-4 lg:px-0"
 >
-  <div className="pt-6 w-full lg:w-auto">
+  <div className="pt-6 w-full lg:w-auto flex gap-3 flex-col">
+    <span className="text-2xl font-bold text-black1 pb-[28px]">سوالات پرتکرار</span>
     <FAQTabs activeTab={activeTab} setActiveTab={setActiveTab} />
   </div>
 
-  <div className="w-full lg:w-auto mt-6 pb-16">
+  <div className="w-full lg:w-auto mt-2 lg:pb-12">
     {filteredItems.length > 0 ? (
   <TradeLayoutFAQ items={filteredItems} />
 ) : (
@@ -112,7 +113,7 @@ const FAQPage: React.FC = () => {
   </div>
 </div>
 
-        <div className="pt-6 lg:pt-0 pb-6">
+        <div className=" lg:pt-0 pb-6">
           <ContactBox />
         </div>
       </div>

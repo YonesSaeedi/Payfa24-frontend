@@ -72,6 +72,22 @@ export default function DeviceList() {
       setIsSubmitting(false);
     }
   };
+  function getDeviceType(session: Session): "mobile" | "desktop" | "tablet" | "unknown" {
+  const os = session.os?.toLowerCase() || "";
+  const device = session.device?.toLowerCase() || "";
+
+  if (os.includes("android") || os.includes("ios") || device.includes("iphone") || device.includes("android")) {
+    return "mobile";
+  }
+  if (os.includes("ipad") || device.includes("ipad")) {
+    return "tablet";
+  }
+  if (os.includes("windows") || os.includes("mac") || os.includes("linux")) {
+    return "desktop";
+  }
+  return "unknown";
+}
+
 
 
 
@@ -84,7 +100,7 @@ export default function DeviceList() {
           <h2 className=" text-black1 hidden lg:flex text-2xl font-medium">دستگاه‌های متصل</h2>
           <button
             onClick={() => setShowModal(true)}
-            className="w-full text-center justify-center lg:w-[187px] h-[40px] px-3 py-1 rounded-md text-sm transition bg-red6 text-red1 flex items-center gap-1" >
+            className="w-full text-center justify-center lg:w-[197px] h-[40px] px-3 py-1 rounded-md  transition bg-red6 text-red1 flex items-center gap-1 font-medium text-base" >
             <span className="w-5 h-5 icon-wrapper mr-2 ml-1">
               <IconCloseMonitor />
             </span>
@@ -95,7 +111,7 @@ export default function DeviceList() {
 
         {/* body */}
         <div className="hidden lg:flex flex-col w-full self-center">
-          <div className="w-full py-2 grid grid-cols-5 bg-gray41 text-sm rounded-[10px] ">
+          <div className="w-full py-2 grid grid-cols-5 bg-gray41 text-sm rounded-[10px] text-black1">
             <span className="  text-center text-base font-medium">نوع دستگاه</span>
             <span className="  text-center text-base font-medium">مدل دستگاه</span>
             <span className="  text-center text-base font-medium">آخرین زمان اتصال</span>
@@ -192,11 +208,11 @@ export default function DeviceList() {
             activeSessions.map((items) => (
               <div
                 key={items.id}
-                className="w-full flex flex-col p-4 rounded-lg bg-gray27  shadow-sm my-2 gap-2"
+                className="w-full flex flex-col p-4 rounded-lg bg-gray27  shadow-sm my-2 gap-2 light:border light:border-gray12"
               >
                 <button className=" text-end">
                   <span
-                    className={`text-xs font-semibold text-center ${items.is_current ? "text-blue-500" : "text-red-500 cursor-pointer"
+                    className={` font-medium text-xs text-center ${items.is_current ? "text-blue-500" : "text-red-500 cursor-pointer"
                       }`}
                     onClick={() => {
                       if (!items.is_current) handleEndSession(items.id);
@@ -205,32 +221,28 @@ export default function DeviceList() {
                     {items.is_current ? "نشست فعال" : "پایان نشست"}
                   </span>
                 </button>
-                <div className="flex w-full items-center justify-between text-xs font-normal">
-                  <span>نوع دستگاه</span>
-                  <span>{items?.browser}</span>
-                </div>
+               
+            
 
 
+                <div className="flex w-full items-center justify-between mt-3 font-normal text-sm text-black1">
+                <span className="text-center text-base font-normal mb-2">
+                  {getDeviceType(items) === "mobile" ? " موبایل" :
+                   getDeviceType(items) === "tablet" ? " تبلت" :
+                   getDeviceType(items) === "desktop" ? " دسکتاپ" :
+                   "❓ ناشناخته"}
+                  </span>
 
-                <div className="flex w-full items-center justify-between text-xs font-normal">
-                  <span>مدل دستگاه</span>
-                  <span>
+                  <span className="text-center text-sm font-normal mb-2">
                     {items?.os}
-                    {items?.device && items.device !== "0" ? `-${items.device}` : ""}
+                    {items?.device && items.device !== "0" ? `-${items.device}` : ""} {items?.browser}
                   </span>
                 </div>
 
 
 
-                <div className="flex w-full items-center justify-between text-xs font-normal">
-                  <span>آخرین زمان اتصال</span>
+                <div className="flex w-full items-center justify-between text-xs font-normal text-black1">
                   <span>{items?.last_used_at}</span>
-                </div>
-
-
-
-                <div className="flex w-full items-center justify-between text-xs font-normal">
-                  <span>IP</span>
                   <span>{items?.last_ip}</span>
                 </div>
 
@@ -253,12 +265,7 @@ export default function DeviceList() {
               آیا از حذف این نشست مطمئن هستید؟
             </p>
             <div className="flex justify-between gap-4">
-              <button
-                onClick={() => setShowModal(false)}
-                className="flex-1 py-2 rounded-[12px] border border-blue2 text-blue2 hover:bg-gray-100"
-              >
-                انصراف
-              </button>
+              
               <button
                 onClick={() => {
                   handleEndAllSessions()
@@ -267,6 +274,12 @@ export default function DeviceList() {
                 className="flex-1 py-2 rounded-[12px] bg-blue-500 text-white hover:bg-blue-600"
               >
                 پایان نشست
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="flex-1 py-2 rounded-[12px] border border-blue2 text-blue2 hover:bg-gray-100"
+              >
+                انصراف
               </button>
             </div>
           </div>

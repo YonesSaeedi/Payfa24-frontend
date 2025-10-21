@@ -4,6 +4,7 @@ import IconCircle from "../../assets/icons/Notifications/IconCircle";
 import { apiRequest } from "../../utils/apiClient";
 import { useNavigate } from "react-router";
 import { useRef } from "react";
+import IconRead from "../../assets/icons/Notifications/IconRead";
 
 
 
@@ -96,11 +97,11 @@ export default function NotificationsDropdown() {
       <div className="flex justify-between bg-gray33 h-14 items-center p-6">
         <div className="text-blue2 flex items-center cursor-pointer">
           <span className="w-6 h-6 icon-wrapper mr-1">
-            <IconRingNotif />
+            <IconRead/>
           </span>
           خواندن همه
         </div>
-        <p className="text-black1">اعلانات</p>
+        <p className="text-black1 text-[18px] font-medium">اعلانات</p>
       </div>
 
       {/* Tabs */}
@@ -109,7 +110,7 @@ export default function NotificationsDropdown() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`flex-1 py-2 text-center ${tab === t ? "border-b-2 border-blue2 font-medium text-blue2" : "text-gray-500"}`}
+            className={`flex-1 py-2 text-center text-sm font-normal ${tab === t ? "border-b-2 border-blue2 font-medium text-blue2" : "text-gray-500"}`}
           >
             {t === "all" ? "همه" : t === "news" ? "اعلانات و اخبار" : "فعالیت‌ها"}
           </button>

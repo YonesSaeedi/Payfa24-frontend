@@ -35,6 +35,7 @@ import RecaptchaWrapper from "../components/RecaptchaWrapper";
 import CardsManager from "../Components/BankCards/BankCardsManager";
 import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
 import DepositForm from "../components/Deposit/DepositForm";
+import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 
 
 
@@ -81,7 +82,7 @@ export default function AppRouter() {
           <Route path={ROUTES.TRANSACTION.ORDER_HISTORY} element={<OrderPage />} />    {/* /history/order */}
         </Route>
         <Route path={ROUTES.FAQ} element={<FaqLayout />} />
-        <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevices />} />
+        <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevicesLayout />} />
         {/* <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
         <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
         <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />

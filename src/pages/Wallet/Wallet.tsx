@@ -17,7 +17,7 @@ export default function Wallet() {
             />
           </div>
           <div className="w-full lg:w-7/12">
-            <p className="text-black2 pb-7 font-bold text-[18px] leading-[100%] tracking-[0%] text-right align-middle">
+            <p className="text-black2 pb-7 text-right align-middle text-lg font-bold">
               دارایی های شما
             </p>
 

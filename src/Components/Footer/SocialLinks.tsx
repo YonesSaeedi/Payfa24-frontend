@@ -22,7 +22,7 @@ export default function SocialLinks({
           <InstagramIcon />
         </span>
       ),
-      href: "#",
+      href: "https://www.instagram.com/yourusername",
     },
     {
       icon: (
@@ -30,7 +30,7 @@ export default function SocialLinks({
           <LinkdinIcon />
         </span>
       ),
-      href: "#",
+      href: "https://www.linkedin.com/in/yourusername",
     },
     {
       icon: (
@@ -38,7 +38,7 @@ export default function SocialLinks({
           <YoutubeIcon />
         </span>
       ),
-      href: "#",
+      href: "https://www.youtube.com/channel/yourchannel",
     },
     {
       icon: (
@@ -46,7 +46,7 @@ export default function SocialLinks({
           <TelegramIcon />
         </span>
       ),
-      href: "#",
+      href:"https://t.me/yourusername",
     },
   ];
 
