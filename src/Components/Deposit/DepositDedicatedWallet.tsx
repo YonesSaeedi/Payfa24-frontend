@@ -1,11 +1,9 @@
 import { Controller, useForm } from "react-hook-form";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
-import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
 import IconVideo from "../../assets/Icons/Deposit/IconVideo";
 import QRCode from "react-qr-code"; // اضافه کردن پکیج react-qr-code
 import IconCopy from "../../assets/Icons/AddFriend/IconCopy";
-import TextField from "../InputField/TextField";
 import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";
 import { CryptoItem } from "../../types/crypto";
@@ -57,7 +55,6 @@ export default function DepositDedicatedWallet() {
 
   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
   const [networks, setNetworks] = useState<Network[]>([]);
-  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [showWalletInfo, setShowWalletInfo] = useState(false);
 
@@ -265,55 +262,52 @@ export default function DepositDedicatedWallet() {
         control={control}
         rules={{ required: "لطفا یک ارز انتخاب کنید" }}
         render={({ field }) => (
-          <>
-            {!cryptoListData.length ? (
-              // 🩶 حالت Skeleton قبل از لود داده‌ها
-              <div className="w-full h-[65px] skeleton-bg rounded-lg  mb-6"></div>
-            ) : (
-              <FloatingSelect
-                placeholder={selectedCurrency.name}
-                label="انتخاب رمز ارز"
-                options={cryptoListData.map((crypto) => ({
-                  value: crypto.symbol,
-                  label: crypto.name || crypto.symbol,
-                }))}
-                value={field.value}
-                onChange={(value) => {
-                  const selected = cryptoListData.find(
-                    (crypto) => crypto.symbol === value
-                  );
-                  if (selected) handleCurrencySelect(selected);
-                  field.onChange(value);
-                }}
-                onOpen={openCryptoListModal}
-                placeholderIcon={
-                  selectedCurrency?.isFont ? (
-                    <i
-                      className={`cf cf-${
-                        selectedCurrency.symbol?.toLowerCase() || "btc"
-                      }`}
-                      style={{
-                        color: selectedCurrency.color || "#000",
-                        fontSize: "28px",
-                      }}
-                    ></i>
-                  ) : selectedCurrency?.icon ? (
-                    <img
-                      src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
-                      alt={selectedCurrency.symbol || "crypto"}
-                      className="w-7 h-7 rounded-full object-contain"
-                    />
-                  ) : (
-                    <div className="w-7 h-7 bg-gray-200 rounded-full animate-pulse" />
-                  )
-                }
-                placeholderClasses="text-black0"
-              />
-            )}
-          </>
+          <FloatingSelect
+            placeholder={
+              // ✅ فقط متن اسکلتون
+              selectedCurrency.name ? (
+                selectedCurrency.name
+              ) : (
+                <div className="h-5 w-24 skeleton-bg rounded-sm mt-1" />
+              )
+            }
+            label="انتخاب رمز ارز"
+            options={cryptoListData.map((crypto) => ({
+              value: crypto.symbol,
+              label: crypto.name || crypto.symbol,
+            }))}
+            value={field.value}
+            onChange={(value) => {
+              const selected = cryptoListData.find(
+                (crypto) => crypto.symbol === value
+              );
+              if (selected) handleCurrencySelect(selected);
+              field.onChange(value);
+            }}
+            onOpen={openCryptoListModal}
+            placeholderIcon={
+              // ✅ آیکون اسکلتون
+              selectedCurrency.icon || selectedCurrency.isFont ? (
+                selectedCurrency.isFont ? (
+                  <i
+                    className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
+                    style={{ color: selectedCurrency.color, fontSize: "28px" }}
+                  ></i>
+                ) : (
+                  <img
+                    src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
+                    alt={selectedCurrency.symbol}
+                    className="w-7 h-7 rounded-full object-contain"
+                  />
+                )
+              ) : (
+                <div className="w-7 h-7 skeleton-bg rounded-full" />
+              )
+            }
+            placeholderClasses="text-black0"
+          />
         )}
       />
-
       {selectedCurrency && (
         <div className="flex justify-between mt-2 mb-10">
           <span className="text-sm text-gray5">موجودی</span>
@@ -325,56 +319,33 @@ export default function DepositDedicatedWallet() {
       )}
 
       {/* انتخاب شبکه */}
+      {/* انتخاب شبکه - دقیقاً مثل فیش بانکی */}
       <Controller
         name="network"
         control={control}
         rules={{ required: "لطفا یک شبکه انتخاب کنید" }}
         render={({ field }) => (
-          <div className="relative">
-            <FloatingSelect
-              placeholder={selectedNetworkLabel}
-              label="انتخاب شبکه"
-              options={[]}
-              value={field.value}
-              onChange={field.onChange}
-              onOpen={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)} // باز کردن لیست با کلیک
-              placeholderClasses="text-black0"
-            />
-
-            {isNetworkDropdownOpen && (
-              <div
-                className="absolute top-[68px] left-0 right-0 z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-2"
-                onClick={() => setIsNetworkDropdownOpen(false)} // بستن با کلیک خارج
-              >
-                {networkOptions.map((option) => (
-                  <label
-                    key={option.value}
-                    className={`flex items-center justify-end gap-3 p-3 flex-row-reverse rounded-md transition-colors w-full cursor-pointer ${
-                      field.value === option.value
-                        ? "bg-gray-100 text-blue-600"
-                        : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation(); // جلوگیری از بستن فوری
-                      field.onChange(option.value);
-                      setIsNetworkDropdownOpen(false);
-                    }}
-                  >
-                    <span className="text-base text-black0">
-                      {option.label}
-                    </span>
-                    <input
-                      type="radio"
-                      value={option.value}
-                      checked={field.value === option.value}
-                      readOnly
-                      className="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-600"
-                    />
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
+          <FloatingSelect
+            placeholder={selectedNetworkLabel || "انتخاب شبکه"}
+            label="انتخاب شبکه"
+            value={field.value}
+            onChange={field.onChange}
+            options={
+              networkOptions.map((option) => ({
+                value: option.value,
+                label: (
+                  <div className="flex items-center justify-between w-full py-1 rounded-md">
+                    <div className="flex items-center gap-2">
+                      <span className="lg:text-sm text-xs text-black0">
+                        {option.label}
+                      </span>
+                    </div>
+                  </div>
+                ),
+              })) || []
+            }
+            placeholderClasses="text-black0 text-sm"
+          />
         )}
       />
 
@@ -419,7 +390,6 @@ export default function DepositDedicatedWallet() {
         </>
       )}
 
-      {/* ثبت اطلاعات و راهنما */}
       {/* ثبت اطلاعات و راهنما */}
       {!showWalletInfo && (
         <div className="lg:mt-40 mt-8 mb-10">

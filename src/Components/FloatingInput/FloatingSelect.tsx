@@ -1,5 +1,4 @@
 import { useState, FC, useEffect, useRef } from "react";
-import { ChevronDown } from "lucide-react";
 import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 
@@ -71,7 +70,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
         className={`peer flex items-center justify-between w-full px-4 py-5 border rounded-md border-gray12 lg:bg-gray43 focus:outline-none focus:ring-1 focus:ring-blue2`}
       >
         <span
-          className={`flex items-center justify-between w-full ${
+          className={`flex items-center gap-3 w-full ${
             placeholderClasses || placeholderColor
           }`}
         >

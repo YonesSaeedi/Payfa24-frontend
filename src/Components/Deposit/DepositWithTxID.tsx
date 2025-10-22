@@ -1,641 +1,5 @@
-// import { Controller, useForm } from "react-hook-form";
-// import { useState, useEffect, useCallback, useMemo } from "react";
-// import FloatingSelect from "../FloatingInput/FloatingSelect";
-// import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
-// import IconVideo from "../../assets/Icons/Deposit/IconVideo";
-// import QrCode from "../../assets/images/QRcode.png";
-// import IconCopy from "../../assets/Icons/AddFriend/IconCopy";
-// import TextField from "../InputField/TextField";
-// import Accordion from "../Withdrawal/Accordion";
-// import { apiRequest } from "../../utils/apiClient";
-// import { CryptoItem } from "../../types/crypto";
-// import CryptoListModal from "../trade/CryptoListModal";
-// import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
-
-// const NETWORK_OPTIONS = [
-//   { value: "trc20", label: "ترون (TRC20)" },
-//   { value: "ton", label: "تن (TON)" },
-//   { value: "erc20", label: "اتریوم (ERC20)" },
-//   { value: "polygon", label: "پالیگان" },
-// ];
-
-// const INITIAL_CURRENCY = {
-//   name: "مونوس",
-//   icon: "", // فقط URL یا خالی
-//   symbol: "MONOS",
-//   price: 0,
-// };
-
-// const formatPersianDigits = (num: number | string) => {
-//   const number = Number(num);
-//   if (isNaN(number)) return "۰";
-//   const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
-//   return number.toString().replace(/\d/g, (d) => persianDigits[parseInt(d)]);
-// };
-
-// export default function DepositWithTxID() {
-//   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
-//   const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
-//   const [selectedCurrency, setSelectedCurrency] = useState(INITIAL_CURRENCY);
-//   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
-//   const [showPassword, setShowPassword] = useState(false);
-
-//   const { control, watch } = useForm();
-//   const { data: generalInfo, isLoading: isGeneralInfoLoading } = useGetGeneralInfo();
-
-//   const selectedNetwork = watch("network");
-//   const selectedNetworkLabel = useMemo(
-//     () =>
-//       NETWORK_OPTIONS.find((opt) => opt.value === selectedNetwork)?.label ||
-//       "انتخاب شبکه",
-//     [selectedNetwork]
-//   );
-
-//   // 🟩 داده‌ها را به محض آماده‌شدن generalInfo واکشی می‌کنیم
-//   const fetchAndMergeCryptoData = useCallback(async () => {
-//     setIsDepositCoinsLoading(true);
-//     try {
-//       const depositRes = await apiRequest({
-//         url: "/api/wallets/crypto/deposit",
-//         method: "GET",
-//       });
-
-//       const depositCoins = depositRes?.coins ?? [];
-//       const infoCoins = generalInfo?.cryptocurrency ?? [];
-
-//       const merged: CryptoItem[] = depositCoins.map((coin: any) => {
-//         const info = infoCoins.find(
-//           (i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase()
-//         );
-
-//         const priceString = (Number(coin.price) || 0).toString();
-//         const balanceNumber=(Number(coin.balance)||0).toString();
-//         return {
-//           ...info,
-//           priceBuy: priceString,
-//           balance:balanceNumber,
-//         } as CryptoItem;
-//       });
-
-//       setCryptoListData(merged);
-
-//       // 🟦 اولین ارز را به‌صورت پیش‌فرض در input نمایش بده
-//       if (merged.length > 0) {
-//         const first = merged[0];
-//         setSelectedCurrency({
-//           name: first.locale?.fa?.name || first.symbol || "",
-//           icon: first.icon || "",
-//           symbol: first.symbol || "UNK",
-//           price: Number(first.priceBuy) || Number(first.price) || 0,
-//         });
-//       }
-
-//       console.log("Merged data:", merged);
-//     } catch (err) {
-//       console.error("خطا در دریافت ارزها:", err);
-//     } finally {
-//       setIsDepositCoinsLoading(false);
-//     }
-//   }, [generalInfo]);
-
-//   // 🟩 وقتی generalInfo آماده شد، داده‌ها را واکشی کن
-//   useEffect(() => {
-//     if (generalInfo && !isDepositCoinsLoading && cryptoListData.length === 0) {
-//       fetchAndMergeCryptoData();
-//     }
-//   }, [generalInfo, isDepositCoinsLoading, cryptoListData.length, fetchAndMergeCryptoData]);
-
-//   const openCryptoListModal = () => {
-//     setIsCryptoListModalOpen(true);
-//   };
-
-//   const handleCurrencySelect = (crypto: CryptoItem) => {
-//   setSelectedCurrency({
-//     name: crypto.locale?.fa?.name || crypto.symbol || "نام ناشناس",
-//     symbol: crypto.symbol || "UNK",
-//     price: Number(crypto.priceBuy) || Number(crypto.price) || 0,
-//     isFont: crypto.isFont || false,
-//     color: crypto.color || "#000",
-//     icon: crypto.icon || "",
-
-//   });
-
-//   setIsCryptoListModalOpen(false);
-// };
-
-//   return (
-//     <div className="w-full" dir="rtl">
-//       {/* ویدیو آموزشی */}
-//       <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
-//         <span className="icon-wrapper w-6 h-6 text-blue2">
-//           <IconVideo />
-//         </span>
-//         <span>ویدیو آموزشی واریز با TxID</span>
-//       </div>
-
-//       {/* انتخاب ارز */}
-//       <Controller
-//         name="currency"
-//         control={control}
-//         rules={{ required: "لطفا یک ارز انتخاب کنید" }}
-//         render={({ field }) => (
-//           <FloatingSelect
-//             placeholder={selectedCurrency.name}
-//             label="انتخاب رمز ارز"
-//             options={[]}
-//             value={selectedCurrency.symbol}
-//             onChange={field.onChange}
-//             onOpen={openCryptoListModal}
-//             placeholderIcon={
-//   selectedCurrency.isFont ? (
-//     <i
-//       className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
-//       style={{ color: selectedCurrency.color, fontSize: "28px" }}
-//     ></i>
-//   ) : selectedCurrency.icon ? (
-//     <img
-//       src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
-//       alt={selectedCurrency.symbol}
-//       className="w-7 h-7 rounded-full object-contain"
-//     />
-//   ) : (
-//     <IconMonnos />
-//   )
-// }
-
-//             placeholderClasses="text-black0"
-//           />
-//         )}
-//       />
-
-//       {selectedCurrency && (
-//         <div className="flex justify-between mt-2 mb-10">
-//           <span className="text-sm text-gray5">قیمت ارز</span>
-//           <span className="text-sm text-black0">
-//             {formatPersianDigits(selectedCurrency.price)} تومان
-//           </span>
-//         </div>
-//       )}
-
-//       {/* انتخاب شبکه */}
-//       <Controller
-//         name="network"
-//         control={control}
-//         rules={{ required: "لطفا یک شبکه انتخاب کنید" }}
-//         render={({ field }) => (
-//           <FloatingSelect
-//             placeholder={selectedNetworkLabel}
-//             label="انتخاب شبکه"
-//             options={NETWORK_OPTIONS}
-//             value={field.value}
-//             onChange={(val) => field.onChange(val)}
-//             onOpen={() => console.log("Network dropdown open")}
-//           />
-//         )}
-//       />
-
-//       {/* حداقل واریز */}
-//       <div className="flex justify-between mt-2 mb-10">
-//         <span className="text-sm text-gray5">حداقل واریز</span>
-//         <span className="text-sm text-black0">Monos 1</span>
-//       </div>
-
-//       {/* QR Code و آدرس ولت */}
-//       <div className="rounded-lg border mb-10 border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
-//         <img className="w-32 h-32" src={QrCode} alt="QrCode" />
-//         <div className="flex justify-between w-full">
-//           <span className="text-gray5 text-xs lg:text-sm">آدرس ولت</span>
-//           <div className="flex items-center gap-1 justify-between">
-//             <span className="text-black0 lg:text-sm text-xs">
-//               373HD32HDKDIUWUEuyei877IIJDD
-//             </span>
-//             <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
-//               <IconCopy />
-//             </span>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* TxID */}
-//       <Controller
-//         name="txid"
-//         control={control}
-//         render={({ field }) => (
-//           <TextField
-//             label="لینک تراکنش TxID"
-//             type={showPassword ? "text" : "password"}
-//             onIconClick={() => setShowPassword((prev) => !prev)}
-//             {...field}
-//             labelBgClass="lg:bg-gray43 bg-white4"
-//             inputBgClass="lg:bg-gray43 bg-white4"
-//           />
-//         )}
-//       />
-
-//       {/* ثبت اطلاعات و راهنما */}
-//       <div className="lg:mt-14 mt-8 mb-10">
-//         <button className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg">
-//           ثبت اطلاعات
-//         </button>
-
-//         <div className="mt-4" dir="ltr">
-//           <Accordion title="TxID راهنمای واریز رمز ارز با ">
-//             <ul className="list-disc pr-5 space-y-2 text-black1">
-//               <li>
-//                 از صحت آدرس صفحه‌ پرداخت و بودن در یکی از سایت‌های سامانه‌ی شاپرک مطمئن شوید.
-//               </li>
-//               <li>مطمئن شوید مبلغ نمایش‌ داده‌شده در صفحه‌ی پرداخت درست باشد.</li>
-//             </ul>
-//           </Accordion>
-//         </div>
-//       </div>
-
-//       {/* مدال */}
-//       {isCryptoListModalOpen && (
-//         <CryptoListModal
-//           cryptoListData={cryptoListData}
-//           setIsCryptoListModalOpen={setIsCryptoListModalOpen}
-//           setCurrentCryptoCurrency={handleCurrencySelect}
-//           isCryptoListLoading={isGeneralInfoLoading || isDepositCoinsLoading}
-//         />
-//       )}
-//     </div>
-//   );
-// }
-
-// import { Controller, useForm } from "react-hook-form";
-// import { useState, useEffect, useCallback, useMemo } from "react";
-// import FloatingSelect from "../FloatingInput/FloatingSelect";
-// import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
-// import IconVideo from "../../assets/Icons/Deposit/IconVideo";
-// import QrCode from "../../assets/images/QRcode.png";
-// import IconCopy from "../../assets/Icons/AddFriend/IconCopy";
-// import TextField from "../InputField/TextField";
-// import Accordion from "../Withdrawal/Accordion";
-// import { apiRequest } from "../../utils/apiClient";
-// import { CryptoItem } from "../../types/crypto";
-// import CryptoListModal from "../trade/CryptoListModal";
-// import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
-
-// // تعریف نوع برای شبکه‌ها
-// interface Network {
-//   id: number;
-//   name: string;
-//   symbol?: string;
-//   tag?: number;
-//   addressRegex?: string;
-//   memoRegex?: string | null;
-//   locale?: {
-//     fa?: { name: string };
-//   };
-// }
-
-// interface CoinNetwork {
-//   id: number;
-//   deposit_min: string;
-// }
-
-// const INITIAL_CURRENCY: Partial<CryptoItem & { network?: CoinNetwork[] }> = {
-//   name: "مونوس",
-//   icon: "",
-//   symbol: "MONOS",
-//   priceBuy: "0",
-//   balance: "0",
-//   network: [],
-// };
-
-// const formatPersianDigits = (num: number | string) => {
-//   const number = Number(num);
-//   if (isNaN(number)) return "۰";
-//   const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
-//   return number.toString().replace(/\d/g, (d) => persianDigits[parseInt(d)]);
-// };
-
-// export default function DepositWithTxID() {
-//   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
-//   const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
-//   const [selectedCurrency, setSelectedCurrency] =
-//     useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>(
-//       INITIAL_CURRENCY
-//     );
-//   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
-//   const [showPassword, setShowPassword] = useState(false);
-//   const [networks, setNetworks] = useState<Network[]>([]);
-//   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false); // state برای باز و بسته شدن لیست
-
-//   const { control, watch, setValue } = useForm();
-//   const { data: generalInfo, isLoading: isGeneralInfoLoading } =
-//     useGetGeneralInfo();
-
-//   const selectedNetwork = watch("network");
-//   const networkOptions = useMemo(() => {
-//     return (
-//       selectedCurrency.network?.map((net) => {
-//         const networkInfo = networks.find((n) => n.id === net.id);
-//     const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || net.id.toString();
-//     const networkSymbol = networkInfo?.name || ""; // استفاده از name به عنوان نماد
-//     return {
-//       value: net.id.toString(),
-//       label: `${networkName} (${networkSymbol})`, // ترکیب مثل "ترون (TRC20)"
-//     };
-//       }) || []
-//     );
-//   }, [selectedCurrency.network, networks]);
-
-//  const selectedNetworkLabel = useMemo(() => {
-//   const selectedOption = networkOptions.find((opt) => opt.value === selectedNetwork);
-//   return selectedOption ? selectedOption.label : "شبکه خود را انتخاب کنید";
-// }, [selectedNetwork, networkOptions]);
-
-//   // دریافت و نگاشت داده‌های ارزها
-//   const fetchAndMergeCryptoData = useCallback(async () => {
-//     setIsDepositCoinsLoading(true);
-//     try {
-//       const depositRes = await apiRequest({
-//         url: "/api/wallets/crypto/deposit",
-//         method: "GET",
-//       });
-
-//       const depositCoins = depositRes?.coins ?? [];
-//       const infoCoins = generalInfo?.cryptocurrency ?? [];
-//       const allNetworks = depositRes?.networks ?? [];
-//       setNetworks(allNetworks);
-
-//       const merged: CryptoItem[] = depositCoins.map((coin: any) => {
-//         const info = infoCoins.find(
-//           (i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase()
-//         );
-//         return {
-//           ...info,
-//           symbol: coin.symbol || "UNK",
-//           name: info?.locale?.fa?.name || coin.symbol || "نام ناشناس",
-//           icon: info?.icon || "",
-//           priceBuy: (Number(coin.price) || 0).toString(),
-//           balance: (Number(coin.balance) || 0).toString(),
-//           isFont: info?.isFont || false,
-//           color: info?.color || "#000",
-//           network: coin.network || [],
-//         } as CryptoItem & { network: CoinNetwork[] };
-//       });
-
-//       setCryptoListData(merged);
-
-//       // تنظیم ارز پیش‌فرض (بدون انتخاب شبکه دیفالت)
-//       if (merged.length > 0) {
-//         const first = merged[0];
-//         setSelectedCurrency({
-//           name: first.locale?.fa?.name || first.symbol || "نام ناشناس",
-//           icon: first.icon || "",
-//           symbol: first.symbol || "UNK",
-//           priceBuy: first.priceBuy || "0",
-//           balance: first.balance || "0",
-//           isFont: first.isFont || false,
-//           color: first.color || "#000",
-//           network: first.network || [],
-//         });
-//       }
-
-//       console.log("Merged data:", merged);
-//       console.log("Networks:", allNetworks);
-//     } catch (err) {
-//       console.error("خطا در دریافت ارزها:", err);
-//     } finally {
-//       setIsDepositCoinsLoading(false);
-//     }
-//   }, [generalInfo]);
-
-//   // وقتی generalInfo آماده شد، داده‌ها را واکشی کن
-//   useEffect(() => {
-//     if (generalInfo && !isDepositCoinsLoading && cryptoListData.length === 0) {
-//       fetchAndMergeCryptoData();
-//     }
-//   }, [
-//     generalInfo,
-//     isDepositCoinsLoading,
-//     cryptoListData.length,
-//     fetchAndMergeCryptoData,
-//   ]);
-
-//   const openCryptoListModal = () => {
-//     setIsCryptoListModalOpen(true);
-//   };
-
-//   const handleCurrencySelect = (
-//     crypto: CryptoItem & { network?: CoinNetwork[] }
-//   ) => {
-//     setSelectedCurrency({
-//       name: crypto.locale?.fa?.name || crypto.symbol || "نام ناشناس",
-//       symbol: crypto.symbol || "UNK",
-//       priceBuy: crypto.priceBuy || "۰",
-//       balance: crypto.balance || "۰",
-//       isFont: crypto.isFont || false,
-//       color: crypto.color || "#000",
-//       icon: crypto.icon || "",
-//       network: crypto.network || [],
-//     });
-//     setIsCryptoListModalOpen(false);
-//   };
-
-//   return (
-//     <div className="w-full" dir="rtl">
-//       {/* ویدیو آموزشی */}
-//       <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
-//         <span className="icon-wrapper w-6 h-6 text-blue2">
-//           <IconVideo />
-//         </span>
-//         <span>ویدیو آموزشی واریز با TxID</span>
-//       </div>
-
-//       {/* انتخاب ارز */}
-//       <Controller
-//         name="currency"
-//         control={control}
-//         rules={{ required: "لطفا یک ارز انتخاب کنید" }}
-//         render={({ field }) => (
-//           <FloatingSelect
-//             placeholder={selectedCurrency.name}
-//             label="انتخاب رمز ارز"
-//             options={cryptoListData.map((crypto) => ({
-//               value: crypto.symbol,
-//               label: crypto.name || crypto.symbol,
-//             }))}
-//             value={field.value}
-//             onChange={(value) => {
-//               const selected = cryptoListData.find(
-//                 (crypto) => crypto.symbol === value
-//               );
-//               if (selected) handleCurrencySelect(selected);
-//               field.onChange(value);
-//             }}
-//             onOpen={openCryptoListModal}
-//             placeholderIcon={
-//               selectedCurrency.isFont ? (
-//                 <i
-//                   className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
-//                   style={{ color: selectedCurrency.color, fontSize: "28px" }}
-//                 ></i>
-//               ) : selectedCurrency.icon ? (
-//                 <img
-//                   src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
-//                   alt={selectedCurrency.symbol}
-//                   className="w-7 h-7 rounded-full object-contain"
-//                 />
-//               ) : (
-//                 <IconMonnos />
-//               )
-//             }
-//             placeholderClasses="text-black0"
-//           />
-//         )}
-//       />
-
-//       {selectedCurrency && (
-//         <div className="flex justify-between mt-2 mb-10">
-//           <span className="text-sm text-gray5">موجودی</span>
-//           <span className="text-sm text-black0">
-//             {formatPersianDigits(selectedCurrency.balance)}{" "}
-//             {selectedCurrency.symbol}
-//           </span>
-//         </div>
-//       )}
-
-//       {/* انتخاب شبکه */}
-//       <Controller
-//         name="network"
-//         control={control}
-//         rules={{ required: "لطفا یک شبکه انتخاب کنید" }}
-//         render={({ field }) => (
-//           <div className="relative">
-//             <FloatingSelect
-//               placeholder={selectedNetworkLabel}
-//               label="انتخاب شبکه"
-//               options={[]}
-//               value={field.value}
-//               onChange={field.onChange}
-//               onOpen={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)} // باز کردن لیست با کلیک
-//               placeholderClasses="text-black0"
-//             />
-
-//             {isNetworkDropdownOpen && (
-//               <div
-//                 className="absolute top-[68px] left-0 right-0 z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-2"
-//                 onClick={() => setIsNetworkDropdownOpen(false)} // بستن با کلیک خارج
-//               >
-//                 {networkOptions.map((option) => (
-//                   <label
-//                     key={option.value}
-//                     className={`flex items-center justify-end gap-3 p-3 flex-row-reverse rounded-md transition-colors w-full cursor-pointer ${
-//                       field.value === option.value
-//                         ? "bg-gray-100 text-blue-600"
-//                         : ""
-//                     }`}
-//                     onClick={(e) => {
-//                       e.stopPropagation(); // جلوگیری از بستن فوری
-//                       field.onChange(option.value);
-//                       setIsNetworkDropdownOpen(false);
-//                     }}
-//                   >
-//                     <span className="text-base text-black0">
-//                       {option.label}
-//                     </span>
-//                     <span className="text-base text-black0">
-//                       {option.symbole}
-//                     </span>
-//                     <input
-//                       type="radio"
-//                       value={option.value}
-//                       checked={field.value === option.value}
-//                       readOnly
-//                       className="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-600"
-//                     />
-//                   </label>
-//                 ))}
-//               </div>
-//             )}
-//           </div>
-//         )}
-//       />
-
-//       {/* حداقل واریز و تعداد شبکه‌ها */}
-//       {selectedCurrency.network && selectedCurrency.network.length > 0 && (
-//         <div className="flex justify-between mt-2 mb-10">
-//           <span className="text-sm text-gray5">حداقل واریز</span>
-//           <span className="text-sm text-black0">
-//             {formatPersianDigits(selectedCurrency.network[0].deposit_min)} {""}
-//             {selectedCurrency.symbol}
-//           </span>
-//         </div>
-//       )}
-
-//       {/* QR Code و آدرس ولت */}
-//       <div className="rounded-lg border mb-10 border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
-//         <img className="w-32 h-32" src={QrCode} alt="QrCode" />
-//         <div className="flex justify-between w-full">
-//           <span className="text-gray5 text-xs lg:text-sm">آدرس ولت</span>
-//           <div className="flex items-center gap-1 justify-between">
-//             <span className="text-black0 lg:text-sm text-xs">
-//               373HD32HDKDIUWUEuyei877IIJDD
-//             </span>
-//             <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
-//               <IconCopy />
-//             </span>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* TxID */}
-//       <Controller
-//         name="txid"
-//         control={control}
-//         render={({ field }) => (
-//           <TextField
-//             label="لینک تراکنش TxID"
-//             type={showPassword ? "text" : "password"}
-//             onIconClick={() => setShowPassword((prev) => !prev)}
-//             {...field}
-//             labelBgClass="lg:bg-gray43 bg-white4"
-//             inputBgClass="lg:bg-gray43 bg-white4"
-//           />
-//         )}
-//       />
-
-//       {/* ثبت اطلاعات و راهنما */}
-//       <div className="lg:mt-14 mt-8 mb-10">
-//         <button className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg">
-//           ثبت اطلاعات
-//         </button>
-
-//         <div className="mt-4" dir="ltr">
-//           <Accordion title="TxID راهنمای واریز رمز ارز با ">
-//             <ul className="list-disc pr-5 space-y-2 text-black1">
-//               <li>
-//                 از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی
-//                 شاپرک مطمئن شوید.
-//               </li>
-//               <li>
-//                 مطمئن شوید مبلغ نمایش‌داده‌شده در صفحه‌ی پرداخت درست باشد.
-//               </li>
-//             </ul>
-//           </Accordion>
-//         </div>
-//       </div>
-
-//       {/* مدال */}
-//       {isCryptoListModalOpen && (
-//         <CryptoListModal
-//           cryptoListData={cryptoListData}
-//           setIsCryptoListModalOpen={setIsCryptoListModalOpen}
-//           setCurrentCryptoCurrency={handleCurrencySelect}
-//           isCryptoListLoading={isGeneralInfoLoading || isDepositCoinsLoading}
-//         />
-//       )}
-//     </div>
-//   );
-// }
-
-
 import { Controller, useForm } from "react-hook-form";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
 import IconVideo from "../../assets/Icons/Deposit/IconVideo";
@@ -647,6 +11,7 @@ import { apiRequest } from "../../utils/apiClient";
 import { CryptoItem } from "../../types/crypto";
 import CryptoListModal from "../trade/CryptoListModal";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import { toast } from "react-toastify";
 
 // تعریف نوع برای شبکه‌ها
 interface Network {
@@ -674,9 +39,9 @@ interface WalletTxid {
 }
 
 const INITIAL_CURRENCY: Partial<CryptoItem & { network?: CoinNetwork[] }> = {
-  name: "مونوس",
+  name: "",
   icon: "",
-  symbol: "MONOS",
+  symbol: "",
   priceBuy: "0",
   balance: "0",
   network: [],
@@ -692,21 +57,28 @@ const formatPersianDigits = (num: number | string) => {
 export default function DepositWithTxID() {
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
-  const [selectedCurrency, setSelectedCurrency] = useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>(INITIAL_CURRENCY);
+  const [selectedCurrency, setSelectedCurrency] =
+    useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>(
+      INITIAL_CURRENCY
+    );
   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [networks, setNetworks] = useState<Network[]>([]);
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false); // state برای باز و بسته شدن لیست
   const [walletAddress, setWalletAddress] = useState<string | null>(null); // state برای آدرس ولت
-const { control, watch, setValue } = useForm();
-  const { data: generalInfo, isLoading: isGeneralInfoLoading } = useGetGeneralInfo();
-
+  const { control, watch, setValue } = useForm();
+  const { data: generalInfo, isLoading: isGeneralInfoLoading } =
+    useGetGeneralInfo();
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const selectedNetwork = watch("network");
   const networkOptions = useMemo(() => {
     return (
       selectedCurrency.network?.map((net) => {
         const networkInfo = networks.find((n) => n.id === net.id);
-        const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || net.id.toString();
+        const networkName =
+          networkInfo?.locale?.fa?.name ||
+          networkInfo?.name ||
+          net.id.toString();
         const networkSymbol = networkInfo?.name || ""; // استفاده از name به عنوان نماد
         return {
           value: net.id.toString(),
@@ -717,7 +89,9 @@ const { control, watch, setValue } = useForm();
   }, [selectedCurrency.network, networks]);
 
   const selectedNetworkLabel = useMemo(() => {
-    const selectedOption = networkOptions.find((opt) => opt.value === selectedNetwork);
+    const selectedOption = networkOptions.find(
+      (opt) => opt.value === selectedNetwork
+    );
     return selectedOption ? selectedOption.label : "شبکه خود را انتخاب کنید";
   }, [selectedNetwork, networkOptions]);
 
@@ -759,8 +133,8 @@ const { control, watch, setValue } = useForm();
       if (merged.length > 0) {
         const first = merged[0];
         setSelectedCurrency({
-          id: first.id, // اضافه کردن id به selectedCurrency
-          name: first.locale?.fa?.name || first.symbol || "نام ناشناس",
+          id: first.id,
+          name: first.locale?.fa?.name || first.symbol,
           icon: first.icon || "",
           symbol: first.symbol || "UNK",
           priceBuy: first.priceBuy || "0",
@@ -792,10 +166,30 @@ const { control, watch, setValue } = useForm();
     fetchAndMergeCryptoData,
   ]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsNetworkDropdownOpen(false);
+      }
+    };
+
+    if (isNetworkDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isNetworkDropdownOpen]);
   // تولید آدرس ولت بعد از انتخاب ارز و شبکه
   const fetchWalletAddress = async () => {
     if (selectedCurrency.id && selectedNetwork) {
-      const selectedCoin = cryptoListData.find((coin) => coin.id === selectedCurrency.id);
+      const selectedCoin = cryptoListData.find(
+        (coin) => coin.id === selectedCurrency.id
+      );
       if (selectedCoin) {
         const depositRes = await apiRequest({
           url: "/api/wallets/crypto/deposit",
@@ -813,18 +207,24 @@ const { control, watch, setValue } = useForm();
   };
 
   useEffect(() => {
-    fetchWalletAddress().then((address) => {
-      setWalletAddress(address);
-    }).catch((err) => {
-      console.error("خطا در دریافت آدرس:", err);
-      setWalletAddress(null);
-    });
+    fetchWalletAddress()
+      .then((address) => {
+        setWalletAddress(address);
+      })
+      .catch((err) => {
+        console.error("خطا در دریافت آدرس:", err);
+        setWalletAddress(null);
+      });
   }, [selectedCurrency, selectedNetwork, cryptoListData]);
 
   const openCryptoListModal = () => {
     setIsCryptoListModalOpen(true);
   };
-
+  // بالای کامپوننت style اضافه کن
+  const styles = {
+    sectionSpacing: "mb-10", // فاصله ثابت 2.5rem
+    fieldSpacing: "mb-6", // فاصله فیلدها
+  };
   const handleCurrencySelect = (
     crypto: CryptoItem & { network?: CoinNetwork[] }
   ) => {
@@ -844,13 +244,16 @@ const { control, watch, setValue } = useForm();
 
   const handleSubmit = async () => {
     if (!selectedCurrency.symbol || !selectedNetwork) {
-      alert("لطفاً ارز و شبکه را انتخاب کنید");
+      {toast.error("لطفا ارز و شبکه را انتخاب کنید ")}
       return;
     }
     const depositRes = await apiRequest({
       url: `/api/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
       method: "POST",
-      data: { txid: watch("txid") || "", network_id: parseInt(selectedNetwork) },
+      data: {
+        txid: watch("txid") || "",
+        network_id: parseInt(selectedNetwork),
+      },
     });
     if (depositRes.status === 200) {
       const matchingWallet = depositRes.data.wallets_txid?.find(
@@ -868,140 +271,181 @@ const { control, watch, setValue } = useForm();
   return (
     <div className="w-full my-10" dir="rtl">
       {/* ویدیو آموزشی */}
-      <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
-        <span className="icon-wrapper w-6 h-6 text-blue2">
-          <IconVideo />
-        </span>
-        <span>ویدیو آموزشی واریز با TxID</span>
+      <div className="mb-10">
+        <div className="bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
+          <span className="icon-wrapper w-6 h-6 text-blue2">
+            <IconVideo />
+          </span>
+          <span>ویدیو آموزشی واریز با TxID</span>
+        </div>
       </div>
 
       {/* انتخاب ارز */}
-      <Controller
-        name="currency"
-        control={control}
-        rules={{ required: "لطفا یک ارز انتخاب کنید" }}
-        render={({ field }) => (
-          <FloatingSelect
-            placeholder={selectedCurrency.name}
-            label="انتخاب رمز ارز"
-            options={cryptoListData.map((crypto) => ({
-              value: crypto.symbol,
-              label: crypto.name || crypto.symbol,
-            }))}
-            value={field.value}
-            onChange={(value) => {
-              const selected = cryptoListData.find(
-                (crypto) => crypto.symbol === value
-              );
-              if (selected) handleCurrencySelect(selected);
-              field.onChange(value);
-            }}
-            onOpen={openCryptoListModal}
-            placeholderIcon={
-              selectedCurrency.isFont ? (
-                <i
-                  className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
-                  style={{ color: selectedCurrency.color, fontSize: "28px" }}
-                ></i>
-              ) : selectedCurrency.icon ? (
-                <img
-                  src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
-                  alt={selectedCurrency.symbol}
-                  className="w-7 h-7 rounded-full object-contain"
-                />
-              ) : (
-                <IconMonnos />
-              )
-            }
-            placeholderClasses="text-black0"
-          />
-        )}
-      />
-
-      {selectedCurrency && (
-        <div className="flex justify-between mt-2 mb-10">
-          <span className="text-sm text-gray5">موجودی</span>
-          <span className="text-sm text-black0">
-            {formatPersianDigits(selectedCurrency.balance)}{" "}
-            {selectedCurrency.symbol}
-          </span>
-        </div>
-      )}
-
-      {/* انتخاب شبکه */}
-      <Controller
-        name="network"
-        control={control}
-        rules={{ required: "لطفا یک شبکه انتخاب کنید" }}
-        render={({ field }) => (
-          <div className="relative">
+      <div className="mb-2">
+        <Controller
+          name="currency"
+          control={control}
+          rules={{ required: "لطفا یک ارز انتخاب کنید" }}
+          render={({ field }) => (
             <FloatingSelect
-              placeholder={selectedNetworkLabel}
-              label="انتخاب شبکه"
-              options={[]}
+              placeholder={
+                // ✅ فقط متن اسکلتون
+                selectedCurrency.name ? (
+                  selectedCurrency.name
+                ) : (
+                  <div className="h-5 w-24 skeleton-bg rounded-sm mt-1" />
+                )
+              }
+              label="انتخاب رمز ارز"
+              options={cryptoListData.map((crypto) => ({
+                value: crypto.symbol,
+                label: crypto.name || crypto.symbol,
+              }))}
               value={field.value}
-              onChange={field.onChange}
-              onOpen={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)} // باز کردن لیست با کلیک
+              onChange={(value) => {
+                const selected = cryptoListData.find(
+                  (crypto) => crypto.symbol === value
+                );
+                if (selected) handleCurrencySelect(selected);
+                field.onChange(value);
+              }}
+              onOpen={openCryptoListModal}
+              placeholderIcon={
+                // ✅ آیکون اسکلتون
+                selectedCurrency.icon || selectedCurrency.isFont ? (
+                  selectedCurrency.isFont ? (
+                    <i
+                      className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
+                      style={{
+                        color: selectedCurrency.color,
+                        fontSize: "28px",
+                      }}
+                    ></i>
+                  ) : (
+                    <img
+                      src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
+                      alt={selectedCurrency.symbol}
+                      className="w-7 h-7 rounded-full object-contain"
+                    />
+                  )
+                ) : (
+                  <div className="w-7 h-7 skeleton-bg rounded-full" />
+                )
+              }
               placeholderClasses="text-black0"
             />
+          )}
+        />
+      </div>
 
-            {isNetworkDropdownOpen && (
-              <div
-                className="absolute top-[68px] left-0 right-0 z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-2"
-                onClick={() => setIsNetworkDropdownOpen(false)} // بستن با کلیک خارج
-              >
-                {networkOptions.map((option) => (
-                  <label
-                    key={option.value}
-                    className={`flex items-center justify-end gap-3 p-3 flex-row-reverse rounded-md transition-colors w-full cursor-pointer ${
-                      field.value === option.value
-                        ? "bg-gray-100 text-blue-600"
-                        : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation(); // جلوگیری از بستن فوری
-                      field.onChange(option.value);
-                      setIsNetworkDropdownOpen(false);
-                    }}
-                  >
-                    <span className="text-base text-black0">
-                      {option.label}
-                    </span>
-                    <input
-                      type="radio"
-                      value={option.value}
-                      checked={field.value === option.value}
-                      readOnly
-                      className="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-600"
-                    />
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      />
-
-      {/* حداقل واریز و تعداد شبکه‌ها */}
-      {selectedCurrency.network && selectedCurrency.network.length > 0 && (
-        <div className="flex justify-between mt-2 mb-10">
-          <span className="text-sm text-gray5">حداقل واریز</span>
+      {/* موجودی - همیشه نمایش بده */}
+      <div className="mb-10">
+        <div className="flex justify-between ">
+          <span className="text-sm text-gray5">موجودی</span>
           <span className="text-sm text-black0">
-            {formatPersianDigits(selectedCurrency.network[0].deposit_min)}{" "}
-            {selectedCurrency.symbol}
+            {formatPersianDigits(selectedCurrency.balance || 0)}
+            {selectedCurrency.symbol || ""}
           </span>
         </div>
-      )}
+      </div>
 
+      {/* network */}
+      <div className="mb-2 relative" ref={dropdownRef}>
+        <Controller
+          name="network"
+          control={control}
+          rules={{ required: "لطفا یک شبکه انتخاب کنید" }}
+          render={({ field }) => (
+            <FloatingSelect
+              placeholder={selectedNetworkLabel || "انتخاب شبکه"}
+              label="انتخاب شبکه"
+              value={field.value}
+              onChange={field.onChange}
+              options={
+                networkOptions.map((option) => ({
+                  value: option.value,
+                  label: (
+                    <div className="flex items-center justify-between w-full py-1 rounded-md">
+                      <div className="flex items-center gap-2">
+                        <span className="lg:text-sm text-xs text-black0">
+                          {option.label}
+                        </span>
+                      </div>
+                    </div>
+                  ),
+                })) || []
+              }
+              placeholderClasses="text-black0 text-sm"
+            />
+          )}
+        />
+
+        {/* Dropdown جدا */}
+        {isNetworkDropdownOpen && networkOptions.length > 0 && (
+          <div className="absolute top-[68px] left-0 right-0 z-50 bg-gray43 border border-gray-300 rounded-lg shadow-lg p-2 mt-1">
+            {networkOptions.map((option) => (
+              <div
+                key={option.value}
+                className="flex items-center justify-end gap-3 p-3 flex-row-reverse rounded-md transition-colors w-full cursor-pointer hover:bg-gray12"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("network", option.value);
+                  setIsNetworkDropdownOpen(false);
+                }}
+              >
+                <span className="text-base text-black0">{option.label}</span>
+                <input
+                  type="radio"
+                  value={option.value}
+                  checked={watch("network") === option.value}
+                  readOnly
+                  className="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-600"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* حداقل واریز - همیشه نمایش بده */}
+      <div className="mb-10">
+        <div className="flex justify-between">
+          <span className="text-sm text-gray5">حداقل واریز</span>
+          <span className="text-sm text-black0">
+            {selectedCurrency.network && selectedCurrency.network.length > 0
+              ? `${formatPersianDigits(
+                  selectedCurrency.network[0].deposit_min
+                )} ${selectedCurrency.symbol}`
+              : "۰ " + (selectedCurrency.symbol || "")}
+          </span>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <Controller
+          name="txid"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              label="لینک تراکنش TxID"
+              type={showPassword ? "text" : "password"}
+              onIconClick={() => setShowPassword((prev) => !prev)}
+              {...field}
+              labelBgClass="lg:bg-gray43 bg-white4"
+              inputBgClass="lg:bg-gray43 bg-white4"
+            />
+          )}
+        />
+      </div>
       {/* QR Code و آدرس ولت */}
-        {walletAddress && (
-          <>
-      <div className="rounded-lg border mb-10 border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
-            <QRCode value={walletAddress} size={128} /> {/* QR Code واقعی با react-qr-code */}
+      {walletAddress && (
+        <div className="mb-10">
+          <div className="rounded-lg border border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
+            <QRCode value={walletAddress} size={128} />
             <div className="flex justify-between w-full">
               <span className="text-gray5 text-xs lg:text-sm">آدرس ولت</span>
-              <div className="flex items-center gap-1 justify-between">
-                <span className="text-black0 lg:text-sm text-xs">
+              <div className="flex items-center gap-1">
+                <span className="text-black0 lg:text-sm text-xs  max-w-sm">
                   {walletAddress}
                 </span>
                 <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
@@ -1009,28 +453,12 @@ const { control, watch, setValue } = useForm();
                 </span>
               </div>
             </div>
-      </div>
-          </>
-        )}
+          </div>
+        </div>
+      )}
 
-      {/* TxID */}
-      <Controller
-        name="txid"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="لینک تراکنش TxID"
-            type={showPassword ? "text" : "password"}
-            onIconClick={() => setShowPassword((prev) => !prev)}
-            {...field}
-            labelBgClass="lg:bg-gray43 bg-white4"
-            inputBgClass="lg:bg-gray43 bg-white4"
-          />
-        )}
-      />
-
-      {/* ثبت اطلاعات و راهنما */}
-      <div className="lg:mt-14 mt-8 mb-10">
+      {/* دکمه و راهنما */}
+      <div className="mb-10">
         <button
           className="text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg"
           onClick={handleSubmit}

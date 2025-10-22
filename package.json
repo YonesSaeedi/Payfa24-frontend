@@ -16,7 +16,6 @@
     "axios": "^1.12.2",
     "cryptofont": "^0.1.1",
     "firebase": "^11.10.0",
-    "lucide-react": "^0.542.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-google-recaptcha-v3": "^1.11.0",
