@@ -133,27 +133,29 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       <h3 dir="rtl" className="text-right text-black1  font-medium mb-4 mt-5">
         {title}
       </h3>
-      <div className="container-style grid grid-cols-4 gap-6">
-        {items.map((item, i) => (
-          <div
-            key={i}
-            onClick={() => handleItemClick(item)}
-            className="flex flex-col items-center justify-center px-11 h-[72px]  rounded-lg hover:border-blue2 d cursor-pointer transition border border-gray21 bg-gray33"
-          >
-            <span className="w-6 h-6 text-blue2">{item.icon}</span>
-            <span className="text-sm text-gray-700 dark:text-gray-200 text-center mt-2 whitespace-nowrap">
-              {item.label}
-            </span>
-          </div>
-        ))}
+ <div className="container-style grid grid-cols-3  gap-2">
+  {items.map((item, i) => (
+    <div key={i} className="p-1">
+      <div
+        onClick={() => handleItemClick(item)}
+        className="flex flex-col items-center w-[100px] justify-center h-[79px] rounded-lg hover:border-blue2 cursor-pointer transition border border-gray21 bg-gray33"
+      >
+        <span className="w-6 h-6 text-blue2">{item.icon}</span>
+        <span className="text-sm text-gray-700 dark:text-gray-200 text-center mt-2 whitespace-nowrap">
+          {item.label}
+        </span>
       </div>
+    </div>
+  ))}
+</div>
+
     </div>
   );
 
   return (
     <div
       dir="rtl"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-6"
       onClick={handleClose} // کلیک روی پس‌زمینه -> بستن مودال
     >
       <div
@@ -175,12 +177,12 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
         >
           <IconCloseButtun />
         </button>
-
-        {renderSection("مالی و تراکنش", financeItems)}
+          <div className="overflow-auto max-h-[calc(700px-80px)] px-4 py-2"> {renderSection("مالی و تراکنش", financeItems)}
         {renderSection("بازار و اطلاعات", marketItems)}
         {renderSection(" تاریخچه", historyItems)}
         {renderSection("پشتیبانی و حساب کاربری", supportItems)}
-        {renderSection("سایر", otherItems)}
+        {renderSection("سایر", otherItems)}</div>
+       
       </div>
     </div>
   );
