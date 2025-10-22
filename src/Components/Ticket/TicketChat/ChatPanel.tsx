@@ -8,6 +8,8 @@ import { apiRequest } from "../../../utils/apiClient";
 import { ticketStatusMap } from "../../../utils/statusMap";
 import StatusBadge from "../../UI/Button/StatusBadge";
 import IconCircledAttach from "../../../assets/icons/ticket/IconCircledAttach";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 interface ChatPanelProps {
@@ -169,7 +171,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
         method: "POST",
         data: formData,
         isFormData: true,
-        timeout: 60000,
+       
         onUploadProgress: (event?: any) => {
           if (event?.total) {
             const percent = Math.round((event.loaded * 100) / event.total);
@@ -185,6 +187,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
 
       await fetchData(); // دریافت مجدد پیام‌ها و فایل‌ها
     } catch (err) {
+       if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
+    toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");}
       console.error("خطا در ارسال پیام:", err);
     } finally {
       setIsSending(false);

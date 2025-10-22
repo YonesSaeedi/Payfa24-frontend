@@ -72,7 +72,9 @@ export type TransactionDetail = OrderDetail | CryptoDetail | FiatDetail;
 interface TransactionModalProps {
   tx: TransactionDetail;
   onClose: () => void;
+  visibleFields?: string[]; // مثلا ["status","id","date","type","amount","stock","description","cardNumber"]
 }
+
 
 const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
   const [loading, setLoading] = useState(true);

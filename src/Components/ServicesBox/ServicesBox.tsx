@@ -46,20 +46,17 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     setTimeout(onClose, 300);
   };
 
-  const handleItemClick = async (item: ServiceItem) => {
-    if (item.label === "کارت‌ها") {
-      // فقط مسیر Container
-      setIsVisible(false);
-      setTimeout(() => {
-        onClose();
-        navigate(ROUTES.BANK_CARDS_CONTAINER);
-      }, 300);
-      return;
-    }
+  
 
-    // بقیه گزینه‌ها
-    if (item.route) navigate(item.route);
-  };
+  const handleItemClick = (item: ServiceItem) => {
+  setIsVisible(false);
+  setTimeout(() => {
+    onClose(); // بستن مودال
+    if (item.route && item.route !== location.pathname) {
+      navigate(item.route); // تغییر مسیر فقط اگر متفاوت بود
+    }
+  }, 300);
+};
 
   const financeItems: ServiceItem[] = [
     { label: "خرید", icon: <ReceivedIcon />, route: ROUTES.TRADE.BUY },

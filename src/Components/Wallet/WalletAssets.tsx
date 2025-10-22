@@ -172,14 +172,20 @@ const WalletAssets: React.FC = () => {
 
 
         <div className="relative  inline-block text-right max-w-[50%]" ref={dropdownRef}>
-          <button
-            onClick={() => setOpenDropdown(!openDropdown)}
-            className="border border-gray19 rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1"
-          >
-            {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
-            
-           <span className={`w-4 h-4 transition-transform duration-200 ${openDropdown ? "rotate-180" : ""}`}> <IconChervDown/></span>
-          </button>
+         <button
+  onClick={() => setOpenDropdown(!openDropdown)}
+  className={`
+    border rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1
+    transition-colors duration-200
+    ${openDropdown ? "border-blue2" : "border-gray19"}
+  `}
+>
+  {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
+  <span className={`w-4 h-4 transition-transform duration-200 ${openDropdown ? "rotate-180" : ""}`}>
+    <IconChervDown />
+  </span>
+</button>
+
 
           {openDropdown && (
             <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col">
@@ -308,7 +314,7 @@ const WalletAssets: React.FC = () => {
                     </button>
 
                     {!isMobile && (
-                      <div className="absolute left-[41px] mt-2 top-6 w-[226px] bg-white rounded-lg shadow-md flex flex-col z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                      <div className="absolute left-[41px] mt-2 top-6 w-[226px] bg-white8 border border-gray21 shadow-md rounded-lg shadow-md flex flex-col z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                         <button
                           className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
                           onClick={() => navigate(ROUTES.TRADE.BUY)}

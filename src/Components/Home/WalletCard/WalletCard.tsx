@@ -136,7 +136,7 @@ const WalletCard = ({
             <span className="w-[22px] h-[22px] text-gray-500 group-hover:text-gray-800">
               {stateBlure ? <VisibilityIcon /> : <IconEyeClosed />}
             </span>
-            <span className="font-sans text-black1 text-base font-semibold">
+            <span className=" text-black1 font-bold text-[18px]">
               موجودی کیف پول شما
             </span>
           </div>

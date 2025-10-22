@@ -134,7 +134,7 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
               <BitcoinIcon />
             </span>
 
-            معامله
+            معامله 
           </Link>
         </nav>
        

@@ -73,8 +73,7 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
             [...Array(10)].map((_, i) =>
               <tr key={i} className="border-b border-gray21 last:border-b-0 hover:bg-background text-right">
                 <td className="py-3 px-4 flex items-start lg:gap-2 gap-1 justify-start">
-                  <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full skeleton-bg">
-                  </div>
+                  <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full skeleton-bg"></div>
                   <div className="flex flex-col gap-0.5 lg:gap-2">
                     <div className="skeleton-bg h-3 lg:h-4 w-8 lg:w-16 rounded"></div>
                     <span className="skeleton-bg h-2 lg:h-3 w-6 lg:w-8 rounded"></span>

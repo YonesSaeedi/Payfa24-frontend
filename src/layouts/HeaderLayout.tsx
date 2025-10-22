@@ -15,7 +15,9 @@ const HeaderLayout = ({ children }: HeaderLayoutProps) => {
   return (
     <div className={`min-h-screen flex flex-col  ${theme === "dark" ? 'bg-white4' :'bg-white4'}`}>
       <Header/>
-      {children}
+      <div className="pt-[64px]"> {/* فاصله محتوا از هدر */}
+        {children}
+      </div>
     </div>
   )
 }

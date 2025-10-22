@@ -26,8 +26,7 @@ function QuestionBox() {
         </div>
         <Link
           to={ROUTES.FAQ}
-          className="hidden lg:flex px-3 py-2 rounded-lg bg-blue2 text-white items-center justify-center gap-2 font-bold
-          border border-transparent hover:bg-transparent hover:text-blue2 hover:border-blue2 transition duration-200 ease-in"
+          className="hidden lg:flex px-3 py-2 rounded-lg bg-blue2 hover:bg-blue-700 text-white items-center justify-center gap-2 font-bold transition duration-200 ease-in"
         >
           <span className="w-8 h-8"> <ArrowLeftIcon /></span>
           مشاهده همه سوالات
