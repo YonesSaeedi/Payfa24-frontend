@@ -7,7 +7,7 @@ import { ROUTES } from "../../routes/routes";
 
 type Category = {
   name: 'all' | 'mostTraded' | 'gainers' | 'losers' | 'newest';
-  label: "همه" | "بیشترین معامله" | "پر ضررترین" | "پر سودترین" | "تازه های بازار";
+  label: "همه" | "بیشترین معامله" | "پر ضررترین" | "پر سودترین" | "تازه‌های بازار";
   isActive: boolean;
 }
 
@@ -22,7 +22,7 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
     { name: 'mostTraded', label: 'بیشترین معامله', isActive: false },
     { name: 'losers', label: 'پر ضررترین', isActive: false },
     { name: 'gainers', label: 'پر سودترین', isActive: false },
-    { name: 'newest', label: 'تازه های بازار', isActive: false },
+    { name: 'newest', label: 'تازه‌های بازار', isActive: false },
   ])
   // crypto sorters =====================================================================================================================================================
   // this is brilliant; we have used [...list].sort() instead of simple list.sort() cause we dont want to mutate the original list. [...list].sort() will create a copy of the list actually
@@ -45,55 +45,89 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
         </Link>
         <h2 className="text-base lg:text-xl font-bold flex items-center gap-2 text-black1">بازار پی‌فا ۲۴</h2>
       </div>
-      <div className="flex flex-row-reverse text-sm mb-4">
-        {categories.map((category) => (
+      <div dir="rtl" className="flex text-xs lg:text-base mb-4 overflow-x-auto scrollbar-hide">
+        {categories.map((category) =>
           <button
             key={category.name}
             onClick={() => setCategories(prev => prev.map(item => item.name === category.name ? { ...item, isActive: true } : { ...item, isActive: false }))}
-            className={`pb-1 mr-7 ${category.isActive ? "text-blue2 border-b-2 border-blue2" : "text-grey1"}`}
+            className={`py-1.5 lg:py-2 px-3 lg:px-4 text-nowrap ${category.isActive ? "text-blue2 border-b-2 border-blue2 font-medium" : "text-gray3 font-normal"}`}
           >
             {category.label}
           </button>
-        ))}
+        )}
       </div>
-      <table dir="rtl" className="w-full text-right border border-gray21 border-collapse rounded-lg overflow-hidden">
+      <table dir="rtl" className="w-full text-right border border-gray21 border-collapse rounded-lg overflow-hidden table-fixed">
         <thead>
-          <tr className="bg-gray32 text-black1 text-text">
-            <th className="py-3 px-4">نام و نماد ارز</th>
-            <th className="py-3 px-4 hidden lg:table-cell">قیمت به USDT</th>
-            <th className="py-3 px-4">قیمت فروش</th>
-            <th className="py-3 px-4 hidden lg:table-cell">قیمت فروش</th>
-            <th className="py-3 px-4 text-center">تغییرات ۲۴h</th>
-            <th className="py-3 px-4 hidden lg:table-cell"></th>
+          <tr className="bg-gray41 text-black1 rounded-lg">
+            <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base rounded-r-lg">نام و نماد ارز</th>
+            <th className="py-2.5 lg:py-4 px-4 hidden lg:table-cell font-medium text-xs lg:text-base">قیمت به USDT</th>
+            <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base">قیمت خرید</th>
+            <th className="py-2.5 lg:py-4 px-4 hidden lg:table-cell font-medium text-xs lg:text-base">قیمت فروش</th>
+            <th className="py-2.5 lg:py-4 px-4 text-center lg:w-[32px] lg:text-nowrap font-medium text-xs lg:text-base lg:rounded-none rounded-bl-lg">تغییرات ۲۴h</th>
+            <th className="py-2.5 lg:py-4 px-4 hidden lg:table-cell rounded-l-lg"></th>
           </tr>
         </thead>
         <tbody>
-          {sortedList.slice(0, 10).map(item => (
-            <tr key={item?.id} className="border-b border-gray21 last:border-b-0 hover:bg-background text-right">
-              <td className="py-3 px-4 flex items-start gap-2 justify-start">
-                <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full">
-                  {item?.isFont ?
-                    <i className={`cf cf-${item?.symbol.toLowerCase()} text-[28px] lg:text-[40px]`} style={{ color: item.color }}></i>
-                    :
-                    <img src={`https://api.payfa24.org/images/currency/${item?.icon}`} alt={item?.symbol} className="object-contain w-full h-full" />
-                  }
-                </div>
-                <div>
-                  <div className="font-medium text-center text-black1 truncate max-w-[120px]" title={item?.locale?.fa?.name}>{item?.locale?.fa?.name}</div>
-                  <span className="text-xs text-gray12 text-center p-2">{item?.symbol}</span>
-                </div>
-              </td>
-              <td className="py-3 px-4 hidden lg:table-cell text-black1">USDT {item?.fee}</td>
-              <td className="py-3 px-4 text-black1">تومان {formatPersianDigits(parseFloat(item?.priceBuy ?? '0'))}</td>
-              <td className="py-3 px-4 hidden lg:table-cell text-black1">تومان {formatPersianDigits(parseFloat(item?.priceSell ?? '0'))}</td>
-              <td className="py-3 px-4 text-center text-black1">
-                <span className={Number(item?.priceChangePercent) >= 0 ? "text-green-500" : "text-red-500"} dir="ltr">{formatPersianDigits(item?.priceChangePercent)}%</span>
-              </td>
-              <td className="py-3 px-4 hidden lg:table-cell text-end text-black1">
-                <button className="bg-blue2 text-white rounded-lg px-4 py-1.5 text-sm">خرید/فروش</button>
-              </td>
-            </tr>
-          ))}
+          {isLoading ?
+            // loadings =============================================================================================================================
+            [...Array(10)].map((_, i) =>
+              <tr key={i} className="border-b border-gray21 last:border-b-0 hover:bg-background text-right">
+                <td className="py-3 px-4 flex items-start lg:gap-2 gap-1 justify-start">
+                  <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full skeleton-bg">
+                  </div>
+                  <div className="flex flex-col gap-0.5 lg:gap-2">
+                    <div className="skeleton-bg h-3 lg:h-4 w-8 lg:w-16 rounded"></div>
+                    <span className="skeleton-bg h-2 lg:h-3 w-6 lg:w-8 rounded"></span>
+                  </div>
+                </td>
+                <td className="py-3 px-4 hidden lg:table-cell"><div className="skeleton-bg h-3 lg:h-4 w-10 lg:w-20 rounded"></div></td>
+                <td className="py-3 px-4"><div className="skeleton-bg h-3 lg:h-4 lg:w-20 w-16 rounded"></div></td>
+                <td className="py-3 px-4 hidden lg:table-cell"><div className="skeleton-bg h-3 w-10 lg:h-4 lg:w-20 rounded"></div></td>
+                <td className="py-3 px-4 flex justify-center"><div className='self-center skeleton-bg w-7 h-3 rounded'></div></td>
+                <td className="py-3 px-4 hidden lg:table-cell"><div className="skeleton-bg h-3 lg:h-4 w-8 lg:w-10 rounded"></div></td>
+              </tr>
+            )
+            :
+            // real data mapping =========================================================================================================================
+            sortedList.slice(0, 10).map(item => (
+              <tr key={item?.id} className="border-b border-gray21 last:border-b-0 hover:bg-background text-right">
+                <td className="py-3 px-4 flex items-start lg:gap-2 gap-1 justify-start">
+                  <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full">
+                    {item?.isFont ?
+                      <i className={`cf cf-${item?.symbol.toLowerCase()} text-[28px] lg:text-[40px]`} style={{ color: item.color }}></i>
+                      :
+                      <img src={`https://api.payfa24.org/images/currency/${item?.icon}`} alt={item?.symbol} className="object-contain w-full h-full" />
+                    }
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-normal text-black1 truncate max-w-[120px] text-xs lg:text-lg" title={item?.locale?.fa?.name}>{item?.locale?.fa?.name}</div>
+                    <span className="text-[10px] lg:text-sm font-normal text-gray12">{item?.symbol}</span>
+                  </div>
+                </td>
+                <td className="py-3 px-4 hidden lg:table-cell text-black1">USDT {item?.fee}</td>
+                <td className="py-3 px-4 text-black1 text-xs lg:text-base font-normal">
+                  {formatPersianDigits(parseFloat(item?.priceBuy ?? '0'))}
+                  <span className="hidden lg:inline"> تومان </span>
+                </td>
+                <td className="py-3 px-4 hidden lg:table-cell text-black1">{formatPersianDigits(parseFloat(item?.priceSell ?? '0'))} تومان</td>
+                <td className="py-3 px-4 text-center text-black1">
+                  <span
+                    className={`font-normal text-xs lg:text-base ${Number(item?.priceChangePercent) >= 0 ? "text-green-500" : "text-red-500"}`}
+                    dir="ltr"
+                  >
+                    {formatPersianDigits(item?.priceChangePercent ?? '0')}%
+                  </span>
+                </td>
+                <td className="py-3 px-4 hidden lg:table-cell text-end text-black1">
+                  <Link
+                    to={`${ROUTES.TRADE.BUY}?coin=${item?.symbol}`}
+                    className="bg-blue2 text-white rounded-lg px-4 py-1.5 text-sm border border-transparent hover:bg-transparent hover:border-blue2 hover:text-blue2 transition duration-200 ease-in"
+                  >
+                    خرید/فروش
+                  </Link>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

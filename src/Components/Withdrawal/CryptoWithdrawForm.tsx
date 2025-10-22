@@ -89,14 +89,12 @@ const handleSubmitOtp = async () => {
       },
     });
 
-    if (res.status) {
+   
       setIsOtpModalOpen(false);   // اول مودال OTP بسته شود
       setOtpCode("");             // کد OTP پاک شود
       setIsTradeSuccessModalOpen(true); // سپس مودال موفقیت باز شود
       setWithdrawData(null);      // (اختیاری) پاک کردن داده‌ها
-    } else {
-      toast.error(res.msg || "کد وارد شده معتبر نیست ❌");
-    }
+   
   } catch (err: any) {
     toast.error(err?.response?.data?.msg || "خطا در تأیید برداشت!");
   }
@@ -329,17 +327,7 @@ const handleSubmitTransfers = async (e: React.FormEvent) => {
       method: "POST",
       data: dataToSend,
     });
-//  setWithdrawData({
-//   withdrawAmount,
-//   mobile: address.includes("@") ? "" : address,
-//   email: address.includes("@") ? address : "",
-// });
-
-//     // setWithdrawData(dataToSend);
-//     setIsOtpModalOpen(true);
-//     setResendCodeTimeLeft(120);
- setWithdrawData(dataToSend);
-
+    setWithdrawData(dataToSend);
     setIsOtpModalOpen(true);
     setResendCodeTimeLeft(120);
   } catch (err: any) {
@@ -363,15 +351,13 @@ const handleSubmitTransferOtp = async () => {
       },
     });
 
-    if (res.status) {
+   
    toast.success("انتقال با موفقیت انجام شد ✅");
      setIsOtpModalOpen(false);
       setOtpCode("");
       setWithdrawData(null);          // پاک کردن داده بعد از موفقیت
       setIsTradeSuccessModalOpen(true); // مودال موفقیت
-    } else {
-      toast.error(res.msg || "کد وارد شده معتبر نیست ❌");
-    }
+   
   } catch (err: any) {
     toast.error(err?.response?.data?.msg || "خطا در تأیید انتقال!");
   }
@@ -709,7 +695,7 @@ useEffect(() => {
                   className="border border-gray12"
                 />
                 <p className="text-xs text-gray5 mt-2">
-                  با درج کردن موبایل یا ایمیل ا اشتباه ممکن است باعث از دست رفتن
+                  با درج کردن موبایل یا ایمیل  اشتباه ممکن است باعث از دست رفتن
                   دارایی شما شود.
                 </p>
               </div>
@@ -729,7 +715,7 @@ useEffect(() => {
                   ? !allWithdrawFieldsFilled
                   : !allTransferFieldsFilled)
               }
-              className={`w-full py-3 rounded-lg mb-2 font-bold text-[18px] transition-colors duration-300 ${
+              className={`w-full py-3 rounded-lg mb-2 mt-24 font-bold text-[18px] transition-colors duration-300 ${
                 isLoading ||
                 (activeTab === "withdraw"
                   ? !allWithdrawFieldsFilled

@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router"
 import IconChevron from "../assets/Icons/trade/IconChevron";
 
 const BREADCRUMB_LABELS: Record<string, string> = {
+
   trade: "معامله",
   buy: "خرید",
   sell: "فروش",
@@ -13,18 +14,19 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   authentication: 'احراز هویت',
   services: 'خدمات',
   transaction: 'تاریخچه تراکنش ها',
-  ConnectedDevices: 'دستگاه های متصل',
+  "connected-devices": 'دستگاه های متصل',
   faq: 'سوالات متداول',
-"bank-cards": 'کارت های بانکی',
+  "bank-cards": 'کارت های بانکی',
   withdraw: 'برداشت',
   'market-view': 'نمای بازار',
   "kyc-basic": "احراز هویت پایه",
-history:"خدمات",
-order:"تاریخچه خرید و فروش",
-toman:"تاریخچه تراکنش های تومانی",
- Cryptocurrency:"تاریخچه تراکنش های رمز ارز",
- fiat:"برداشت تومانی",
- crypto:"برداشت رمز ارز"
+   history:"خدمات",
+   order:"تاریخچه خرید و فروش",
+   toman:"تاریخچه تراکنش های تومانی",
+   Cryptocurrency:"تاریخچه تراکنش های رمز ارز",
+   fiat:"برداشت تومانی",
+   crypto:"برداشت رمز ارز"
+
 
 };
 

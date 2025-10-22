@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { MoreVertical, MoreHorizontal, ChevronDown } from "lucide-react";
 import { ActionModal } from "../../Components/Wallet/ActionModal";
 import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
@@ -9,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes"; // مسیر دقیق فایل routes را چک کنید
 import WalletAddIcon from "../../assets/icons/Home/WalletCardIcon/WalletAddIcon";
 import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
+import IconMoreHorizental from "../../assets/icons/Wallet/IconMoreHorizental";
+import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
+import IconSearch from "../../assets/icons/market/IconSearch";
 
 
 interface Wallet {
@@ -39,7 +41,7 @@ const sortOptions = [
   { label: "قیمت (کم به زیاد)", key: "priceUp" },
 ];
 
-const CryptoTable: React.FC = () => {
+const WalletAssets: React.FC = () => {
   const [walletsData, setWalletsData] = useState<Wallet[]>([]);
   const [search, setSearch] = useState("");
   const [selectedSortKey, setSelectedSortKey] = useState("default");
@@ -150,16 +152,24 @@ const CryptoTable: React.FC = () => {
 
 
   return (
-    <div dir="rtl" className="p-4 bg-white1 rounded-xl border border-gray21 w-full ">
+    <div dir="rtl" className="p-4 bg-white1 rounded-xl border border-gray21 w-full overflow-visible">
       {/* Search و Dropdown */}
       <div className="flex items-center justify-between mb-3">
-        <input
-          type="text"
-          placeholder="جستجو..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border rounded-lg px-3 py-2 text-sm w-1/2 bg-white1 border-gray19"
-        />
+        {/* Input با آیکون داخل */}
+<div className="relative w-1/2">
+  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
+    <IconSearch />
+  </span>
+
+  <input
+    type="text"
+    placeholder="جستجو..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="border border-gray19 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
+  />
+</div>
+
 
         <div className="relative  inline-block text-right max-w-[50%]" ref={dropdownRef}>
           <button
@@ -167,9 +177,8 @@ const CryptoTable: React.FC = () => {
             className="border border-gray19 rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1"
           >
             {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
-            <ChevronDown
-              className={`w-4 h-4 transition-transform duration-200 ${openDropdown ? "rotate-180" : ""}`}
-            />
+            
+           <span className={`w-4 h-4 transition-transform duration-200 ${openDropdown ? "rotate-180" : ""}`}> <IconChervDown/></span>
           </button>
 
           {openDropdown && (
@@ -289,11 +298,13 @@ const CryptoTable: React.FC = () => {
                     </div>
 
                     <button
-                      className="rounded-full hover:bg-gray-100 transition"
+                      className="rounded-full  transition"
                       onClick={() => isMobile && setOpenModalId(index)}
                     >
-                      <MoreVertical className="w-4 h-4 text-blue2 block group-hover:hidden" />
-                      <MoreHorizontal className="w-4 h-4 text-blue2 hidden group-hover:block" />
+                      <span className="w-4 h-4 text-blue2 block group-hover:hidden"><IconMoreHorizental/></span>
+                     
+                      <span  className="w-4 h-4 text-blue2 hidden group-hover:block"><IconMoreHorizental/></span>
+                    
                     </button>
 
                     {!isMobile && (
@@ -355,4 +366,4 @@ const CryptoTable: React.FC = () => {
   );
 };
 
-export default CryptoTable;
+export default WalletAssets;

@@ -1,6 +1,6 @@
 import { useState, FC, useEffect, useRef } from "react";
-import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
+import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 
 interface Option {
   value: string;

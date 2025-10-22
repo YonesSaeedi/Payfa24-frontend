@@ -69,11 +69,11 @@ const TicketPanel: React.FC = () => {
                 <OptionSelector
                   options={[
                     { id: "order", label: "پیگیری سفارش", icon: <IconOrderTracking /> },
-                    { id: "identity", label: "احراز هویت", icon: <span className="icon-wrapper text-black2"><IconAuthentication /></span> },
-                    { id: "tech", label: "فنی", icon: <span className="icon-wrapper text-black2"><Icontechnical /></span> },
-                    { id: "finance", label: "مالی", icon: <span className="icon-wrapper text-black2"><IconFinanchial /></span> },
+                    { id: "identity", label: "احراز هویت", icon: <span className="icon-wrapper text-black2 "><IconAuthentication /></span> },
+                    { id: "tech", label: "فنی", icon: <span className="icon-wrapper text-black2 "><Icontechnical /></span> },
+                    { id: "finance", label: "مالی", icon: <span className="icon-wrapper text-black2 "><IconFinanchial /></span> },
                   ]}
-                  defaultActive="order"
+                
                   onSelect={handleTabSelect}
                 />
               </div>

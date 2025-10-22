@@ -22,7 +22,7 @@ export default function SocialLinks({
           <InstagramIcon />
         </span>
       ),
-      href: "#",
+      href: "https://www.instagram.com/yourusername",
     },
     {
       icon: (
@@ -30,7 +30,7 @@ export default function SocialLinks({
           <LinkdinIcon />
         </span>
       ),
-      href: "#",
+      href: "https://www.linkedin.com/in/yourusername",
     },
     {
       icon: (
@@ -38,7 +38,7 @@ export default function SocialLinks({
           <YoutubeIcon />
         </span>
       ),
-      href: "#",
+      href: "https://www.youtube.com/channel/yourchannel",
     },
     {
       icon: (
@@ -46,20 +46,21 @@ export default function SocialLinks({
           <TelegramIcon />
         </span>
       ),
-      href: "#",
+      href:"https://t.me/yourusername",
     },
   ];
 
   return (
     <div className="flex gap-4">
       {socialLinks.map(({ icon, href }, i) => (
-        <a
-          key={i}
-          href={href}
-          className={`w-10 h-10 flex items-center justify-center rounded-full border ${borderColor} transition`}
-        >
-          {icon}
-        </a>
+      <a
+  key={i}
+  href={href}
+  className={`w-10 h-10 flex items-center justify-center rounded-full border ${borderColor} transition transform hover:shadow-lg hover:scale-110`}
+>
+  {icon}
+</a>
+
       ))}
     </div>
   );

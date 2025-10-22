@@ -18,7 +18,6 @@ export const ROUTES = {
   MULTI_FACTOR: "/multi-factor",
   GOOGLE_AUTH_FLOW: "/google-auth-flow",
   ADD_FRIEND: "/add-friend",
-  DEPOSIT: "/deposit",
   CONNECTED_DEVICES: "/services/connected-devices",
   FAQ: "/services/faq",
   BANK_CARDS: "/services/bank-cards",
@@ -40,7 +39,13 @@ export const ROUTES = {
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },
-
+  DEPOSIT: "/deposit",
+  DEPOSIT_GATEWAY: "/deposit/gateway",
+  DEPOSIT_IDENTIFIER: "/deposit/identifier",
+  DEPOSIT_CARD: "/deposit/card",
+  DEPOSIT_RECEIPT: "/deposit/receipt",
+  DEPOSIT_WALLET: "/deposit/wallet",
+  DEPOSIT_TXID: "/deposit/txid",
 
   DEPOSIT_GATEWAY: "/deposit/gateway",
   DEPOSIT_IDENTIFIER: "/deposit/identifier",

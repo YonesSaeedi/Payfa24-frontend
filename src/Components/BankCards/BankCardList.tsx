@@ -125,7 +125,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
 
   return (
     <div dir="rtl ">
-      <h2 className="text-xl font-bold mb-8">کارت‌های من</h2>
+      <h2 className=" mb-8 text-2xl font-bold text-black1">کارت‌های من</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {cards.map((card) => {
           const logoSrc = getBankLogo(card.bankName);
@@ -158,7 +158,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
 
               <div dir="rtl" className="relative z-10 flex justify-end flex-col pt-6">
                 <p className="text-sm pb-1 text-black1">شماره کارت</p>
-                <div className="text-lg mb-2 text-black1">{card.number}</div>
+                <div className="text-lg mb-2 text-black1 font-medium">{card.number}</div>
               </div>
 
               <div className="relative z-10 flex justify-between flex-row-reverse pt-2 items-center">
@@ -177,7 +177,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
 
                 <div className="flex flex-col">
                   <p className="text-black1">دارنده کارت</p>
-                  <div className="text-sm text-black1 mb-2"> {card.holder || userData?.user.name_display || "—"}</div>
+                  <div className="text-sm text-black1 mb-2 font-medium"> {card.holder || userData?.user.name_display || "—"}</div>
                 </div>
               </div>
             </div>
