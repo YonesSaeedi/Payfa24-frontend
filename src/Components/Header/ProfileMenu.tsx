@@ -14,6 +14,7 @@ import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 import { ROUTES } from "../../routes/routes"; // مسیر را متناسب با پروژه خود اصلاح کنید
 import { apiRequest } from "../../utils/apiClient";
 import useGetUser from "../../hooks/useGetUser"; // مسیر رو متناسب با پروژه درست کن
+import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 
 
 
@@ -32,7 +33,8 @@ export default function ProfileMenu({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [IsModal, setIsModal] = useState(false);
   const { data: userData, isLoading } = useGetUser();
-  
+  const [openSecurity, setOpenSecurity] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,15 +123,40 @@ export default function ProfileMenu({
               حساب کاربری
             </li>
           </Link>
+<li
+  className="flex flex-col cursor-pointer text-black1"
+  onClick={() => setOpenSecurity(!openSecurity)}
+>
+  <div className="flex items-center justify-between hover:text-blue2 pt-2">
+    <div className="flex items-center gap-2">
+      <span className="w-6 h-6">
+        <IconSecurity />
+      </span>
+      تنظیمات امنیت
+    </div>
 
-          <Link to={"/Security settings"} className="flex items-center gap-2 w-full">
-            <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
-              <span className="w-6 h-6">
-                <IconSecurity />
-              </span>{" "}
-              تنظیمات امنیت
-            </li>
-          </Link>
+    {/* 🔽 آیکن فلش (خودت import کن) */}
+    <span
+      className={`w-5 h-5 transition-transform duration-300 ${
+        openSecurity ? "rotate-180" : "rotate-0"
+      }`}
+    >
+      <IconChervDown/>
+    </span>
+  </div>
+
+  {openSecurity && (
+    <ul className="pr-8 pt-2 space-y-2 text-gray-600 text-sm">
+      <Link to={ROUTES.MULTI_FACTOR} className="flex items-center gap-2 hover:text-blue2 px-2 pt-4">
+        <li>ورود دو مرحله‌ای</li>
+      </Link>
+      <Link to={ROUTES.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-2 pt-2">
+        <li>تغییر رمز عبور</li>
+      </Link>
+    </ul>
+  )}
+</li>
+
           <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
               <span className="w-6 h-6">
