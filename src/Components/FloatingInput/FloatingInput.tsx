@@ -47,7 +47,7 @@ const FloatingInput: FC<FloatingInputProps> = ({
         className={`
           block w-full px-3 ${heightClass} border rounded-md z-10
           focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 
-          ${borderClass} ${className} ${placeholderColor ? `placeholder-${placeholderColor}` : "placeholder-black0"}`}
+          ${borderClass} ${placeholderColor ? `placeholder-${placeholderColor}` : "placeholder-black0"}  ${className}`}
       />
     </div>
   );

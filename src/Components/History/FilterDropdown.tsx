@@ -47,20 +47,23 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
   return (
     <div ref={dropdownRef} className={`relative text-sm  ${className || "w-44"}`}>
-      <button
-        onClick={() => onToggle(id)}
-        className="flex justify-between items-center w-full px-3 py-2 border border-gray20 rounded-lg bg-white1  text-black0"
-      >
-        <span dir="rtl" className="justify-start">{selected || label}</span>
-        <span 
-          className={`w-4 h-4 transition-transform duration-200 justify-end ${isOpen ? "rotate-180" : ""} `}><IconChervDown/></span>
-        
-      </button>
+    <button
+  onClick={() => onToggle(id)}
+  className={`flex justify-between items-center w-full px-3 py-2 rounded-lg text-black0 border
+    ${isOpen ? "border-blue2" : "border-gray21"}`}
+>
+  <span dir="rtl" className="justify-start">{selected || label}</span>
+  <span 
+    className={`w-4 h-4 transition-transform duration-200 justify-end ${isOpen ? "rotate-180" : ""}`}>
+    <IconChervDown/>
+  </span>
+</button>
+
 
       {isOpen && (
         <div
           dir="rtl"
-          className={`absolute top-full mt-1 w-full bg-white8 rounded-lg z-20  border border-gray12 text-black0`}
+          className={`absolute top-full mt-1 w-full bg-white8 rounded-lg z-20  border border-gray21 text-black0  shadow-md`}
         >
           {options.map((option, idx) => (
             <div

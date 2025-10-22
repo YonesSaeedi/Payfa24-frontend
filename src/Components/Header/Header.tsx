@@ -36,6 +36,7 @@ export default function Header() {
   const [showServices, setShowServices] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -61,8 +62,13 @@ useEffect(() => {
 
   const { toggleTheme } = themeContext;
 
+  const toggleServices = () => {
+  setShowServices(prev => !prev);
+};
+
+
   return (
-    <header className="bg-white dark:bg-gray29  dark:text-white sticky top-0 z-50 ">
+    <header className="bg-white dark:bg-gray29  dark:text-white fixed left-0 w-full z-[1000]  ">
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-4 lg:px-6">
         {/* Left Section */}
         <div className="flex gap-3 md:gap-4 text-gray-600 items-center">
@@ -137,7 +143,7 @@ useEffect(() => {
           <ul className="hidden lg:flex space-x-6 xl:space-x-8 text-gray1">
             <li className="relative pr-4">
               <button
-                onClick={() => setShowServices(!showServices)}
+               onClick={toggleServices}
                 className="hover:text-blue-600 transition flex items-center"
               >
                 خدمات
@@ -145,9 +151,7 @@ useEffect(() => {
                   {showServices ? <CategoryActiveIcon /> : <CategoryIcon />}
                 </span>
               </button>
-              {showServices && (
-                <ServicesBox onClose={() => setShowServices(false)} />
-              )}
+              
             </li>
 
             <li className="pr-4">

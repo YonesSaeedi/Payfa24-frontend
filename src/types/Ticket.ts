@@ -2,10 +2,12 @@ export  interface TicketFormInputs {
   title: string;
   orderId: string;
   description: string;
-  file: FileList;
+  file?: FileList;
 }
 
 export  interface TicketNewResponse {
+  status?: boolean;
+  msg?: string;
   subject: string;
   order: number;
   message: string;

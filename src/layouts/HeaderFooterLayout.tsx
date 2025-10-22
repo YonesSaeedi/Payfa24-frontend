@@ -9,7 +9,9 @@ const HeaderFooterLayout = ({ children }: HeaderFooterLayoutProps) => {
   return (
     <div className="flex flex-col justify-between">
       <Header />
-      {children}
+    <div className="pt-[64px]"> {/* فاصله محتوا از هدر */}
+        {children}
+      </div>
       <Footer />
     </div>
   );

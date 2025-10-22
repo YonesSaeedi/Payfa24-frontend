@@ -88,8 +88,8 @@ const TomanPage: React.FC = () => {
     return (
         <div dir="rtl">
             {/* هدر */}
-            <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end container-style">
-                <h1 className="hidden lg:block">تاریخچه تراکنش ها</h1>
+            <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end ">
+                <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه تراکنش های تومانی</h1>
               
             </div>
 
@@ -178,14 +178,14 @@ const TomanPage: React.FC = () => {
                                             <span className="font-normal text-sm text-gray-500">IRT</span>
                                         </div>
                                     </div>
-                                    <div className="text-center">{tx.amount}</div>
-                                    <div className="text-center">{transactionTypeMap[tx.type] || tx.type}</div>
-                                    <div className="text-center">{tx.description}</div>
-                                    <div className="text-center">
+                                    <div className="text-center font-normal text-base">{tx.amount}</div>
+                                    <div className="text-center font-normal text-base">{transactionTypeMap[tx.type] || tx.type}</div>
+                                    <div className="text-center font-normal text-base">{tx.description}</div>
+                                    <div className="text-center font-normal text-base">
                                         <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                                     </div>
                                     <div className="text-center">{tx.DateTime}</div>
-                                    <div className="text-blue-600 cursor-pointer text-center" onClick={() => handleOpenModal(tx)}>
+                                    <div className="text-blue-600 cursor-pointer text-center font-normal text-[16px]" onClick={() => handleOpenModal(tx)}>
                                         جزئیات
                                     </div>
                                 </div>
@@ -204,7 +204,7 @@ const TomanPage: React.FC = () => {
                 <div className="block lg:hidden space-y-4 mt-4">
                     {responseData.length > 0 ? (
                         responseData.map((tx) => (
-                            <div key={tx.id} className="border rounded-xl p-4">
+                            <div key={tx.id} className="border rounded-xl p-4 border-gray21">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center gap-2">
                                         <span className="w-10 h-10 flex items-center justify-center object-cover">
@@ -222,24 +222,24 @@ const TomanPage: React.FC = () => {
                                     <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                                 </div>
 
-                                <div className="text-sm space-y-1">
+                                <div className="text-sm space-y-1 pt-5">
 
-                                    <p className="flex justify-between">
-                                        نوع: <span className="font-medium">{transactionTypeMap[tx.type] || tx.type}</span>
+                                    <p className="flex justify-between pb-4 font-medium text-[12px]">
+                                        نوع: <span className=" font-normal text-[14px]">{transactionTypeMap[tx.type] || tx.type}</span>
                                     </p>
-                                    <p className="flex justify-between">
-                                        قیمت : <span className="font-medium">{tx.amount}</span>
+                                    <p className="flex justify-between  pb-4 font-medium text-[12px]">
+                                        قیمت : <span className="font-normal text-[14px]">{tx.amount}</span>
                                     </p>
-                                    <p className="flex justify-between">
-                                        تاریخ تراکنش : <span className="font-medium">{tx.DateTime}</span>
+                                    <p className="flex justify-between  pb-4 font-medium text-[12px]">
+                                        تاریخ تراکنش : <span className="font-normal text-[14px]">{tx.DateTime}</span>
                                     </p>
-                                    <p className="flex justify-between">
-                                        توضیحات: <span className="font-medium">{tx.description}</span>
+                                    <p className="flex justify-between  pb-4 font-medium text-[12px]">
+                                        توضیحات: <span className="font-normal text-[14px]">{tx.description}</span>
                                     </p>
                                 </div>
 
                                 <div
-                                    className="text-blue-600 text-sm mt-3 cursor-pointer border-t pt-2 text-center"
+                                    className="text-blue-600 text-sm mt-3 cursor-pointer border-t pt-3 border-gray21  text-center font-bold text-[14px]"
                                     onClick={() => handleOpenModal(tx)}
                                 >
                                     جزئیات تراکنش
@@ -263,7 +263,7 @@ const TomanPage: React.FC = () => {
             )}
 
             {/* مودال‌ها */}
-            {selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)} />}
+            {selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)}   />}
           
         </div>
     );
