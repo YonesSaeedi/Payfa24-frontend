@@ -180,7 +180,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 
     const labelStyleClass =
       isFocused || value || hasError
-        ? `top-[-12px] right-[13px] text-sm ${hasError ? "text-red1" : "text-blue2"} ${
+        ? `top-[-12px] right-[13px] lg:text-sm text-xs ${hasError ? "text-red1" : "text-blue2"} ${
             labelBgClass || ""
           }`
         : "top-1/2 -translate-y-1/2 text-xs text-gray5 bg-transparent";
@@ -194,7 +194,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           id={inputId}
           type={type}
 
-          className={`w-full lg:h-[56px] h-[48px] rounded-xl border px-4 pt-3 pb-1 text-[14px] font-normal transition-all duration-200 focus:outline-none 
+          className={`w-full lg:h-[56px] h-[48px] rounded-xl border px-4  pb-1 text-sm font-normal transition-all duration-200 focus:outline-none 
     ${theme === "dark" ? "bg-transparent text-black2" : " text-gray12"} 
     ${borderColorClass} 
     ${inputBgClass || ""}   // ✅ اضافه کردن کلاس بک‌گراند

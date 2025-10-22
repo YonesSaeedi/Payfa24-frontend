@@ -15,11 +15,11 @@ type Props = {
 export default function AuthenticationLayoutAdvance({ text1, text2, step, setStep, children, }: Props) {
 
   return (
-    <div className="w-full bg-white1 overflow-x-hidden">
-      <div className="w-full lg:container-style my-7 px-4 py-2"><BreadcrumbNavigation /></div>
-      <div className="w-full lg:container-style flex flex-col md:flex-row px-4 lg:px-8">
+    <div className="w-full bg-white1 container-style">
+      <div className="w-full  my-7 py-2"><BreadcrumbNavigation /></div>
+      <div className="w-full flex flex-col md:flex-row ">
         {/* ستون سمت چپ */}
-        <div className={`w-full h-full p-4 flex items-center justify-center ${step === 0 ? "lg:w-1/2 lg:flex hidden" : "lg:w-full flex"}`}>
+        <div className={`w-full h-full  flex items-center justify-center ${step === 0 ? "lg:w-1/2 lg:flex hidden" : "lg:w-full flex"}`}>
           {step === 0 ?
             <AuthenticationLeft step={step} text1={text1} text2={text2} />
             :
@@ -27,7 +27,7 @@ export default function AuthenticationLayoutAdvance({ text1, text2, step, setSte
           }
         </div>
         {/* ستون راست */}
-        <div className={`w-full p-4 flex items-center justify-center ${step === 0 ? "lg:w-1/2 flex" : "lg:flex hidden"}`}>
+        <div className={`w-full py-4 flex items-center justify-center ${step === 0 ? "lg:w-1/2 flex" : "lg:flex hidden"}`}>
           <AuthenticationRightAdvance step={step} onStart={() => setStep(1)} />
         </div>
       </div>

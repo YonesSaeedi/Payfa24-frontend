@@ -93,14 +93,14 @@ export default function Advance() {
 
   return (
     <HeaderLayout>
-      <div className="w-full px-4 py-2">
+      {/* <div className="w-full px-4 py-2">
         <BreadcrumbNavigation />
-      </div>
+      </div> */}
       <AuthenticationLayoutAdvance
         step={step}
         setStep={setStep}
-        text1="احراز هویت سطح پایه شما با موفقیت انجام شد!"
-        text2="برای دسترسی به تمام امکانات و افزایش امنیت، لطفاً احراز هویت پیشرفته را تکمیل نمایید."
+        text1="! احراز هویت سطح پایه شما با موفقیت انجام شد "
+        text2="برای دسترسی به تمام امکانات و افزایش امنیت، لطفاً احراز هویت پیشرفته را تکمیل نمایید"
       >
         <div className="flex flex-col items-center justify-center gap-6 w-full overflow-x-hidden">
           {step === 0 && null}
