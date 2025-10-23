@@ -1,10 +1,10 @@
 
 
  import IconSearch from "../../assets/icons/market/IconSearch";
-import ContactBox from "../../Components/FAQ/ContactBox";
-import FAQTabs from "../../Components/FAQ/FAQTabs";
-import TradeLayoutFAQ from "../../Components/trade/TradeLayoutFAQ";
-import { FAQData } from "../../Data/faqData";
+import ContactBox from "../../components/FAQ/ContactBox";
+import FAQTabs from "../../components/FAQ/FAQTabs";
+import TradeLayoutFAQ from "../../components/trade/TradeLayoutFAQ";
+import { FAQData } from "../../data/faqData";
 import  question from "./../../assets/images/FAQ/FAQ.png"
 import questionDark from "./../../assets/images/FAQ/questionDark.png"
 import questions from "./../../assets/images/FAQ/question.png"

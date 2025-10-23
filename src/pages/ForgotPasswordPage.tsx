@@ -1,21 +1,20 @@
-// ✳️ کد کامل و به‌روز
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "react-toastify";
-
 import AuthLayout from "../layouts/AuthLayout";
 import imageForgetDark from "../assets/imageForgetDark.png";
 import imageForgetLight from "../assets/imageForgetLight.png";
-import { ThemeContext } from "../Context/ThemeContext";
-import TextField from "../Components/InputField/TextField";
+import { ThemeContext } from "../context/ThemeContext";
+import TextField from "../components/InputField/TextField";
 import { getForgotPasswordSchema } from "../utils/validationSchemas";
 import { apiRequest } from "../utils/apiClient";
-import OTPModal from "../Components/OTPModal";
+import OTPModal from "../components/OTPModal";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import IconClose from "../assets/Icons/Login/IconClose";
+import { AxiosError } from "axios";
 
 type FormData = {
   email: string;
@@ -116,7 +115,6 @@ export default function ForgotPasswordPage() {
       setFormData(data);
       const payload = buildPayload(data.email, recaptchaToken, "");
       const response = await apiRequest({ url: "/api/auth/forget", method: "POST", data: payload });
-
       if (response.status) {
         setContactMethod(emailRegex.test(data.email) ? "email" : "phone");
         setIsOpen(true);
@@ -130,8 +128,8 @@ export default function ForgotPasswordPage() {
       } else {
         console.error("Forgot password failed:", response);
       }
-    } catch (err: any) {
-      toast.error(err.response?.data.msg || "خطا در ارسال");
+    } catch (err) {
+      toast.error((err as AxiosError<{ msg?: string }>).response?.data.msg || "خطا در ارسال");
     } finally {
       setIsLoading(false);
     }
@@ -144,7 +142,6 @@ export default function ForgotPasswordPage() {
       const recaptchaToken = await executeRecaptcha("forgot_password_confirm");
       const payload = buildPayload(formData.email, recaptchaToken, otpCode);
       const response = await apiRequest({ url: "/api/auth/forget", method: "POST", data: payload });
-
       if (response.status) {
         setIsOpen(false);
         navigate("/forgot-password-set-password", {
@@ -153,8 +150,8 @@ export default function ForgotPasswordPage() {
       } else {
         console.error("OTP confirm failed:", response);
       }
-    } catch (err: any) {
-      console.error("OTP confirm error:", err.response?.data || err.message);
+    } catch (err) {
+      toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || 'تایید کد با مشکل مواجه شد!')
     } finally {
       setIsLoading(false);
     }
@@ -172,13 +169,8 @@ export default function ForgotPasswordPage() {
       <div className="flex items-center justify-center pb-8 w-full" dir="rtl">
         <div>
           <form onSubmit={handleSubmit(onSubmit)} className="w-full flex items-center flex-col px-10">
-            <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
-              فراموشی رمز عبور
-            </h1>
-            <p className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1">
-              برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید
-            </p>
-
+            <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">فراموشی رمز عبور</h1>
+            <p className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1">برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید</p>
             <Controller
               name="email"
               control={control}
@@ -193,24 +185,20 @@ export default function ForgotPasswordPage() {
                 />
               )}
             />
-
             <button
               type="submit"
               disabled={disableButton || isLoading}
-              className={`h-[48px] w-full rounded-xl font-bold text-lg text-white transition-colors duration-300 ${
-                disableButton ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
-              } lg:mt-14 mt-12`}
+              className={`h-[48px] w-full rounded-xl font-bold text-lg text-white transition-colors duration-300 ${disableButton ? "bg-gray5 cursor-not-allowed" : "bg-blue2"} lg:mt-14 mt-12`}
             >
               {isLoading
                 ? "در حال بررسی..."
                 : disableButton
-                ? `لطفا ${disableTimer} ثانیه صبر کنید`
-                : "ادامه"}
+                  ? `لطفا ${disableTimer} ثانیه صبر کنید`
+                  : "ادامه"}
             </button>
           </form>
         </div>
       </div>
-
       {/* --- OTP Modal --- */}
       {isOpen && (
         <>
@@ -240,9 +228,8 @@ export default function ForgotPasswordPage() {
 
               <div className="flex justify-between flex-row-reverse mb-4">
                 <button
-                  className={`flex items-center gap-1 text-gray12 ${
-                    canResend ? "cursor-pointer" : "cursor-not-allowed"
-                  }`}
+                  className={`flex items-center gap-1 text-gray12 ${canResend ? "cursor-pointer" : "cursor-not-allowed"
+                    }`}
                   onClick={handleResend}
                   disabled={!canResend}
                 >
@@ -269,9 +256,8 @@ export default function ForgotPasswordPage() {
                 <button
                   onClick={handleConfirm}
                   disabled={otpCode.length !== 6}
-                  className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${
-                    otpCode.length !== 6 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
-                  }`}
+                  className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${otpCode.length !== 6 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
+                    }`}
                 >
                   تایید
                 </button>

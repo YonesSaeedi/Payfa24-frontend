@@ -1,10 +1,10 @@
 import { useState } from "react";
 import AuthenticationLayout from "../../layouts/AuthenticationLayoutBasic";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import StepEmail from "../../Components/auth/step/StepBasic/StepEmail";
-import StepPersonal from "../../Components/auth/step/StepBasic/StepPersonal";
-import StepCard from "../../Components/auth/step/StepBasic/StepCard";
-import StepZiro from "../../Components/auth/step/StepBasic/StepZiro";
+import StepEmail from "../../components/auth/step/StepBasic/StepEmail";
+import StepPersonal from "../../components/auth/step/StepBasic/StepPersonal";
+import StepCard from "../../components/auth/step/StepBasic/StepCard";
+import StepZiro from "../../components/auth/step/StepBasic/StepZiro";
 
 export default function AuthenticationBasic() {
   const [step, setStep] = useState(0);

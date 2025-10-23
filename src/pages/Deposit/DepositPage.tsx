@@ -6,15 +6,15 @@ import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
 import IconWallet from "../../assets/icons/Deposit/IconWallet";
 import IconLink from "../../assets/icons/Deposit/IconLink";
 import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
-import DepositForm from "../../Components/Deposit/DepositForm";
-import CardToCardTransfer from "../../Components/Deposit/CardToCardTransfer";
-import DepositWithTxID from "../../Components/Deposit/DepositWithTxID";
+import DepositForm from "../../components/Deposit/DepositForm";
+import CardToCardTransfer from "../../components/Deposit/CardToCardTransfer";
+import DepositWithTxID from "../../components/Deposit/DepositWithTxID";
 
 import { apiRequest } from "../../utils/apiClient";
-import DepositDedicatedWallet from "../../Components/Deposit/DepositDedicatedWallet";
+import DepositDedicatedWallet from "../../components/Deposit/DepositDedicatedWallet";
 
-import DepositwithIdentifier from "../../Components/Deposit/DepositWithIdentifier";
-import DepositBankReceipt from "../../Components/Deposit/DepositBankReceipt";
+import DepositwithIdentifier from "../../components/Deposit/DepositWithIdentifier";
+import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
 import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
 

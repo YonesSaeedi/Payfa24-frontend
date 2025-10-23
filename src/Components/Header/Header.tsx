@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import { ThemeContext } from "./../../Context/ThemeContext";
+import { ThemeContext } from "../../context/ThemeContext";
 
 import MessagesIcon from "../../assets/icons/header/MessagesIcon";
 import CategoryIcon from "../../assets/icons/header/CategoryIcon";

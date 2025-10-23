@@ -1,4 +1,4 @@
-// Components/BankCards/SkeletonCard.tsx
+// components/BankCards/SkeletonCard.tsx
 import React from "react";
 
 const SkeletonCard: React.FC = () => {

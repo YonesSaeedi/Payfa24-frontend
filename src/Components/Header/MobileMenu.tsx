@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { ThemeContext } from "../../Context/ThemeContext";
+import { ThemeContext } from "../../context/ThemeContext";
 
 // آیکون‌های اختصاصی پروژه‌ت
 import HomeIcon from "../../assets/icons/header/HomeIcon";

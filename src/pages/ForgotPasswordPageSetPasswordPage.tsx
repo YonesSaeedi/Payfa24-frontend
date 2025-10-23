@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router';
-import TextField from '../Components/InputField/TextField';
-import PasswordConditionItem from '../Components/InputField/PasswordConditionitem/PasswordConditionItem';
+import TextField from '../components/InputField/TextField';
+import PasswordConditionItem from '../components/InputField/PasswordConditionitem/PasswordConditionItem';
 import IconEyeOpen from '../assets/Icons/Login/IconEyeOpen';
 import IconEyeClosed from '../assets/Icons/Login/IconEyeClosed';
 import { apiRequest } from '../utils/apiClient';
@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import AuthLayout from '../layouts/AuthLayout';
 import imageForgetDark from "../assets/imageForgetDark.png";
 import imageForgetLight from "../assets/imageForgetLight.png";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext } from "../context/ThemeContext";
 
 type PasswordFormData = {
   password: string;

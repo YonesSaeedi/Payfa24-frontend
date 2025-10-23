@@ -1,4 +1,4 @@
-import BuyAndSell from "../../Components/trade/BuyAndSell"
+import BuyAndSell from "../../components/trade/BuyAndSell"
 
 const Buy = () => {
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 
-import OptionSelector from "../../Components/Ticket/CategorySelector";
+import OptionSelector from "../../components/Ticket/CategorySelector";
 import Icontechnical from "../../assets/icons/ticket/Icontechnical";
 
 import IconOrderTracking from "../../assets/icons/ticket/IconOrderTracking";

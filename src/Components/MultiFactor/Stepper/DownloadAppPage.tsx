@@ -1,6 +1,6 @@
 // import React from "react";
 // import Google from "../../../assets/Icons/MultiFactor/Google.png";
-// // import StepperGoogle from "../../Components/MultiFactor/Stepper/StepperGoogle";
+// // import StepperGoogle from "../../components/MultiFactor/Stepper/StepperGoogle";
 // // import { useState } from "react";
 
 // export default function DownloadApp({ onNext }: { onNext: () => void }) {

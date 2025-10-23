@@ -1,13 +1,13 @@
-import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ThemeContext } from "../../Context/ThemeContext";
-import TextField from "../../Components/InputField/TextField";
+import { ThemeContext } from "../../context/ThemeContext";
+import TextField from "../../components/InputField/TextField";
 import IconEyeOpen from "../../assets/Icons/Login/IconEyeOpen";
 import IconEyeClosed from "../../assets/Icons/Login/IconEyeClosed";
-import PasswordConditionItem from "../../Components/InputField/PasswordConditionitem/PasswordConditionItem";
+import PasswordConditionItem from "../../components/InputField/PasswordConditionitem/PasswordConditionItem";
 import { useState } from "react";
 import { Link } from "react-router";
 import { getChangePasswordSchema } from "../../utils/validationSchemas";
