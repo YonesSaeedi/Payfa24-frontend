@@ -1,16 +1,16 @@
 import { useContext } from "react";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext } from "../context/ThemeContext";
 import Logo from "/pf.png";
 import MoonIcon from "../assets/Icons/HeaderLogin/MoonIcon";
 import SupportIcon from "../assets/Icons/HeaderLogin/SupportIcon";
 
 
 
+interface AuthLayoutProps {
+  children: React.ReactNode;
+  image?: string;
+}
 export default function AuthLayout({ children, image }: AuthLayoutProps) {
-  interface AuthLayoutProps {
-    children: React.ReactNode;
-    image?: string;
-  }
 
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");

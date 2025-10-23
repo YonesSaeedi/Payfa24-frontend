@@ -1,4 +1,3 @@
-// ✳️ کد کامل و به‌روز
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
@@ -9,11 +8,11 @@ import { toast } from "react-toastify";
 import AuthLayout from "../layouts/AuthLayout";
 import imageForgetDark from "../assets/imageForgetDark.png";
 import imageForgetLight from "../assets/imageForgetLight.png";
-import { ThemeContext } from "../Context/ThemeContext";
-import TextField from "../Components/InputField/TextField";
+import { ThemeContext } from "../context/ThemeContext";
+import TextField from "../components/InputField/TextField";
 import { getForgotPasswordSchema } from "../utils/validationSchemas";
 import { apiRequest } from "../utils/apiClient";
-import OTPModal from "../Components/OTPModal";
+import OTPModal from "../components/OTPModal";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import IconClose from "../assets/Icons/Login/IconClose";
 
@@ -35,7 +34,9 @@ export default function ForgotPasswordPage() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [otpCode, setOtpCode] = useState("");
-  const [contactMethod, setContactMethod] = useState<"phone" | "email">("email");
+  const [contactMethod, setContactMethod] = useState<"phone" | "email">(
+    "email"
+  );
   const [formData, setFormData] = useState<FormData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(120);
@@ -57,10 +58,15 @@ export default function ForgotPasswordPage() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const iranMobileRegex = /^09\d{9}$/;
 
-  const buildPayload = (value: string, recaptcha: string, code: string | null) => {
+  const buildPayload = (
+    value: string,
+    recaptcha: string,
+    code: string | null
+  ) => {
     const trimmed = value.trim();
-    if (emailRegex.test(trimmed)) return { code, email: trimmed, recaptcha };
-    if (iranMobileRegex.test(trimmed)) return { code, mobile: trimmed, recaptcha };
+    if (emailRegex.test(trimmed)) return { code: code || "", email: trimmed, recaptcha };
+    if (iranMobileRegex.test(trimmed))
+      return { code: code || "", mobile: trimmed, recaptcha };
     throw new Error("ایمیل یا شماره موبایل معتبر نیست.");
   };
 
@@ -83,7 +89,7 @@ export default function ForgotPasswordPage() {
     let interval: NodeJS.Timeout;
     if (disableButton && disableTimer > 0) {
       interval = setInterval(() => {
-        setDisableTimer(prev => {
+        setDisableTimer((prev) => {
           if (prev <= 1) {
             setDisableButton(false);
             localStorage.removeItem(STORAGE_KEY);
@@ -101,7 +107,7 @@ export default function ForgotPasswordPage() {
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isOpen && resendTimer > 0) {
-      interval = setInterval(() => setResendTimer(prev => prev - 1), 1000);
+      interval = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
     } else if (resendTimer === 0) {
       setCanResend(true);
     }
@@ -115,9 +121,13 @@ export default function ForgotPasswordPage() {
       const recaptchaToken = await executeRecaptcha("forgot_password");
       setFormData(data);
       const payload = buildPayload(data.email, recaptchaToken, "");
-      const response = await apiRequest({ url: "/api/auth/forget", method: "POST", data: payload });
+      const response = await apiRequest({
+        url: "/api/auth/forget",
+        method: "POST",
+        data: payload,
+      });
 
-      if (response.status) {
+      if ((response as any).status) {
         setContactMethod(emailRegex.test(data.email) ? "email" : "phone");
         setIsOpen(true);
         setResendTimer(120);
@@ -143,12 +153,16 @@ export default function ForgotPasswordPage() {
     try {
       const recaptchaToken = await executeRecaptcha("forgot_password_confirm");
       const payload = buildPayload(formData.email, recaptchaToken, otpCode);
-      const response = await apiRequest({ url: "/api/auth/forget", method: "POST", data: payload });
+      const response = await apiRequest({
+        url: "/api/auth/forget",
+        method: "POST",
+        data: payload,
+      });
 
-      if (response.status) {
+      if ((response as any).status) {
         setIsOpen(false);
         navigate("/forgot-password-set-password", {
-          state: { username: formData.email, tokenForget: response.tokenForget },
+          state: { username: formData.email, tokenForget: (response as any).tokenForget },
         });
       } else {
         console.error("OTP confirm failed:", response);
@@ -171,7 +185,10 @@ export default function ForgotPasswordPage() {
     <AuthLayout image={theme === "dark" ? imageForgetDark : imageForgetLight}>
       <div className="flex items-center justify-center pb-8 w-full" dir="rtl">
         <div>
-          <form onSubmit={handleSubmit(onSubmit)} className="w-full flex items-center flex-col px-10">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full flex items-center flex-col px-10"
+          >
             <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
               فراموشی رمز عبور
             </h1>
@@ -215,27 +232,44 @@ export default function ForgotPasswordPage() {
       {isOpen && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
-          <div className="fixed inset-0 flex items-center justify-center z-50" onClick={() => setIsOpen(false)}>
+          <div
+            className="fixed inset-0 flex items-center justify-center z-50"
+            onClick={() => setIsOpen(false)}
+          >
             <div
               className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center flex-row-reverse justify-between">
                 <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
-                  {contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
+                  {contactMethod === "phone"
+                    ? "تایید شماره همراه"
+                    : "تایید ایمیل"}
                 </h2>
-                <span className="icon-wrapper h-6 w-6 cursor-pointer" onClick={() => setIsOpen(false)}>
+                <span
+                  className="icon-wrapper h-6 w-6 cursor-pointer"
+                  onClick={() => setIsOpen(false)}
+                >
                   <IconClose />
                 </span>
               </div>
 
-              <p className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24" dir="rtl">
+              <p
+                className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24"
+                dir="rtl"
+              >
                 لطفا کد ارسالی به{" "}
-                {contactMethod === "phone" ? `شماره ${getValues("email")}` : `ایمیل ${getValues("email")}`} را وارد کنید.
+                {contactMethod === "phone"
+                  ? `شماره ${getValues("email")}`
+                  : `ایمیل ${getValues("email")}`}{" "}
+                را وارد کنید.
               </p>
 
               <div className="mt-[32px] mb-[48px]">
-                <OTPModal length={6} onChange={(val: string) => setOtpCode(val)} />
+                <OTPModal
+                  length={6}
+                  onChange={(val: string) => setOtpCode(val)}
+                />
               </div>
 
               <div className="flex justify-between flex-row-reverse mb-4">
@@ -270,7 +304,9 @@ export default function ForgotPasswordPage() {
                   onClick={handleConfirm}
                   disabled={otpCode.length !== 6}
                   className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${
-                    otpCode.length !== 6 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
+                    otpCode.length !== 6
+                      ? "bg-gray5 cursor-not-allowed"
+                      : "bg-blue2"
                   }`}
                 >
                   تایید

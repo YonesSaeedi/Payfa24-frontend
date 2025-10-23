@@ -1,11 +1,10 @@
 import HeaderLayout from "../../layouts/HeaderLayout";
 import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import TextField from "../../Components/InputField/TextField";
+import TextField from "../../components/InputField/TextField";
 import IconEyeOpen from "../../assets/Icons/Login/IconEyeOpen";
 import IconEyeClosed from "../../assets/Icons/Login/IconEyeClosed";
-import PasswordConditionItem from "../../Components/InputField/PasswordConditionitem/PasswordConditionItem";
+import PasswordConditionItem from "../../components/InputField/PasswordConditionitem/PasswordConditionItem";
 import { useState } from "react";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
@@ -72,7 +71,7 @@ export default function ChangePassword() {
           window.location.href = "/";
         }, 1500);
       } else {
-        toast.error(response.msg || "خطا در تغییر رمز عبور");
+        toast.error((res as any)?.msg || "خطا در تغییر رمز عبور");
       }
     } catch (error: any) {
       console.error(" API ERROR:", error);

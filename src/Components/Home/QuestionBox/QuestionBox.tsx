@@ -2,7 +2,7 @@
 import TradeLayoutFAQ from "../../trade/TradeLayoutFAQ";
 import question from "./../../../assets/images/Home/QuestionBoxIcon/question.png";
 import ArrowLeftIcon from "../../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
-import { FAQData } from "../../../Data/faqData";
+import { FAQData } from "../../../data/faqData";
 import { Link } from "react-router";
 import { ROUTES } from "../../../routes/routes";
 

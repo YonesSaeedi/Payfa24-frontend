@@ -1,7 +1,7 @@
 
 import HeaderLayout from "../../layouts/HeaderLayout";
-import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation";
-import ConnectedDevices from "../../Components/ConnectedDevices/ConnectedDevices";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
+import ConnectedDevices from "../../components/ConnectedDevices/ConnectedDevices";
 
 const ConnectedDevicesLayout = () => {
   return (

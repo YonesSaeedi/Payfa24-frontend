@@ -1,12 +1,12 @@
 
 
-import React, { useState } from "react";
-import DownloadAppPage from "../../Components/MultiFactor/Stepper/DownloadAppPage";
-import ScanQrCodePage from "../../Components/MultiFactor/Stepper/ScanQrCodePage";
-import EnterCodePage from "../../Components/MultiFactor/Stepper/EnterCodePage";
-import Stepper from "../../Components/MultiFactor/Stepper/Stepper";
+import  { useState } from "react";
+import DownloadAppPage from "../../components/MultiFactor/Stepper/DownloadAppPage";
+import ScanQrCodePage from "../../components/MultiFactor/Stepper/ScanQrCodePage";
+import EnterCodePage from "../../components/MultiFactor/Stepper/EnterCodePage";
+import Stepper from "../../components/MultiFactor/Stepper/Stepper";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 
 export default function GoogleAuthFlow() {
   const [currentStep, setCurrentStep] = useState(0);

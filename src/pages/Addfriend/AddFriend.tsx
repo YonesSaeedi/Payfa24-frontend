@@ -6,7 +6,7 @@ import inviteRightImg from "../../assets/images/Addfriend/inviteRight.png";
 import addFriendLight from "../../assets/images/Addfriend/addFriendLight.png";
 import addFriendDark from "../../assets/images/Addfriend/addFriendDark.png";
 import { useContext, useEffect, useRef, useState } from "react";
-import { ThemeContext } from "../../Context/ThemeContext";
+import { ThemeContext } from "../../context/ThemeContext";
 import IconGiftBox from "../../assets/Icons/AddFriend/IconGiftBox";
 import Gift from "../../assets/images/Addfriend/GiftInvitImg.png";
 import Share from "../../assets/images/Addfriend/shareimg.png";
@@ -14,9 +14,9 @@ import person from "../../assets/images/Addfriend/personimag.png";
 import gitImg from "../../assets/images/Addfriend/giftimag.png";
 import UserImg from "../../assets/images/Addfriend/User.png";
 import IconClose from "../../assets/Icons/Login/IconClose";
-import ReferralPercentBar from "../../Components/ReferralPercentBar";
+import ReferralPercentBar from "../../components/ReferralPercentBar";
 import { toast } from "react-toastify";
-import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
+// import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import {
   setReferralCommission,
   getReferralTransactions,
@@ -25,6 +25,7 @@ import {
   TransactionItem,
   ReferralReportResponse,
 } from "../../utils/api/referralApi";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 
 interface InvitedUserItem extends InvitedUserReportItem {}
 interface TransactionItemExt extends TransactionItem {}
@@ -43,8 +44,8 @@ export default function AddFriend() {
   const [selectedPercent, setSelectedPercent] = useState<number>(15);
   const [transactions, setTransactions] = useState<TransactionItemExt[]>([]);
   const [invitedUsers, setInvitedUsers] = useState<InvitedUserItem[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalTransactionPages, setTotalTransactionPages] = useState<number>(1);
+  const [currentPage, _setCurrentPage] = useState<number>(1);
+  const [_totalTransactionPages, setTotalTransactionPages] = useState<number>(1);
   const [referralReport, setReferralReport] = useState<ReferralReport | null>(
     null
   );

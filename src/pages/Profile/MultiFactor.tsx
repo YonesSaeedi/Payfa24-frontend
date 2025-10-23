@@ -1,21 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // این خط جدید است
-import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import EmailIcon from "../../assets/Icons/authentication/EmailIcon";
-import MultiFactorCard from "../../Components/MultiFactor/MultiFactorCard";
+import MultiFactorCard from "../../components/MultiFactor/MultiFactorCard";
 import Google from "../../assets/Icons/MultiFactor/Google.png";
 import MessagesIcon from "../../assets/Icons/MultiFactor/Iconmessages";
-import TwoFactorModal from "../../Components/MultiFactor/TwoFactorModal";
-import VerifyGooglePage from "./GoogleAuthFlow";
+import TwoFactorModal from "../../components/MultiFactor/TwoFactorModal";
 import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
 import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
 import { toast } from "react-toastify";
 import useGetUser from "../../hooks/useGetUser";
 import { useMemo } from "react";
 import { ROUTES } from "../../routes/routes";
-import IconAgain from "../../assets/Icons/Login/IconAgain";
-import OTPModal from "../../Components/OTPModal";
+import OTPModal from "../../components/OTPModal";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 

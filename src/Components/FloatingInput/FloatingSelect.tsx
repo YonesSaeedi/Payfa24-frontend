@@ -3,14 +3,14 @@ import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 
 interface Option {
-  value: string;
+  value?: string;
   label: string;
   icon?: React.ReactNode;
 }
 
 interface FloatingSelectProps {
   label: string;
-  value: string;
+  value?: string;
   options: Option[];
   onChange: (value: string) => void;
   placeholder?: string;

@@ -4,7 +4,7 @@
 import React, { useContext } from "react";
 import enticationDark from "../../../../assets/enticationDark.png";
 import enticationLight from "../../../../assets/enticationLight.png";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext } from "../../../../context/ThemeContext";
 
 // تعریف اینترفیس برای پراپ‌ها
 interface Props {

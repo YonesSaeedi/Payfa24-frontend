@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import { ThemeContext } from "../Context/ThemeContext";
-import TextField from "../Components/InputField/TextField";
+import { ThemeContext } from "../context/ThemeContext";
+import TextField from "./InputField/TextField";
 import IconAlert from "../assets/Icons/Login/IconAlert";
 import IconGoogle from "../assets/Icons/Login/IconGoogle";
 import { useForm, Controller } from "react-hook-form";

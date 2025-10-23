@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import BreadcrumbNavigation from "../../Components/BreadcrumbNavigation";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 
 const TicketLayout = () => {
   return (

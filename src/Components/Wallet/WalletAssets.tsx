@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { ActionModal } from "../../Components/Wallet/ActionModal";
+import { ActionModal } from "./ActionModal";
 import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
 import { apiRequest } from "../../utils/apiClient";

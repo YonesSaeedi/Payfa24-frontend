@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import IconClose from "../../assets/Icons/Login/IconClose";
-import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import { ROUTES } from "../../routes/routes";
 import IconBank from "../../assets/icons/Deposit/IconBank";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
@@ -9,6 +8,7 @@ import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
 import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
 import IconWallet from "../../assets/icons/Deposit/IconWallet";
 import IconLink from "../../assets/icons/Deposit/IconLink";
+import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 
 interface DepositModalProps {
   isOpen: boolean;
@@ -110,7 +110,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
           <div className="flex items-center justify-between rounded-xl p-2 hover:bg-gray27 transition">
             <div className="flex items-center">
               <span className="w-6 h-6 icon-wrapper mr-2">
-                <IconArrowLeft />
+                <IconArrowLeft/>
               </span>
               <button
                 onClick={handleDepositIdentifier}

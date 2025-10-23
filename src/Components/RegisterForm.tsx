@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
-import StepInvite from "../Components/InviteLogin";
-import StepPassword from "../Components/PasswordInput";
-import { ThemeContext } from "../Context/ThemeContext";
+import StepInvite from "./InviteLogin";
+import StepPassword from "./PasswordInput";
+import { ThemeContext } from "../context/ThemeContext";
 
 import inviteLight from "../assets/invite-light.png";
 import inviteDark from "../assets/invite-dark.png";

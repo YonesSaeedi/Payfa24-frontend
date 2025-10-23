@@ -1,6 +1,6 @@
-import WalletCard from "../../Components/Home/WalletCard/WalletCard";
+import WalletCard from "../../components/Home/WalletCard/WalletCard";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import WalletAssets from "../../Components/Wallet/WalletAssets"
+import WalletAssets from "../../components/Wallet/WalletAssets"
 
 
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TicketImage from "../../assets/images/Ticket/massegeIcon/415488451_80b31582-6997-45fb-9105-49e724faee4f 1.png"
 import IconCall from "../../assets/icons/ticket/IconCall";
-import SupportCallModal from "../../Components/Ticket/SupportCallModal";
+import SupportCallModal from "../../components/Ticket/SupportCallModal";
 
 
 function TicketPage() {
