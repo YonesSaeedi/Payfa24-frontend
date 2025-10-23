@@ -12,7 +12,7 @@ import AuthenticationAdvance from "../pages/authentication/advance";
 import Profile from "../pages/Profile/Profile";
 import MarketPage from "../pages/MarketPage";
 import TicketPage from "../pages/Ticket/TicketPage";
-import TicketPanel from "./../components/Ticket/TicketPanel";
+import TicketPanel from "../components/Ticket/TicketPanel";
 import TicketLayout from "../pages/Ticket/TicketLayout";
 import TransactionLayout from "../pages/Transaction/TransactionLayout";
 import CryptoPage from "../components/History/CryptoPage";
@@ -35,7 +35,7 @@ import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 
 export default function AppRouter() {
-  
+
   return (
     <BrowserRouter>
       <Routes>
@@ -56,7 +56,7 @@ export default function AppRouter() {
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
         <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />
-        <Route path={ROUTES.ADD_FRIEND} element={<AddFriend />} />
+        <Route path={ROUTES.ADD_FRIEND.ROOT} element={<AddFriend />} />
         <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
         <Route path={ROUTES.WALLET} element={<Wallet />} />
         <Route path={ROUTES.WITHDRAWAL_FIAT} element={<WithdrawPage />} />
@@ -81,12 +81,14 @@ export default function AppRouter() {
         {/* <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
         <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
         <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />
-         <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm />} />
-         <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
-         <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />
-         <Route path={ROUTES.DEPOSIT_RECEIPT} element={<DepositPage selected="receipt" />} />
-         <Route path={ROUTES.DEPOSIT_WALLET} element={<DepositPage selected="wallet" />} />
-         <Route path={ROUTES.DEPOSIT_TXID} element={<DepositPage selected="txid" />} /> 
+
+        <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm />} />
+        <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
+        <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />
+        <Route path={ROUTES.DEPOSIT_RECEIPT} element={<DepositPage selected="receipt" />} />
+        <Route path={ROUTES.DEPOSIT_WALLET} element={<DepositPage selected="wallet" />} />
+
+        <Route path={ROUTES.DEPOSIT_TXID} element={<DepositPage selected="txid" />} />
 
 
         <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />

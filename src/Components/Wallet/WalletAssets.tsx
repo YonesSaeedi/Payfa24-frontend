@@ -156,30 +156,36 @@ const WalletAssets: React.FC = () => {
       {/* Search و Dropdown */}
       <div className="flex items-center justify-between mb-3">
         {/* Input با آیکون داخل */}
-<div className="relative w-1/2">
-  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
-    <IconSearch />
-  </span>
+        <div className="relative w-1/2">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
+            <IconSearch />
+          </span>
 
-  <input
-    type="text"
-    placeholder="جستجو..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    className="border border-gray19 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
-  />
-</div>
+          <input
+            type="text"
+            placeholder="جستجو..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border border-gray19 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
+          />
+        </div>
 
 
         <div className="relative  inline-block text-right max-w-[50%]" ref={dropdownRef}>
           <button
             onClick={() => setOpenDropdown(!openDropdown)}
-            className="border border-gray19 rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1"
+            className={`
+    border rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1
+    transition-colors duration-200
+    ${openDropdown ? "border-blue2" : "border-gray19"}
+  `}
           >
             {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
-            
-           <span className={`w-4 h-4 transition-transform duration-200 ${openDropdown ? "rotate-180" : ""}`}> <IconChervDown/></span>
+            <span className={`w-4 h-4 transition-transform duration-200 ${openDropdown ? "rotate-180" : ""}`}>
+              <IconChervDown />
+            </span>
           </button>
+
 
           {openDropdown && (
             <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col">
@@ -200,15 +206,15 @@ const WalletAssets: React.FC = () => {
       {/* جدول */}
       <div>
         <div className="w-full text-sm text-right border-collapse text-black1">
-       
-            <div className="hidden lg:grid grid-cols-5 w-full bg-gray41 text-black1 text-sm font-medium h-12 items-center rounded-lg">
-              <span className="text-center">نام و نماد ارز</span>
-              <span className="text-center">نرخ جهانی</span>
-              <span className="text-center">نرخ تومان</span>
-              <span className="text-center">موجودی شما</span>
-              <span className="text-center">معادل موجودی</span>
-            </div>
-       
+
+          <div className="hidden lg:grid grid-cols-5 w-full bg-gray41 text-black1 text-sm font-medium h-12 items-center rounded-lg">
+            <span className="text-center">نام و نماد ارز</span>
+            <span className="text-center">نرخ جهانی</span>
+            <span className="text-center">نرخ تومان</span>
+            <span className="text-center">موجودی شما</span>
+            <span className="text-center">معادل موجودی</span>
+          </div>
+
           <div>
             {isLoading ? (
               // 👇 اسکلتون
@@ -255,7 +261,7 @@ const WalletAssets: React.FC = () => {
             ) : cryptoData.length === 0 ? (
               <div className="flex flex-col items-center justify-center ">
                 <div className=" flex items-center justify-center text-[#75A4FE] w-20 h-20 m-10 ">
-                    <WalletMinesIcon />
+                  <WalletMinesIcon />
                 </div>
                 <span className="block text-center text-black2 mb-10 text-base font-normal">کیف پول دارایی‌های شما خالی است!</span>
               </div>
@@ -301,14 +307,14 @@ const WalletAssets: React.FC = () => {
                       className="rounded-full  transition"
                       onClick={() => isMobile && setOpenModalId(index)}
                     >
-                      <span className="w-4 h-4 text-blue2 block group-hover:hidden"><IconMoreHorizental/></span>
-                     
-                      <span  className="w-4 h-4 text-blue2 hidden group-hover:block"><IconMoreHorizental/></span>
-                    
+                      <span className="w-4 h-4 text-blue2 block group-hover:hidden"><IconMoreHorizental /></span>
+
+                      <span className="w-4 h-4 text-blue2 hidden group-hover:block"><IconMoreHorizental /></span>
+
                     </button>
 
                     {!isMobile && (
-                      <div className="absolute left-[41px] mt-2 top-6 w-[226px] bg-white rounded-lg shadow-md flex flex-col z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                      <div className="absolute left-[41px] mt-2 top-6 w-[226px] bg-white8 border border-gray21 shadow-md rounded-lg shadow-md flex flex-col z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                         <button
                           className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
                           onClick={() => navigate(ROUTES.TRADE.BUY)}

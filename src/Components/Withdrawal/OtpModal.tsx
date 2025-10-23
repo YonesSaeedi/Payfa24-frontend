@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 interface OtpModalProps {
   isOpen: boolean;
@@ -25,32 +26,43 @@ const OtpModal: React.FC<OtpModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleConfirm = async () => {
-    if (!otp) {
-      toast.error("کد تأیید را وارد کنید");
-      return;
+ const handleConfirm = async () => {
+  if (!otp) {
+    toast.error("کد تأیید را وارد کنید");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    await apiRequest({
+      url: `/api/wallets/crypto/withdraw/${crypto}`,
+      method: "POST",
+      data: {
+        ...data,
+        codeOtp: otp,
+      },
+    });
+
+    toast.success("برداشت با موفقیت تأیید شد ✅");
+    onClose();
+
+  } catch (err: unknown) {
+    let message = "کد تأیید اشتباه است ❌";
+
+    if (err instanceof AxiosError) {
+      message = err.response?.data?.msg || message;
+    } else if (err instanceof Error) {
+      message = err.message;
     }
 
-    setLoading(true);
-    try {
-      await apiRequest({
-        url: `/api/wallets/crypto/withdraw/${crypto}`,
-        method: "POST",
-        data: {
-          ...data,
-          codeOtp: otp,
-        },
-      });
+    toast.error(message);
 
-      toast.success("برداشت با موفقیت تأیید شد ✅");
-      onClose();
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err?.response?.data?.msg || "کد تأیید اشتباه است ❌");
-    } finally {
-      setLoading(false);
-    }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

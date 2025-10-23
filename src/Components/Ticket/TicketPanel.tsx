@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from "react";
-
-
 import OptionSelector from "../../components/Ticket/CategorySelector";
 import Icontechnical from "../../assets/icons/ticket/Icontechnical";
-
 import IconOrderTracking from "../../assets/icons/ticket/IconOrderTracking";
 import IconAuthentication from "../../assets/icons/ticket/IconAuthentication";
 import IconFinanchial from "../../assets/icons/ticket/IconFinanchial";
-
 import AuthenticationBasic from "../../pages/authentication/basic";
 import TicketsDashboard from "./TicketChat/TicketsDashboard";
 import TicketForm from "./TicketForm/TicketForms";
 import TradeLayoutFAQ from "../trade/TradeLayoutFAQ";
+import { FAQData, FAQItem } from "../../data/faqData"; // مسیر دقیق فایل را قرار دهید
 
 
 // Map نگاشت تب‌ها به کامپوننت
 const TAB_COMPONENTS: Record<string, React.ReactNode> = {
   order: <TicketsDashboard />,
-  identity: <AuthenticationBasic/>,
+  identity: <AuthenticationBasic />,
   tech: <div>صفحه پشتیبانی فنی</div>,
   finance: <div>خرید</div>,
 };
 
-const FAQData = [ { id: 1, question: "چگونه در پی‌فا24 ثبت نام کنم؟", answer: "برای ثبت نام در پی فا 24 کافی است به صفحه ثبت نام رفته و اطلاعات شخصی خود را وارد کنید. پس از تایید ایمیل و شماره تماس حساب کاربری شما فعال میشود", }, { id: 2, question: "احراز هویت چقدر زمان میبرد؟", answer: "حداقل مبلغ خرید و فروش در پی فا 24 بسته به نوع ارز متفاوت است. برای اطلاع از حداقل مبلغ، به صفحه جزئیات هر ارز مراجعه کنید.", }, { id: 3, question: "کارمزد معاملات در پی فا 24 چقدر است؟", answer: "خیر، تراکنش‌های ارز دیجیتال غیرقابل بازگشت هستند. لطفاً قبل از تایید تراکنش، تمامی جزئیات را به دقت بررسی کنید.", }, { id: 4, question: "چرا برداشت من تایید نشده است؟", answer: "بله, تمامی سفارش‌های انجام شده را میتوانید در قسمت تاریخچه تراکنش‌های حساب کاربری خود مشاهده کنید.", }, { id: 5, question: "چگونه ارز دیجیتال بفروشم؟", answer: "در صورت مواجهه با خطا ابتدا اتصال اینترنت خود را بررسی کنید. در صورتی که همچنان مشکل داشت با پشتیبانی پی‌فا24 تماس بگیرید تا بررسی شود.", }, ];
 
 
 const TicketPanel: React.FC = () => {
@@ -49,7 +45,7 @@ const TicketPanel: React.FC = () => {
   // حالت پیش‌فرض SupportTicketPage
   return (
 
-    <div  className="p-6">
+    <div className="p-6">
       <div className={`${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} transition`}>
         <div className="bg-white1">
           <div className="flex flex-col lg:flex-row gap-[40px] lg:gap-[85px] justify-center items-stretch">
@@ -73,7 +69,7 @@ const TicketPanel: React.FC = () => {
                     { id: "tech", label: "فنی", icon: <span className="icon-wrapper text-black2 "><Icontechnical /></span> },
                     { id: "finance", label: "مالی", icon: <span className="icon-wrapper text-black2 "><IconFinanchial /></span> },
                   ]}
-                
+
                   onSelect={handleTabSelect}
                 />
               </div>
@@ -89,7 +85,8 @@ const TicketPanel: React.FC = () => {
                   سوالات متداول پیگیری سفارش
                 </h3>
                 <div dir="rtl" className="w-full flex-1">
-                  <TradeLayoutFAQ items={FAQData} />
+                  <TradeLayoutFAQ items={FAQData.home} />
+
                 </div>
               </div>
             </div>
@@ -105,7 +102,7 @@ const TicketPanel: React.FC = () => {
     </div>
   )
 
-  
+
 };
 
 export default TicketPanel;

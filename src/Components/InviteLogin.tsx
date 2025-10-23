@@ -1,10 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import TextField from "../components/InputField/TextField";
 import IconAlert from "../assets/Icons/Login/IconAlert";
 import IconGoogle from "../assets/Icons/Login/IconGoogle";
 import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { apiRequest } from "../utils/apiClient";

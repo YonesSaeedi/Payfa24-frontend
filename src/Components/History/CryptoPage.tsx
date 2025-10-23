@@ -33,7 +33,7 @@ const CryptoPage: React.FC = () => {
 
   // مدیریت باز/بسته شدن dropdown
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const handleToggle = (id: string) => setOpenDropdown(prev => (prev === id ? null : id));
+  
 
   // ساخت map از اطلاعات ارزها
   const mappedGeneralData: CryptoDataMap = useMemo(() => {
@@ -42,6 +42,11 @@ const CryptoPage: React.FC = () => {
       return acc;
     }, {} as CryptoDataMap) ?? {};
   }, [generalData]);
+
+  const handleToggle = (id: string) => {
+  setOpenDropdown(prev => (prev === id ? null : id));
+};
+
 
   // دریافت تراکنش‌ها
   useEffect(() => {
@@ -100,15 +105,6 @@ const CryptoPage: React.FC = () => {
     );
   }, [mergedTransactions, searchText]);
 
-  // باز کردن مودال جزئیات
-  // const handleOpenModal = (tx: MergedCryptoHistory) => {
-  //   setSelectedTx({
-  //     id: tx.id.toString(),
-  //     source: "crypto",
-  //     faName: tx.locale?.fa?.name || tx.name,
-  //     image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
-  //   });
-  // };
 
   const handleOpenModal = (tx: MergedCryptoHistory) => {
   setSelectedTx({
@@ -131,8 +127,8 @@ const CryptoPage: React.FC = () => {
   return (
     <div dir="rtl">
       {/* هدر */}
-      <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end container-style">
-        <h1 className="hidden lg:block">تاریخچه تراکنش ها</h1>
+      <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end ">
+        <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه تراکنش های رمزارز</h1>
       
       </div>
 
@@ -162,9 +158,13 @@ const CryptoPage: React.FC = () => {
             selected={selectedFilterType.name}
             isOpen={openDropdown === "type"}
             onToggle={() => handleToggle("type")}
+
+            
             onSelect={(id, name) =>
               setSelectedFilterType(typeOptions.find(o => o.name === name) || typeOptions[0])
             }
+            
+   
           />
           <FilterDropdown
             id="status"
@@ -224,13 +224,13 @@ const CryptoPage: React.FC = () => {
                       <span className="font-normal text-sm text-gray-500">{tx.coin.symbol}</span>
                     </div>
                   </div>
-                  <div className="text-center">{tx.amount}</div>
-                  <div className="text-center">{transactionTypeMap[tx.type] || tx.type}</div>
+                  <div className="text-center font-normal text-base">{tx.amount}</div>
+                  <div className="text-center font-normal text-base">{transactionTypeMap[tx.type] || tx.type}</div>
                   <div className="text-center">
                     <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                   </div>
-                  <div className="text-center">{tx.DateTime}</div>
-                  <div className="text-blue-600 cursor-pointer text-center" onClick={() => handleOpenModal(tx)}>
+                  <div className="text-center font-normal text-base">{tx.DateTime}</div>
+                  <div className="text-blue-600 cursor-pointer text-center font-normal text-base" onClick={() => handleOpenModal(tx)}>
                     جزئیات
                   </div>
                 </div>
@@ -249,7 +249,7 @@ const CryptoPage: React.FC = () => {
         <div className="block lg:hidden space-y-4 mt-4">
           {filteredTransactions.length > 0 ? (
             filteredTransactions.map((tx) => (
-              <div key={tx.id} className="border rounded-xl p-4">
+              <div key={tx.id} className="border rounded-xl p-4  border-gray21">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="w-10 h-10 flex items-center justify-center object-cover">
@@ -271,13 +271,13 @@ const CryptoPage: React.FC = () => {
                   <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                 </div>
 
-                <div className="text-sm space-y-1">
-                  <p className="flex justify-between">مقدار: <span className="font-medium">{tx.amount}</span></p>
-                  <p className="flex justify-between">نوع: <span className="font-medium">{transactionTypeMap[tx.type] || tx.type}</span></p>
-                  <p className="flex justify-between">تاریخ: <span className="font-medium">{tx.DateTime}</span></p>
+                <div className="text-sm space-y-1 pt-5">
+                  <p className="flex justify-between">مقدار: <span className="pb-4 font-normal text-[14px]">{tx.amount}</span></p>
+                  <p className="flex justify-between">نوع: <span className="pb-4 font-normal text-[14px]">{transactionTypeMap[tx.type] || tx.type}</span></p>
+                  <p className="flex justify-between">تاریخ: <span className="pb-4 font-normal text-[14px]">{tx.DateTime}</span></p>
                 </div>
 
-                <div className="text-blue-600 text-sm mt-3 cursor-pointer border-t pt-2 text-center" onClick={() => handleOpenModal(tx)}>
+                <div className="text-blue-600 text-sm mt-3 cursor-pointer border-t pt-3 border-gray21  text-center font-bold text-[14px]" onClick={() => handleOpenModal(tx)}>
                   جزئیات تراکنش
                 </div>
               </div>

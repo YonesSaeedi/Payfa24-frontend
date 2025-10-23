@@ -25,8 +25,8 @@ const BREADCRUMB_LABELS: Record<string, string> = {
    toman:"تاریخچه تراکنش های تومانی",
    Cryptocurrency:"تاریخچه تراکنش های رمز ارز",
    fiat:"برداشت تومانی",
-   crypto:"برداشت رمز ارز"
-
+   crypto:"برداشت رمز ارز",
+ "add-friend": "دعوت از دوستان",
 
 };
 

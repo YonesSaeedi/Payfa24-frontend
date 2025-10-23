@@ -149,8 +149,8 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
   return (
     <div dir="rtl">
       {/* هدر */}
-      <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end container-style">
-        <h1 className="hidden lg:block">تاریخچه تراکنش ها</h1>
+      <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end ">
+        <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه خرید و فروش</h1>
         
       </div>
 
@@ -221,7 +221,7 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
                       }
                     </span>
                     <div className="flex flex-col gap-1 text-right">
-                      <span className="font-normal text-lg">{tx.locale?.fa?.name || tx.name}</span>
+                      <span className="font-normal text-lg ">{tx.locale?.fa?.name || tx.name}</span>
                       <span className="font-normal text-sm text-gray-500">{tx.symbol}</span>
                     </div>
                   </div>
@@ -229,13 +229,13 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
                     <span>{tx.amount_coin}</span>
                     <span>{tx.symbol}</span>
                   </div>
-                  <div className="text-center">{transactionTypeMap[tx.type] || tx.type}</div>
-                  <div className="text-center">{tx.amount} تومان</div>
-                  <div className="text-center">
+                  <div className="text-center font-normal text-base">{transactionTypeMap[tx.type] || tx.type}</div>
+                  <div className="text-center font-normal text-base">{tx.amount} تومان</div>
+                  <div className="text-center font-normal text-base">
                     <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                   </div>
-                  <div className="text-center">{tx.dateTime}</div>
-                  <div className="text-blue-600 cursor-pointer text-center" onClick={() => handleOpenModal(tx)}>
+                  <div className="text-center font-normal text-base">{tx.dateTime}</div>
+                  <div className="text-blue-600 cursor-pointer text-center font-normal text-base" onClick={() => handleOpenModal(tx)}>
                     جزئیات
                   </div>
                 </div>
@@ -254,7 +254,7 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
         <div className="block lg:hidden space-y-4 mt-4">
           {mergedTransactions.length > 0 ? (
             mergedTransactions.map((tx) => (
-              <div key={tx.id} className="border rounded-xl p-4">
+              <div key={tx.id} className="border rounded-xl p-4  border-gray21">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="w-10 h-10 flex items-center justify-center object-cover">
@@ -276,23 +276,23 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
                   <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                 </div>
 
-                <div className="text-sm space-y-1">
-                  <p className="flex justify-between">
-                    مقدار: <span className="font-medium">{tx.amount_coin}</span>
+                <div className="text-sm space-y-1 pt-5">
+                  <p className="flex justify-between font-medium text-[12px]">
+                    مقدار: <span className=" pb-4 font-normal text-[14px]">{tx.amount_coin}</span>
                   </p>
-                  <p className="flex justify-between">
-                    نوع: <span className="font-medium">{transactionTypeMap[tx.type] || tx.type}</span>
+                  <p className="flex justify-between font-medium text-[12px]">
+                    نوع: <span className=" pb-4 font-normal text-[14px]">{transactionTypeMap[tx.type] || tx.type}</span>
                   </p>
-                   <p className="flex justify-between">
-                    قیمت: <span className="font-medium">{tx.amount} تومان</span>
+                   <p className="flex justify-between font-medium text-[12px]">
+                    قیمت: <span className=" pb-4 font-normal text-[14px]">{tx.amount} تومان</span>
                   </p>
-                  <p className="flex justify-between">
-                    تاریخ: <span className="font-medium">{tx.dateTime}</span>
+                  <p className="flex justify-between font-medium text-[12px]">
+                    تاریخ: <span className=" pb-4 font-normal text-[14px]">{tx.dateTime}</span>
                   </p>
                 </div>
 
                 <div
-                  className="text-blue-600 text-sm mt-3 cursor-pointer border-t pt-2 text-center"
+                  className="text-blue-600 text-sm mt-3 cursor-pointer border-t pt-3 text-center border-gray21 font-bold text-[14px]"
                   onClick={() => handleOpenModal(tx)}
                 >
                   جزئیات تراکنش

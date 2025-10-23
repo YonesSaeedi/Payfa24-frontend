@@ -17,7 +17,6 @@ export const ROUTES = {
   VERIFY_GOOGLE: "/verify/google",
   MULTI_FACTOR: "/multi-factor",
   GOOGLE_AUTH_FLOW: "/google-auth-flow",
-  ADD_FRIEND: "/add-friend",
   CONNECTED_DEVICES: "/services/connected-devices",
   FAQ: "/services/faq",
   BANK_CARDS: "/services/bank-cards",
@@ -39,6 +38,13 @@ export const ROUTES = {
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },
+
+  
+ADD_FRIEND: {
+ ROOT:"/services/add-friend", // مسیر اصلی را به زیرمجموعه خدمات ببرید
+},
+
+
   DEPOSIT: "/deposit",
   DEPOSIT_GATEWAY: "/deposit/gateway",
   DEPOSIT_IDENTIFIER: "/deposit/identifier",
@@ -47,4 +53,63 @@ export const ROUTES = {
   DEPOSIT_WALLET: "/deposit/wallet",
   DEPOSIT_TXID: "/deposit/txid",
 
+  DEPOSIT_GATEWAY: "/deposit/gateway",
+  DEPOSIT_IDENTIFIER: "/deposit/identifier",
+  DEPOSIT_CARD: "/deposit/card",
+  DEPOSIT_RECEIPT: "/deposit/receipt",
+  DEPOSIT_WALLET: "/deposit/wallet",
+  DEPOSIT_TXID: "/deposit/txid",
 };
+
+
+
+
+
+// export const ROUTES = {
+//   HOME: "/",
+//   LOGIN: "/login",
+//   REGISTER: "/register",
+//   MARKET: "/market",
+//   NOTIFICATIONS: "/notifications",
+//   FORGOT_PASSWORD: "/forgot-password",
+//   FORGOT_PASSWORD_SET_PASSWORD: "/forgot-password-set-password",
+//   AUTHENTICATION_BASIC: "/kyc-basic",
+//   AUTHENTICATION_ADVANCED: "/kyc-advanced",
+//   BANK_CARDS_CONTAINER: "/services/bank-cards",
+//   PROFILE: "/profile",
+//   USER_ACCOUNT: "./authProfile",
+//   BANK_ACCOUNT: "./authProfile",
+//   WALLET: "/wallet",
+//   CHANGE_PASSWORD: "/change-password",
+//   VERIFY_GOOGLE: "/verify/google",
+//   MULTI_FACTOR: "/multi-factor",
+//   GOOGLE_AUTH_FLOW: "/google-auth-flow",
+//   DEPOSIT: "/wallet/deposit",
+//   CONNECTED_DEVICES: "/services/connected-devices",
+//   FAQ: "/services/faq",
+//   BANK_CARDS: "/services/bank-cards",
+//   WITHDRAWAL: "/withdrawal",
+//   MARKET_VIEW: '/services/market-view',
+//   TRADE: {
+//     ROOT: "/trade",
+//     BUY: "/trade/buy",
+//     SELL: "/trade/sell",
+//   },
+//   TICKET: {
+//     ROOT: "/ticket",
+//     CREATE: "/ticket/create",
+//   },
+//   TRANSACTION: {
+//     ROOT: "/history",
+//     CRYPTO_HISTORY: "/history/crypto",
+//     TOMAN_HISTORY: "/history/toman",
+//     ORDER_HISTORY: "/history/order",
+//   },
+  
+
+// ADD_FRIEND: {
+//   ROOT:"/services/add-friend", // مسیر اصلی را به زیرمجموعه خدمات ببرید
+// },
+
+
+// };
