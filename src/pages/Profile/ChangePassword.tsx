@@ -10,7 +10,6 @@ import PasswordConditionItem from "../../components/InputField/PasswordCondition
 import { useState } from "react";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
-import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import { getChangePasswordSchemaProfile } from "../../utils/validationSchemas";
 
 type ChangePasswordFormData = {
