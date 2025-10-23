@@ -15,6 +15,7 @@ import gitImg from "../../assets/images/Addfriend/giftimag.png";
 import UserImg from "../../assets/images/Addfriend/User.png";
 import IconClose from "../../assets/Icons/Login/IconClose";
 import ReferralPercentBar from "../../components/ReferralPercentBar";
+
 import { toast } from "react-toastify";
 // import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import {

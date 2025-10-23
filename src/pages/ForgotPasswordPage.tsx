@@ -4,7 +4,6 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "react-toastify";
-
 import AuthLayout from "../layouts/AuthLayout";
 import imageForgetDark from "../assets/imageForgetDark.png";
 import imageForgetLight from "../assets/imageForgetLight.png";
@@ -15,6 +14,7 @@ import { apiRequest } from "../utils/apiClient";
 import OTPModal from "../components/OTPModal";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import IconClose from "../assets/Icons/Login/IconClose";
+import { AxiosError } from "axios";
 
 type FormData = {
   email: string;
@@ -64,7 +64,8 @@ export default function ForgotPasswordPage() {
     code: string | null
   ) => {
     const trimmed = value.trim();
-    if (emailRegex.test(trimmed)) return { code: code || "", email: trimmed, recaptcha };
+    if (emailRegex.test(trimmed))
+      return { code: code || "", email: trimmed, recaptcha };
     if (iranMobileRegex.test(trimmed))
       return { code: code || "", mobile: trimmed, recaptcha };
     throw new Error("ایمیل یا شماره موبایل معتبر نیست.");
@@ -121,13 +122,13 @@ export default function ForgotPasswordPage() {
       const recaptchaToken = await executeRecaptcha("forgot_password");
       setFormData(data);
       const payload = buildPayload(data.email, recaptchaToken, "");
+
       const response = await apiRequest({
         url: "/api/auth/forget",
         method: "POST",
         data: payload,
       });
-
-      if ((response as any).status) {
+      if (response?.status) {
         setContactMethod(emailRegex.test(data.email) ? "email" : "phone");
         setIsOpen(true);
         setResendTimer(120);
@@ -140,8 +141,11 @@ export default function ForgotPasswordPage() {
       } else {
         console.error("Forgot password failed:", response);
       }
-    } catch (err: any) {
-      toast.error(err.response?.data.msg || "خطا در ارسال");
+    } catch (err) {
+      toast.error(
+        (err as AxiosError<{ msg?: string }>).response?.data.msg ||
+          "خطا در ارسال"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -158,17 +162,22 @@ export default function ForgotPasswordPage() {
         method: "POST",
         data: payload,
       });
-
-      if ((response as any).status) {
+      if (response?.status) {
         setIsOpen(false);
         navigate("/forgot-password-set-password", {
-          state: { username: formData.email, tokenForget: (response as any).tokenForget },
+          state: {
+            username: formData.email,
+            tokenForget: (response as any).tokenForget,
+          },
         });
       } else {
         console.error("OTP confirm failed:", response);
       }
-    } catch (err: any) {
-      console.error("OTP confirm error:", err.response?.data || err.message);
+    } catch (err) {
+      toast.error(
+        (err as AxiosError<{ msg?: string }>).response?.data?.msg ||
+          "تایید کد با مشکل مواجه شد!"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -195,7 +204,6 @@ export default function ForgotPasswordPage() {
             <p className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1">
               برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید
             </p>
-
             <Controller
               name="email"
               control={control}
@@ -210,7 +218,6 @@ export default function ForgotPasswordPage() {
                 />
               )}
             />
-
             <button
               type="submit"
               disabled={disableButton || isLoading}
@@ -227,7 +234,6 @@ export default function ForgotPasswordPage() {
           </form>
         </div>
       </div>
-
       {/* --- OTP Modal --- */}
       {isOpen && (
         <>

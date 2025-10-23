@@ -45,7 +45,7 @@ const PercentBar = ({ setSelectedPercent, selectedPercent, lastChangedRef, isDis
             className={`absolute top-1/2 w-0.5 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 ${selectedPercent >= point ? "bg-blue2" : "bg-gray2"}`}
             style={{ left: `${point}%` }}
           >
-            <span className={`absolute top-3.5 -translate-x-1/3 text-text4 text-xs font-normal select-none ${point === 100 ? '-left-1' : 'left-0'}`}>{formatPersianDigits(point)}%</span>
+            <span className={`absolute top-3.5 -translate-x-1/3 text-black1 text-xs font-normal select-none ${point === 100 ? '-left-1' : 'left-0'}`}>{formatPersianDigits(point)}%</span>
           </div>
         )}
         {/* Draggable Thumb */}

@@ -22,6 +22,7 @@ import { mappedDigitalGeneralData } from "../../constants/ListdigitalCoins";
 import OTPInputModal from "./OTPInputModal";
 import useGetUser from "../../hooks/useGetUser";
 import useGetSettings from "../../hooks/useGetSettings";
+import { AxiosError } from "axios";
 
 const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const countInputRef = useRef<HTMLInputElement | null>(null)
@@ -58,9 +59,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       .replace(/(\..*)\./g, '$1');  // prevent multiple dots
     let num = Number(val);
     if (!isNaN(num) && val !== '' && val !== '.') {
-      const max = isSell
-        ? cryptoBalance
-        : TomanBalance / currentCryptoPrice;
+      const max = isSell ? cryptoBalance : TomanBalance / currentCryptoPrice;
       if (num > max) {
         num = max;
         val = String(Math.round(max * 1e8) / 1e8);
@@ -140,7 +139,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       const response = await apiRequest<FiatBalance>({ url: '/api/wallets/fiat/balance' })
       setTomanBalance(response?.balance_available ?? null)
     } catch (err) {
-      toast.error(err?.response?.data?.msg || err?.response?.data?.message || "دریافت موجودی کاربر با مشکل مواجه شد!");
+      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "دریافت موجودی کاربر با مشکل مواجه شد!");
     } finally {
       setIsLoading(false)
     }
@@ -153,7 +152,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         setCryptoBalance(response?.balance)
         setCurrentCryptoPrice(isSell ? response?.price?.sell : response?.price?.buy)
       } catch (err) {
-        toast.error(err?.response?.data?.msg || err?.response?.data?.message || `دریافت اطلاعات ${currentCryptocurrency?.locale?.fa?.name} با مشکل مواجه شد`);
+        toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || `دریافت اطلاعات ${currentCryptocurrency?.locale?.fa?.name} با مشکل مواجه شد`);
       } finally {
         setIsLoading(false)
       }
@@ -256,7 +255,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       if (isSell) {
         try {
           setIsSubmitting(true)
-          const response = await apiRequest({
+          await apiRequest({
             url: `/api/order/digital/sell/${currentCryptocurrency?.locale?.en?.name}`,
             method: 'POST',
             data: { voucherCode: voucherCode }
@@ -271,7 +270,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
           // setIsTradeConfirmationModalOpen(true)
           setIsTradeSuccessModalOpen(true)
         } catch (err) {
-          toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+          toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
         }
         finally {
           setIsSubmitting(false)
@@ -285,7 +284,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
           setIsOtpModalOpen(true)
           toast.success(response?.msgOtp)
         } catch (err) {
-          toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+          toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
         }
         finally {
           setIsSubmitting(false)
@@ -305,7 +304,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         })
         setIsTradeConfirmationModalOpen(true)
       } catch (err) {
-        toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+        toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
       }
       finally {
         setIsSubmitting(false)
@@ -323,7 +322,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         })
         setIsTradeConfirmationModalOpen(true)
       } catch (err) {
-        toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+        toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
       }
       finally {
         setIsSubmitting(false)
@@ -334,11 +333,11 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const handleSubmitDigitalBuy = async () => {
     try {
       setIsSubmitting(true)
-      const response = await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue), codeOtp: otpCode, id_order: String(digitalIDOrder) } })
+      await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue), codeOtp: otpCode, id_order: String(digitalIDOrder) } })
       setIsOtpModalOpen(false)
       setIsTradeSuccessModalOpen(true)
     } catch (err) {
-      toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ثبت سفارش مشکلی پیش آمد.');
+      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
     } finally {
       setIsSubmitting(false)
     }
@@ -364,8 +363,8 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const isDigitalCurrencySell = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') && isSell
   const isDigitalCurrency = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher')
   // data of the OTP modal ======================================================================================================================================================
-  const { data: settingsData, isLoading: isSettingsDataLoading } = useGetSettings()
-  const { data: userData, isLoading: isUserDataLoading } = useGetUser()
+  const { data: settingsData } = useGetSettings()
+  const { data: userData } = useGetUser()
   const OTPModalMainText = settingsData?.twofa?.type === 'sms' ? `کد ارسال شده به شماره ${userData?.user?.mobile} را وارد کنید.`
     : settingsData?.twofa?.type === 'email' ? `کد ارسال شده به ایمیل ${userData?.user?.email} را وارد کنید.`
       : settingsData?.twofa?.type === 'telegram' ? `کد ارسال شده به تلگرام ${userData?.user?.mobile} را وارد کنید.`
@@ -388,7 +387,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       setIsOtpModalOpen(true)
       toast.success(response?.msgOtp)
     } catch (err) {
-      toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در ارسال مجدد سفارش .');
+      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ارسال مجدد سفارش مشکلی پیش آمد .');
     }
     finally {
       setResendCodeIsSubmitting(false)
@@ -481,7 +480,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               {isLoading ?
                 <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
                 :
-                <span>{formatPersianDigits(currentCryptoPrice)} تومان</span>
+                <span>{formatPersianDigits(currentCryptoPrice ?? 0)} تومان</span>
               }
             </span>
           </div>
@@ -548,7 +547,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
             {isLoading ?
               <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
               :
-              <span className="text-black1">{formatPersianDigits(TomanBalance)} تومان</span>
+              <span className="text-black1">{formatPersianDigits(TomanBalance ?? 0)} تومان</span>
             }
           </Link>
           <button onClick={handleFillAmount} className="text-blue2 text-sm font-normal hover:underline">تمام موجودی</button>

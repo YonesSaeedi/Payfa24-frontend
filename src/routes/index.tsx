@@ -16,10 +16,8 @@ import TicketPanel from "../components/Ticket/TicketPanel";
 import TicketLayout from "../pages/Ticket/TicketLayout";
 import TransactionLayout from "../pages/Transaction/TransactionLayout";
 import CryptoPage from "../components/History/CryptoPage";
-import ConnectedDevices from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
 import FaqLayout from "../pages/FAQ/FaqLayout";
-import BankCardsPage from "../components/BankCards/BankcardsPage";
 import Wallet from "../pages/Wallet/Wallet";
 import WithdrawPage from "../pages/Withdrawal/WithdrawPage";
 import ChangePassword from "../pages/Profile/ChangePassword";
@@ -38,10 +36,8 @@ import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
 import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 
-
-
-
 export default function AppRouter() {
+  
   return (
     <BrowserRouter>
       <Routes>

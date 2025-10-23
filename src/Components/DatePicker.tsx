@@ -1,4 +1,4 @@
-// src/Components/DatePickerModal.tsx
+// src/components/DatePickerModal.tsx
 import { Dispatch, SetStateAction } from "react";
 import { Calendar } from "react-multi-date-picker";
 import DateObject from "react-date-object";
