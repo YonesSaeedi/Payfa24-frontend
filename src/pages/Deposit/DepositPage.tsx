@@ -6,7 +6,6 @@ import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
 import IconWallet from "../../assets/icons/Deposit/IconWallet";
 import IconLink from "../../assets/icons/Deposit/IconLink";
 
-import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
 import DepositForm from "../../components/Deposit/DepositForm";
 import CardToCardTransfer from "../../components/Deposit/CardToCardTransfer";
 import DepositWithTxID from "../../components/Deposit/DepositWithTxID";
