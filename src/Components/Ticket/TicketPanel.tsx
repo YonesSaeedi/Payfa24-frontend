@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import OptionSelector from "../../components/Ticket/CategorySelector";
+
+
+
+import OptionSelector from "./CategorySelector";
+
 import Icontechnical from "../../assets/icons/ticket/Icontechnical";
 import IconOrderTracking from "../../assets/icons/ticket/IconOrderTracking";
 import IconAuthentication from "../../assets/icons/ticket/IconAuthentication";

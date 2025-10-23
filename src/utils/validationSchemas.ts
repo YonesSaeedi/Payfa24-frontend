@@ -173,3 +173,26 @@ export const getValidationSchemaCardtoCard = () => {
       .required("لطفاً یک کارت معتبر انتخاب کنید"),
   });
 };
+
+
+
+export const getChangePasswordSchemaProfile = () => {
+  return yup.object().shape({
+    currentPassword: yup
+      .string()
+      .required("رمز عبور فعلی الزامی است")
+      .min(6, "حداقل ۶ کاراکتر"),
+    newPassword: yup
+      .string()
+      .required("رمز عبور جدید الزامی است")
+      .min(8, "حداقل ۸ کاراکتر")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "حداقل یک حرف کوچک، بزرگ و عدد"
+      ),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("newPassword")], "تکرار رمز عبور مطابقت ندارد")
+      .required("تکرار رمز عبور الزامی است"),
+  });
+};

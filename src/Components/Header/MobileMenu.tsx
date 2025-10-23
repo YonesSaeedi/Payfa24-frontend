@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-// آیکون‌های اختصاصی پروژه‌ت
+
 import HomeIcon from "../../assets/icons/header/HomeIcon";
 import CategoryIcon from "../../assets/icons/header/CategoryIcon";
 import WalletIcon from "../../assets/icons/header/WalletIcon";
@@ -12,15 +12,10 @@ import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconProfileMenu from "../../assets/icons/Login/IconProfileMenu";
 import { apiRequest } from "../../utils/apiClient";
-import useGetUser from "../../hooks/useGetUser"; // مسیر رو متناسب با پروژه درست کن
+import useGetUser from "../../hooks/useGetUser"; 
 import IconSun from "../../assets/icons/header/IconSun";
 import MoonIcon from "../../assets/Icons/HeaderLogin/MoonIcon";
 import { ROUTES } from "../../routes/routes";
-import IconAuthentication from "../../assets/icons/ProfileMenue/IconAuthentication";
-import IconBankAccounts from "../../assets/icons/ProfileMenue/IconBankAccounts";
-import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransactionhistory";
-import IconConnecteddevices from "../../assets/icons/ProfileMenue/IconConnecteddevices";
-import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 
 

@@ -30,6 +30,7 @@ import MarketViewPage from "../pages/market-view/MarketViewPage";
 import TomanPage from "../components/History/TomanPage";
 import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
+import CardsManager from "../components/BankCards/BankCardsManager";
 import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
 import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";

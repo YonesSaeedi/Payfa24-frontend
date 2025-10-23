@@ -12,9 +12,6 @@ interface DepositLayoutProps {
 }
 
 const DepositLayout: React.FC<DepositLayoutProps> = ({
-  step,
-  started,
-  onStart,
   children,
   alertMessages,
 }) => {

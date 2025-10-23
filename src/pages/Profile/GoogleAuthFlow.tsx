@@ -1,6 +1,4 @@
-
-
-import React, { useState } from "react";
+import { useState } from "react";
 import DownloadAppPage from "../../components/MultiFactor/Stepper/DownloadAppPage";
 import ScanQrCodePage from "../../components/MultiFactor/Stepper/ScanQrCodePage";
 import EnterCodePage from "../../components/MultiFactor/Stepper/EnterCodePage";
@@ -34,7 +32,10 @@ export default function GoogleAuthFlow() {
 
   return (
     <HeaderLayout>
-      <div className="container-style w-full pt-7 flex gap-10 flex-col" dir="rtl">
+      <div
+        className="container-style w-full pt-7 flex gap-10 flex-col"
+        dir="rtl"
+      >
         <BreadcrumbNavigation />
         <div className="lg:bg-gray25 w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl lg:pb-10">
           <div className="max-w-xl flex flex-col items-center justify-center mx-auto lg:p-10">

@@ -1,6 +1,7 @@
-import { useState } from "react";
-import TextField from "../components/InputField/TextField";
-import PasswordConditionItem from "../components/InputField/PasswordConditionitem/PasswordConditionItem";
+
+import { useState  } from "react";
+import TextField from "./InputField/TextField";
+import PasswordConditionItem from "./InputField/PasswordConditionitem/PasswordConditionItem";
 import IconEyeOpen from "../assets/Icons/Login/IconEyeOpen";
 import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";
@@ -9,6 +10,7 @@ import { getChangePasswordSchema } from "../utils/validationSchemas";
 import { apiRequest } from "../utils/apiClient";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { AxiosError } from "axios";
 
 type PasswordFormData = {
   password: string;
@@ -52,8 +54,8 @@ export default function StepPassword() {
       } else {
         toast.error('ثبت رمز عبور با مشکل مواجه شد.')
       }
-    } catch (err: any) {
-      toast.error(err?.response?.data?.msg || 'ثبت رمز عبور با مشکل مواجه شد.')
+    } catch (err) {
+      toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.msg || 'ثبت رمز عبور با مشکل مواجه شد.')
     }
     finally {
       setIsLoading(false)

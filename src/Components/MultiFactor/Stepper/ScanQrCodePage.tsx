@@ -2,9 +2,10 @@ import { UseTwoStepVerification } from "../../../hooks/UseTwoStepVerification";
 
 interface propSub {
   onNext: () => void;
+  onPrev?: () => void;
 }
 
-export default function ScanQrCodePage({ onNext }: propSub) {
+export default function ScanQrCodePage({ onNext , onPrev }: propSub) {
   const { data } = UseTwoStepVerification();
   const dataGoogleVerificationForm = data?.google;
   const svgData = dataGoogleVerificationForm?.inlineUrl;
