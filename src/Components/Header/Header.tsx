@@ -30,7 +30,6 @@ import IconMobileMenue from "../../assets/icons/header/IconMobileMenue";
 export default function Header() {
   const themeContext = useContext(ThemeContext);
   const location = useLocation();
-  const navigate = useNavigate();
   const currentPath = location.pathname;
 
   const [showServices, setShowServices] = useState(false);

@@ -312,33 +312,44 @@ const handleSubmit = async (e: React.FormEvent) => {
       return;
     }
   }
+  if (!selectedNetwork?.symbol) {
+  toast.error("شبکه انتخاب نشده است");
+  setIsLoading(false);
+  return;
+}
 
-  try {
-    await apiRequest({
-      url: `/api/wallets/crypto/withdraw/${crypto}`,
-      method: "POST",
-      data: {
-        network: selectedNetwork.symbol,
-        withdrawAmount,
-        withdrawAddressWallet: address,
-        withdrawAddressWalletTag: tag,
-      },
-    });
-
-    setWithdrawData({
+ try {
+  await apiRequest<WithdrawResponse>({
+    url: `/api/wallets/crypto/withdraw/${crypto}`,
+    method: "POST",
+    data: {
       network: selectedNetwork.symbol,
       withdrawAmount,
       withdrawAddressWallet: address,
       withdrawAddressWalletTag: tag,
-    });
+    },
+  });
 
-    setIsOtpModalOpen(true);
-    setResendCodeTimeLeft(120);
-  } catch (err: any) {
-    toast.error(err?.response?.data?.msg || "خطا در برداشت!");
-  } finally {
-    setIsLoading(false);
+  setWithdrawData({
+    network: selectedNetwork.symbol,
+    withdrawAmount,
+    withdrawAddressWallet: address,
+    withdrawAddressWalletTag: tag,
+  });
+
+  setIsOtpModalOpen(true);
+  setResendCodeTimeLeft(120);
+} catch (err: unknown) {
+  let message = "خطا در برداشت!";
+  if (err instanceof AxiosError) {
+    message = err.response?.data?.msg || message;
+  } else if (err instanceof Error) {
+    message = err.message;
   }
+  toast.error(message);
+} finally {
+  setIsLoading(false);
+}
 };
 
 //انتقال به کاربر 

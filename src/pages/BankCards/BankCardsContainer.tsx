@@ -4,13 +4,7 @@ import { apiRequest } from "../../utils/apiClient";
 import  BankCardsPage  from "../../components/BankCards/BankcardsPage"; // کامپوننت نه صفحه
 import  BankCardManager  from "../../components/BankCards/BankCardsManager"; // کامپوننت نه صفحه
 
-type Card = {
-  id: number;
-  number: string;
-  holder: string;
-  bankName: string;
-  status: "confirm" | "pending" | "rejected";
-};
+
 
 export default function BankCardsContainer() {
   const [loading, setLoading] = useState(true);
