@@ -3,7 +3,6 @@ import StatusBadge from "../UI/Button/StatusBadge";
 import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
 import Pagination from "./Pagination";
 import TransactionModal, { Transaction as ModalTransaction } from "./TransactionModal";
-import FilterModal from "./FilterModal";
 import TrasactionHisory from "./../../assets/images/Transaction/Transactionhistory.png";
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
 import { apiRequest } from "../../utils/apiClient";
@@ -13,6 +12,22 @@ import ImageIran from "./../../assets/images/Transaction/iran.png"
 import { filterForTomanOptions, statusTomanOptions, typeTomanOptions, TypeTomanTransaction } from "./typeHistory";
 import SkeletonTable from "./SkeletonTable";
 
+interface FiatTransaction {
+  id: number;
+  type: "deposit" | "withdraw";
+  amount: number;
+  stock: string;
+  status: "success" | "pending" | "unsuccessful" | "reject" | "return";
+  description?: string;
+  DateTime: string;
+  symbol?: string;
+  name?: string;
+}
+
+interface FiatResponse {
+  transaction_count: number;
+  transaction: FiatTransaction[];
+}
 
 
 
@@ -26,7 +41,6 @@ const TomanPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const [selectedTx, setSelectedTx] = useState<ModalTransaction | null>(null);
-    const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
     const [totalPages, setTotalPages] = useState<number>(1);
 
 
@@ -37,37 +51,75 @@ const TomanPage: React.FC = () => {
 
 
     // دریافت تراکنش‌ها با همه فیلترها
-    useEffect(() => {
-        const fetchTransactionData = async () => {
-            setIsLoading(true);
-            try {
-                const response = await apiRequest({
-                    url: "/api/history/fiat",
-                    method: "GET",
-                    params: {
-                        page,
-                        filterType: selectedFilterType?.value || "",
-                        filterFor: selectedFilterFor?.value || "",
-                        filterStatus: selectedStatus?.value || "",
-                    },
-                });
+    // useEffect(() => {
+    //     const fetchTransactionData = async () => {
+    //         setIsLoading(true);
+    //         try {
+    //             const response = await apiRequest({
+    //                 url: "/api/history/fiat",
+    //                 method: "GET",
+    //                 params: {
+    //                     page,
+    //                     filterType: selectedFilterType?.value || "",
+    //                     filterFor: selectedFilterFor?.value || "",
+    //                     filterStatus: selectedStatus?.value || "",
+    //                 },
+    //             });
 
-                setResponseData(response.transaction || []);
-                setTotalPages(response.transaction_count || 1);
-            } catch (err) {
-                console.error("خطا در دریافت داده‌های تراکنش:", err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    //             setResponseData(response.transaction || []);
+    //             setTotalPages(response.transaction_count || 1);
+    //         } catch (err) {
+    //             console.error("خطا در دریافت داده‌های تراکنش:", err);
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
 
-        fetchTransactionData();
-    }, [
-        page,
-        selectedFilterType?.value,
-        selectedFilterFor?.value,
-        selectedStatus?.value,
-    ]);
+    //     fetchTransactionData();
+    // }, [
+    //     page,
+    //     selectedFilterType?.value,
+    //     selectedFilterFor?.value,
+    //     selectedStatus?.value,
+    // ]);
+useEffect(() => {
+  const fetchTransactionData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await apiRequest<FiatResponse>({
+        url: "/api/history/fiat",
+        method: "GET",
+        params: {
+          page,
+          filterType: selectedFilterType?.value || "",
+          filterFor: selectedFilterFor?.value || "",
+          filterStatus: selectedStatus?.value || "",
+        },
+      });
+
+      // دسترسی امن به فیلدها
+    setResponseData(
+  response.transaction.map(tx => ({
+    ...tx,
+    symbol: tx.symbol || "",  // مقدار پیش‌فرض
+    name: tx.name || "",      // اگر name هم در TypeTomanTransaction اجباریه
+  }))
+);
+      setTotalPages(response.transaction_count || 1);
+    } catch (err) {
+      console.error("خطا در دریافت داده‌های تراکنش:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchTransactionData();
+}, [
+  page,
+  selectedFilterType?.value,
+  selectedFilterFor?.value,
+  selectedStatus?.value,
+]);
 
 
     // باز کردن مودال جزئیات

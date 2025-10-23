@@ -1,9 +1,9 @@
-// export  interface TicketFormInputs {
-//   title: string;
-//   orderId: string;
-//   description: string;
-//   file?: FileList;
-// }
+export  interface TicketFormInputs {
+  title: string;
+  orderId?: string;
+  description: string;
+  file?: FileList;
+}
 
 export  interface TicketNewResponse {
   status?: boolean;

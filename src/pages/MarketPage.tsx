@@ -22,7 +22,7 @@ const gainers = useMemo(
           parseFloat(b.priceChangePercent ?? "0") -
           parseFloat(a.priceChangePercent ?? "0")
       )
-      .slice(0, 5), // حداکثر 5 ارز
+      .slice(0, 5), 
   [mergedData]
 );
 
@@ -34,52 +34,53 @@ const losers = useMemo(
           parseFloat(a.priceChangePercent ?? "0") -
           parseFloat(b.priceChangePercent ?? "0")
       )
-      .slice(0, 5), // حداکثر 5 ارز
+      .slice(0, 5), 
   [mergedData]
 );
 
 const newest = useMemo(
   () =>
     [...mergedData]
-      .sort((a, b) => b.id - a.id)
-      .slice(0, 5), // حداکثر 5 ارز
+     .sort((a, b) => (b.id ?? 0) - (a.id ?? 0))
+
+      .slice(0, 5), 
   [mergedData]
 );
 
-  // 2️⃣ تبدیل داده‌ها به فرمت CryptoBox
-  const mapToCryptoBoxItems = (data: NewCryptoItem[]) =>
-    data.map((item) => {
-      const changeValue = parseFloat(item.priceChangePercent ?? "0");
+ 
+const mapToCryptoBoxItems = (data: NewCryptoItem[]) =>
+  data.map((item) => {
+    const changeValue = parseFloat(item.priceChangePercent ?? "0");
 
-      const icon = item.isFont ? (
-        <i
-          className={`cf cf-${item.symbol.toLowerCase()}`}
-          style={{ color: item.color || "#000", fontSize: 24 }}
-        />
-      ) : (
-        <img
-          src={
-            item.icon
-              ? `https://api.payfa24.org/images/currency/${item.icon}`
-              : "/default-coin.png"
-          }
-          alt={item.symbol}
-          className="w-6 h-6 rounded-full object-contain"
-          onError={(e) =>
-            ((e.currentTarget as HTMLImageElement).src = "/default-coin.png")
-          }
-        />
-      );
+    const icon = item.isFont ? (
+      <i
+        className={`cf cf-${item.symbol?.toLowerCase() || ""}`}
+        style={{ color: item.color || "#000", fontSize: 24 }}
+      />
+    ) : (
+      <img
+        src={
+          item.icon
+            ? `https://api.payfa24.org/images/currency/${item.icon}`
+            : "/default-coin.png"
+        }
+        alt={item.symbol || ""}
+        className="w-6 h-6 rounded-full object-contain"
+        onError={(e) =>
+          ((e.currentTarget as HTMLImageElement).src = "/default-coin.png")
+        }
+      />
+    );
 
-      return {
-        name: item.locale?.fa?.name || item.name || item.symbol,
-        symbol: item.symbol,
-        buyPrice: Number(item.priceBuy) || 0,
-        change: `${changeValue.toFixed(2)}%`,
-        isPositive: changeValue >= 0,
-        icon,
-      };
-    });
+    return {
+      name: item.locale?.fa?.name || item.name || item.symbol || "Unknown",
+      symbol: item.symbol || "",
+      buyPrice: Number(item.priceBuy) || 0,
+      change: `${changeValue.toFixed(2)}%`,
+      isPositive: changeValue >= 0,
+      icon,
+    };
+  });
 
 
 

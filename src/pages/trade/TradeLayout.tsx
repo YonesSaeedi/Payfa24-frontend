@@ -42,7 +42,7 @@ const TradeLayout = () => {
                   </ul>
                 </div>
                 <h4 className="lg:hidden text-base font-bold mb-3 text-black1">سوالات متداول</h4>
-                <TradeLayoutFAQ items={FAQData} />
+                <TradeLayoutFAQ items={FAQData.trade} />
               </div>
             </div>
           </div>

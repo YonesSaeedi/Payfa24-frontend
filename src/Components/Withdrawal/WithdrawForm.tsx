@@ -6,7 +6,6 @@ import FloatingSelect from "../FloatingInput/FloatingSelect";
 import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import IconClose from "../../assets/icons/Login/IconClose";
 
 import TradeSuccessModal from "../trade/TradeSuccessModal";
