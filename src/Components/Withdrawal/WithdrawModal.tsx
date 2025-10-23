@@ -6,7 +6,6 @@ import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
 import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import { ROUTES } from "../../routes/routes";
 
-
 interface WithdrawModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -26,17 +25,9 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
     navigate(ROUTES.WITHDRAWAL_CRYPTO);
   };
 
-
-
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white8 rounded-2xl px-4 pb-8 pt-4 shadow-lg relative "
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50" onClick={onClose}>
+      <div className="bg-white8 rounded-2xl px-4 pb-8 pt-4 shadow-lg relative" onClick={(e) => e.stopPropagation()}>
         <div className="border-b border-b-gray2 mx-2  mb-4">
           <button
             onClick={onClose}

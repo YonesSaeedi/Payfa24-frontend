@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import StatusBadge from "../UI/Button/StatusBadge";
 import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
 import Pagination from "./Pagination";
-import TransactionModal, { Transaction as ModalTransaction } from "./TransactionModal";
-import FilterModal from "./FilterModal";
+import TransactionModal, { CryptoDetail, TransactionDetail } from "./TransactionModal";
+
 import TrasactionHisory from "./../../assets/images/Transaction/Transactionhistory.png";
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
 import { apiRequest } from "../../utils/apiClient";
@@ -13,6 +13,21 @@ import { CryptoDataMap } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import SkeletonTable from "./SkeletonTable";
 import { filterForOptions, MergedCryptoHistory, statusOptions, TypeCryptoHistory, typeOptions } from "./typeHistory";
+
+
+// به جای TypeCryptoHistory
+interface CryptoTransaction {
+  id: number;
+  type: string;
+  amount: number;
+  status: string;
+  description?: string;
+  DateTime: string;
+  coin: { name: string; symbol: string };
+  fee?: number;
+  memoTag?: string;
+  code?: string;
+}
 
 
 // صفحه اصلی
@@ -25,8 +40,8 @@ const CryptoPage: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [selectedTx, setSelectedTx] = useState<ModalTransaction | null>(null);
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
+  const [selectedTx, setSelectedTx] = useState<TransactionDetail | null>(null);
+
   const [totalPages, setTotalPages] = useState<number>(1);
 
   const { data: generalData } = useGetGeneralInfo();
@@ -50,20 +65,20 @@ const CryptoPage: React.FC = () => {
 
   // دریافت تراکنش‌ها
   useEffect(() => {
-    const fetchTransactionData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await apiRequest({
-          url: "/api/history/crypto-transaction",
-          method: "GET",
-          params: {
-            page,
-            search: searchText,
-            filterType: selectedFilterType?.value || "",
-            filterFor: selectedFilterFor?.value || "",
-            filterStatus: selectedStatus?.value || "",
-          },
-        });
+     const fetchTransactionData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await apiRequest<{ transaction: CryptoTransaction[]; transaction_count: number }>({
+        url: "/api/history/crypto-transaction",
+        method: "GET",
+        params: {
+          page,
+          search: searchText,
+          filterType: selectedFilterType?.value || "",
+          filterFor: selectedFilterFor?.value || "",
+          filterStatus: selectedStatus?.value || "",
+        },
+      });
 
         setResponseData(response.transaction || []);
         setTotalPages(response.transaction_count || 1);
@@ -106,21 +121,35 @@ const CryptoPage: React.FC = () => {
   }, [mergedTransactions, searchText]);
 
 
-  const handleOpenModal = (tx: MergedCryptoHistory) => {
-  setSelectedTx({
+// const handleOpenModal = (tx: MergedCryptoHistory) => {
+//   setSelectedTx({
+//     id: tx.id.toString(),
+//     source: "crypto",
+//     faName: tx.locale?.fa?.name || tx.name,
+//     image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
+//     date: tx.DateTime,
+//     symbol: tx.coin.symbol,
+//     description: tx.description,
+//     amount: tx.amount,
+//     status: tx.status,
+//     type: tx.type,
+//     fee: tx.fee,
+//   } as TransactionDetail);
+// };
+const handleOpenModal = (tx: MergedCryptoHistory) => {
+  const cryptoTx: CryptoDetail = {
     id: tx.id.toString(),
     source: "crypto",
-    faName: tx.locale?.fa?.name || tx.name,
-    image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
     date: tx.DateTime,
+    amount: tx.amount.toString(),
     symbol: tx.coin.symbol,
     description: tx.description,
-    amount: tx.amount,
     status: tx.status,
     type: tx.type,
     fee: tx.fee,
-    // اگر فیلدهای دیگه‌ای لازم داری اضافه کن
-  });
+  };
+
+  setSelectedTx(cryptoTx);
 };
 
 

@@ -5,9 +5,10 @@ import { apiRequest } from "../../../utils/apiClient";
 import { TicketFormInputs, TicketNewResponse } from "../../../types/Ticket";
 import type { AxiosProgressEvent } from "axios";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
-import FloatingInput from "../../FloatingInput/FloatingInput";
+
 import OrderSelector from "./OrderSelector";
 import axios from "axios";
+import FloatingInput from "../../FloatingInput/FloatingInput";
 
 interface Order {
   id: string;
@@ -21,7 +22,8 @@ interface Order {
 export default function TicketForm() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [setIsOrderSelectorOpen] = useState(false);
+  const [, setIsOrderSelectorOpen] = useState(false);
+
   const [isFileFocused, setIsFileFocused] = useState(false);
 
   const {
@@ -36,7 +38,7 @@ export default function TicketForm() {
   });
 
   const watchedFields = watch(["title", "description"]);
-
+   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const onSubmit = async (data: TicketFormInputs) => {
     try {
       const formData = new FormData();
@@ -108,7 +110,6 @@ export default function TicketForm() {
               type="text"
               placeholder=""
               placeholderColor="gray9"
-              borderClass="border-gray12"
               className="flex flex-row mb-6 h-[56px] rounded-lg border  border-gray12"
             />
           )}
@@ -140,9 +141,7 @@ export default function TicketForm() {
                 type="text"
                 placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."
                 placeholderColor="text-black0"
-                borderClass="border-gray12"
-                heightClass="h-[160px]"
-                className="rounded-lg"
+                className="rounded-lg border-gray12"
               />
             )}
           />
@@ -168,7 +167,7 @@ export default function TicketForm() {
             name="file"
             control={control}
             render={({ field }) => {
-              const fileInputRef = useRef<HTMLInputElement | null>(null);
+             
 
               return (
                 <div

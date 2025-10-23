@@ -6,7 +6,12 @@ import StepPersonal from "../../components/auth/step/StepBasic/StepPersonal";
 import StepCard from "../../components/auth/step/StepBasic/StepCard";
 import StepZiro from "../../components/auth/step/StepBasic/StepZiro";
 
-
+interface AuthenticationLayoutProps {
+  children: React.ReactNode;
+  step: number;
+  started: boolean;
+  onStart: () => void;
+}
 export default function AuthenticationBasic() {
   const [step, setStep] = useState(0);
   const [started, setStarted] = useState(false);
@@ -37,11 +42,7 @@ export default function AuthenticationBasic() {
 
   return (
     <HeaderLayout>
-      <AuthenticationLayout 
-        step={step} 
-        started={started} 
-        onStart={handleStart}
-      >
+      <AuthenticationLayout step={step} started={started} onStart={handleStart}>
         <div className="flex flex-col items-center justify-center gap-6 w-full">
           {renderStep()}
         </div>

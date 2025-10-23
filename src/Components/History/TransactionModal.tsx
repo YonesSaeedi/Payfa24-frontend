@@ -40,6 +40,7 @@ export interface CryptoDetail {
   stock?: string;
   txid?: string;
   type?: string;
+   fee?: number;
   withdrawFee?: string;
   source: "crypto";
 }
@@ -335,3 +336,4 @@ const DetailRow = ({
 
 
 export default TransactionModal;
+

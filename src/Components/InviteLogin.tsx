@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
-import TextField from "../components/InputField/TextField";
+import TextField from "./InputField/TextField";
 import IconAlert from "../assets/icons/Login/IconAlert";
 import IconGoogle from "../assets/icons/Login/IconGoogle";
 import { useForm, Controller } from "react-hook-form";
@@ -295,8 +295,8 @@ export default function StepInvite({ onNext }) {
                     onClick={handleConfirm}
                     disabled={otpCode.length < 5}
                     className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${otpCode.length < 5
-                        ? "bg-gray5 cursor-not-allowed"
-                        : "bg-blue2"
+                      ? "bg-gray5 cursor-not-allowed"
+                      : "bg-blue2"
                       }`}
                   >
                     تایید

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import TextField from "../components/InputField/TextField";
-import PasswordConditionItem from "../components/InputField/PasswordConditionitem/PasswordConditionItem";
+import TextField from "./InputField/TextField";
+import PasswordConditionItem from "./InputField/PasswordConditionitem/PasswordConditionItem";
 import IconEyeOpen from "../assets/icons/Login/IconEyeOpen";
 import IconEyeClosed from "../assets/icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";

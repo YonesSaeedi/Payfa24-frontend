@@ -1,3 +1,4 @@
+
 import ReceivedIcon from "../../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
 import IconClose from "../../../assets/icons/Login/IconClose";
@@ -6,7 +7,7 @@ import { Order } from "../../../types/Ticket";
 import { useEffect, useRef } from "react";
 
 interface OrderModalProps {
-  orders: Order[];
+  orders: (Order & { type: "buy" | "sell" | "ticket" | string })[]; // ✅ اضافه شد: انواع اضافی برای نمایش
   isLoading: boolean;
   onSelectOrder: (order: Order) => void;
   onClose: () => void;
@@ -28,6 +29,23 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
     };
   }, [onClose]);
 
+  const mapOrderType = (type: string) => {
+    switch (type) {
+      case "buy":
+        return { text: "خرید", icon: <ReceivedIcon /> };
+      case "sell":
+        return { text: "فروش", icon: <SendIcon /> };
+      case "ticket":
+        return { text: "تیکت", icon: <IconTicket /> };
+      case "برداشت":
+        return { text: "برداشت", icon: <SendIcon /> };
+      case "واریز":
+        return { text: "واریز", icon: <ReceivedIcon /> };
+      default:
+        return { text: type, icon: null };
+    }
+  };
+
   return (
     <div
       dir="rtl"
@@ -38,21 +56,16 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
       <div
         ref={modalRef}
         className="bg-white8 rounded-2xl shadow-lg p-4 z-10 flex flex-col"
-        style={{
-          width: "480px",
-          height: "585px",
-        }}
+        style={{ width: "480px", height: "585px" }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* --- هدر مودال --- */}
-        <div className="flex justify-between items-center   border-gray-100 px-4 pt-4 pb-6">
+        <div className="flex justify-between items-center border-gray-100 px-4 pt-4 pb-6">
           <h3 className="font-bold text-lg text-black1">انتخاب سفارش</h3>
           <button onClick={onClose} className="w-6 h-6 text-gray-400 hover:text-gray-600">
             <IconClose />
           </button>
         </div>
 
-        {/* --- بدنه مودال --- */}
         <div
           className="flex-1 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent px-4"
           style={{ scrollbarGutter: "stable" }}
@@ -74,68 +87,42 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
                 </div>
               ))
             : orders.map((order) => {
-  // تبدیل نوع سفارش به فارسی
-  let orderTypeText = "";
-  let orderIcon: React.ReactNode = null;
+  // نگه داشتن نوع به صورت string
+  const orderType = order.type as string;
 
-  switch (order.type) {
-    case "buy":
-      orderTypeText = "خرید";
-      orderIcon = <ReceivedIcon />; // 👈 آیکن خرید خودت
-      break;
-    case "sell":
-      orderTypeText = "فروش";
-      orderIcon = <SendIcon />; // 👈 آیکن فروش خودت
-      break;
-    case "ticket":
-      orderTypeText = "تیکت";
-      orderIcon = <IconTicket />; // 👈 آیکن تیکت خودت
-      break;
-    default:
-      orderTypeText = order.type; // اگر نوع دیگه‌ای بود، همون متن انگلیسی نمایش داده شود
-      orderIcon = order.icon; // و آیکن اصلی
-  }
+  const { text: orderTypeText, icon: orderIcon } = mapOrderType(orderType);
 
- return (
+  return (
     <button
       key={order.id}
       onClick={() => onSelectOrder(order)}
       className="w-full border rounded-xl p-3 flex justify-between items-center bg-gray33 border-gray21 hover:border-blue-400 transition"
     >
       <div className="flex items-center w-full justify-between">
-        {/* --- سمت راست: آیکن + نام ارز + نوع --- */}
         <div className="flex items-center">
           <div className="w-10 h-10 ml-3 bg-blue15 rounded-lg flex items-center justify-center">
             <span className="text-blue-500 w-6 h-6">{orderIcon}</span>
           </div>
-
           <div className="flex flex-col text-right">
-            {/* نام ارز */}
             <p className="text-sm font-medium text-black1">{order.coin}</p>
-
-            {/* نوع معامله */}
             <span className="text-gray-500 font-normal text-xs mt-1">{orderTypeText}</span>
           </div>
         </div>
 
-        {/* --- سمت چپ: مبلغ بالای تاریخ --- */}
         <div className="flex flex-col items-end">
-          {order.amount != null && order.type !== "ticket" && (
+          {order.amount != null && orderType !== "ticket" && (
             <span className="text-black0 font-medium text-[14px]">
-  {order.amount.toLocaleString("fa-IR")} <span className="text-gray5">USDT</span>
-</span>
-
+              {Number(order.amount).toLocaleString("fa-IR")}{" "}
+              <span className="text-gray5">USDT</span>
+            </span>
           )}
-          {order.date && (
-            <span className="text-gray-400 text-xs mt-1">{order.date}</span>
-          )}
+          {order.date && <span className="text-gray-400 text-xs mt-1">{order.date}</span>}
         </div>
       </div>
     </button>
   );
-
-})}
-
+})
+}
         </div>
       </div>
     </div>

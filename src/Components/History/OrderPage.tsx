@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import StatusBadge from "../UI/Button/StatusBadge";
-import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
+
 import Pagination from "./Pagination";
 import TransactionModal, { Transaction as ModalTransaction } from "./TransactionModal";
-import FilterModal from "./FilterModal";
+
 import TrasactionHisory from "./../../assets/images/Transaction/Transactionhistory.png";
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
 import { apiRequest } from "../../utils/apiClient";
@@ -13,7 +13,7 @@ import { CryptoDataMap } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import { ListDigitalCoin } from "../../constants/ListdigitalCoins";
 import { MergedOrderHistory, statusOrderOptions, TypeOrderHistory, typeOrderOptions } from "./typeHistory";
-import BreadcrumbNavigation from "../BreadcrumbNavigation";
+
 
 
 
@@ -48,7 +48,6 @@ const OrderPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [selectedTx, setSelectedTx] = useState<ModalTransaction | null>(null);
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState<number>(1);
   const { data: generalData } = useGetGeneralInfo();
 

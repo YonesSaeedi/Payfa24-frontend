@@ -22,7 +22,7 @@ export default function MultiFactor() {
   const { data: userData } = useGetUser();
 
 
-  const [modalType, setModalType] = useState(null);
+const [modalType, setModalType] = useState<string | null>(null);
   const navigate = useNavigate();
   const [otpCode, setOtpCode] = useState("");
   const [isOpenActive, setIsOpenActive] = useState(false);
@@ -110,12 +110,12 @@ export default function MultiFactor() {
         data: { code: otpCode }, // otpCode ارسال شود
       });
       refresh()
-      toast.success(res.msg);
+      toast.success((res as any)?.msg || "موفق!");
       setIsOpen(false);
 
 
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "خطا در تایید کد.");
+    } catch (err) {
+      toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.message || "خطا در تایید کد.");
     }
   };
 
