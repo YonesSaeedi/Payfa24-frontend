@@ -1,6 +1,6 @@
 
 import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconClose from "../../assets/icons/Login/IconClose";
 import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 import WalletAddIcon from "../../assets/icons/Home/WalletCardIcon/WalletAddIcon";
 import { useNavigate } from "react-router-dom";

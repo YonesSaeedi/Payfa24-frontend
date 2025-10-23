@@ -6,7 +6,6 @@ import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
 import IconWallet from "../../assets/icons/Deposit/IconWallet";
 import IconLink from "../../assets/icons/Deposit/IconLink";
 
-import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
 import DepositForm from "../../components/Deposit/DepositForm";
 import CardToCardTransfer from "../../components/Deposit/CardToCardTransfer";
 import DepositWithTxID from "../../components/Deposit/DepositWithTxID";
@@ -18,6 +17,7 @@ import DepositwithIdentifier from "../../components/Deposit/DepositWithIdentifie
 import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
 import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
+import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
 
 
 interface DepositPageProps {

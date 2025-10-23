@@ -1,5 +1,5 @@
 import { Controller, useForm, useWatch } from "react-hook-form";
-import IconVideo from "../../assets/Icons/Deposit/IconVideo";
+import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
 import BankMellatLogo from "../../assets/icons/BankCards/IconBankMellatLogo";
@@ -7,7 +7,7 @@ import BankAnsarLogo from "../../assets/icons/BankCards/IconBankAnsarLogo";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import { useEffect, useRef, useState, useCallback } from "react";
-import UploadImage from "../../assets/Icons/authentication/UploadImage";
+import UploadImage from "../../assets/icons/authentication/UploadImage";
 import Accordion from "../Withdrawal/Accordion";
 import * as yup from "yup";
 import { apiRequest } from "../../utils/apiClient";

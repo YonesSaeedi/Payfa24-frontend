@@ -14,7 +14,7 @@ import IconProfileMenu from "../../assets/icons/Login/IconProfileMenu";
 import { apiRequest } from "../../utils/apiClient";
 import useGetUser from "../../hooks/useGetUser"; 
 import IconSun from "../../assets/icons/header/IconSun";
-import MoonIcon from "../../assets/Icons/HeaderLogin/MoonIcon";
+import MoonIcon from "../../assets/icons/HeaderLogin/MoonIcon";
 import { ROUTES } from "../../routes/routes";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 

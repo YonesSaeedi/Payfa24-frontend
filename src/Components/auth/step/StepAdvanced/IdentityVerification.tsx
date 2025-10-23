@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, } from "react";
 import UploadImage from "../../../../assets/icons/authentication/UploadImage";
-import IconAlert from "../../../../assets/Icons/Login/IconAlert";
+import IconAlert from "../../../../assets/icons/Login/IconAlert";
 import StepperComponent from "../Stepper";
 import IconCloseChervon from "../../../../assets/icons/authentication/IconCloseChervon";
 import IconOpenChervon from "../../../../assets/icons/authentication/IconOpenChervon";
-import IconClose from "../../../../assets/Icons/Login/IconClose";
+import IconClose from "../../../../assets/icons/Login/IconClose";
 import previewURLImage2 from "../../../../assets/previewURLImage (2).png";
 import { toast } from "react-toastify";
 

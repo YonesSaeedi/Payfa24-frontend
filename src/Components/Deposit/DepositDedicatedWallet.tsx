@@ -1,9 +1,9 @@
 import { Controller, useForm } from "react-hook-form";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
-import IconVideo from "../../assets/Icons/Deposit/IconVideo";
+import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import QRCode from "react-qr-code"; // اضافه کردن پکیج react-qr-code
-import IconCopy from "../../assets/Icons/AddFriend/IconCopy";
+import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";
 import { CryptoItem } from "../../types/crypto";

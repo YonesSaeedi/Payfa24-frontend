@@ -820,7 +820,7 @@ import React, { useContext, useState, useEffect } from "react";
 import StepperComponent from "../Stepper";
 import TextField from "../../../InputField/TextField";
 import { Controller, useForm } from "react-hook-form";
-import IconCalender from "../../../../assets/Icons/authentication/IconCalender";
+import IconCalender from "../../../../assets/icons/authentication/IconCalender";
 import DatePickerModal from "../../../DatePicker";
 import { ThemeContext } from "../../../../context/ThemeContext";
 import { useMutation } from "@tanstack/react-query";

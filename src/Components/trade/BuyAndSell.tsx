@@ -4,7 +4,7 @@ import IconArrowBottomLeft from "../../assets/icons/trade/IconArrowBottomLeft";
 import IconArrowTopLeft from "../../assets/icons/trade/IconArrowTopLeft";
 import IconBorderedPlus from "../../assets/icons/trade/IconBorderedPlus";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
-import IconChevron from "../../assets/Icons/trade/IconChevron";
+import IconChevron from "../../assets/icons/trade/IconChevron";
 import CryptoListModal from "./CryptoListModal";
 import PercentBar from "./PercentBar";
 import { toast } from "react-toastify";

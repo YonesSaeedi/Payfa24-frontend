@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { apiRequest } from "../utils/apiClient";
-import IconGoogle from "../assets/Icons/Login/IconGoogle";
+import IconGoogle from "../assets/icons/Login/IconGoogle";
 
 const decodeJwt = (token: string) => {
   try {

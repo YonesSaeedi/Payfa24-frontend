@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // این خط جدید است
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import EmailIcon from "../../assets/Icons/authentication/EmailIcon";
+import EmailIcon from "../../assets/icons/authentication/EmailIcon";
 import MultiFactorCard from "../../components/MultiFactor/MultiFactorCard";
 import Google from "../../assets/Icons/MultiFactor/Google.png";
 import MessagesIcon from "../../assets/icons/MultiFactor/Iconmessages";
@@ -23,7 +23,7 @@ export default function MultiFactor() {
   const { data: userData } = useGetUser();
 
 
-  const [modalType, setModalType] = useState(null);
+const [modalType, setModalType] = useState<string | null>(null);
   const navigate = useNavigate();
   const [otpCode, setOtpCode] = useState("");
   const [isOpenActive, setIsOpenActive] = useState(false);
@@ -111,12 +111,12 @@ export default function MultiFactor() {
         data: { code: otpCode }, // otpCode ارسال شود
       });
       refresh()
-      toast.success(res.msg);
+      toast.success((res as any)?.msg || "موفق!");
       setIsOpen(false);
 
 
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "خطا در تایید کد.");
+    } catch (err) {
+      toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.message || "خطا در تایید کد.");
     }
   };
 

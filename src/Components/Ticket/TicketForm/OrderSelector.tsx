@@ -6,7 +6,7 @@ import IconOrderSelection from "../../../assets/icons/ticket/IconOrderSelection"
 import OrderModal from "./OrderModal";
 import { apiRequest } from "../../../utils/apiClient";
 import type { UseFormSetValue, UseFormRegister } from "react-hook-form";
-import IconClose from "../../../assets/Icons/Login/IconClose";
+import IconClose from "../../../assets/icons/Login/IconClose";
 
 interface TicketInfoResponse {
   tickets: { id: number; title: string; status: string; created: string; updated: string }[];

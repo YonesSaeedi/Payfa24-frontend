@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconClose from "../../assets/icons/Login/IconClose";
 import { ROUTES } from "../../routes/routes";
 import IconBank from "../../assets/icons/Deposit/IconBank";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";

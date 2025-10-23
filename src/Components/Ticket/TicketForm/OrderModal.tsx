@@ -1,6 +1,6 @@
 import ReceivedIcon from "../../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
-import IconClose from "../../../assets/Icons/Login/IconClose";
+import IconClose from "../../../assets/icons/Login/IconClose";
 import IconTicket from "../../../assets/icons/services/IconTicket";
 import { Order } from "../../../types/Ticket";
 import { useEffect, useRef } from "react";

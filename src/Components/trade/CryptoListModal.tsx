@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconClose from "../../assets/icons/Login/IconClose";
 import { CryptoItem } from "../../types/crypto";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import CurrenciesVirtualizedList from "./CurrenciesVirtualizedList";

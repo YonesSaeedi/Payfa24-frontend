@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { apiRequest } from "../../utils/apiClient";
 import Accordion from "../Withdrawal/Accordion";
 import FloatingInput from "../FloatingInput/FloatingInput";
-import IconVideo from "../../assets/Icons/Deposit/IconVideo";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconVideo from "../../assets/icons/Deposit/IconVideo";
+import IconClose from "../../assets/icons/Login/IconClose";
 
 interface PaymentGatewayRequestData {
   amount: number;

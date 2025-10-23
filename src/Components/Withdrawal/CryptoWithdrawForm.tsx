@@ -10,7 +10,7 @@ import OTPInputModal from "../trade/OTPInputModal";
 import CryptoListModal from "../trade/CryptoListModal";
 import useMergedCryptoList from "./MergedCryptoData";
 import TradeSuccessModal from "../trade/TradeSuccessModal";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconClose from "../../assets/icons/Login/IconClose";
 import useGetUser from "../../hooks/useGetUser";
 import { AxiosError } from "axios";
 

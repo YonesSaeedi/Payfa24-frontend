@@ -1,6 +1,6 @@
-import IconClose from "../../assets/Icons/Login/IconClose"
+import IconClose from "../../assets/icons/Login/IconClose"
 import OTPModal from "../OTPModal"
-import IconAgain from "../../assets/Icons/Login/IconAgain"
+import IconAgain from "../../assets/icons/Login/IconAgain"
 import { formatTime } from "../../utils/formatTime"
 import { useState } from "react"
 
