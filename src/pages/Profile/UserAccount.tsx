@@ -80,7 +80,7 @@ function formatPersianDate(dateStr: string): string {
   )}`;
 }
 
-export default function Profile() {
+export default function UserAccount() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [_error, setError] = useState<Error | null>(null);

@@ -1,3 +1,4 @@
+
 export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
@@ -45,13 +46,23 @@ ADD_FRIEND: {
 },
 
 
-  DEPOSIT: "/deposit",
-  DEPOSIT_GATEWAY: "/deposit/gateway",
-  DEPOSIT_IDENTIFIER: "/deposit/identifier",
-  DEPOSIT_CARD: "/deposit/card",
-  DEPOSIT_RECEIPT: "/deposit/receipt",
-  DEPOSIT_WALLET: "/deposit/wallet",
-  DEPOSIT_TXID: "/deposit/txid",
+PROFILE_MEN: {
+    PROFILE: "/profile",
+    USER_ACCOUNT: "/profile/user-account",  // ← lowercase
+    SECURITY_SETTINGS: "/profile/security-settings",
+    MULTI_FACTOR: "/profile/multi-factor",
+    CHANGE_PASSWORD: "/profile/change-password",
+    CONNECTED_DEVICES: "/profile/connected-devices",
+    BANK_CARDS: "/profile/bank-cards",
+  },
+
+DEPOSIT: "/deposit",
+DEPOSIT_GATEWAY: "/deposit/closeDeal",
+DEPOSIT_IDENTIFIER: "/deposit/identifier",
+DEPOSIT_CARD: "/deposit/card",
+DEPOSIT_RECEIPT: "/deposit/receipt",
+DEPOSIT_WALLET: "/deposit/wallet",
+DEPOSIT_TXID: "/deposit/txid",
 
 };
 

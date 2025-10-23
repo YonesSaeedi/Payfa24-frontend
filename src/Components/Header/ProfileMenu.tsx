@@ -115,7 +115,7 @@ export default function ProfileMenu({
         </div>
 
         <ul dir="rtl" className="p-4 space-y-3 font-medium">
-          <Link to={ROUTES.PROFILE} className="flex items-center gap-2 w-full">
+          <Link to={ROUTES.PROFILE_MEN.USER_ACCOUNT} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer text-black1">
               <span className="w-6 h-6">
                 <IconUserAccount />
@@ -150,7 +150,7 @@ export default function ProfileMenu({
       <Link to={ROUTES.MULTI_FACTOR} className="flex items-center gap-2 hover:text-blue2 px-2 pt-4">
         <li>ورود دو مرحله‌ای</li>
       </Link>
-      <Link to={ROUTES.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-2 pt-2">
+      <Link to={ROUTES.PROFILE_MEN.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-2 pt-2">
         <li>تغییر رمز عبور</li>
       </Link>
     </ul>

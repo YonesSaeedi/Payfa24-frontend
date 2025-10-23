@@ -9,7 +9,7 @@ import Buy from "../pages/trade/Buy";
 import Sell from "../pages/trade/Sell";
 import AuthenticationBasic from "../pages/authentication/basic";
 import AuthenticationAdvance from "../pages/authentication/advance";
-import Profile from "../pages/Profile/Profile";
+import Profile from "../pages/Profile/UserAccount";
 import MarketPage from "../pages/MarketPage";
 import TicketPage from "../pages/Ticket/TicketPage";
 import TicketPanel from "../components/Ticket/TicketPanel";
@@ -52,8 +52,24 @@ export default function AppRouter() {
           <Route path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD} element={<ForgotPasswordPageSetPasswordPage />} />
         </Route>
         {/* header only pages ==================================================================================================== */}
-        <Route path={ROUTES.USER_ACCOUNT} element={<Profile />} />
-        <Route path={ROUTES.PROFILE} element={<Profile />} />
+        {/* <Route path={ROUTES.USER_ACCOUNT} element={<Profile />} />
+        <Route path={ROUTES.PROFILE} element={<Profile />} /> */}
+
+
+<Route path={ROUTES.PROFILE_MEN.PROFILE} element={<Profile />}>
+  <Route index element={<Navigate to={ROUTES.PROFILE_MEN.USER_ACCOUNT} />} />
+  <Route path={ROUTES.PROFILE_MEN.USER_ACCOUNT} element={<Profile />} />
+  <Route path={ROUTES.PROFILE_MEN.SECURITY_SETTINGS} element={<Profile />} />
+  <Route path={ROUTES.PROFILE_MEN.MULTI_FACTOR} element={<MultiFactor />} />
+  <Route path={ROUTES.PROFILE_MEN.CHANGE_PASSWORD} element={<ChangePassword />} />  // ✅ فقط این
+  <Route path={ROUTES.PROFILE_MEN.CONNECTED_DEVICES} element={<Profile />} />
+  <Route path={ROUTES.PROFILE_MEN.BANK_CARDS} element={<Profile />} />
+</Route>
+
+
+
+
+
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
         <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />

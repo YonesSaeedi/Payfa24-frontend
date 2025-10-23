@@ -12,6 +12,7 @@ import { CryptoItem } from "../../types/crypto";
 import CryptoListModal from "../trade/CryptoListModal";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { toast } from "react-toastify";
+import BreadcrumbNavigation from "../BreadcrumbNavigation";
 
 // تعریف نوع برای شبکه‌ها
 interface Network {

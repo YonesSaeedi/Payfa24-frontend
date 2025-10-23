@@ -568,7 +568,7 @@ export default function StepEmail({ onNext }: Props) {
       if (data.status) {
         toast.success("تأیید با موفقیت انجام شد! به مرحله بعدی می‌روید.");
         setIsModalOpen(false);
-        localStorage.setItem("kycStepCompleted", "level1");
+      
         onNext(); // This is the correct place to call onNext
       } else {
         const errorMsg = data.msg || `کد تأیید نامعتبر است.`;
