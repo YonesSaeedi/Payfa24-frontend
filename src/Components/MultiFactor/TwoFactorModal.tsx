@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import OTPModal from "../OTPModal";
 import { apiRequest } from "../../utils/apiClient";
 import tickCircle from "../../assets/Icons/MultiFactor/tick-circle.png";
-import IconClose from "../../assets/Icons/Login/IconClose";
-import IconAgain from "../../assets/Icons/Login/IconAgain";
+import IconClose from "../../assets/icons/Login/IconClose";
+import IconAgain from "../../assets/icons/Login/IconAgain";
 import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
 import { toast } from "react-toastify";
 

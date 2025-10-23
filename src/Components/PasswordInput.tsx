@@ -1,8 +1,8 @@
 import { useState  } from "react";
 import TextField from "./InputField/TextField";
 import PasswordConditionItem from "./InputField/PasswordConditionitem/PasswordConditionItem";
-import IconEyeOpen from "../assets/Icons/Login/IconEyeOpen";
-import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
+import IconEyeOpen from "../assets/icons/Login/IconEyeOpen";
+import IconEyeClosed from "../assets/icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getChangePasswordSchema } from "../utils/validationSchemas"; 

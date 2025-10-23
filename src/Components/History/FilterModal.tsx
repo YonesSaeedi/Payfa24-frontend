@@ -1,5 +1,5 @@
 import  { useState } from "react";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconClose from "../../assets/icons/Login/IconClose";
 import FilterDropdown from "./FilterDropdown";
 
 interface FilterModalProps {

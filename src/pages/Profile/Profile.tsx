@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { apiRequest } from "../../utils/apiClient";
-import EmailIcon from "../../assets/Icons/authentication/EmailIcon";
-import IconcardBank from "../../assets/Icons/authentication/IconcardBank";
-import IconUserOctagon from "../../assets/Icons/authentication/IconUserOctagon";
+import EmailIcon from "../../assets/icons/authentication/EmailIcon";
+import IconcardBank from "../../assets/icons/authentication/IconcardBank";
+import IconUserOctagon from "../../assets/icons/authentication/IconUserOctagon";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import IdentyIcon from "../../assets/Icons/authentication/IdentyIcon";
-import IconCardIdenty from "../../assets/Icons/authentication/IconCardIdenty";
+import IdentyIcon from "../../assets/icons/authentication/IdentyIcon";
+import IconCardIdenty from "../../assets/icons/authentication/IconCardIdenty";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import { Link } from "react-router";
-import { spawn } from "child_process";
 
 interface ApiResponse {
   user: UserData;
@@ -84,7 +83,7 @@ function formatPersianDate(dateStr: string): string {
 export default function Profile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [_error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     async function fetchData() {

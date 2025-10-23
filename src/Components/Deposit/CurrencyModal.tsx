@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from "react";
-import IconClose from "../../assets/Icons/Login/IconClose";
-import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
+import IconClose from "../../assets/icons/Login/IconClose";
+import IconMonnos from "../../assets/icons/Deposit/IconMonnos";
 // Mock data (داده‌های تستی)
 const mockCurrencies = [
   {

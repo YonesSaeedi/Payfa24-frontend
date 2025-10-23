@@ -1,9 +1,9 @@
 import React from "react";
-import IconUserOctagon from "../../../assets/Icons/authentication/IconUserOctagon";
-import IconcardBank from "../../../assets/Icons/authentication/IconcardBank";
-import IdentyIcon from "../../../assets/Icons/authentication/IdentyIcon";
-import IconCheckmark from "../../../assets/Icons/authentication/IconCheckmark";
-import IconCardIdenty from "../../../assets/Icons/authentication/IconCardIdenty";
+import IconUserOctagon from "../../../assets/icons/authentication/IconUserOctagon";
+import IconcardBank from "../../../assets/icons/authentication/IconcardBank";
+import IdentyIcon from "../../../assets/icons/authentication/IdentyIcon";
+import IconCheckmark from "../../../assets/icons/authentication/IconCheckmark";
+import IconCardIdenty from "../../../assets/icons/authentication/IconCardIdenty";
 
 type StepperProps = {
   currentStep: number;

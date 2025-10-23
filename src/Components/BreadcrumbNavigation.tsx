@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router"
-import IconChevron from "../assets/Icons/trade/IconChevron";
+import IconChevron from "../assets/icons/trade/IconChevron";
 
 const BREADCRUMB_LABELS: Record<string, string> = {
 

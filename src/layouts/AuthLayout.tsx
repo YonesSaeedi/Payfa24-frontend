@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import Logo from "/pf.png";
-import MoonIcon from "../assets/Icons/HeaderLogin/MoonIcon";
-import SupportIcon from "../assets/Icons/HeaderLogin/SupportIcon";
+import MoonIcon from "../assets/icons/HeaderLogin/MoonIcon";
+import SupportIcon from "../assets/icons/HeaderLogin/SupportIcon";
 
 
 

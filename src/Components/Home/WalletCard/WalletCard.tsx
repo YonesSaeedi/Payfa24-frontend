@@ -11,7 +11,7 @@ import WithdrawModal from "../../Withdrawal/WithdrawModal";
 import DepositModal from "../../Deposit/DepositModal"; // ✅ اضافه شد
 import { apiRequest } from "../../../utils/apiClient";
 import { formatPersianDigits } from "../../../utils/formatPersianDigits";
-import IconEyeClosed from "../../../assets/Icons/Login/IconEyeClosed";
+import IconEyeClosed from "../../../assets/icons/Login/IconEyeClosed";
 
 interface WalletCardProps {
   balance?: number;

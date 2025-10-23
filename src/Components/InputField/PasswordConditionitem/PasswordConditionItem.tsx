@@ -1,6 +1,6 @@
-import IconAlert from "../../../assets/Icons/Login/IconAlert";
-import AlertTrue from "../../../assets/Icons/Login/IconTrueAlert";
-import AlertFalse from "../../../assets/Icons/Login/IconFalseAlert";
+import IconAlert from "../../../assets/icons/Login/IconAlert";
+import AlertTrue from "../../../assets/icons/Login/IconTrueAlert";
+import AlertFalse from "../../../assets/icons/Login/IconFalseAlert";
 
 
 interface PasswordConditionItemProps {

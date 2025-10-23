@@ -17,7 +17,7 @@ import DepositwithIdentifier from "../../components/Deposit/DepositWithIdentifie
 import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
 import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
-import IconArrowRight from "../../assets/Icons/Deposit/IconArrowRight";
+import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
 
 interface DepositPageProps {
   selected?: "gateway" | "identifier" | "card" | "receipt" | "wallet" | "txid";

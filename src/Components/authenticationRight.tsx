@@ -1,9 +1,9 @@
 import React from "react";
-import EmailIcon from "../assets/Icons/authentication/EmailIcon";
-import IconUserOctagon from "../assets/Icons/authentication/IconUserOctagon";
-import IconcardBank from "../assets/Icons/authentication/IconcardBank";
-import IconDownloadPhoto from "../assets/Icons/authentication/IconDownloadPhoto";
-import IdentyIcon from "../assets/Icons/authentication/IdentyIcon";
+import EmailIcon from "../assets/icons/authentication/EmailIcon";
+import IconUserOctagon from "../assets/icons/authentication/IconUserOctagon";
+import IconcardBank from "../assets/icons/authentication/IconcardBank";
+import IconDownloadPhoto from "../assets/icons/authentication/IconDownloadPhoto";
+import IdentyIcon from "../assets/icons/authentication/IdentyIcon";
 
 interface Props {
   step: number;

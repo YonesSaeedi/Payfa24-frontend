@@ -1,4 +1,4 @@
-import IconClose from "../../../assets/Icons/Login/IconClose";
+import IconClose from "../../../assets/icons/Login/IconClose";
 import BankCardForm from "./BankCardForm";
 
 type AddBankCardModalProps = {
