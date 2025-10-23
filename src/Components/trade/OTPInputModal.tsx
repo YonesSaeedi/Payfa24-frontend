@@ -36,17 +36,16 @@ const OTPInputModal = ({
   const [otpValue, setOtpValue] = useState<string>('')
   const isWaiting = !!(resendCodeTimeLeft && resendCodeTimeLeft > 0)
   const isOtpComplete = otpValue.length === OTPLength
-console.log("🔥 OTPInputModal render | resendCodeTimeLeft:", resendCodeTimeLeft);
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center" onClick={closeModal}>
-      <div className="rounded-lg lg:p-8 p-4 bg-white8" onClick={(e) => e.stopPropagation()}>
+      <div dir="rtl" className="rounded-lg lg:p-8 p-4 bg-white8" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <h2 className="lg:text-lg text-sm lg:font-bold font-medium text-black0">{titleText}</h2>
           <span className="icon-wrapper h-6 w-6 cursor-pointer text-gray12 hover:text-blue2" onClick={closeModal}><IconClose /></span>
         </div>
         <p className="lg:mt-12 mt-8 mb-6 lg:mb-8 lg:text-lg text-sm font-normal text-gray15">{mainText}</p>
-        <div className="mb-8 lg:mb-12"><OTPModal length={OTPLength} onChange={resultCode => { onChange(resultCode); setOtpValue(resultCode)  }} /></div>
+        <div className="mb-8 lg:mb-12"><OTPModal length={OTPLength} onChange={resultCode => { onChange(resultCode); setOtpValue(resultCode) }} /></div>
         {handleResendCode &&
           <div className="flex items-center justify-between gap-3 mb-2 lg:mb-4">
             <button
@@ -80,7 +79,7 @@ console.log("🔥 OTPInputModal render | resendCodeTimeLeft:", resendCodeTimeLef
             {submitButtonText}
           </button>
         </div>
-      </div> 
+      </div>
     </div>
   )
 }
