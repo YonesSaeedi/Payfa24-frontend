@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 
@@ -12,20 +12,21 @@ import HomeActiveIcon from "../../assets/icons/header/HomeActiveIcon";
 import ChartActiveIcon from "../../assets/icons/header/ChartActiveIcon";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
 import MessagesActiveIcon from "../../assets/icons/header/MessagesActiveIcon";
-import ProfileMenu from "./ProfileMenu";
-import ServicesBox from "../ServicesBox/ServicesBox";
-import VectorIcon from "../../assets/icons/header/vectorIcon";
 import RingIcon from "../../assets/icons/header/ringIcon";
 import ChartIcon from "../../assets/icons/header/ChartIcon";
 import pfIcon from "../../assets/images/HeaderIcon/pf.png";
 import groupIcon from "../../assets/images/HeaderIcon/Group 71185 (1).png";
-import NotificationDropDown from "../Notification/NotificationDropDown";
 import IconRingActive from "../../assets/icons/header/IconRingActive";
 import IconSun from "../../assets/icons/header/IconSun";
 import { useRef } from "react";
-import MobileMenu from "./MobileMenu";
+
 import  { useEffect} from "react";
 import IconMobileMenue from "../../assets/icons/header/IconMobileMenue";
+import VectorIcon from "../../assets/icons/header/VectorIcon";
+import MobileMenu from "./MobileMenu";
+import NotificationsDropdown from "../Notification/NotificationDropDown";
+import ServicesBox from "../ServicesBox/ServicesBox";
+import ProfileMenu from "./ProfileMenu";
 
 export default function Header() {
   const themeContext = useContext(ThemeContext);
@@ -119,7 +120,7 @@ useEffect(() => {
 
   {showNotifications && (
     <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
-      <NotificationDropDown />
+      <NotificationsDropdown />
     </div>
   )}
 </div>

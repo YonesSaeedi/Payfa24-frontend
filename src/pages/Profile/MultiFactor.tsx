@@ -5,7 +5,7 @@ import HeaderLayout from "../../layouts/HeaderLayout";
 import EmailIcon from "../../assets/Icons/authentication/EmailIcon";
 import MultiFactorCard from "../../components/MultiFactor/MultiFactorCard";
 import Google from "../../assets/Icons/MultiFactor/Google.png";
-import MessagesIcon from "../../assets/Icons/MultiFactor/Iconmessages";
+import MessagesIcon from "../../assets/icons/MultiFactor/Iconmessages";
 import TwoFactorModal from "../../components/MultiFactor/TwoFactorModal";
 import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
 import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
@@ -14,7 +14,7 @@ import useGetUser from "../../hooks/useGetUser";
 import { useMemo } from "react";
 import { ROUTES } from "../../routes/routes";
 import OTPModal from "../../components/OTPModal";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 
 

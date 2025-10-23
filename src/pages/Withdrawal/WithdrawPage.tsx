@@ -7,14 +7,13 @@ import WithdrawForm from "../../components/Withdrawal/WithdrawForm";
 import CryptoWithdrawForm from "../../components/Withdrawal/CryptoWithdrawForm";
 import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
-import { Route, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
 import { useLocation } from "react-router-dom";
 
 const WithdrawPage: React.FC = () => {
-  const [showBox, setShowBox] = useState(false);
+  const [, setShowBox] = useState(false);
   const [withdrawType, setWithdrawType] = useState<"fiat" | "crypto">("fiat");
-  const [selected, setSelected] = useState(false);
   const navigate = useNavigate();
 
   // 🔹 state برای هشدارها

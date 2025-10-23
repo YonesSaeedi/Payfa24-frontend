@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
-import Pagination from "../History/Pagination";
-import { NewCryptoItem } from "./types";
+
 import IconStarGold from "../../assets/icons/market/CryptoMarketTable.tsx/IconStarGold";
 import { ROUTES } from "../../routes/routes";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import Pagination from "../History/Pagination";
+import { NewCryptoItem } from "./types";
 
 interface Props {
   data: NewCryptoItem[];

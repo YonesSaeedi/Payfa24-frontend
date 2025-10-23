@@ -249,49 +249,7 @@ export default function WithdrawForm() {
 
           <div className="mb-6">
             {bankOptions.length > 0 ? (
-              //      <Controller
-              //   name="bank"
-              //   control={control}
-              //   rules={{ required: "لطفاً کارت بانکی را انتخاب کنید" }}
-              //   render={({ field }) => (
-              //     <FloatingSelect
-              //       placeholder={
-              //         listCards.length === 0
-              //           ? "در حال بارگذاری کارت‌ها..."
-              //           : "کارت بانکی را انتخاب کنید"
-              //       }
-              //       label="کارت بانکی"
-              //       value={field.value ? field.value.toString() : ""}
-              //       onChange={(val) => {
-              //         field.onChange(val);
-              //         const selected = listCards.find((c) => c.id === Number(val));
-              //         setSelectedCard(selected ? selected.id : null);
-              //       }}
-              //       options={listCards.map((card) => ({
-              //         value: card.id.toString(),
-              //         label: (
-              //           <div className="flex items-center justify-between w-full py-1 rounded-md">
-              //             <span className="text-sm text-black0">{card.bank}</span>
-              //             <span className="text-sm text-black0">{card.card}</span>
-              //           </div>
-              //         ),
-              //         icon: (
-              //           <img
-              //             src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"}
-              //             alt={card.bank}
-              //             className="w-6 h-6 object-contain"
-              //           />
-              //         ),
-              //       }))}
-              // //       options={listCards.map((card) => ({
-              // //   value: card.id.toString(),
-              // //   label: `${card.bank} - ${card.card}`, // فقط string
-              // //   icon: <img src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"} alt={card.bank} className="w-6 h-6 object-contain" />,
-              // // }))}
-
-              //     />
-              //   )}
-              // />
+             
               <Controller
                 name="bank"
                 control={control}
