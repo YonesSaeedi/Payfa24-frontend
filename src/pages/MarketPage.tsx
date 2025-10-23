@@ -3,9 +3,9 @@ import { useMemo, useState } from "react";
 import FireTopIcon from "../assets/icons/market/CryptoBox/FireTopIcon";
 import VectorDown from "../assets/icons/market/CryptoBox/VectorDownIcon";
 import VectorUp from "../assets/icons/market/CryptoBox/VectorUpIcon";
-import CryptoBox from "../Components/Market/CryptoBox";
-import CryptoMarketTable from "../Components/Market/CryptoMarketTable";
-import {  NewCryptoItem } from "../Components/Market/types";
+import CryptoBox from "../components/Market/CryptoBox";
+import CryptoMarketTable from "../components/Market/CryptoMarketTable";
+import {  NewCryptoItem } from "../components/Market/types";
 import useMergedCryptoList from "../hooks/useMergedCryptoList";
 import HeaderFooterLayout from "../layouts/HeaderFooterLayout";
 

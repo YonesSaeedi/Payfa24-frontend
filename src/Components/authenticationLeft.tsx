@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../context/ThemeContext";
 import enticationDark from "../assets/enticationDark.png";
 import enticationLight from "../assets/enticationLight.png";
 

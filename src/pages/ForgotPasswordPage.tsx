@@ -9,11 +9,11 @@ import { toast } from "react-toastify";
 import AuthLayout from "../layouts/AuthLayout";
 import imageForgetDark from "../assets/imageForgetDark.png";
 import imageForgetLight from "../assets/imageForgetLight.png";
-import { ThemeContext } from "../Context/ThemeContext";
-import TextField from "../Components/InputField/TextField";
+import { ThemeContext } from "../context/ThemeContext";
+import TextField from "../components/InputField/TextField";
 import { getForgotPasswordSchema } from "../utils/validationSchemas";
 import { apiRequest } from "../utils/apiClient";
-import OTPModal from "../Components/OTPModal";
+import OTPModal from "../components/OTPModal";
 import IconAgain from "../assets/Icons/Login/IconAgain";
 import IconClose from "../assets/Icons/Login/IconClose";
 

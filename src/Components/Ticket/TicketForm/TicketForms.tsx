@@ -115,7 +115,7 @@ export default function TicketForm() {
         />
         {errors.title && (
           <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
-        )}
+        )} 
 
         {/* انتخاب سفارش */}
         <OrderSelector

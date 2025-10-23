@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 
-import OptionSelector from "../../Components/Ticket/CategorySelector";
+import OptionSelector from "./CategorySelector";
 import Icontechnical from "../../assets/icons/ticket/Icontechnical";
 
 import IconOrderTracking from "../../assets/icons/ticket/IconOrderTracking";
@@ -12,7 +12,7 @@ import AuthenticationBasic from "../../pages/authentication/basic";
 import TicketsDashboard from "./TicketChat/TicketsDashboard";
 import TicketForm from "./TicketForm/TicketForms";
 import TradeLayoutFAQ from "../trade/TradeLayoutFAQ";
-import { FAQData, FAQItem } from "../../Data/faqData"; // مسیر دقیق فایل را قرار دهید
+import { FAQData, FAQItem } from "../../data/faqData"; // مسیر دقیق فایل را قرار دهید
 
 
 // Map نگاشت تب‌ها به کامپوننت

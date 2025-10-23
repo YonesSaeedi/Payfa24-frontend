@@ -1,6 +1,6 @@
 import { useContext } from "react"
-import Header from "../Components/Header/Header"
-import { ThemeContext } from "../Context/ThemeContext";
+import Header from "../components/Header/Header"
+import { ThemeContext } from "../context/ThemeContext";
 
 type HeaderLayoutProps = {
   children?: React.ReactNode

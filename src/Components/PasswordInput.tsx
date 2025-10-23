@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
-import { ThemeContext } from "../Context/ThemeContext";
-import TextField from "../Components/InputField/TextField";
-import PasswordConditionItem from "../Components/InputField/PasswordConditionitem/PasswordConditionItem";
+import { ThemeContext } from "../context/ThemeContext";
+import TextField from "./InputField/TextField";
+import PasswordConditionItem from "./InputField/PasswordConditionitem/PasswordConditionItem";
 import IconEyeOpen from "../assets/Icons/Login/IconEyeOpen";
 import IconEyeClosed from "../assets/Icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";

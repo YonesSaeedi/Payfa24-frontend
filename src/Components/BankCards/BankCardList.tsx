@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import BackgroundCard from "./../../assets/images/BankCards/BackgroundCard.png";
 import BackgroundCardDark from "./../../assets/images/BankCards/BackgroundCardDark.png";
-import IconAccept from "./../../assets/icons/BankCards/IconAccept";
-import IconInProgress from "./../../assets/icons/BankCards/IconInProgress";
-import IconDelete from "./../../assets/icons/BankCards/IconDelete";
+import IconAccept from "../../assets/icons/BankCards/IconAccept";
+import IconInProgress from "../../assets/icons/BankCards/IconInProgress";
+import IconDelete from "../../assets/icons/BankCards/IconDelete";
 import useGetUser from "../../hooks/useGetUser"; 
 
 type Card = {

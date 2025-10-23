@@ -501,7 +501,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { sendContact, verifyOtp } from "../../../../utils/api/authBasic";
 import { useContext, useState } from "react";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext } from "../../../../context/ThemeContext";
 import OTPModal from "../../../OTPModal";
 import IconClose from "../../../../assets/Icons/Login/IconClose";
 import StepperComponent from "../Stepper";

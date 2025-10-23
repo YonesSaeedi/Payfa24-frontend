@@ -6,7 +6,7 @@ import inviteRightImg from "../../assets/images/Addfriend/inviteRight.png";
 import addFriendLight from "../../assets/images/Addfriend/addFriendLight.png";
 import addFriendDark from "../../assets/images/Addfriend/addFriendDark.png";
 import { useContext, useEffect, useRef, useState } from "react";
-import { ThemeContext } from "../../Context/ThemeContext";
+import { ThemeContext } from "../../context/ThemeContext";
 import IconGiftBox from "../../assets/Icons/AddFriend/IconGiftBox";
 import Gift from "../../assets/images/Addfriend/GiftInvitImg.png";
 import Share from "../../assets/images/Addfriend/shareimg.png";
@@ -14,7 +14,7 @@ import person from "../../assets/images/Addfriend/personimag.png";
 import gitImg from "../../assets/images/Addfriend/giftimag.png";
 import UserImg from "../../assets/images/Addfriend/User.png";
 import IconClose from "../../assets/Icons/Login/IconClose";
-import ReferralPercentBar from "../../Components/ReferralPercentBar";
+import ReferralPercentBar from "../../components/ReferralPercentBar";
 import { toast } from "react-toastify";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 
