@@ -9,16 +9,14 @@ function TicketPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleSupportSubmit = (data: { number: string; description: string }) => {
-    console.log("اطلاعات ارسال شد:", data);
-  };
+ 
 
   return (
     <>
       <SupportCallModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={handleSupportSubmit}
+   
       />
 
       <div className="flex flex-col items-center justify-center flex-1 pb-5 px-4 overflow-x-hidden">

@@ -6,6 +6,7 @@ import StepPersonal from "../../components/auth/step/StepBasic/StepPersonal";
 import StepCard from "../../components/auth/step/StepBasic/StepCard";
 import StepZiro from "../../components/auth/step/StepBasic/StepZiro";
 
+
 export default function AuthenticationBasic() {
   const [step, setStep] = useState(0);
   const [started, setStarted] = useState(false);

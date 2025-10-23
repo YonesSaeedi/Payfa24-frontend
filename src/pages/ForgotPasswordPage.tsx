@@ -34,7 +34,9 @@ export default function ForgotPasswordPage() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [otpCode, setOtpCode] = useState("");
-  const [contactMethod, setContactMethod] = useState<"phone" | "email">("email");
+  const [contactMethod, setContactMethod] = useState<"phone" | "email">(
+    "email"
+  );
   const [formData, setFormData] = useState<FormData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(120);
@@ -56,10 +58,16 @@ export default function ForgotPasswordPage() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const iranMobileRegex = /^09\d{9}$/;
 
-  const buildPayload = (value: string, recaptcha: string, code: string | null) => {
+  const buildPayload = (
+    value: string,
+    recaptcha: string,
+    code: string | null
+  ) => {
     const trimmed = value.trim();
-    if (emailRegex.test(trimmed)) return { code, email: trimmed, recaptcha };
-    if (iranMobileRegex.test(trimmed)) return { code, mobile: trimmed, recaptcha };
+    if (emailRegex.test(trimmed))
+      return { code: code || "", email: trimmed, recaptcha };
+    if (iranMobileRegex.test(trimmed))
+      return { code: code || "", mobile: trimmed, recaptcha };
     throw new Error("ایمیل یا شماره موبایل معتبر نیست.");
   };
 
@@ -82,7 +90,7 @@ export default function ForgotPasswordPage() {
     let interval: NodeJS.Timeout;
     if (disableButton && disableTimer > 0) {
       interval = setInterval(() => {
-        setDisableTimer(prev => {
+        setDisableTimer((prev) => {
           if (prev <= 1) {
             setDisableButton(false);
             localStorage.removeItem(STORAGE_KEY);
@@ -100,7 +108,7 @@ export default function ForgotPasswordPage() {
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isOpen && resendTimer > 0) {
-      interval = setInterval(() => setResendTimer(prev => prev - 1), 1000);
+      interval = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
     } else if (resendTimer === 0) {
       setCanResend(true);
     }
@@ -114,8 +122,13 @@ export default function ForgotPasswordPage() {
       const recaptchaToken = await executeRecaptcha("forgot_password");
       setFormData(data);
       const payload = buildPayload(data.email, recaptchaToken, "");
-      const response = await apiRequest({ url: "/api/auth/forget", method: "POST", data: payload });
-      if (response.status) {
+
+      const response = await apiRequest({
+        url: "/api/auth/forget",
+        method: "POST",
+        data: payload,
+      });
+      if (response?.status) {
         setContactMethod(emailRegex.test(data.email) ? "email" : "phone");
         setIsOpen(true);
         setResendTimer(120);
@@ -129,7 +142,10 @@ export default function ForgotPasswordPage() {
         console.error("Forgot password failed:", response);
       }
     } catch (err) {
-      toast.error((err as AxiosError<{ msg?: string }>).response?.data.msg || "خطا در ارسال");
+      toast.error(
+        (err as AxiosError<{ msg?: string }>).response?.data.msg ||
+          "خطا در ارسال"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -141,17 +157,27 @@ export default function ForgotPasswordPage() {
     try {
       const recaptchaToken = await executeRecaptcha("forgot_password_confirm");
       const payload = buildPayload(formData.email, recaptchaToken, otpCode);
-      const response = await apiRequest({ url: "/api/auth/forget", method: "POST", data: payload });
-      if (response.status) {
+      const response = await apiRequest({
+        url: "/api/auth/forget",
+        method: "POST",
+        data: payload,
+      });
+      if (response?.status) {
         setIsOpen(false);
         navigate("/forgot-password-set-password", {
-          state: { username: formData.email, tokenForget: response.tokenForget },
+          state: {
+            username: formData.email,
+            tokenForget: (response as any).tokenForget,
+          },
         });
       } else {
         console.error("OTP confirm failed:", response);
       }
     } catch (err) {
-      toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || 'تایید کد با مشکل مواجه شد!')
+      toast.error(
+        (err as AxiosError<{ msg?: string }>).response?.data?.msg ||
+          "تایید کد با مشکل مواجه شد!"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -168,9 +194,16 @@ export default function ForgotPasswordPage() {
     <AuthLayout image={theme === "dark" ? imageForgetDark : imageForgetLight}>
       <div className="flex items-center justify-center pb-8 w-full" dir="rtl">
         <div>
-          <form onSubmit={handleSubmit(onSubmit)} className="w-full flex items-center flex-col px-10">
-            <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">فراموشی رمز عبور</h1>
-            <p className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1">برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید</p>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full flex items-center flex-col px-10"
+          >
+            <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
+              فراموشی رمز عبور
+            </h1>
+            <p className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1">
+              برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید
+            </p>
             <Controller
               name="email"
               control={control}
@@ -188,13 +221,15 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={disableButton || isLoading}
-              className={`h-[48px] w-full rounded-xl font-bold text-lg text-white transition-colors duration-300 ${disableButton ? "bg-gray5 cursor-not-allowed" : "bg-blue2"} lg:mt-14 mt-12`}
+              className={`h-[48px] w-full rounded-xl font-bold text-lg text-white transition-colors duration-300 ${
+                disableButton ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
+              } lg:mt-14 mt-12`}
             >
               {isLoading
                 ? "در حال بررسی..."
                 : disableButton
-                  ? `لطفا ${disableTimer} ثانیه صبر کنید`
-                  : "ادامه"}
+                ? `لطفا ${disableTimer} ثانیه صبر کنید`
+                : "ادامه"}
             </button>
           </form>
         </div>
@@ -203,33 +238,51 @@ export default function ForgotPasswordPage() {
       {isOpen && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
-          <div className="fixed inset-0 flex items-center justify-center z-50" onClick={() => setIsOpen(false)}>
+          <div
+            className="fixed inset-0 flex items-center justify-center z-50"
+            onClick={() => setIsOpen(false)}
+          >
             <div
               className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center flex-row-reverse justify-between">
                 <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
-                  {contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
+                  {contactMethod === "phone"
+                    ? "تایید شماره همراه"
+                    : "تایید ایمیل"}
                 </h2>
-                <span className="icon-wrapper h-6 w-6 cursor-pointer" onClick={() => setIsOpen(false)}>
+                <span
+                  className="icon-wrapper h-6 w-6 cursor-pointer"
+                  onClick={() => setIsOpen(false)}
+                >
                   <IconClose />
                 </span>
               </div>
 
-              <p className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24" dir="rtl">
+              <p
+                className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24"
+                dir="rtl"
+              >
                 لطفا کد ارسالی به{" "}
-                {contactMethod === "phone" ? `شماره ${getValues("email")}` : `ایمیل ${getValues("email")}`} را وارد کنید.
+                {contactMethod === "phone"
+                  ? `شماره ${getValues("email")}`
+                  : `ایمیل ${getValues("email")}`}{" "}
+                را وارد کنید.
               </p>
 
               <div className="mt-[32px] mb-[48px]">
-                <OTPModal length={6} onChange={(val: string) => setOtpCode(val)} />
+                <OTPModal
+                  length={6}
+                  onChange={(val: string) => setOtpCode(val)}
+                />
               </div>
 
               <div className="flex justify-between flex-row-reverse mb-4">
                 <button
-                  className={`flex items-center gap-1 text-gray12 ${canResend ? "cursor-pointer" : "cursor-not-allowed"
-                    }`}
+                  className={`flex items-center gap-1 text-gray12 ${
+                    canResend ? "cursor-pointer" : "cursor-not-allowed"
+                  }`}
                   onClick={handleResend}
                   disabled={!canResend}
                 >
@@ -256,8 +309,11 @@ export default function ForgotPasswordPage() {
                 <button
                   onClick={handleConfirm}
                   disabled={otpCode.length !== 6}
-                  className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${otpCode.length !== 6 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
-                    }`}
+                  className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${
+                    otpCode.length !== 6
+                      ? "bg-gray5 cursor-not-allowed"
+                      : "bg-blue2"
+                  }`}
                 >
                   تایید
                 </button>

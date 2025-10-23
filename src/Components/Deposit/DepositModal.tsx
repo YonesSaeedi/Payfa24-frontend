@@ -110,7 +110,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
           <div className="flex items-center justify-between rounded-xl p-2 hover:bg-gray27 transition">
             <div className="flex items-center">
               <span className="w-6 h-6 icon-wrapper mr-2">
-                <IconArrowLeft />
+                <IconArrowLeft/>
               </span>
               <button
                 onClick={handleDepositIdentifier}

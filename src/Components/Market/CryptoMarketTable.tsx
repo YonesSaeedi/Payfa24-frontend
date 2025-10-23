@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
-import Pagination from "../History/Pagination";
-import { NewCryptoItem } from "./types";
+
 import IconStarGold from "../../assets/icons/market/CryptoMarketTable.tsx/IconStarGold";
 import { ROUTES } from "../../routes/routes";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import Pagination from "../History/Pagination";
+import { NewCryptoItem } from "./types";
 
 interface Props {
   data: NewCryptoItem[];
@@ -33,7 +34,7 @@ const CryptoMarketTable: React.FC<Props> = ({
   }, [favorites]);
 
   const itemsPerPage = 12;
-  const navigate = useNavigate();
+  
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
   const toggleRow = (id: number) => {
@@ -196,9 +197,7 @@ const CryptoMarketTable: React.FC<Props> = ({
               </tr>
                   ))
                 : paginatedData.map((item) => {
-  const buyPrice = Number(item.priceBuy);
-  const sellPrice = Number(item.priceSell);
-  const priceChange = Number(item.priceChangePercent);
+ 
 
   return (
     <React.Fragment key={item.id}>

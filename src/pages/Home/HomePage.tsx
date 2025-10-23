@@ -3,7 +3,6 @@ import Fire from "../../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
 import TrendDownIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendDownIcon";
 import TrendIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendIcon";
 import HeaderFooterLayout from "../../layouts/HeaderFooterLayout";
-import img1 from "../../assets/images/Home/image copy (1).jpg"
 import WalletCard from "../../components/Home/WalletCard/WalletCard";
 import IdentityCard from "../../components/Home/IdentityCard";
 import PosterSlider from "../../components/Home/PosterSlider";

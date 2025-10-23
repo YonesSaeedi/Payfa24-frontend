@@ -9,7 +9,7 @@ import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
 import { toast } from "react-toastify";
 
 interface PropModal {
-  type: "sms" | "email";
+  type?: string;
   closeModal: () => void;
 }
 

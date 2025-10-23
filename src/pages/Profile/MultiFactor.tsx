@@ -7,18 +7,15 @@ import MultiFactorCard from "../../components/MultiFactor/MultiFactorCard";
 import Google from "../../assets/Icons/MultiFactor/Google.png";
 import MessagesIcon from "../../assets/icons/MultiFactor/Iconmessages";
 import TwoFactorModal from "../../components/MultiFactor/TwoFactorModal";
-import VerifyGooglePage from "./GoogleAuthFlow";
 import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
 import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
 import { toast } from "react-toastify";
 import useGetUser from "../../hooks/useGetUser";
 import { useMemo } from "react";
 import { ROUTES } from "../../routes/routes";
-import IconAgain from "../../assets/icons/Login/IconAgain";
 import OTPModal from "../../components/OTPModal";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
-
 
 export default function MultiFactor() {
   const { data: twoFAData, refresh } = UseTwoStepVerification()

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import AuthenticationLayoutAdvance from "../../layouts/AuthenticationLayoutAdvance";
 import HeaderLayout from "../../layouts/HeaderLayout";
@@ -13,7 +12,6 @@ import { KycGetInfo } from "../../types/apiResponses";
 import KycSuccessModal from "../../components/auth/step/StepAdvanced/KycSuccessModal";
 import KycPendingModal from "../../components/auth/step/StepAdvanced/KycPendingModal";
 import KycRejectModal from "../../components/auth/step/StepAdvanced/KycRejectModal";
-import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 
 export default function Advance() {
   const [step, setStep] = useState<0 | 1 | 2>(0)
@@ -93,14 +91,11 @@ export default function Advance() {
 
   return (
     <HeaderLayout>
-      <div className="w-full px-4 py-2">
-        <BreadcrumbNavigation />
-      </div>
       <AuthenticationLayoutAdvance
         step={step}
         setStep={setStep}
-        text1="احراز هویت سطح پایه شما با موفقیت انجام شد!"
-        text2="برای دسترسی به تمام امکانات و افزایش امنیت، لطفاً احراز هویت پیشرفته را تکمیل نمایید."
+        text1="! احراز هویت سطح پایه شما با موفقیت انجام شد "
+        text2="برای دسترسی به تمام امکانات و افزایش امنیت، لطفاً احراز هویت پیشرفته را تکمیل نمایید"
       >
         <div className="flex flex-col items-center justify-center gap-6 w-full overflow-x-hidden">
           {step === 0 && null}

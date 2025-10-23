@@ -1,7 +1,6 @@
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ThemeContext } from "../../context/ThemeContext";
 import TextField from "../../components/InputField/TextField";
@@ -9,8 +8,9 @@ import IconEyeOpen from "../../assets/icons/Login/IconEyeOpen";
 import IconEyeClosed from "../../assets/icons/Login/IconEyeClosed";
 import PasswordConditionItem from "../../components/InputField/PasswordConditionitem/PasswordConditionItem";
 import { useState } from "react";
-import { Link } from "react-router";
-import { getChangePasswordSchema } from "../../utils/validationSchemas";
+import { apiRequest } from "../../utils/apiClient";
+import { toast } from "react-toastify";
+import { getChangePasswordSchemaProfile } from "../../utils/validationSchemas";
 
 type ChangePasswordFormData = {
   currentPassword: string;
@@ -18,20 +18,20 @@ type ChangePasswordFormData = {
   confirmPassword: string;
 };
 
-
 export default function ChangePassword() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const schema = getChangePasswordSchema();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isValid }, // ✅ isValid اضافه شد
     watch,
+    reset,
   } = useForm<ChangePasswordFormData>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(getChangePasswordSchemaProfile()),
     mode: "onChange",
     defaultValues: {
       currentPassword: "",
@@ -47,26 +47,64 @@ export default function ChangePassword() {
     /[a-z]/.test(newPasswordValue) && /[A-Z]/.test(newPasswordValue);
   const hasNumber = /\d/.test(newPasswordValue);
 
-  const onSubmit = (data: ChangePasswordFormData) => {
-    console.log("Submitted Data:", data);
-    // اینجا می‌تونی لاجیک ارسال به API رو بذاری
+  const onSubmit = async (data: ChangePasswordFormData) => {
+    console.log(" SUBMIT DATA:", data);
+    setIsSubmitting(true);
+
+    try {
+      const response = await apiRequest({
+        url: "/api/account/password",
+        method: "POST",
+        data: {
+          old_password: data.currentPassword,
+          new_password: data.newPassword,
+          confirm_new_password: data.confirmPassword,
+        },
+      });
+
+      console.log(" API RESPONSE:", response);
+
+      if (response.status === true) {
+        toast.success("رمز عبور با موفقیت تغییر کرد");
+        reset();
+
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
+      } else {
+        toast.error((res as any)?.msg || "خطا در تغییر رمز عبور");
+      }
+    } catch (error: any) {
+      console.error(" API ERROR:", error);
+      const errorMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "خطا در اتصال به سرور";
+      toast.error(errorMsg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  console.log(" Form State:", { errors, isValid });
+
   return (
     <>
       <HeaderLayout>
-        <div className="container-style w-full pt-7 flex gap-10 flex-col">
+        <div className="lg:container-style w-full pt-7 flex gap-10 px-4 lg:px-0 flex-col">
           <BreadcrumbNavigation />
-          <div className="lg:bg-gray9 bg-white1 w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl pb-10">
-            <div className="flex items-center justify-center w-full " dir="rtl">
-              <div className="w-full max-w-lg lg:px-8  ">
-                <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="dark:bg-gray9  w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl pb-10">
+            <div className="flex items-center justify-center w-full" dir="rtl">
+              <div className="w-full max-w-lg lg:px-8">
+                <form className="py-8 px-4" onSubmit={handleSubmit(onSubmit)}>
                   <h1 className="text-black1 text-center lg:pt-20 lg:text-xl text-sm font-medium">
                     تغییر رمز عبور
                   </h1>
-                  <p className="font-normal lg:mb-12  mb-8 pt-3 lg:text-base text-sm text-center text-gray5">
+                  <p className="font-normal lg:mb-12 mb-8 pt-3 lg:text-base text-sm text-center text-gray5">
                     در این بخش رمزعبور حساب کاربری خود را تغییر دهید.
                   </p>
-                  <div className="flex flex-col gap-8">
+
+                  <div className="flex flex-col lg:gap-8 gap-5">
                     <Controller
                       name="currentPassword"
                       control={control}
@@ -86,7 +124,8 @@ export default function ChangePassword() {
                             setShowCurrentPassword((prev) => !prev)
                           }
                           {...field}
-                          labelBgClass="lg:bg-gray9 bg-white1"
+                          disabled={isSubmitting}
+                          labelBgClass="bg-gray9 "
                         />
                       )}
                     />
@@ -110,7 +149,8 @@ export default function ChangePassword() {
                             setShowNewPassword((prev) => !prev)
                           }
                           {...field}
-                          labelBgClass="lg:bg-gray9 bg-white1"
+                          disabled={isSubmitting}
+                          labelBgClass="bg-gray9"
                         />
                       )}
                     />
@@ -134,11 +174,13 @@ export default function ChangePassword() {
                             setShowConfirmPassword((prev) => !prev)
                           }
                           {...field}
-                          labelBgClass="lg:bg-gray9 bg-white1"
+                          disabled={isSubmitting}
+                          labelBgClass="bg-gray9"
                         />
                       )}
                     />
                   </div>
+
                   <div className="mt-3 space-y-1 text-xs font-normal text-gray12">
                     <PasswordConditionItem
                       ok={hasMinLength}
@@ -156,14 +198,18 @@ export default function ChangePassword() {
                       password={newPasswordValue}
                     />
                   </div>
-                  <Link to={'/MultiFactor'}>
-                    <button
-                      type="submit"
-                      className="w-full h-[48px] rounded-xl bg-blue2 lg:mt-14 mt-12 text-white2 font-bold text-lg"
-                    >
-                      تغییر رمز عبور
-                    </button>
-                  </Link>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                    className={`
+                      w-full h-[48px] rounded-xl lg:mt-14 mt-12  font-bold text-lg 
+                      transition-all duration-200 ease-in-out text-white2
+                   ${isSubmitting || !isValid ? "bg-gray24 " : "bg-blue2"}
+                  `}
+                  >
+                    {isSubmitting ? "در حال تغییر..." : "تغییر رمز عبور"}
+                  </button>
                 </form>
               </div>
             </div>

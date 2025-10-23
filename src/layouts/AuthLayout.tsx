@@ -6,11 +6,11 @@ import SupportIcon from "../assets/icons/HeaderLogin/SupportIcon";
 
 
 
+interface AuthLayoutProps {
+  children: React.ReactNode;
+  image?: string;
+}
 export default function AuthLayout({ children, image }: AuthLayoutProps) {
-  interface AuthLayoutProps {
-    children: React.ReactNode;
-    image?: string;
-  }
 
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");

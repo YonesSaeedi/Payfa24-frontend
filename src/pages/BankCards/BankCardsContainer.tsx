@@ -4,13 +4,20 @@ import { apiRequest } from "../../utils/apiClient";
 import  BankCardsPage  from "../../components/BankCards/BankcardsPage"; // کامپوننت نه صفحه
 import  BankCardManager  from "../../components/BankCards/BankCardsManager"; // کامپوننت نه صفحه
 
-type Card = {
-  id: number;
-  number: string;
-  holder: string;
-  bankName: string;
-  status: "confirm" | "pending" | "rejected";
-};
+export interface BankCard {
+  bank_name: string;
+  card_number: string;
+  iban: string;
+  status: "active" | "inactive" | string; // یا فقط "active" اگر فقط همین مقدار ممکن است
+  reason: string;
+  name_family: string;
+}
+
+export interface BankCardsResponse {
+  status: boolean;
+  msg: string;
+  data: BankCard[];
+}
 
 export default function BankCardsContainer() {
   const [loading, setLoading] = useState(true);
@@ -19,7 +26,7 @@ export default function BankCardsContainer() {
   useEffect(() => {
     const checkCards = async () => {
       try {
-        const res = await apiRequest<{ status: boolean; data: any[] }>({
+        const res = await apiRequest<BankCardsResponse>({
           url: "/api/account/credit-card/list",
           method: "GET",
         });
@@ -48,6 +55,5 @@ export default function BankCardsContainer() {
     );
   }
 
-  // 🔹 تصمیم‌گیری برای رندر کردن کدام کامپوننت
   return cardsExist ? <BankCardManager /> : <BankCardsPage />;
 }

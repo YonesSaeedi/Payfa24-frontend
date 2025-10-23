@@ -5,10 +5,11 @@ import IconEyeOpen from "../assets/icons/Login/IconEyeOpen";
 import IconEyeClosed from "../assets/icons/Login/IconEyeClosed";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getChangePasswordSchema } from "../utils/validationSchemas"; 
+import { getChangePasswordSchema } from "../utils/validationSchemas";
 import { apiRequest } from "../utils/apiClient";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { AxiosError } from "axios";
 
 type PasswordFormData = {
   password: string;
@@ -29,7 +30,7 @@ export default function StepPassword() {
     formState: { errors },
     watch,
   } = useForm<PasswordFormData>({
-    resolver: yupResolver(getChangePasswordSchema()), 
+    resolver: yupResolver(getChangePasswordSchema()),
     mode: "onChange",
     defaultValues: {
       password: "",
@@ -52,8 +53,8 @@ export default function StepPassword() {
       } else {
         toast.error('ثبت رمز عبور با مشکل مواجه شد.')
       }
-    } catch (err: any) {
-      toast.error(err?.response?.data?.msg || 'ثبت رمز عبور با مشکل مواجه شد.')
+    } catch (err) {
+      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'ثبت رمز عبور با مشکل مواجه شد.')
     }
     finally {
       setIsLoading(false)
