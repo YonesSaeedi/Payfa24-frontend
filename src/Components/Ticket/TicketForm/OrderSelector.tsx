@@ -33,7 +33,61 @@ export default function OrderSelector({
   const [isLoading, setIsLoading] = useState(false);
 
 
- useEffect(() => {
+//  useEffect(() => {
+//   if (!isModalOpen) return;
+
+//   const fetchOrders = async () => {
+//     setIsLoading(true);
+//     try {
+//       const response = await apiRequest<TicketInfoResponse>({
+//         url: "/api/ticket/get-info",
+//         method: "GET",
+//       });
+
+//       // if (response?.last_orders) {
+//         // const mappedOrders: Order[] = [
+//         //   ...response.last_orders.map(o => ({
+//         //     id: String(o.id),
+//         //     coin: o.name,
+//         //     type: o.type,
+//         //     amount: o.amount,
+//         //     date: o.date || "-",
+//         //     icon: <IconOrderSelection />
+//         //   })),
+//         //   ...response.tickets.map(t => ({
+//         //     id: String(t.id),
+//         //     coin: t.title,
+//         //     type: "تیکت",
+//         //     date: t.created,
+//         //     status: t.status,
+//         //     icon: <IconOrderSelection />
+//         //   }))
+//         // ];
+//           if (response?.last_orders) {
+//   const mappedOrders: Order[] = response.last_orders.map(o => ({
+//     id: String(o.id),
+//     coin: o.title, // یا o.name بسته به ساختار واقعی API
+//     type: o.type || "سفارش اخیر",
+//     amount: o.amount || "-",
+//     date: o.date || "-",
+//     icon: <IconOrderSelection />
+//   }));
+
+//   setApiOrders(mappedOrders);
+
+
+//       }
+//     } catch (error) {
+//       console.error("خطا در گرفتن سفارش‌ها:", error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   fetchOrders();
+// }, [isModalOpen]);
+
+useEffect(() => {
   if (!isModalOpen) return;
 
   const fetchOrders = async () => {
@@ -45,24 +99,14 @@ export default function OrderSelector({
       });
 
       if (response?.last_orders) {
-        const mappedOrders: Order[] = [
-          ...response.last_orders.map(o => ({
-            id: String(o.id),
-            coin: o.name,
-            type: o.type,
-            amount: o.amount,
-            date: o.date || "-",
-            icon: <IconOrderSelection />
-          })),
-          ...response.tickets.map(t => ({
-            id: String(t.id),
-            coin: t.title,
-            type: "تیکت",
-            date: t.created,
-            status: t.status,
-            icon: <IconOrderSelection />
-          }))
-        ];
+        const mappedOrders: Order[] = response.last_orders.map(o => ({
+          id: String(o.id),
+          coin: o.name,             // 👈 نام ارز
+          type: o.type,             // 👈 نوع معامله (buy/sell)
+          amount: o.amount,         // 👈 مقدار
+          date: o.date || "-",      // 👈 تاریخ
+          icon: <IconOrderSelection /> // 👈 آیکون
+        }));
 
         setApiOrders(mappedOrders);
       }
@@ -75,7 +119,6 @@ export default function OrderSelector({
 
   fetchOrders();
 }, [isModalOpen]);
-
 
   const handleSelectOrder = (order: Order) => {
     setSelectedOrder(order);

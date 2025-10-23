@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 
+
 import OptionSelector from "./CategorySelector";
 
 import Icontechnical from "../../assets/icons/ticket/Icontechnical";
-
 import IconOrderTracking from "../../assets/icons/ticket/IconOrderTracking";
 import IconAuthentication from "../../assets/icons/ticket/IconAuthentication";
 import IconFinanchial from "../../assets/icons/ticket/IconFinanchial";
-
 import AuthenticationBasic from "../../pages/authentication/basic";
 import TicketsDashboard from "./TicketChat/TicketsDashboard";
 import TicketForm from "./TicketForm/TicketForms";
@@ -19,7 +18,7 @@ import { FAQData, FAQItem } from "../../data/faqData"; // مسیر دقیق فا
 // Map نگاشت تب‌ها به کامپوننت
 const TAB_COMPONENTS: Record<string, React.ReactNode> = {
   order: <TicketsDashboard />,
-  identity: <AuthenticationBasic/>,
+  identity: <AuthenticationBasic />,
   tech: <div>صفحه پشتیبانی فنی</div>,
   finance: <div>خرید</div>,
 };
@@ -50,7 +49,7 @@ const TicketPanel: React.FC = () => {
   // حالت پیش‌فرض SupportTicketPage
   return (
 
-    <div  className="p-6">
+    <div className="p-6">
       <div className={`${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} transition`}>
         <div className="bg-white1">
           <div className="flex flex-col lg:flex-row gap-[40px] lg:gap-[85px] justify-center items-stretch">
@@ -74,7 +73,7 @@ const TicketPanel: React.FC = () => {
                     { id: "tech", label: "فنی", icon: <span className="icon-wrapper text-black2 "><Icontechnical /></span> },
                     { id: "finance", label: "مالی", icon: <span className="icon-wrapper text-black2 "><IconFinanchial /></span> },
                   ]}
-                
+
                   onSelect={handleTabSelect}
                 />
               </div>
@@ -90,7 +89,7 @@ const TicketPanel: React.FC = () => {
                   سوالات متداول پیگیری سفارش
                 </h3>
                 <div dir="rtl" className="w-full flex-1">
-                 <TradeLayoutFAQ items={FAQData.home} />
+                  <TradeLayoutFAQ items={FAQData.home} />
 
                 </div>
               </div>
@@ -107,7 +106,7 @@ const TicketPanel: React.FC = () => {
     </div>
   )
 
-  
+
 };
 
 export default TicketPanel;

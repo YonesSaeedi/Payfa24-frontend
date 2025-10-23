@@ -5,7 +5,7 @@ import IconClose from "../../assets/icons/Login/IconClose";
 import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
 import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import { ROUTES } from "../../routes/routes";
-import { log } from "console";
+
 
 interface WithdrawModalProps {
   isOpen: boolean;

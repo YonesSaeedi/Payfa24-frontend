@@ -12,6 +12,13 @@ import useMergedCryptoList from "./MergedCryptoData";
 import TradeSuccessModal from "../trade/TradeSuccessModal";
 import IconClose from "../../assets/icons/Login/IconClose";
 import useGetUser from "../../hooks/useGetUser";
+import { AxiosError } from "axios";
+
+interface WithdrawApiResponse {
+  coins: Coin[];
+  networks: FullNetwork[];
+  level_used?: { daily_withdrawal_crypto?: number };
+}
 
 interface CoinNetworkRef {
   id: number;
@@ -34,6 +41,9 @@ interface FullNetwork {
   memoRegex?: string;
   locale?: any;
 }
+interface WithdrawResponse {
+  msg: string;
+}
 const CryptoWithdrawForm: FC = () => {
 
   const [crypto, setCrypto] = useState<string>("");
@@ -44,7 +54,6 @@ const CryptoWithdrawForm: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const allWithdrawFieldsFilled =crypto && selectedNetworkId && amount && address; // برای برداشت از کیف پول
   const allTransferFieldsFilled = crypto && amount && address; // برای انتقال به کاربر پی‌فا
-  const [error, setError] = useState<string | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
   const [allNetworks, setAllNetworks] = useState<FullNetwork[]>([]);
   const [availableNetworks, setAvailableNetworks] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string })[]>([]);
@@ -60,9 +69,9 @@ const CryptoWithdrawForm: FC = () => {
   const [isResending, setIsResending] = useState(false);
   const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState(false);
   const [currentCryptoCurrency, setCurrentCryptoCurrency] = useState<CryptoItem | null>(null);
-  const { data: userData, isLoading: isUserLoading } = useGetUser();
+  const { data: userData } = useGetUser();
   const userMobile = userData?.user?.mobile || "شماره شما";
-  const [pendingTransferData, setPendingTransferData] = useState<any>(null);
+
   
 
 
@@ -80,7 +89,7 @@ const handleCloseOtpModal = () => {
 const handleSubmitOtp = async () => {
   if (!otpCode) return;
   try {
-    const res = await apiRequest({
+     await apiRequest({
       url: `/api/wallets/crypto/withdraw/${crypto}`,
       method: "POST",
       data: {
@@ -95,37 +104,71 @@ const handleSubmitOtp = async () => {
       setIsTradeSuccessModalOpen(true); // سپس مودال موفقیت باز شود
       setWithdrawData(null);      // (اختیاری) پاک کردن داده‌ها
    
-  } catch (err: any) {
-    toast.error(err?.response?.data?.msg || "خطا در تأیید برداشت!");
+  } catch (err) {
+    toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.msg || "خطا در تأیید برداشت!");
   }
 };
 
 //ارسال دوباره کد OTP
+// const handleResendCode = async () => {
+//   try {
+//     setIsResending(true);
+
+//     if (activeTab === "withdraw") {
+//       // ارسال مجدد OTP برای برداشت از کیف پول
+//       const res = await apiRequest({
+//         url: `/api/wallets/crypto/withdraw/${crypto}`, // مسیر واقعی API را جایگزین کن
+//         method: "POST",
+//         data: withdrawData,
+//       });
+//       toast.success(res?.msg || "کد جدید ارسال شد");
+//     } else {
+//       // ارسال مجدد OTP برای انتقال به کاربر
+//       const res = await apiRequest({
+//         url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // مسیر واقعی API را جایگزین کن
+//         method: "POST",
+//         data: withdrawData,
+//       });
+//       toast.success(res?.msg || "کد جدید ارسال شد");
+//     }
+
+//     setResendCodeTimeLeft(120); // ریست کردن تایمر
+//   } catch (err: any) {
+//     toast.error(err?.response?.data?.msg || "خطا در ارسال مجدد کد OTP");
+//   } finally {
+//     setIsResending(false);
+//   }
+// };
 const handleResendCode = async () => {
   try {
     setIsResending(true);
 
+    let res: WithdrawResponse;
+
     if (activeTab === "withdraw") {
-      // ارسال مجدد OTP برای برداشت از کیف پول
-      const res = await apiRequest({
-        url: `/api/wallets/crypto/withdraw/${crypto}`, // مسیر واقعی API را جایگزین کن
+      res = await apiRequest<WithdrawResponse>({
+        url: `/api/wallets/crypto/withdraw/${crypto}`,
         method: "POST",
         data: withdrawData,
       });
-      toast.success(res?.msg || "کد جدید ارسال شد");
     } else {
-      // ارسال مجدد OTP برای انتقال به کاربر
-      const res = await apiRequest({
-        url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // مسیر واقعی API را جایگزین کن
+      res = await apiRequest<WithdrawResponse>({
+        url: `/api/wallets/crypto/withdraw-transfer/${crypto}`,
         method: "POST",
         data: withdrawData,
       });
-      toast.success(res?.msg || "کد جدید ارسال شد");
     }
 
-    setResendCodeTimeLeft(120); // ریست کردن تایمر
-  } catch (err: any) {
-    toast.error(err?.response?.data?.msg || "خطا در ارسال مجدد کد OTP");
+    toast.success(res.msg || "کد جدید ارسال شد");
+    setResendCodeTimeLeft(120);
+  } catch (err: unknown) {
+    let message = "خطا در ارسال مجدد کد OTP";
+    if (err instanceof AxiosError) {
+      message = err.response?.data?.msg || message;
+    } else if (err instanceof Error) {
+      message = err.message;
+    }
+    toast.error(message);
   } finally {
     setIsResending(false);
   }
@@ -148,22 +191,39 @@ useEffect(() => {
 }, [isOtpModalOpen, resendCodeTimeLeft]);
 
 //دریافت اطلاعات اولیه کوین‌ها و شبکه‌ها
+// useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const res = await apiRequest({
+//           url: "/api/wallets/crypto/withdraw",
+//           method: "GET",
+//         });
+//         setCoins(res.coins || []);
+//         setAllNetworks(res.networks || []);
+//         setLevelUsed(res.level_used || {}); // ← اینجا اضافه کن
+//       } catch (err) {
+//         console.error("خطا در گرفتن اطلاعات:", err);
+//       }
+//     };
+//     fetchData();
+//   }, []);
 useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await apiRequest({
-          url: "/api/wallets/crypto/withdraw",
-          method: "GET",
-        });
-        setCoins(res.coins || []);
-        setAllNetworks(res.networks || []);
-        setLevelUsed(res.level_used || {}); // ← اینجا اضافه کن
-      } catch (err) {
-        console.error("خطا در گرفتن اطلاعات:", err);
-      }
-    };
-    fetchData();
-  }, []);
+  const fetchData = async () => {
+    try {
+      const res = await apiRequest<WithdrawApiResponse>({
+        url: "/api/wallets/crypto/withdraw",
+        method: "GET",
+      });
+
+      setCoins(res.coins || []);
+      setAllNetworks(res.networks || []);
+      setLevelUsed(res.level_used || {}); // ← اینجا اضافه شد
+    } catch (err) {
+      console.error("خطا در گرفتن اطلاعات:", err);
+    }
+  };
+  fetchData();
+}, []);
 
   // بروزرسانی شبکه‌های مربوط به کوین انتخابی
 useEffect(() => {
@@ -252,33 +312,44 @@ const handleSubmit = async (e: React.FormEvent) => {
       return;
     }
   }
+  if (!selectedNetwork?.symbol) {
+  toast.error("شبکه انتخاب نشده است");
+  setIsLoading(false);
+  return;
+}
 
-  try {
-    await apiRequest({
-      url: `/api/wallets/crypto/withdraw/${crypto}`,
-      method: "POST",
-      data: {
-        network: selectedNetwork.symbol,
-        withdrawAmount,
-        withdrawAddressWallet: address,
-        withdrawAddressWalletTag: tag,
-      },
-    });
-
-    setWithdrawData({
+ try {
+  await apiRequest<WithdrawResponse>({
+    url: `/api/wallets/crypto/withdraw/${crypto}`,
+    method: "POST",
+    data: {
       network: selectedNetwork.symbol,
       withdrawAmount,
       withdrawAddressWallet: address,
       withdrawAddressWalletTag: tag,
-    });
+    },
+  });
 
-    setIsOtpModalOpen(true);
-    setResendCodeTimeLeft(120);
-  } catch (err: any) {
-    toast.error(err?.response?.data?.msg || "خطا در برداشت!");
-  } finally {
-    setIsLoading(false);
+  setWithdrawData({
+    network: selectedNetwork.symbol,
+    withdrawAmount,
+    withdrawAddressWallet: address,
+    withdrawAddressWalletTag: tag,
+  });
+
+  setIsOtpModalOpen(true);
+  setResendCodeTimeLeft(120);
+} catch (err: unknown) {
+  let message = "خطا در برداشت!";
+  if (err instanceof AxiosError) {
+    message = err.response?.data?.msg || message;
+  } else if (err instanceof Error) {
+    message = err.message;
   }
+  toast.error(message);
+} finally {
+  setIsLoading(false);
+}
 };
 
 //انتقال به کاربر 
@@ -338,11 +409,60 @@ const handleSubmitTransfers = async (e: React.FormEvent) => {
 };
 
 
+// const handleSubmitTransferOtp = async () => {
+//   if (!otpCode) return;
+
+//   try {
+//      await apiRequest({
+//       url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // endpoint تایید OTP
+//       method: "POST",
+//       data: {
+//         ...withdrawData,
+//         codeOtp: parseInt(otpCode, 10),
+//       },
+//     });
+
+   
+//    toast.success("انتقال با موفقیت انجام شد ✅");
+//      setIsOtpModalOpen(false);
+//       setOtpCode("");
+//       setWithdrawData(null);          // پاک کردن داده بعد از موفقیت
+//       setIsTradeSuccessModalOpen(true); // مودال موفقیت
+   
+//   } catch (err: any) {
+//     toast.error(err?.response?.data?.msg || "خطا در تأیید انتقال!");
+//   }
+// };
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     try {
+//       const res = await apiRequest({
+//         url: "/api/wallets/crypto/withdraw",
+//         method: "GET",
+//       });
+//       const coinList = res.coins || [];
+//       setCoins(coinList);
+//       setAllNetworks(res.networks || []);
+//       setLevelUsed(res.level_used || {});
+
+//       // ✅ مقدار پیش‌فرض crypto = اولین ارز لیست
+//       if (coinList.length > 0) {
+//         setCrypto(coinList[0].symbol);
+//       }
+//     } catch (err) {
+//       console.error("خطا در گرفتن اطلاعات:", err);
+//     }
+//   };
+//   fetchData();
+// }, []);
+
+
 const handleSubmitTransferOtp = async () => {
   if (!otpCode) return;
 
   try {
-    const res = await apiRequest({
+    await apiRequest({
       url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // endpoint تایید OTP
       method: "POST",
       data: {
@@ -351,31 +471,42 @@ const handleSubmitTransferOtp = async () => {
       },
     });
 
-   
-   toast.success("انتقال با موفقیت انجام شد ✅");
-     setIsOtpModalOpen(false);
-      setOtpCode("");
-      setWithdrawData(null);          // پاک کردن داده بعد از موفقیت
-      setIsTradeSuccessModalOpen(true); // مودال موفقیت
-   
-  } catch (err: any) {
-    toast.error(err?.response?.data?.msg || "خطا در تأیید انتقال!");
+    toast.success("انتقال با موفقیت انجام شد ✅");
+    setIsOtpModalOpen(false);
+    setOtpCode("");
+    setWithdrawData(null);          // پاک کردن داده بعد از موفقیت
+    setIsTradeSuccessModalOpen(true); // مودال موفقیت
+
+  } catch (err: unknown) {
+    let message = "خطا در تأیید انتقال!";
+
+    // اگر خطا از نوع AxiosError باشد
+    if (err instanceof AxiosError) {
+      message = err.response?.data?.msg || message;
+    } 
+    // اگر خطا از نوع Error معمولی باشد
+    else if (err instanceof Error) {
+      message = err.message;
+    }
+
+    toast.error(message);
   }
 };
 
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const res = await apiRequest({
+      const res = await apiRequest<WithdrawApiResponse>({
         url: "/api/wallets/crypto/withdraw",
         method: "GET",
       });
+
       const coinList = res.coins || [];
       setCoins(coinList);
       setAllNetworks(res.networks || []);
       setLevelUsed(res.level_used || {});
 
-      // ✅ مقدار پیش‌فرض crypto = اولین ارز لیست
+      // مقدار پیش‌فرض crypto = اولین ارز لیست
       if (coinList.length > 0) {
         setCrypto(coinList[0].symbol);
       }
@@ -385,6 +516,8 @@ useEffect(() => {
   };
   fetchData();
 }, []);
+
+
 
 useEffect(() => {
   if (!crypto && mergedCryptosData?.length > 0) {
@@ -506,10 +639,10 @@ useEffect(() => {
 
             {/* شبکه برداشت*/}
             {crypto ? (
-              <div className="mb-6">
+              <div dir="rtl" className="mb-6">
                 <FloatingSelect
                   label="شبکه برداشت"
-                  value={selectedNetworkId || undefined}
+                  value={selectedNetworkId || ""}
                   onChange={handleNetworkChange}
                   options={availableNetworks.map((n) => ({
                     value: String(n.id),

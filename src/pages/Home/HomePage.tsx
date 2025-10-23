@@ -3,7 +3,6 @@ import Fire from "../../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
 import TrendDownIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendDownIcon";
 import TrendIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendIcon";
 import HeaderFooterLayout from "../../layouts/HeaderFooterLayout";
-import img1 from "../../assets/images/Home/image copy (1).jpg"
 import WalletCard from "../../components/Home/WalletCard/WalletCard";
 import IdentityCard from "../../components/Home/IdentityCard";
 import PosterSlider from "../../components/Home/PosterSlider";
@@ -122,7 +121,7 @@ function HomePage() {
         <div className="bg-white1 text-text">
           <div className="container-style" >
             <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4 bg-backgroundMain">
-              <WalletCard balance={844000} changeAmount={34000} change={12.4} />
+              <WalletCard balance={844000}  />
               <IdentityCard
                 title="احراز هویت سطح 1"
                 items={["مشخصات فردی", "تصویر مدرک شناسایی"]}

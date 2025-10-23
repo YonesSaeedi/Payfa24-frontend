@@ -33,7 +33,7 @@ const CryptoMarketTable: React.FC<Props> = ({
   }, [favorites]);
 
   const itemsPerPage = 12;
-  const navigate = useNavigate();
+  
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
   const toggleRow = (id: number) => {
@@ -196,9 +196,7 @@ const CryptoMarketTable: React.FC<Props> = ({
               </tr>
                   ))
                 : paginatedData.map((item) => {
-  const buyPrice = Number(item.priceBuy);
-  const sellPrice = Number(item.priceSell);
-  const priceChange = Number(item.priceChangePercent);
+ 
 
   return (
     <React.Fragment key={item.id}>

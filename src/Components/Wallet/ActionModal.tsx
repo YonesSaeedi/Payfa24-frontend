@@ -14,7 +14,7 @@ type ActionModalProps = {
   symbol: string;
 };
 
-export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name, symbol }) => {
+export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name }) => {
   const navigate = useNavigate();
   if (!open) return null;
 
@@ -67,7 +67,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name, s
             واریز
           </button>
           <button
-            onClick={() => navigate(ROUTES.WITHDRAWAL)}
+            onClick={() => navigate(ROUTES.WITHDRAWAL_FIAT)}
             className="px-3 py-2 text-sm text-black1 hover:bg-gray12 flex items-center gap-2 rounded-md">
             <span className="w-10 h-10 bg-blue7 rounded-[8px] flex items-center justify-center text-blue2">
               <span className="w-5 h-5 flex items-center justify-center">

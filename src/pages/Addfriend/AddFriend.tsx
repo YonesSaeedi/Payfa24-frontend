@@ -28,9 +28,9 @@ import {
 } from "../../utils/api/referralApi";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 
-interface InvitedUserItem extends InvitedUserReportItem {}
-interface TransactionItemExt extends TransactionItem {}
-interface ReferralReport extends ReferralReportResponse {}
+interface InvitedUserItem extends InvitedUserReportItem { }
+interface TransactionItemExt extends TransactionItem { }
+interface ReferralReport extends ReferralReportResponse { }
 
 export default function AddFriend() {
   const context = useContext(ThemeContext);
@@ -229,11 +229,13 @@ export default function AddFriend() {
                           toast.info(`${e.Title} کپی شد.`);
                         }
                       }}
+
                       className={`items-center gap-1 inline-block text-gray5 lg:text-lg text-sm font-normal ${
                         !isLoading && e.Link !== "درحال بارگذاری..."
                           ? "cursor-pointer"
                           : ""
                       }`}
+
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-1">
@@ -351,6 +353,20 @@ export default function AddFriend() {
                           {item.description}
                         </p>
                       </div>
+
+
+                      {index < QuestionBox.length - 1 && (
+                        <div
+                          className="lg:block hidden absolute w-[33%] h-[2px] bg-gradient-to-r from-transparent via-blue2 to-transparent opacity-70"
+                          style={{
+                            left: `${((index + 1) * 100) / QuestionBox.length
+                              }%`,
+                            top: "30px",
+                            transform: "translateX(-50%)",
+                          }}
+                        ></div>
+                      )}
+
                     </div>
                   ))}
                 </div>
@@ -367,11 +383,10 @@ export default function AddFriend() {
                   onClick={() => {
                     setActiveTab("transactions");
                   }}
-                  className={`pb-2 lg:text-lg text-sm ${
-                    activeTab === "transactions"
+                  className={`pb-2 lg:text-lg text-sm ${activeTab === "transactions"
                       ? "text-blue2 border-b-2 border-blue2 font-normal"
                       : "text-gray5"
-                  }`}
+                    }`}
                 >
                   تراکنش‌های کاربران
                 </button>
@@ -379,11 +394,10 @@ export default function AddFriend() {
                   onClick={() => {
                     setActiveTab("invited");
                   }}
-                  className={`pb-2 lg:text-lg text-sm ${
-                    activeTab === "invited"
+                  className={`pb-2 lg:text-lg text-sm ${activeTab === "invited"
                       ? "text-blue2 border-b-2 border-blue2 font-medium"
                       : "text-gray5"
-                  }`}
+                    }`}
                 >
                   کاربران دعوت شده
                 </button>
@@ -587,6 +601,7 @@ export default function AddFriend() {
                     selectedPercent={selectedPercent}
                     setSelectedPercent={setSelectedPercent}
                     lastChangedRef={lastChangedRef}
+
                   />
                 </div>
                 <div className="flex flex-col items-center mt-14 mb-14">
@@ -613,6 +628,7 @@ export default function AddFriend() {
                   disabled={isLoading}
                   className="w-full font-bold text-base text-white2 bg-blue2 lg:py-3 py-2 rounded-lg"
                 >
+
                   {isLoading ? "درحال ذخیره..." : "تایید"}
                 </button>
               </div>

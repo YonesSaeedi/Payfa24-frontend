@@ -3,7 +3,6 @@ import StepInvite from "./InviteLogin";
 import StepPassword from "./PasswordInput";
 
 import { ThemeContext } from "../context/ThemeContext";
-
 import inviteLight from "../assets/invite-light.png";
 import inviteDark from "../assets/invite-dark.png";
 import passwordLight from "../assets/password-light.png";

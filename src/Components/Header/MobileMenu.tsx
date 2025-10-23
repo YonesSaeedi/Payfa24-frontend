@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 
-// آیکون‌های اختصاصی پروژه‌ت
 import HomeIcon from "../../assets/icons/header/HomeIcon";
 import CategoryIcon from "../../assets/icons/header/CategoryIcon";
 import WalletIcon from "../../assets/icons/header/WalletIcon";
@@ -13,22 +12,17 @@ import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconProfileMenu from "../../assets/icons/Login/IconProfileMenu";
 import { apiRequest } from "../../utils/apiClient";
-import useGetUser from "../../hooks/useGetUser"; // مسیر رو متناسب با پروژه درست کن
+import useGetUser from "../../hooks/useGetUser"; 
 import IconSun from "../../assets/icons/header/IconSun";
 import MoonIcon from "../../assets/icons/HeaderLogin/MoonIcon";
 import { ROUTES } from "../../routes/routes";
-import IconAuthentication from "../../assets/icons/ProfileMenue/IconAuthentication";
-import IconBankAccounts from "../../assets/icons/ProfileMenue/IconBankAccounts";
-import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransactionhistory";
-import IconConnecteddevices from "../../assets/icons/ProfileMenue/IconConnecteddevices";
-import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 
 
 type MobileMenuProps = {
   open: boolean;
   onClose: () => void;
-   onOpenServicesModal: () => void; 
+  onOpenServicesModal: () => void;
 };
 
 export default function MobileMenu({ open, onClose, onOpenServicesModal }: MobileMenuProps) {
@@ -39,9 +33,9 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
   }
 
   const { theme, toggleTheme } = themeContext;
-   const [openSecurity, setOpenSecurity] = useState(false);
+  const [openSecurity, setOpenSecurity] = useState(false);
 
- const { data: userData, isLoading } = useGetUser();
+  const { data: userData, isLoading } = useGetUser();
 
   const handleLogout = async () => {
     try {
@@ -54,7 +48,7 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
       window.location.replace("/login");
     }
   };
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -68,7 +62,7 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
 
       {/* منو سمت راست */}
       <div
-        className={`fixed top-0 right-0 h-full z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 ${open ? "translate-x-0" : "translate-x-full" 
+        className={`fixed top-0 right-0 h-full z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 ${open ? "translate-x-0" : "translate-x-full"
           }`}
         dir="rtl"
       >
@@ -81,21 +75,21 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-             <div >
-  <p className="font-semibold text-black1">
-    {isLoading ? "در حال بارگذاری..." : userData?.user.name_display || "—"}
-  </p>
-  <p className="text-xs text-gray-500 pt-1">
-    {isLoading ? "" : `سطح کاربری ${userData?.user.level_account || "—"}`}
-  </p>
-</div>
+            <div >
+              <p className="font-semibold text-black1">
+                {isLoading ? "در حال بارگذاری..." : userData?.user.name_display || "—"}
+              </p>
+              <p className="text-xs text-gray-500 pt-1">
+                {isLoading ? "" : `سطح کاربری ${userData?.user.level_account || "—"}`}
+              </p>
+            </div>
           </div>
           <button onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)} className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition w-full mt-4  shadow-md  hover:shadow-gray12">
             ارتقا سطح
             <span className="w-5 h-5 icon-wrapper mr-1">
               <IconArrowLeft />
             </span>
-          </button> 
+          </button>
         </div>
 
         {/* منو اصلی */}
@@ -106,18 +100,18 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
             </span>
             خانه
           </Link>
-         <button
-  onClick={() => {
-    onClose();              // بستن منوی موبایل
-    onOpenServicesModal();   // باز کردن مودال خدمات
-  }}
-  className="flex items-center justify-start gap-2 hover:text-blue-600 w-full text-left"
->
-  <span className="flex items-center justify-center w-6 h-6 text-blue2">
-    <CategoryIcon />
-  </span>
-  خدمات
-</button>
+          <button
+            onClick={() => {
+              onClose();              // بستن منوی موبایل
+              onOpenServicesModal();   // باز کردن مودال خدمات
+            }}
+            className="flex items-center justify-start gap-2 hover:text-blue-600 w-full text-left"
+          >
+            <span className="flex items-center justify-center w-6 h-6 text-blue2">
+              <CategoryIcon />
+            </span>
+            خدمات
+          </button>
 
           <Link to="/wallet" className="flex items-center justify-start gap-2 hover:text-blue-600">
             <span className=" flex items-center justify-center w-6 h-6 text-blue2">
@@ -136,10 +130,10 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
               <BitcoinIcon />
             </span>
 
-            معامله 
+            معامله
           </Link>
         </nav>
-       
+
         {/* پروفایل */}
         <div className="p-4 text-right">
           <details className="w-full group">
@@ -161,76 +155,75 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </summary>
-                <ul dir="rtl" className="pr-4 mt-5 text-gray-600 dark:text-gray-300 space-y-4">
-<li
-  className="flex flex-col cursor-pointer "
-  onClick={() => setOpenSecurity(!openSecurity)}
->
-  <div className="flex items-center justify-between hover:text-blue2 pt-2">
-    <div className="flex items-center gap-2">
-      {/* <span className="w-6 h-6">
+            <ul dir="rtl" className="pr-4 mt-5 text-gray-600 dark:text-gray-300 space-y-4">
+              <li
+                className="flex flex-col cursor-pointer "
+                onClick={() => setOpenSecurity(!openSecurity)}
+              >
+                <div className="flex items-center justify-between hover:text-blue2 pt-2">
+                  <div className="flex items-center gap-2">
+                    {/* <span className="w-6 h-6">
         <IconSecurity />
       </span> */}
-      تنظیمات امنیت
-    </div>
+                    تنظیمات امنیت
+                  </div>
 
-    {/* 🔽 آیکن فلش (خودت import کن) */}
-    <span
-      className={`w-5 h-5 transition-transform duration-300 ${
-        openSecurity ? "rotate-180" : "rotate-0"
-      }`}
-    >
-      <IconChervDown/>
-    </span>
-  </div>
+                  {/* 🔽 آیکن فلش (خودت import کن) */}
+                  <span
+                    className={`w-5 h-5 transition-transform duration-300 ${openSecurity ? "rotate-180" : "rotate-0"
+                      }`}
+                  >
+                    <IconChervDown />
+                  </span>
+                </div>
 
-  {openSecurity && (
-    <ul className="lg:pr-8 pt-2 space-y-2 text-gray-600 text-sm">
-      <Link to={ROUTES.MULTI_FACTOR} className="flex items-center gap-2 hover:text-blue2 px-4 pt-4">
-        <li>ورود دو مرحله‌ای</li>
-      </Link>
-      <Link to={ROUTES.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-4 py-3">
-        <li>تغییر رمز عبور</li>
-      </Link>
-    </ul>
-  )}
-</li>
+                {openSecurity && (
+                  <ul className="lg:pr-8 pt-2 space-y-2 text-gray-600 text-sm">
+                    <Link to={ROUTES.MULTI_FACTOR} className="flex items-center gap-2 hover:text-blue2 px-4 pt-4">
+                      <li>ورود دو مرحله‌ای</li>
+                    </Link>
+                    <Link to={ROUTES.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-4 py-3">
+                      <li>تغییر رمز عبور</li>
+                    </Link>
+                  </ul>
+                )}
+              </li>
 
-  <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full">
-    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
-       {/* <span className="w-6 h-6"> <IconAuthentication /></span> */}
-      احراز هویت
-    </li>
-  </Link>
+              <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full">
+                <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
+                  {/* <span className="w-6 h-6"> <IconAuthentication /></span> */}
+                  احراز هویت
+                </li>
+              </Link>
 
-  <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 ">
-    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer">
-       {/* <span className="w-6 h-6"> <IconBankAccounts /></span> */}
-      حساب‌های بانکی
-    </li>
-  </Link>
+              <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 ">
+                <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer">
+                  {/* <span className="w-6 h-6"> <IconBankAccounts /></span> */}
+                  حساب‌های بانکی
+                </li>
+              </Link>
 
-  <Link to={ROUTES.TRANSACTION.ROOT} className="flex items-center gap-2 w-full">
-    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
-       {/* <span className="w-6 h-6"> <IconTransactionhistory /></span> */}
-      تاریخچه معاملات
-    </li>
-  </Link>
+              <Link to={ROUTES.TRANSACTION.ROOT} className="flex items-center gap-2 w-full">
+                <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
+                  {/* <span className="w-6 h-6"> <IconTransactionhistory /></span> */}
+                  تاریخچه معاملات
+                </li>
+              </Link>
 
-  <Link to={ROUTES.CONNECTED_DEVICES} className="flex items-center gap-2 ">
-    <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
-      {/* <span className="w-6 h-6">  <IconConnecteddevices /></span> */}
-      دستگاه‌های متصل
-    </li>
-  </Link>
+              <Link to={ROUTES.CONNECTED_DEVICES} className="flex items-center gap-2 ">
+                <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
+                  {/* <span className="w-6 h-6">  <IconConnecteddevices /></span> */}
+                  دستگاه‌های متصل
+                </li>
+              </Link>
 
-  <Link to={ROUTES.LOGIN} className="flex items-center gap-2 w-full">
-    <li className="flex items-center gap-2 text-red-500 hover:text-red-600 cursor-pointer ">
-      
-      خروج از حساب کاربری
-    </li>
-  </Link>
-</ul>
+              <Link to={ROUTES.LOGIN} className="flex items-center gap-2 w-full">
+                <li className="flex items-center gap-2 text-red-500 hover:text-red-600 cursor-pointer ">
+
+                  خروج از حساب کاربری
+                </li>
+              </Link>
+            </ul>
           </details>
         </div>
 

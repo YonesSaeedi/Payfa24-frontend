@@ -96,32 +96,44 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
       orderIcon = order.icon; // و آیکن اصلی
   }
 
-  return (
+ return (
     <button
       key={order.id}
       onClick={() => onSelectOrder(order)}
       className="w-full border rounded-xl p-3 flex justify-between items-center bg-gray33 border-gray21 hover:border-blue-400 transition"
     >
       <div className="flex items-center w-full justify-between">
+        {/* --- سمت راست: آیکن + نام ارز + نوع --- */}
         <div className="flex items-center">
           <div className="w-10 h-10 ml-3 bg-blue15 rounded-lg flex items-center justify-center">
             <span className="text-blue-500 w-6 h-6">{orderIcon}</span>
           </div>
+
           <div className="flex flex-col text-right">
+            {/* نام ارز */}
             <p className="text-sm font-medium text-black1">{order.coin}</p>
-            <div className="w-full pt-1/2">
-              <span className="text-gray-500 font-normal text-sm">{orderTypeText}</span>
-            
-            </div>
+
+            {/* نوع معامله */}
+            <span className="text-gray-500 font-normal text-xs mt-1">{orderTypeText}</span>
           </div>
         </div>
-          {order.date && <span className="text-gray-400 text-xs">{order.date}</span>}
-        {/* {order.amount != null && order.type !== "ticket" && (
-          <span className="text-gray-400 text-xs">{order.amount}</span>
-        )} */}
+
+        {/* --- سمت چپ: مبلغ بالای تاریخ --- */}
+        <div className="flex flex-col items-end">
+          {order.amount != null && order.type !== "ticket" && (
+            <span className="text-black0 font-medium text-[14px]">
+  {order.amount.toLocaleString("fa-IR")} <span className="text-gray5">USDT</span>
+</span>
+
+          )}
+          {order.date && (
+            <span className="text-gray-400 text-xs mt-1">{order.date}</span>
+          )}
+        </div>
       </div>
     </button>
   );
+
 })}
 
         </div>

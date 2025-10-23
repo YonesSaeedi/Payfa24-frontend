@@ -19,6 +19,7 @@ import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
 import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
 import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
 
+
 interface DepositPageProps {
   selected?: "gateway" | "identifier" | "card" | "receipt" | "wallet" | "txid";
 }
