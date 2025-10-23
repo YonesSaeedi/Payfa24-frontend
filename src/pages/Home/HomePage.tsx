@@ -122,7 +122,7 @@ function HomePage() {
         <div className="bg-white1 text-text">
           <div className="container-style" >
             <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4 bg-backgroundMain">
-              <WalletCard balance={844000} changeAmount={34000} change={12.4} />
+              <WalletCard />
               <IdentityCard
                 title="احراز هویت سطح 1"
                 items={["مشخصات فردی", "تصویر مدرک شناسایی"]}

@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import IconVideo from "../../assets/Icons/Deposit/IconVideo";
+import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import FloatingInput from "../FloatingInput/FloatingInput";
-import BankAnsarLogo from "../../assets/Icons/BankCards/IconBankAnsarLogo";
-import BankMellatLogo from "../../assets/Icons/BankCards/IconBankMellatLogo";
-import BankMelliLogo from "../../assets/Icons/BankCards/IconBankMelliLogo";
+import BankAnsarLogo from "../../assets/icons/BankCards/IconBankAnsarLogo";
+import BankMellatLogo from "../../assets/icons/BankCards/IconBankMellatLogo";
+import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import Accordion from "../Withdrawal/Accordion";
 import { toast } from "react-toastify";
 import { apiRequest, AxiosError } from "../../utils/apiClient";
-import IconAlert from "../../assets/Icons/Login/IconAlert";
+import IconAlert from "../../assets/icons/Login/IconAlert";
 import { getValidationSchemaCardtoCard } from "../../utils/validationSchemas";
 
 // --- Interfaces ---

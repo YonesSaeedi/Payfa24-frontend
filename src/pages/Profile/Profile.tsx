@@ -44,12 +44,12 @@ async function getUserInfo(): Promise<UserData> {
   };
 }
 
-import EmailIcon from "../../assets/Icons/authentication/EmailIcon";
-import IconcardBank from "../../assets/Icons/authentication/IconcardBank";
-import IconUserOctagon from "../../assets/Icons/authentication/IconUserOctagon";
+import EmailIcon from "../../assets/icons/authentication/EmailIcon";
+import IconcardBank from "../../assets/icons/authentication/IconcardBank";
+import IconUserOctagon from "../../assets/icons/authentication/IconUserOctagon";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import IdentyIcon from "../../assets/Icons/authentication/IdentyIcon";
-import IconCardIdenty from "../../assets/Icons/authentication/IconCardIdenty";
+import IdentyIcon from "../../assets/icons/authentication/IdentyIcon";
+import IconCardIdenty from "../../assets/icons/authentication/IconCardIdenty";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import { Link } from "react-router";
 

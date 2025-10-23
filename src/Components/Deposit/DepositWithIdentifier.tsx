@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
-import IconVideo from "../../assets/Icons/Deposit/IconVideo";
-import IconCopy from "../../assets/Icons/AddFriend/IconCopy";
+import IconVideo from "../../assets/icons/Deposit/IconVideo";
+import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";
-import IconClose from "../../assets/Icons/Login/IconClose";
-import BankMelliLogo from "../../assets/Icons/BankCards/IconBankMelliLogo";
+import IconClose from "../../assets/icons/Login/IconClose";
+import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
 
 interface BankCard {
   id: number;

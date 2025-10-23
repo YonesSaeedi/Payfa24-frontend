@@ -1,9 +1,9 @@
-import EmailIcon from "../../../../assets/Icons/authentication/EmailIcon";
-import IconcardBank from "../../../../assets/Icons/authentication/IconcardBank";
-import IconCardIdenty from "../../../../assets/Icons/authentication/IconCardIdenty";
+import EmailIcon from "../../../../assets/icons/authentication/EmailIcon";
+import IconcardBank from "../../../../assets/icons/authentication/IconcardBank";
+import IconCardIdenty from "../../../../assets/icons/authentication/IconCardIdenty";
 import IconIdentyBasic from "../../../../assets/icons/authentication/IconIdentyBasic";
-import IconUserOctagon from "../../../../assets/Icons/authentication/IconUserOctagon";
-import IdentyIcon from "../../../../assets/Icons/authentication/IdentyIcon";
+import IconUserOctagon from "../../../../assets/icons/authentication/IconUserOctagon";
+import IdentyIcon from "../../../../assets/icons/authentication/IdentyIcon";
 
 interface Props {
   step: number;

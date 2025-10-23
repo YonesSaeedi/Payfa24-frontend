@@ -97,10 +97,10 @@
 
 
 import React from "react";
-import IconDownloadApp from "../../../assets/Icons/MultiFactor/IconDownloadApp";
-import IconScanQRcode from "../../../assets/Icons/MultiFactor/IconScanQRcode";
-import IconSmsTracking from "../../../assets/Icons/MultiFactor/IconSmsTracking";
-import IconCheckmark from "../../../assets/Icons/authentication/IconCheckmark";
+import IconDownloadApp from "../../../assets/icons/MultiFactor/IconDownloadApp";
+import IconScanQRcode from "../../../assets/icons/MultiFactor/IconScanQRcode";
+import IconSmsTracking from "../../../assets/icons/MultiFactor/IconSmsTracking";
+import IconCheckmark from "../../../assets/icons/authentication/IconCheckmark";
 
 interface Props {
   currentStep: number;

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 // import IconAlert from "../../assets/Icons/Login/IconAlert"; // استفاده نشده
-import IconDanger from "../../assets/Icons/Deposit/IconDanger";
+import IconDanger from "../../assets/icons/Deposit/IconDanger";
 // import IconVideo from "../../assets/Icons/Deposit/IconVideo"; // استفاده نشده
 
 interface DepositLayoutProps {

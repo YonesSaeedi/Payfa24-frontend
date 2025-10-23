@@ -3,7 +3,7 @@ import { apiRequest } from "../../utils/apiClient";
 import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconClose from "../../assets/icons/Login/IconClose";
 import TradeSuccessModal from "../trade/TradeSuccessModal";
 import OTPInputModal from "../trade/OTPInputModal";
 import { useWatch } from "react-hook-form";

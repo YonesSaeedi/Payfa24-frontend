@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import UploadImage from "../../../../assets/icons/authentication/UploadImage";
-import IconAlert from "../../../../assets/Icons/Login/IconAlert";
+import IconAlert from "../../../../assets/icons/Login/IconAlert";
 import { toast } from "react-toastify";
 import StepperComponent from "../Stepper";
 

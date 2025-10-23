@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import StatusBadge from "../UI/Button/StatusBadge";
-import IconClose from "../../assets/Icons/Login/IconClose";
+import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
 import SkeletonTransactionModal from "./SkeletonTransactionModal";

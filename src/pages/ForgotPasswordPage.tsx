@@ -12,8 +12,8 @@ import TextField from "../components/InputField/TextField";
 import { getForgotPasswordSchema } from "../utils/validationSchemas";
 import { apiRequest } from "../utils/apiClient";
 import OTPModal from "../components/OTPModal";
-import IconAgain from "../assets/Icons/Login/IconAgain";
-import IconClose from "../assets/Icons/Login/IconClose";
+import IconAgain from "../assets/icons/Login/IconAgain";
+import IconClose from "../assets/icons/Login/IconClose";
 import { AxiosError } from "axios";
 
 type FormData = {

@@ -1,10 +1,10 @@
 import { Controller, useForm } from "react-hook-form";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
-import IconMonnos from "../../assets/Icons/Deposit/IconMonnos";
-import IconVideo from "../../assets/Icons/Deposit/IconVideo";
+import IconMonnos from "../../assets/icons/Deposit/IconMonnos";
+import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import QRCode from "react-qr-code"; // اضافه کردن پکیج react-qr-code
-import IconCopy from "../../assets/Icons/AddFriend/IconCopy";
+import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 import TextField from "../InputField/TextField";
 import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";

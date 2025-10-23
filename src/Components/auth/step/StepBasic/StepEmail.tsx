@@ -503,7 +503,7 @@ import { sendContact, verifyOtp } from "../../../../utils/api/authBasic";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../../../context/ThemeContext";
 import OTPModal from "../../../OTPModal";
-import IconClose from "../../../../assets/Icons/Login/IconClose";
+import IconClose from "../../../../assets/icons/Login/IconClose";
 import StepperComponent from "../Stepper";
 import TextField from "../../../InputField/TextField";
 import { getContactSchema } from "../../../../utils/validationSchemas";
