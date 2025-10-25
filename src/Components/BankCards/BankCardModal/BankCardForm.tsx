@@ -35,7 +35,6 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
   const [bank, setBank] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // حالت دارک رو چک می‌کنیم
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -43,10 +42,8 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
       setIsDark(document.documentElement.classList.contains("dark"));
     };
 
-    // مقدار اولیه
     updateTheme();
 
-    // گوش دادن به تغییر کلاس‌ها روی html
     const observer = new MutationObserver(updateTheme);
     observer.observe(document.documentElement, {
       attributes: true,
@@ -76,7 +73,6 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
 
   return (
     <div dir="rtl" className="flex flex-col w-full  ">
-      {/* بخش هشدار */}
       <div className="flex flex-col mb-4">
         <div className="flex items-center mb-1">
           <span className="w-5 h-5 text-orange-500">
@@ -109,7 +105,6 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
         </p>
       </div>
 
-      {/* کارت */}
       <div
         className="h-[263px] rounded-xl relative flex flex-col justify-end px-6 max-w-[600px]"
         style={{
@@ -120,12 +115,10 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
           backgroundPosition: "center",
         }}
       >
-        {/* لوگوی شتاب بالا سمت راست */}
         <div className="absolute top-0 right-2 w-24 h-24">
           <IconShetab />
         </div>
 
-        {/* شماره کارت با label ثابت بالا */}
         <div className="relative w-full mb-2">
           <input
             id="cardNumber"
@@ -171,7 +164,7 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
             شماره کارت
           </label>
         </div>
-        {/* دکمه ثبت کارت */}
+
         <button
           disabled={isSubmitting || cardNumber.replace(/-/g, "").length !== 16}
           className={`mt-4 mb-8 w-full py-3 rounded-lg font-medium text-base transition ${

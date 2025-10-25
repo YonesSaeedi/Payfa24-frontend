@@ -6,7 +6,7 @@ export interface ICryptoItem {
     en?: string;
   };
   sort?: number;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   priceUSDT: number;
   buyPrice: number;
   sellPrice: number;
@@ -33,27 +33,27 @@ export interface IGeneralData {
 }
 export interface NewCryptoItem {
   buy_status?: number;
-  color: string;
-  deposit: number;
+  color?: string;
+  deposit?: number;
   fee?: string;
-  icon: string;
-  id: number;
-  isDisable: boolean;
-  isFont: boolean;
+  icon?: string;
+  id?: number;
+  isDisable?: boolean;
+  isFont?: boolean;
   locale?: {
     fa?: { name: string };
     en?: { name: string };
     fr?: { name: string };
   };
-  name: string;
-  percent: number;
-  priceBuy: string;
-  priceChangePercent: string;
-  priceSell: string;
-  quoteVolume: string;
+  name?: string;
+  percent?: number;
+  priceBuy?: string;
+  priceChangePercent?: string;
+  priceSell?: string;
+  quoteVolume?: string;
   sell_status?: number;
-  symbol: string;
-  withdraw: number;
+  symbol?: string;
+  withdraw?: number;
   priceUSDT?: number;
   change24h?: number;
 }

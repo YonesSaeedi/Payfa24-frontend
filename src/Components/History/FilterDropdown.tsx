@@ -23,8 +23,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   onToggle,
   onSelect,
   className,
-  absolute,
-  withBorder
+  
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 

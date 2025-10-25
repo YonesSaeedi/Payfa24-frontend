@@ -24,48 +24,47 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
   if (!isOpen) return null;
 
   const onFormSubmit = async (data: SupportCallFormInputs) => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const response = await fetch("/api/ticket/call", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+    const response = await fetch("/api/ticket/call", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-      const result = await response.json();
-
-      if (result.status) {
-        toast.success("درخواست شما با موفقیت ثبت شد ");
-        reset();
-        setTimeout(() => {
-          onClose();
-        }, 1500);
-      } else {
-        toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید ");
-      }
-    } catch (error) {
-       toast.error(  error?.response?.data?.msg || "خطایی رخ داده است.");
-      
-      toast.error("ارتباط با سرور برقرار نشد ");
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData?.msg || "خطایی رخ داده است.");
     }
-  };
+
+    const result = await response.json();
+
+    if (result.status) {
+      toast.success("درخواست شما با موفقیت ثبت شد");
+      reset();
+      setTimeout(onClose, 1500);
+    } else {
+      toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید");
+    }
+  } catch (err: any) {
+    toast.error(err.message || "ارتباط با سرور برقرار نشد");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
  
   <div
     dir="rtl"
     className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40"
-    onClick={onClose} // 👈 کلیک روی پس‌زمینه مودال
+    onClick={onClose} 
   >
     <div
       dir="rtl"
       className="bg-gray43 rounded-2xl shadow-lg w-full max-w-md p-6 relative"
-      onClick={(e) => e.stopPropagation()} // 👈 جلوگیری از بسته شدن هنگام کلیک داخل مودال
+      onClick={(e) => e.stopPropagation()} 
     >
       <button
         onClick={() => { reset(); onClose(); }}
@@ -79,7 +78,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
       </h2>
 
       <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 bg-gray43">
-        {/* شماره موبایل */}
+      
         <div>
           <Controller
             name="number"
@@ -93,8 +92,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="tel"
                 placeholder=""
                 placeholderColor="text-black0"
-                borderClass="border-gray2"
-                heightClass="h-[48px]"
+                className="h-[48px] border-gray2"
+              
               />
             )}
           />
@@ -106,7 +105,6 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
           </p>
         </div>
 
-        {/* توضیحات */}
         <div className="pt-8 pb-8">
           <Controller
             name="description"
@@ -120,8 +118,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="text"
                 placeholder="درخواست تماس با پشتیبانی درباره..."
                 placeholderColor="text-black0"
-                borderClass="border-gray2"
-                heightClass="h-[160px]"
+                className="border-gray2 h-[160px]"
+              
               />
             )}
           />

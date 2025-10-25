@@ -8,32 +8,46 @@ import { apiRequest } from "../../../utils/apiClient";
 import type { UseFormSetValue, UseFormRegister } from "react-hook-form";
 import IconClose from "../../../assets/icons/Login/IconClose";
 
-interface TicketInfoResponse {
-  tickets: { id: number; title: string; status: string; created: string; updated: string }[];
-  last_orders: { id: number; title: string }[];
-}
+
 
 interface OrderSelectorProps {
   selectedOrder: Order | null;
   setSelectedOrder: (order: Order | null) => void;
   register: UseFormRegister<TicketFormInputs>;
   setValue: UseFormSetValue<TicketFormInputs>;
-  onClose: () => void;
+  onClose: () => void; 
 }
+
+interface TicketInfoResponse {
+  tickets: {
+    id: number;
+    title: string;
+    status: string;
+    created: string;
+    updated: string;
+  }[];
+  last_orders: {
+    id: number;
+    type: "buy" | "sell"; 
+    amount: number;
+    date: string;
+    name: string;
+  }[];
+}
+
 
 export default function OrderSelector({
   selectedOrder,
   setSelectedOrder,
   register,
   setValue,
-  onClose,
 }: OrderSelectorProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [apiOrders, setApiOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
 
-//  useEffect(() => {
+
 //   if (!isModalOpen) return;
 
 //   const fetchOrders = async () => {
@@ -99,14 +113,15 @@ useEffect(() => {
       });
 
       if (response?.last_orders) {
-        const mappedOrders: Order[] = response.last_orders.map(o => ({
-          id: String(o.id),
-          coin: o.name,             // 👈 نام ارز
-          type: o.type,             // 👈 نوع معامله (buy/sell)
-          amount: o.amount,         // 👈 مقدار
-          date: o.date || "-",      // 👈 تاریخ
-          icon: <IconOrderSelection /> // 👈 آیکون
-        }));
+      const mappedOrders: Order[] = response.last_orders.map(o => ({
+  id: String(o.id),
+  coin: o.name,
+  type: o.type === "buy" ? "خرید" : "فروش", 
+  amount: String(o.amount), 
+  date: o.date || "-",
+  icon: <IconOrderSelection />,
+}));
+
 
         setApiOrders(mappedOrders);
       }
@@ -142,7 +157,8 @@ useEffect(() => {
         <span className="w-5 h-5 text-gray12"><IconOrderSelection /></span>
       </button>
 
-      <input type="hidden" {...register("orderId" as any)} />
+      <input type="hidden" {...register("orderId")} />
+
 
       {selectedOrder && (
         <div className="mt-2 flex items-center justify-between border rounded-lg p-3 bg-gray27 h-[61px] border-gray21">
@@ -161,7 +177,7 @@ useEffect(() => {
     {isModalOpen && typeof document !== "undefined" && createPortal(
   <OrderModal 
     orders={apiOrders} 
-    isLoading={isLoading} // 👈 اضافه شد
+    isLoading={isLoading} 
     onSelectOrder={handleSelectOrder} 
     onClose={() => setIsModalOpen(false)} 
   />,

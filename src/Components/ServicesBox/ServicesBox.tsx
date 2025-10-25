@@ -9,7 +9,6 @@ import IconCards from "../../assets/icons/services/IconCards";
 import IconReceipt from "../../assets/icons/services/IconReceipt";
 import IconSecurity from "../../assets/icons/services/iconSecurity";
 import IconQuestionLabel from "../../assets/icons/services/IconQuestionLabel";
-import IconPieChart from "../../assets/icons/services/IconPieChart";
 import IconPersonalCard from "../../assets/icons/services/IconPersonalCard";
 import IconCloseButtun from "../../assets/icons/services/IconCloseButtun";
 import ChartIcon from "../../assets/icons/header/ChartIcon";
@@ -20,8 +19,8 @@ import IconTicket from "../../assets/icons/services/IconTicket";
 import IconNotification from "../../assets/icons/services/IconNotification";
 import IconUserPlus from "../../assets/icons/services/IconUserPlus";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
-import { apiRequest } from "../../utils/apiClient";
-import { toast } from "react-toastify";
+
+
 
 interface ServiceItem {
   label: string;
@@ -125,7 +124,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       route: ROUTES.NOTIFICATIONS,
     },
     { label: "مقالات", icon: <IconPersonalCard /> },
-    { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND },
+    { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND.ROOT },
   ];
 
   const renderSection = (title: string, items: ServiceItem[]) => (

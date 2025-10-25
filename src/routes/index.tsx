@@ -9,7 +9,6 @@ import Buy from "../pages/trade/Buy";
 import Sell from "../pages/trade/Sell";
 import AuthenticationBasic from "../pages/authentication/basic";
 import AuthenticationAdvance from "../pages/authentication/advance";
-import Profile from "../pages/Profile/Profile";
 import MarketPage from "../pages/MarketPage";
 import TicketPage from "../pages/Ticket/TicketPage";
 import TicketPanel from "../components/Ticket/TicketPanel";

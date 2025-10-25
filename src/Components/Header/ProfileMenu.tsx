@@ -115,7 +115,10 @@ export default function ProfileMenu({
         </div>
 
         <ul dir="rtl" className="p-4 space-y-3 font-medium">
-          <Link to={ROUTES.PROFILE} className="flex items-center gap-2 w-full">
+          <Link
+            to={ROUTES.PROFILE_MEN.USER_ACCOUNT}
+            className="flex items-center gap-2 w-full"
+          >
             <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer text-black1">
               <span className="w-6 h-6">
                 <IconUserAccount />
@@ -135,6 +138,8 @@ export default function ProfileMenu({
                 تنظیمات امنیت
               </div>
 
+
+              {/* 🔽 آیکن فلش (خودت import کن) */}
               <span
                 className={`w-5 h-5 transition-transform duration-300 ${
                   openSecurity ? "rotate-180" : "rotate-0"
@@ -169,7 +174,7 @@ export default function ProfileMenu({
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
               <span className="w-6 h-6">
                 <IconAuthentication />
-              </span>{" "}
+              </span>
               احراز هویت
             </li>
           </Link>

@@ -1,10 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; 
 import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
+
 import IconClose from "../../assets/icons/Login/IconClose";
 import IconCurrency from "../../assets/icons/Withdrawal/IconCurrency";
 import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import { ROUTES } from "../../routes/routes";
+
 
 
 interface WithdrawModalProps {

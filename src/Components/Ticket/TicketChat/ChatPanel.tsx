@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Ticket } from "./types";
 import bgChat from "../../../assets/images/Ticket/bgchat.jpg";
@@ -10,7 +11,7 @@ import StatusBadge from "../../UI/Button/StatusBadge";
 import IconCircledAttach from "../../../assets/icons/ticket/IconCircledAttach";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import type { AxiosProgressEvent } from "axios";
 
 interface ChatPanelProps {
   ticket: Ticket | null;
@@ -33,16 +34,24 @@ interface Message {
   system?: boolean;
 }
 
+interface TicketMessageResponse {
+  id: number;
+  message: string;
+  author: "user" | "support";
+  time: string;
+  file?: string;
+}
 
-
-type TicketInfo = {
+interface TicketInfoResponse {
   ticket: {
     id: number;
     title: string;
     status: keyof typeof ticketStatusMap;
   };
-  ticket_message: Message[];
-};
+  ticket_message: TicketMessageResponse[];
+}
+
+type TicketInfo = TicketInfoResponse;
 
 const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
   const statusText = ticketStatusMap[ticket.status] || "نامشخص";
@@ -75,18 +84,18 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   // دریافت اطلاعات تیکت و پیام‌ها
   const fetchData = async () => {
     if (!ticket?.id) return;
     try {
-      const res = await apiRequest<any>({
+      const res = await apiRequest<TicketInfoResponse>({
         url: `/api/ticket/${ticket.id}/get-info`,
         method: "GET",
       });
 
-      const formattedMessages = res.ticket_message.map((m: any) => ({
+      const formattedMessages: Message[] = res.ticket_message.map((m) => ({
         id: m.id,
         text: m.message,
         isUser: m.author === "user",
@@ -94,7 +103,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
         file: m.file,
       }));
 
-      setTicketInfo(res); // ✅ درست شد
+      setTicketInfo(res);
       setMessages(formattedMessages);
     } catch (err) {
       console.error("ticket/get-info:", err);
@@ -102,7 +111,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
       setLoading(false);
     }
   };
-
 
   const fetchFileAsDataUrl = async (fileToken: string) => {
     const filePath = `/api/image/${fileToken}`;
@@ -113,24 +121,20 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
         url: filePath,
         method: "GET",
         responseType: "blob",
-        headers: { "x-timestamp": timestamp},
+        headers: { "x-timestamp": timestamp },
       });
 
-      // فایل PDF رو هم می‌تونیم blob URL بسازیم
-      return URL.createObjectURL(blob); // ✅ blob URL برای PDF و تصاویر
+      return URL.createObjectURL(blob);
     } catch (err) {
       console.error("خطا در دریافت فایل:", err);
       return null;
     }
   };
 
-
-
   useEffect(() => {
     fetchData();
   }, [ticket]);
 
-  // بارگذاری تصویر فایل‌های تیکت
   useEffect(() => {
     if (!ticketInfo) return;
 
@@ -152,50 +156,46 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
     loadFiles();
   }, [ticketInfo]);
 
-
-  // ارسال پیام جدید
   const handleSend = async (e?: React.MouseEvent<HTMLButtonElement>) => {
-    if (e) e.preventDefault();
-    if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) return;
+  if (e) e.preventDefault();
+  if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) return;
 
-    setIsSending(true);
-    setUploadProgress(0); // شروع آپلود
+  setIsSending(true);
+  setUploadProgress(0);
 
-    try {
-      const formData = new FormData();
-      formData.append("message", newMessage.trim() || "فایل پیوست شد");
-      if (selectedFile) formData.append("file", selectedFile);
+  try {
+    const formData = new FormData();
+    formData.append("message", newMessage.trim() || "فایل پیوست شد");
+    if (selectedFile) formData.append("file", selectedFile);
 
-      await apiRequest({
-        url: `/api/ticket/${ticket.id}/new`,
-        method: "POST",
-        data: formData,
-        isFormData: true,
-       
-        onUploadProgress: (event?: any) => {
-          if (event?.total) {
-            const percent = Math.round((event.loaded * 100) / event.total);
-            setUploadProgress(percent);
-          }
-        },
-      });
+    await apiRequest({
+      url: `/api/ticket/${ticket.id}/new`,
+      method: "POST",
+      data: formData,
+      isFormData: true,
+      onUploadProgress: (event?: AxiosProgressEvent) => { // ✅ نوع درست
+        if (event?.loaded && event?.total) {
+          const percent = Math.round((event.loaded * 100) / event.total);
+          setUploadProgress(percent);
+        }
+      },
+    });
 
-      // پاک کردن ورودی‌ها بعد از ارسال موفق
-      setNewMessage("");
-      setSelectedFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+    setNewMessage("");
+    setSelectedFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
 
-      await fetchData(); // دریافت مجدد پیام‌ها و فایل‌ها
-    } catch (err) {
-       if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
-    toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");}
-      console.error("خطا در ارسال پیام:", err);
-    } finally {
-      setIsSending(false);
-      setUploadProgress(null); // بعد از آپلود نوار پیشرفت را مخفی کن
+    await fetchData();
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
+      toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");
     }
-  };
-
+    console.error("خطا در ارسال پیام:", err);
+  } finally {
+    setIsSending(false);
+    setUploadProgress(null);
+  }
+};
 
   const handleAttachClick = () => fileInputRef.current?.click();
 
@@ -221,13 +221,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-
   return (
     <div className="flex-1 w-full h-full">
       <div className="border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
         {ticket && <ChatHeader ticket={ticket} />}
 
-        {/* پیام‌ها */}
         <div
           className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center"
           style={{ backgroundImage: `url(${bgChat})` }}
@@ -240,8 +238,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
               >
                 <div
                   dir="rtl"
-                  className={`shadow rounded-xl px-3 w-[379px] relative flex-col ${msg.isUser ? "bg-black4 text-black1" : "bg-gray40 text-black1"
-                    }`}
+                  className={`shadow rounded-xl px-3 w-[379px] relative flex-col ${
+                    msg.isUser ? "bg-black4 text-black1" : "bg-gray40 text-black1"
+                  }`}
                 >
                   {!msg.isUser && (
                     <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
@@ -251,44 +250,39 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
                         className="w-6 h-6 rounded-full"
                       />
                       <span className="text-xs text-black1">
-                        {msg.senderName || "پشتیبانی"} (
-                        {msg.senderRole || "admin"})
+                        {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
                       </span>
                     </div>
                   )}
 
                   {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
 
-                 
-        {msg.file && (
-  <div className="rounded-2xl w-fit p-2 mt-2">
-    {imageCache[msg.id] ? (
-      msg.file.endsWith(".pdf") ? (
-        <a
-          href={imageCache[msg.id]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-blue-600 underline"
-        >
-          <IconCircledAttach />
-          <span>دانلود PDF</span>
-        </a>
-      ) : (
-        <img
-          src={imageCache[msg.id]}
-          alt="attachment"
-          className="rounded-xl object-contain max-h-[150px] max-w-[200px] cursor-pointer"
-          onClick={() => setFullscreenImage(imageCache[msg.id])}
-        />
-      )
-    ) : (
-      // اسکلتون مشابه جدول کریپتو
-      <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
-    )}
-  </div>
-)}
-
-
+                  {msg.file && (
+                    <div className="rounded-2xl w-fit p-2 mt-2">
+                      {imageCache[msg.id] ? (
+                        msg.file.endsWith(".pdf") ? (
+                          <a
+                            href={imageCache[msg.id]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-blue-600 underline"
+                          >
+                            <IconCircledAttach />
+                            <span>دانلود PDF</span>
+                          </a>
+                        ) : (
+                          <img
+                            src={imageCache[msg.id]}
+                            alt="attachment"
+                            className="rounded-xl object-contain max-h-[150px] max-w-[200px] cursor-pointer"
+                            onClick={() => setFullscreenImage(imageCache[msg.id])}
+                          />
+                        )
+                      ) : (
+                        <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
+                      )}
+                    </div>
+                  )}
 
                   <span
                     dir="rtl"
@@ -302,7 +296,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
 
             <div ref={bottomRef} />
 
-            {/* پیش‌نمایش فایل */}
             {selectedFile && (
               <div className="flex items-center justify-between rounded-full bg-white shadow px-3 py-2 mt-2 w-fit">
                 <div className="flex items-center gap-2">
@@ -326,11 +319,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
                 />
               </div>
             )}
-
           </div>
         </div>
 
-        {/* ناحیه ارسال پیام */}
         <div dir="rtl" className="p-3 flex gap-2 bg-white8">
           <input
             type="text"
@@ -371,7 +362,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
         </div>
       </div>
 
-      {/* نمایش فول‌اسکرین تصویر */}
       {fullscreenImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"

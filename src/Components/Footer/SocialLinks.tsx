@@ -9,7 +9,7 @@ interface SocialLink {
 }
 
 interface SocialLinksProps {
-  borderColor?: string; // رنگ دلخواه برای border
+  borderColor?: string; 
 }
 
 export default function SocialLinks({

@@ -22,6 +22,10 @@ export interface OrderDetail {
   type?: string;
   wage?: string;
   source: "order";
+  image?: string;
+  faName?: string;
+  currencyIcon?: string;
+  currencySymbol?: string;
 }
 
 export interface CryptoDetail {
@@ -40,8 +44,13 @@ export interface CryptoDetail {
   stock?: string;
   txid?: string;
   type?: string;
+   fee?: number;
   withdrawFee?: string;
   source: "crypto";
+  image?: string;
+  faName?: string;
+  currencyIcon?: string;
+  currencySymbol?: string;
 }
 
 export interface FiatDetail {
@@ -64,6 +73,10 @@ export interface FiatDetail {
   type?: string;
   uuid?: string;
   source: "fiat";
+  image?: string;
+  faName?: string;
+  currencyIcon?: string;
+  currencySymbol?: string;
 }
 
 export type TransactionDetail = OrderDetail | CryptoDetail | FiatDetail;
@@ -72,7 +85,7 @@ export type TransactionDetail = OrderDetail | CryptoDetail | FiatDetail;
 interface TransactionModalProps {
   tx: TransactionDetail;
   onClose: () => void;
-  visibleFields?: string[]; // مثلا ["status","id","date","type","amount","stock","description","cardNumber"]
+  visibleFields?: string[]; 
 }
 
 
@@ -80,101 +93,147 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState<TransactionDetail | null>(null);
 
-  useEffect(() => {
-    if (!tx.id || !tx.source) return;
+ 
+  //   if (!tx.id || !tx.source) return;
 
-    const fetchDetails = async () => {
-      setLoading(true);
-      try {
-        let url = "";
-        switch (tx.source) {
-          case "order":
-            url = `/api/history/orders/${tx.id}`;
-            break;
-          case "crypto":
-            url = `/api/history/crypto-transaction/${tx.id}`;
-            break;
-          case "fiat":
-            url = `/api/history/fiat/${tx.id}`;
-            break;
-        }
+  //   const fetchDetails = async () => {
+  //     setLoading(true);
+  //     try {
+  //       let url = "";
+  //       switch (tx.source) {
+  //         case "order":
+  //           url = `/api/history/orders/${tx.id}`;
+  //           break;
+  //         case "crypto":
+  //           url = `/api/history/crypto-transaction/${tx.id}`;
+  //           break;
+  //         case "fiat":
+  //           url = `/api/history/fiat/${tx.id}`;
+  //           break;
+  //       }
 
-        const res = await apiRequest({ url, method: "GET" });
+  //       const res = await apiRequest({ url, method: "GET" });
 
-        if (tx.source === "order" && res.order) {
-          const o = res.order;
-          setDetail({
-            amount: o.amount?.toString(),
-            amountCoin: o.amount_coin?.toString(),
-            name: o?.coin?.name,
-            symbol: o?.coin?.symbol,
-            uVoucher: o?.data?.uVoucher,
-            Memo: o?.data?.Memo,
-            Code: o?.data?.Code,
-            Amount: o?.data?.Amount,
-            date: o?.dateTime,
-            description: o?.description,
-            fee: o?.fee,
-            id: o.id?.toString(),
-            status: o.status,
-            type: o?.type,
-            wage: o?.wage,
-            source: "order",
-          });
-        } else if (tx.source === "crypto" && res.transaction) {
-          const c = res.transaction;
-          setDetail({
-            date: c.DateTime,
-            amount: c.amount?.toString(),
-            amountToman: c?.amount_toman?.toString(),
-            symbol: c?.coin?.symbol,
-            description: c?.description,
-            destination: c?.destination,
-            destinationTag: c?.destination_tag,
-            file: c?.file,
-            id: c.id?.toString(),
-            network: c?.network,
-            reason: c?.reason,
-            status: c?.status,
-            stock: c?.stock,
-            txid: c?.txid,
-            type: c.type,
-            withdrawFee: c?.withdraw_fee,
-            source: "crypto",
-          });
-        } else if (tx.source === "fiat" && res.transaction) {
-          const f = res.transaction;
-          setDetail({
-            date: f.DateTime,
-            PaymentGateway: f.PaymentGateway,
-            amount: f.amount?.toString(),
-            accountNumber: f?.cardbank?.account_number,
-            cardNumber: f?.cardbank?.card_number,
-            iban: f?.cardbank?.iban,
-            description: f?.description,
-            id: f?.id?.toString(),
-            idInternalcurrency: f?.id_internalcurrency,
-            idOrder: f?.id_order,
-            idTrade: f?.id_trade,
-            payment: f?.payment,
-            reason: f?.reason,
-            status: f?.status,
-            stock: f?.stock,
-            traceNumber: f?.trace_number,
-            type: f?.type,
-            uuid: f?.uuid,
-            source: "fiat",
-          });
-        }
-      } catch (err) {
-        console.error("خطا در دریافت جزئیات تراکنش:", err);
-      } finally {
-        setLoading(false);
+  //       if (tx.source === "order" && res.order) {
+  //         const o = res.order;
+  //         setDetail({
+  //           amount: o.amount?.toString(),
+  //           amountCoin: o.amount_coin?.toString(),
+  //           name: o?.coin?.name,
+  //           symbol: o?.coin?.symbol,
+  //           uVoucher: o?.data?.uVoucher,
+  //           Memo: o?.data?.Memo,
+  //           Code: o?.data?.Code,
+  //           Amount: o?.data?.Amount,
+  //           date: o?.dateTime,
+  //           description: o?.description,
+  //           fee: o?.fee,
+  //           id: o.id?.toString(),
+  //           status: o.status,
+  //           type: o?.type,
+  //           wage: o?.wage,
+  //           source: "order",
+  //         });
+  //       } else if (tx.source === "crypto" && res.transaction) {
+  //         const c = res.transaction;
+  //         setDetail({
+  //           date: c.DateTime,
+  //           amount: c.amount?.toString(),
+  //           amountToman: c?.amount_toman?.toString(),
+  //           symbol: c?.coin?.symbol,
+  //           description: c?.description,
+  //           destination: c?.destination,
+  //           destinationTag: c?.destination_tag,
+  //           file: c?.file,
+  //           id: c.id?.toString(),
+  //           network: c?.network,
+  //           reason: c?.reason,
+  //           status: c?.status,
+  //           stock: c?.stock,
+  //           txid: c?.txid,
+  //           type: c.type,
+  //           withdrawFee: c?.withdraw_fee,
+  //           source: "crypto",
+  //         });
+  //       } else if (tx.source === "fiat" && res.transaction) {
+  //         const f = res.transaction;
+  //         setDetail({
+  //           date: f.DateTime,
+  //           PaymentGateway: f.PaymentGateway,
+  //           amount: f.amount?.toString(),
+  //           accountNumber: f?.cardbank?.account_number,
+  //           cardNumber: f?.cardbank?.card_number,
+  //           iban: f?.cardbank?.iban,
+  //           description: f?.description,
+  //           id: f?.id?.toString(),
+  //           idInternalcurrency: f?.id_internalcurrency,
+  //           idOrder: f?.id_order,
+  //           idTrade: f?.id_trade,
+  //           payment: f?.payment,
+  //           reason: f?.reason,
+  //           status: f?.status,
+  //           stock: f?.stock,
+  //           traceNumber: f?.trace_number,
+  //           type: f?.type,
+  //           uuid: f?.uuid,
+  //           source: "fiat",
+  //         });
+  //       }
+  //     } catch (err) {
+  //       console.error("خطا در دریافت جزئیات تراکنش:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchDetails();
+  // }, [tx]);
+useEffect(() => {
+  if (!tx.id || !tx.source) return;
+
+  const fetchDetails = async () => {
+    setLoading(true);
+    try {
+      let url = "";
+      switch (tx.source) {
+        case "order":
+          url = `/api/history/orders/${tx.id}`;
+          break;
+        case "crypto":
+          url = `/api/history/crypto-transaction/${tx.id}`;
+          break;
+        case "fiat":
+          url = `/api/history/fiat/${tx.id}`;
+          break;
       }
-    };
 
-    fetchDetails();
-  }, [tx]);
+      if (tx.source === "order") {
+        const res = await apiRequest<{ order: OrderDetail }>({ url, method: "GET" });
+        if (res.order) {
+          setDetail({ ...res.order, source: "order" });
+        }
+      } else if (tx.source === "crypto") {
+        const res = await apiRequest<{ transaction: CryptoDetail }>({ url, method: "GET" });
+        if (res.transaction) {
+          setDetail({ ...res.transaction, source: "crypto" });
+        }
+      } else if (tx.source === "fiat") {
+        const res = await apiRequest<{ transaction: FiatDetail }>({ url, method: "GET" });
+        if (res.transaction) {
+          setDetail({ ...res.transaction, source: "fiat" });
+        }
+      }
+
+    } catch (err) {
+      console.error("خطا در دریافت جزئیات تراکنش:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchDetails();
+}, [tx]);
+
 
   const renderIcon = () => {
     const img = tx.image || detail?.currencyIcon;
@@ -208,7 +267,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
         className="bg-white8 rounded-2xl p-6 w-[90%] max-w-md relative shadow-xl  max-h-[85vh] overflow-y-auto animate-fadeIn"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+   
         <div className="flex justify-between items-center   pb-4 mb-4">
           <h2 className="font-semibold text-lg text-black0">جزئیات تراکنش</h2>
           <button
@@ -219,12 +278,12 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
           </button>
         </div>
 
-        {/* Loader */}
+      
         {loading ? (
           <SkeletonTransactionModal/>
         ) : detail ? (
           <>
-            {/* Icon and Title */}
+    
             <div className="flex flex-col items-center mb-6">
               {renderIcon()}
               <h3 className="font-bold text-lg mt-3 text-gray-800">
@@ -235,7 +294,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
               )}
             </div>
 
-            {/* Detail grid */}
+       
             <div className="grid grid-cols-1 gap-3 text-sm text-black0">
               {detail.status && (
                 <DetailRow
@@ -255,9 +314,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
                   value={transactionTypeMap[detail.type] || detail.type}
                 />
               )}
-              {"amount" in detail && detail.amount && (
-                <DetailRow label="مقدار" value={detail.amount} symbol={detail?.symbol} />
-              )}
+            {"amount" in detail && detail.amount && "symbol" in detail && detail.symbol && (
+  <DetailRow label="مقدار" value={detail.amount} symbol={detail.symbol} />
+)}
+
               {"amountCoin" in detail && detail.amountCoin && (
                 <DetailRow label="مقدار ارز" value={detail.amountCoin} />
               )}
@@ -312,7 +372,7 @@ const DetailRow = ({
   label,
   value,
   symbol,
-  isCopyable = false,
+  // isCopyable = false,
 }: {
   label: string;
   value: React.ReactNode;
@@ -335,3 +395,4 @@ const DetailRow = ({
 
 
 export default TransactionModal;
+

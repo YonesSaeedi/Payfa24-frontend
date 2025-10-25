@@ -5,9 +5,10 @@ import { apiRequest } from "../../../utils/apiClient";
 import { TicketFormInputs, TicketNewResponse } from "../../../types/Ticket";
 import type { AxiosProgressEvent } from "axios";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
-import FloatingInput from "../../FloatingInput/FloatingInput";
+
 import OrderSelector from "./OrderSelector";
 import axios from "axios";
+import FloatingInput from "../../FloatingInput/FloatingInput";
 
 interface Order {
   id: string;
@@ -21,7 +22,8 @@ interface Order {
 export default function TicketForm() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [setIsOrderSelectorOpen] = useState(false);
+  const [, setIsOrderSelectorOpen] = useState(false);
+
   const [isFileFocused, setIsFileFocused] = useState(false);
 
   const {
@@ -32,11 +34,11 @@ export default function TicketForm() {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<TicketFormInputs>({
-    mode: "onChange", // تا وقتی فیلدها تغییر می‌کنن اعتبارسنجی اجرا شه
+    mode: "onChange", 
   });
 
   const watchedFields = watch(["title", "description"]);
-
+   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const onSubmit = async (data: TicketFormInputs) => {
     try {
       const formData = new FormData();
@@ -79,7 +81,7 @@ export default function TicketForm() {
     }
   };
 
-  // شرط فعال بودن دکمه
+  
   const isFormComplete =
     watchedFields[0]?.trim() && watchedFields[1]?.trim() && selectedOrder;
 
@@ -89,13 +91,11 @@ export default function TicketForm() {
       dir="rtl"
       className="h-full flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl p-6"
     >
-      {/* فیلدها */}
+    
       <div className="flex flex-col">
         <h2 className="text-2xl font-medium text-center text-black1 mt-10 mb-12">
           ایجاد تیکت جدید
         </h2>
-
-        {/* عنوان تیکت */}
         <Controller
           name="title"
           control={control}
@@ -108,7 +108,6 @@ export default function TicketForm() {
               type="text"
               placeholder=""
               placeholderColor="gray9"
-              borderClass="border-gray12"
               className="flex flex-row mb-6 h-[56px] rounded-lg border  border-gray12"
             />
           )}
@@ -117,7 +116,6 @@ export default function TicketForm() {
           <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
         )} 
 
-        {/* انتخاب سفارش */}
         <OrderSelector
           selectedOrder={selectedOrder}
           setSelectedOrder={setSelectedOrder}
@@ -126,7 +124,6 @@ export default function TicketForm() {
           onClose={() => setIsOrderSelectorOpen(false)}
         />
 
-        {/* توضیحات */}
         <div className="relative w-full bg-gray37 mt-6  ">
           <Controller
             name="description"
@@ -140,9 +137,7 @@ export default function TicketForm() {
                 type="text"
                 placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."
                 placeholderColor="text-black0"
-                borderClass="border-gray12"
-                heightClass="h-[160px]"
-                className="rounded-lg"
+                className="rounded-lg border-gray12"
               />
             )}
           />
@@ -152,8 +147,6 @@ export default function TicketForm() {
             {errors.description.message}
           </p>
         )}
-
-        {/* آپلود فایل */}
 
         <div className="relative w-full mt-5">
           <label
@@ -168,15 +161,15 @@ export default function TicketForm() {
             name="file"
             control={control}
             render={({ field }) => {
-              const fileInputRef = useRef<HTMLInputElement | null>(null);
+             
 
               return (
                 <div
-                  onClick={() => fileInputRef.current?.click()} // ✨ روی کل باکس کلیک کن
+                  onClick={() => fileInputRef.current?.click()} 
                   className={`w-full border rounded-md px-3 py-4 flex justify-between items-center cursor-pointer transition-colors duration-200 
           ${isFileFocused ? "border-blue2" : "border-gray12"}`}
                 >
-                  {/* آیکن و متن سمت راست */}
+     
                   <div className="flex items-center gap-2 h-[36px] rounded-[10px]">
                     <span
                       className={`w-5 h-5 transition-colors duration-200 ${
@@ -197,9 +190,8 @@ export default function TicketForm() {
                     </span>
                   </div>
 
-                  {/* input پنهان */}
                   <input
-                    ref={fileInputRef} // 👈 ریفرنس به input
+                    ref={fileInputRef} 
                     type="file"
                     className="hidden"
                     onFocus={() => setIsFileFocused(true)}
@@ -211,7 +203,6 @@ export default function TicketForm() {
             }}
           />
 
-          {/* نوار پیشرفت آپلود */}
           {uploadProgress > 0 && (
             <div className="mt-2">
               <div className="flex justify-between mb-1 text-xs text-gray-300">
@@ -229,7 +220,6 @@ export default function TicketForm() {
         </div>
       </div>
 
-      {/* دکمه ارسال */}
       <button
         type="submit"
         disabled={!isFormComplete || isSubmitting}

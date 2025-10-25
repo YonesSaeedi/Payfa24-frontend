@@ -11,7 +11,7 @@ import { apiRequest } from "../../utils/apiClient";
 
 const BankCardsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isChecking, setIsChecking] = useState(true); // 👈 اضافه شده
+  const [isChecking, setIsChecking] = useState(true); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,12 +26,13 @@ const BankCardsPage = () => {
         });
 
         if (response.status && Array.isArray(response.data) && response.data.length > 0) {
-          navigate(ROUTES.Cards_Manager, { replace: true });
+         navigate(ROUTES.BANK_CARDS, { replace: true });
+
         }
       } catch (error) {
         console.error("❌ خطا در بررسی کارت‌های موجود:", error);
       } finally {
-        setIsChecking(false); // ✅ بعد از چک، نشون بده صفحه
+        setIsChecking(false); 
       }
     };
 
@@ -42,11 +43,10 @@ const BankCardsPage = () => {
     const result = await AddCardApi(cardNumber);
     if (result) {
       setIsModalOpen(false);
-      navigate(ROUTES.Cards_Manager);
+      navigate(ROUTES.BANK_CARDS);
     }
   };
 
-  // 👇 تا وقتی در حال چک‌کردن کارت‌ها هستیم، چیزی رندر نکن
   if (isChecking) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-backgroundMain">
