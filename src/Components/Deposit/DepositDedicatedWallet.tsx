@@ -59,7 +59,7 @@ export default function DepositDedicatedWallet() {
   const [showWalletInfo, setShowWalletInfo] = useState(false);
 
   // state برای آدرس ولت
-  const { control, watch, setValue } = useForm();
+  const { control, watch } = useForm();
   const { data: generalInfo, isLoading: isGeneralInfoLoading } =
     useGetGeneralInfo();
 

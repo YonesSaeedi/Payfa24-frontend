@@ -1,4 +1,4 @@
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
@@ -66,7 +66,9 @@ export default function DepositBankReceipt({
 }: Props) {
   const amounts = [5, 10, 20, 50];
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewURL, setPreviewURL] = useState<string | null>(initialPreviewUrl);
+  const [previewURL, setPreviewURL] = useState<string | null>(
+    initialPreviewUrl
+  );
   const [walletData, setWalletData] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,11 +80,10 @@ export default function DepositBankReceipt({
     control,
     handleSubmit,
     setValue,
-    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: { amount: "" },
+    defaultValues: { amount: 0 },
   });
 
   // --- آپلود فایل با progress ---
@@ -134,7 +135,7 @@ export default function DepositBankReceipt({
       setSelectedFile(null);
       setPreviewURL(null);
       onFileChange(null);
-      setValue("amount", "", { shouldValidate: true });
+      setValue("amount", 0, { shouldValidate: true });
     }
   };
 
@@ -164,7 +165,7 @@ export default function DepositBankReceipt({
       const selectedCardId = walletData?.list_cards?.find(
         (c) => c.bank === data.bank
       )?.id;
-      
+
       if (!selectedCardId) {
         throw new Error("کارت مبدا انتخاب نشده است");
       }
@@ -182,7 +183,7 @@ export default function DepositBankReceipt({
 
       // آپلود با progress (نمایش در دکمه)
       const uploadSuccess = await uploadFile(selectedFile, formData);
-      
+
       if (uploadSuccess) {
         setTimeout(() => {
           onNext();
@@ -200,7 +201,7 @@ export default function DepositBankReceipt({
   useEffect(() => {
     const fetchWalletData = async () => {
       try {
-        const response = await apiRequest({
+        const response = await apiRequest<WalletData>({
           url: "/api/wallets/fiat",
           method: "GET",
         });
@@ -246,9 +247,13 @@ export default function DepositBankReceipt({
                         <span className="w-6 h-6 icon-wrapper">
                           {getBankIcon(card.bank)}
                         </span>
-                        <span className="lg:text-sm text-xs text-black0">{card.bank}</span>
+                        <span className="lg:text-sm text-xs text-black0">
+                          {card.bank}
+                        </span>
                       </div>
-                      <span className="lg:text-sm text-xs text-black0">{card.card}</span>
+                      <span className="lg:text-sm text-xs text-black0">
+                        {card.card}
+                      </span>
                     </div>
                   ),
                 })) || []
@@ -257,7 +262,9 @@ export default function DepositBankReceipt({
           )}
         />
         {errors.bank && (
-          <p className="text-red1 text-xs pt-2">{errors.bank.message as string}</p>
+          <p className="text-red1 text-xs pt-2">
+            {errors.bank.message as string}
+          </p>
         )}
       </div>
 
@@ -314,7 +321,7 @@ export default function DepositBankReceipt({
           render={({ field }) => (
             <FloatingInput
               label="مقدار واریزی"
-              value={field.value}
+              value={field.value?.toString() ?? ""}
               onChange={field.onChange}
               type="number"
               placeholder="۰ تومان"
@@ -323,7 +330,9 @@ export default function DepositBankReceipt({
           )}
         />
         {errors.amount && (
-          <p className="text-red1 text-xs py-3 pt-2">مبلغ عددی صحیح وارد کنید </p>
+          <p className="text-red1 text-xs py-3 pt-2">
+            مبلغ عددی صحیح وارد کنید{" "}
+          </p>
         )}
       </div>
 
@@ -349,17 +358,16 @@ export default function DepositBankReceipt({
         className="hidden"
         onChange={handleFileChange}
       />
-      
+
       <div
         className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all duration-300 ${
-          previewURL 
-            ? "border-blue2 bg-blue2/5" 
+          previewURL
+            ? "border-blue2 bg-blue2/5"
             : "border-gray31 hover:border-gray12"
         }`}
         onClick={handleClick}
       >
         <div className="flex flex-col items-center justify-center h-48 relative">
-          
           {/* حالت عادی */}
           {!previewURL && !isUploading && (
             <>
@@ -369,9 +377,7 @@ export default function DepositBankReceipt({
               <p className="text-gray15 lg:text-lg text-sm font-normal">
                 بارگذاری تصویر فیش بانکی
               </p>
-              <p className="text-xs text-gray5 mt-1">
-                (JPG, PNG, PDF)
-              </p>
+              <p className="text-xs text-gray5 mt-1">(JPG, PNG, PDF)</p>
             </>
           )}
 
@@ -398,7 +404,9 @@ export default function DepositBankReceipt({
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
-              <span className="text-sm font-medium text-blue2">{uploadProgress}%</span>
+              <span className="text-sm font-medium text-blue2">
+                {uploadProgress}%
+              </span>
             </div>
           )}
         </div>
@@ -427,15 +435,18 @@ export default function DepositBankReceipt({
               </div>
             </div>
           )}
-          
+
           {/* متن دکمه */}
-          <span className={isUploading ? "opacity-0" : "opacity-100 transition-opacity"}>
-            {loading && !isUploading 
-              ? "در حال ارسال..." 
-              : !selectedFile 
-              ? "ابتدا فیش را انتخاب کنید" 
-              : "ثبت اطلاعات"
+          <span
+            className={
+              isUploading ? "opacity-0" : "opacity-100 transition-opacity"
             }
+          >
+            {loading && !isUploading
+              ? "در حال ارسال..."
+              : !selectedFile
+              ? "ابتدا فیش را انتخاب کنید"
+              : "ثبت اطلاعات"}
           </span>
         </button>
 
