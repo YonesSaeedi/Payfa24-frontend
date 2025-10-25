@@ -116,7 +116,7 @@ export default function ProfileMenu({
 
         <ul dir="rtl" className="p-4 space-y-3 font-medium">
           <Link
-            to={ROUTES.PROFILE_MEN.USER_ACCOUNT}
+            to={ROUTES.USER_ACCOUNT}
             className="flex items-center gap-2 w-full"
           >
             <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer text-black1">

@@ -7,7 +7,6 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   buy: "خرید",
   sell: "فروش",
   options: "خدمات",
-
   ticket: "تیکت‌ها",
   create: "ایجاد تیکت",
   authentication: "احراز هویت",
@@ -26,16 +25,9 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   fiat: "برداشت تومانی",
   crypto: "برداشت رمز ارز",
   "add-friend": "دعوت از دوستان",
-
-  profile: "پروفایل",
-"user-account": "حساب کاربری",
-  "security-settings": "تنظیمات امنیت",
-  "change-password": "تغییر رمز عبور", 
-  "multi-factor":"ورود دو مرحله ای ",
- 
-
-
-
+  "user-account": "حساب کاربری",
+  "change-password": "تغییر رمز عبور",
+  "multi-factor": "ورود دو مرحله ای ",
   deposit: "واریز",
   gateway: "درگاه پرداخت",
   identifier: "شناسه",
@@ -82,7 +74,6 @@ const BreadcrumbNavigation = () => {
         );
       })}
     </nav>
-
   );
 };
 

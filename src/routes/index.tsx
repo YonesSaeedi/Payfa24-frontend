@@ -52,7 +52,6 @@ export default function AppRouter() {
         </Route>
         {/* header only pages ==================================================================================================== */}
         <Route path={ROUTES.USER_ACCOUNT} element={<UserAccount />} />
-        <Route path={ROUTES.PROFILE} element={<UserAccount />} />
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
         <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />
