@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import { ROUTES } from "./routes";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
@@ -34,6 +34,7 @@ import CardsManager from "../components/BankCards/BankCardsManager";
 import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
 import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
+import UserAccount from "../pages/Profile/UserAccount";
 
 export default function AppRouter() {
 
@@ -54,18 +55,19 @@ export default function AppRouter() {
         {/* header only pages ==================================================================================================== */}
         {/* <Route path={ROUTES.USER_ACCOUNT} element={<Profile />} />
         <Route path={ROUTES.PROFILE} element={<Profile />} /> */}
+<Route path={ROUTES.PROFILE_MEN.ROOT} element={<Profile />}>
+    <Route index element={<Navigate to={ROUTES.PROFILE_MEN.USER_ACCOUNT} />} />
+    <Route path={ROUTES.PROFILE_MEN.USER_ACCOUNT.split('/').pop()} element={<UserAccount />} />
 
-
-<Route path={ROUTES.PROFILE_MEN.PROFILE} element={<Profile />}>
-  <Route index element={<Navigate to={ROUTES.PROFILE_MEN.USER_ACCOUNT} />} />
-  <Route path={ROUTES.PROFILE_MEN.USER_ACCOUNT} element={<Profile />} />
-  <Route path={ROUTES.PROFILE_MEN.SECURITY_SETTINGS} element={<Profile />} />
-  <Route path={ROUTES.PROFILE_MEN.MULTI_FACTOR} element={<MultiFactor />} />
-  <Route path={ROUTES.PROFILE_MEN.CHANGE_PASSWORD} element={<ChangePassword />} />  // ✅ فقط این
-  <Route path={ROUTES.PROFILE_MEN.CONNECTED_DEVICES} element={<Profile />} />
-  <Route path={ROUTES.PROFILE_MEN.BANK_CARDS} element={<Profile />} />
+    {/* ساختار تو در تو برای تنظیمات امنیت */}
+    <Route 
+        path={ROUTES.PROFILE_MEN.SECURITY_SETTINGS.split('/').pop()} 
+        element={<Outlet />}
+    >
+        <Route path="change-password" element={<ChangePassword />} />
+        <Route path="multi-factor" element={<MultiFactor />} />
+    </Route>
 </Route>
-
 
 
 

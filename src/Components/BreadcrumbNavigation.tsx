@@ -28,9 +28,16 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   "add-friend": "دعوت از دوستان",
 
   profile: "پروفایل",
-  "user-account": "حساب کاربری",
-  // "security-settings":"تغییر رمز عبور",
-"change-password":"تغییر رمز عبور ",
+"user-account": "حساب کاربری",
+  "security-settings": "تنظیمات امنیت", // ✅ این خط اضافه شد
+  "change-password": "تغییر رمز عبور", 
+  "multi-factor":"ورود دو مرحله ای ",
+  // "connected-devices": "دستگاه‌های متصل",   
+  // "bank-cards": "کارت‌های بانکی",           
+// "change-password":"تغییر رمز عبور ",
+
+
+
   deposit: "واریز",
   gateway: "درگاه پرداخت",
   identifier: "شناسه",

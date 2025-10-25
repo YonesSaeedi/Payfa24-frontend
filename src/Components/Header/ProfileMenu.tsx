@@ -150,7 +150,7 @@ export default function ProfileMenu({
       <Link to={ROUTES.MULTI_FACTOR} className="flex items-center gap-2 hover:text-blue2 px-2 pt-4">
         <li>ورود دو مرحله‌ای</li>
       </Link>
-      <Link to={ROUTES.PROFILE_MEN.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-2 pt-2">
+      <Link to={ROUTES.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-2 pt-2">
         <li>تغییر رمز عبور</li>
       </Link>
     </ul>
@@ -161,7 +161,7 @@ export default function ProfileMenu({
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
               <span className="w-6 h-6">
                 <IconAuthentication />
-              </span>{" "}
+              </span>
               احراز هویت
             </li>
           </Link>

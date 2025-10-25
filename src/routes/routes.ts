@@ -45,16 +45,16 @@ ADD_FRIEND: {
  ROOT:"/services/add-friend", // مسیر اصلی را به زیرمجموعه خدمات ببرید
 },
 
-
 PROFILE_MEN: {
-    PROFILE: "/profile",
-    USER_ACCOUNT: "/profile/user-account",  // ← lowercase
-    SECURITY_SETTINGS: "/profile/security-settings",
-    MULTI_FACTOR: "/profile/multi-factor",
-    CHANGE_PASSWORD: "/profile/change-password",
-    CONNECTED_DEVICES: "/profile/connected-devices",
-    BANK_CARDS: "/profile/bank-cards",
-  },
+  ROOT: "/profile",
+  USER_ACCOUNT: "/profile/user-account",
+ SECURITY_SETTINGS: "/profile/security-settings", // ✅ اضافه شدن مسیر تنظیمات امنیت
+    CHANGE_PASSWORD: "/profile/security-settings/change-password", // ✅ تغییر مسیر به زیرمجموعه security-settings
+    MULTI_FACTOR: "/profile/security-settings/multi-factor",
+  CONNECTED_DEVICES: "/profile/connected-devices",
+  BANK_CARDS: "/profile/bank-cards",
+  // SECURITY_SETTINGS رو حذف کن! صفحه نداره
+},
 
 DEPOSIT: "/deposit",
 DEPOSIT_GATEWAY: "/deposit/closeDeal",
