@@ -16,8 +16,6 @@ const PosterSlider = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef<number | null>(null);
-
-  // Drag state
   const [dragOffset, setDragOffset] = useState(0);
   const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
@@ -44,7 +42,7 @@ const PosterSlider = () => {
     fetchSlides();
   }, []);
 
-  // Auto slide
+ 
   useEffect(() => {
     if (!slides.length) return;
     intervalRef.current = window.setInterval(() => {
@@ -56,7 +54,6 @@ const PosterSlider = () => {
     };
   }, [slides]);
 
-  // Manual dot click
   const handleSlideChange = (index: number) => {
     setCurrentIndex(index);
     if (intervalRef.current) {
@@ -101,7 +98,6 @@ const PosterSlider = () => {
     setDragOffset(0);
     isDraggingRef.current = false;
 
-    // restart auto-slide
     intervalRef.current = window.setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % slides.length);
     }, 4000);
@@ -142,7 +138,6 @@ const PosterSlider = () => {
           </Link>
         ))}
       </div>
-      {/* Bottom dot buttons */}
       <div className="absolute bottom-3 lg:-bottom-5 left-1/2 -translate-x-1/2 bg-white1 rounded-full px-4 py-1 flex flex-col gap-2">
         <div className="flex items-center gap-1 justify-center">
           {slides.map((_, index) => (

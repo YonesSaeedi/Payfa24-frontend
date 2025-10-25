@@ -7,7 +7,7 @@ import { Order } from "../../../types/Ticket";
 import { useEffect, useRef } from "react";
 
 interface OrderModalProps {
-  orders: (Order & { type: "buy" | "sell" | "ticket" | string })[]; // ✅ اضافه شد: انواع اضافی برای نمایش
+  orders: (Order & { type: "buy" | "sell" | "ticket" | string })[]; 
   isLoading: boolean;
   onSelectOrder: (order: Order) => void;
   onClose: () => void;

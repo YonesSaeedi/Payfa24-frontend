@@ -14,7 +14,6 @@ const TicketsDashboard: React.FC = () => {
   const [isSupportCallModalOpen, setIsSupportCallModalOpen] = useState(false);
 
 
-  // گرفتن تیکت‌ها از سرور
   const fetchTickets = async () => {
     try {
       const response = await apiRequest<{
@@ -31,8 +30,8 @@ const TicketsDashboard: React.FC = () => {
         method: "GET",
       });
 
-      // نگه داشتن همان ساختار مورد نیاز TicketList
-    const serverTickets: Ticket[] = response.tickets.map(t => ({
+     
+  const serverTickets: Ticket[] = response.tickets.map(t => ({
   id: t.id,
   title: t.title,
   status: t.status as "answered" | "pending" | "closed",

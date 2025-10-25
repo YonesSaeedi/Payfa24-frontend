@@ -85,7 +85,7 @@ export type TransactionDetail = OrderDetail | CryptoDetail | FiatDetail;
 interface TransactionModalProps {
   tx: TransactionDetail;
   onClose: () => void;
-  visibleFields?: string[]; // مثلا ["status","id","date","type","amount","stock","description","cardNumber"]
+  visibleFields?: string[]; 
 }
 
 
@@ -93,7 +93,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState<TransactionDetail | null>(null);
 
-  // useEffect(() => {
+ 
   //   if (!tx.id || !tx.source) return;
 
   //   const fetchDetails = async () => {
@@ -267,7 +267,7 @@ useEffect(() => {
         className="bg-white8 rounded-2xl p-6 w-[90%] max-w-md relative shadow-xl  max-h-[85vh] overflow-y-auto animate-fadeIn"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+   
         <div className="flex justify-between items-center   pb-4 mb-4">
           <h2 className="font-semibold text-lg text-black0">جزئیات تراکنش</h2>
           <button
@@ -278,12 +278,12 @@ useEffect(() => {
           </button>
         </div>
 
-        {/* Loader */}
+      
         {loading ? (
           <SkeletonTransactionModal/>
         ) : detail ? (
           <>
-            {/* Icon and Title */}
+    
             <div className="flex flex-col items-center mb-6">
               {renderIcon()}
               <h3 className="font-bold text-lg mt-3 text-gray-800">
@@ -294,7 +294,7 @@ useEffect(() => {
               )}
             </div>
 
-            {/* Detail grid */}
+       
             <div className="grid grid-cols-1 gap-3 text-sm text-black0">
               {detail.status && (
                 <DetailRow

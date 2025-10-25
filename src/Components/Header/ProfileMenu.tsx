@@ -10,13 +10,10 @@ import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransact
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconUser from "../../assets/icons/ProfileMenue/IconUser";
 import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
-// import LogOut from "../../assets/images/logout.png";
-import { ROUTES } from "../../routes/routes"; // مسیر را متناسب با پروژه خود اصلاح کنید
+import { ROUTES } from "../../routes/routes";
 import { apiRequest } from "../../utils/apiClient";
-import useGetUser from "../../hooks/useGetUser"; // مسیر رو متناسب با پروژه درست کن
+import useGetUser from "../../hooks/useGetUser";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
-
-
 
 interface ProfileMenuProps {
   themeContext: {
@@ -51,11 +48,10 @@ export default function ProfileMenu({
 
   const handleLogout = async () => {
     try {
-      await apiRequest({url:"/api/auth/logout",method:"POST"});
+      await apiRequest({ url: "/api/auth/logout", method: "POST" });
     } catch (error) {
       console.error("Error logging out:", error);
-    }
-    finally {
+    } finally {
       localStorage.clear();
       window.location.replace("/login");
     }
@@ -63,15 +59,15 @@ export default function ProfileMenu({
 
   return (
     <div className="relative" ref={menuRef}>
-
       <button
         onClick={() => setOpen(!open)}
-        className={`hover:text-blue2 transition flex items-center ${currentPath === "/login"
-          ? themeContext.theme === "dark"
-            ? "text-primary"
-            : "text-blue2 font-semibold"
-          : "text-header-items"
-          }`}
+        className={`hover:text-blue2 transition flex items-center ${
+          currentPath === "/login"
+            ? themeContext.theme === "dark"
+              ? "text-primary"
+              : "text-blue2 font-semibold"
+            : "text-header-items"
+        }`}
         aria-label="Profile"
       >
         <span className="w-9 h-9 icon-wrapper">
@@ -79,14 +75,12 @@ export default function ProfileMenu({
         </span>
       </button>
 
-
-
       <div
-        className={`hidden lg:block absolute top-full left-0 mt-2 w-96 rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${open
-          ? "scale-100 opacity-100"
-          : "scale-95 opacity-0 pointer-events-none"
-          }`}
-
+        className={`hidden lg:block absolute top-full left-0 mt-2 w-96 rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
+          open
+            ? "scale-100 opacity-100"
+            : "scale-95 opacity-0 pointer-events-none"
+        }`}
       >
         <div
           dir="rtl"
@@ -96,17 +90,23 @@ export default function ProfileMenu({
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-           <div >
-  <p className="font-semibold text-black1">
-    {isLoading ? "در حال بارگذاری..." : userData?.user.name_display || "—"}
-  </p>
-  <p className="text-xs text-gray-500 pt-1">
-    {isLoading ? "" : `سطح کاربری ${userData?.user.level_account || "—"}`}
-  </p>
-</div>
-
-          </div> 
-          <button onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)} className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition shadow-md  hover:shadow-gray12">
+            <div>
+              <p className="font-semibold text-black1">
+                {isLoading
+                  ? "در حال بارگذاری..."
+                  : userData?.user.name_display || "—"}
+              </p>
+              <p className="text-xs text-gray-500 pt-1">
+                {isLoading
+                  ? ""
+                  : `سطح کاربری ${userData?.user.level_account || "—"}`}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)}
+            className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition shadow-md  hover:shadow-gray12"
+          >
             ارتقا سطح
             <span className="w-5 h-5 icon-wrapper mr-1">
               <IconArrowLeft />
@@ -123,41 +123,49 @@ export default function ProfileMenu({
               حساب کاربری
             </li>
           </Link>
-<li
-  className="flex flex-col cursor-pointer text-black1"
-  onClick={() => setOpenSecurity(!openSecurity)}
->
-  <div className="flex items-center justify-between hover:text-blue2 pt-2">
-    <div className="flex items-center gap-2">
-      <span className="w-6 h-6">
-        <IconSecurity />
-      </span>
-      تنظیمات امنیت
-    </div>
+          <li
+            className="flex flex-col cursor-pointer text-black1"
+            onClick={() => setOpenSecurity(!openSecurity)}
+          >
+            <div className="flex items-center justify-between hover:text-blue2 pt-2">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6">
+                  <IconSecurity />
+                </span>
+                تنظیمات امنیت
+              </div>
 
-    {/* 🔽 آیکن فلش (خودت import کن) */}
-    <span
-      className={`w-5 h-5 transition-transform duration-300 ${
-        openSecurity ? "rotate-180" : "rotate-0"
-      }`}
-    >
-      <IconChervDown/>
-    </span>
-  </div>
+              <span
+                className={`w-5 h-5 transition-transform duration-300 ${
+                  openSecurity ? "rotate-180" : "rotate-0"
+                }`}
+              >
+                <IconChervDown />
+              </span>
+            </div>
 
-  {openSecurity && (
-    <ul className="pr-8 pt-2 space-y-2 text-gray-600 text-sm">
-      <Link to={ROUTES.MULTI_FACTOR} className="flex items-center gap-2 hover:text-blue2 px-2 pt-4">
-        <li>ورود دو مرحله‌ای</li>
-      </Link>
-      <Link to={ROUTES.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-2 pt-2">
-        <li>تغییر رمز عبور</li>
-      </Link>
-    </ul>
-  )}
-</li>
+            {openSecurity && (
+              <ul className="pr-8 pt-2 space-y-2 text-gray-600 text-sm">
+                <Link
+                  to={ROUTES.MULTI_FACTOR}
+                  className="flex items-center gap-2 hover:text-blue2 px-2 pt-4"
+                >
+                  <li>ورود دو مرحله‌ای</li>
+                </Link>
+                <Link
+                  to={ROUTES.CHANGE_PASSWORD}
+                  className="flex items-center gap-2 hover:text-blue2 px-2 pt-2"
+                >
+                  <li>تغییر رمز عبور</li>
+                </Link>
+              </ul>
+            )}
+          </li>
 
-          <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full">
+          <Link
+            to={ROUTES.AUTHENTICATION_BASIC}
+            className="flex items-center gap-2 w-full"
+          >
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
               <span className="w-6 h-6">
                 <IconAuthentication />
@@ -165,17 +173,22 @@ export default function ProfileMenu({
               احراز هویت
             </li>
           </Link>
-          <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 w-full">
+          <Link
+            to={ROUTES.BANK_CARDS}
+            className="flex items-center gap-2 w-full"
+          >
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
               <span className="w-6 h-6">
                 <IconBankAccounts />
               </span>{" "}
               حساب‌های بانکی
             </li>
-
           </Link>
 
-          <Link to={ROUTES.TRANSACTION.CRYPTO_HISTORY} className="flex items-center gap-2 w-full">
+          <Link
+            to={ROUTES.TRANSACTION.CRYPTO_HISTORY}
+            className="flex items-center gap-2 w-full"
+          >
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1">
               <span className="w-6 h-6">
                 <IconTransactionhistory />
@@ -183,23 +196,23 @@ export default function ProfileMenu({
               تاریخچه معاملات
             </li>
           </Link>
-          <Link to={ROUTES.CONNECTED_DEVICES} className="flex items-center gap-2 w-full">
+          <Link
+            to={ROUTES.CONNECTED_DEVICES}
+            className="flex items-center gap-2 w-full"
+          >
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 pb-2 text-black1">
               <span className="w-6 h-6">
                 <IconConnecteddevices />
               </span>{" "}
               دستگاه‌های متصل
             </li>
-
-
           </Link>
         </ul>
- 
 
         <div
           onClick={() => {
             setIsModal(true);
-            setOpen(false); // منو را می بندد
+            setOpen(false);
           }}
           className="p-4"
         >
@@ -227,7 +240,6 @@ export default function ProfileMenu({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center gap-4 flex items-center justify-center flex-col">
-                {/* <img src={LogOut} alt="LogOut" /> */}
                 <h1 className="lg:text-2xl text-lg text-black0 font-medium">
                   خروج از حساب کاربری
                 </h1>
@@ -239,14 +251,16 @@ export default function ProfileMenu({
 
               <div className="flex gap-2 mt-12 items-center justify-center ">
                 <button
-
                   onClick={() => setIsModal(false)}
                   className="w-1/2 lg:py-3 py-2 border border-blue2 rounded-lg text-blue2  font-medium"
                 >
                   انصراف
                 </button>
                 <Link to={""} className="w-1/2">
-                  <button onClick={handleLogout} className="w-full lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-lg ">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-lg "
+                  >
                     خروج
                   </button>
                 </Link>
@@ -258,12 +272,3 @@ export default function ProfileMenu({
     </div>
   );
 }
-
-
-
-
-
-
-
-
-

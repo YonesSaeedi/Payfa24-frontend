@@ -76,7 +76,7 @@ const mapToCryptoBoxItems = (data: NewCryptoItem[]) =>
       name: item.locale?.fa?.name || item.name || item.symbol || "Unknown",
       symbol: item.symbol || "",
       buyPrice: Number(item.priceBuy) || 0,
-      change: `${changeValue.toFixed(2)}%`,
+    change: changeValue,
       isPositive: changeValue >= 0,
       icon,
     };

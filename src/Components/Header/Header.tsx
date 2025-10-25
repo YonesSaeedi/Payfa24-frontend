@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-
 import MessagesIcon from "../../assets/icons/header/MessagesIcon";
 import CategoryIcon from "../../assets/icons/header/CategoryIcon";
 import WalletIcon from "../../assets/icons/header/WalletIcon";
@@ -19,8 +18,7 @@ import groupIcon from "../../assets/images/HeaderIcon/Group 71185 (1).png";
 import IconRingActive from "../../assets/icons/header/IconRingActive";
 import IconSun from "../../assets/icons/header/IconSun";
 import { useRef } from "react";
-
-import  { useEffect} from "react";
+import { useEffect } from "react";
 import IconMobileMenue from "../../assets/icons/header/IconMobileMenue";
 import VectorIcon from "../../assets/icons/header/VectorIcon";
 import MobileMenu from "./MobileMenu";
@@ -36,23 +34,24 @@ export default function Header() {
   const [showServices, setShowServices] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-useEffect(() => {
-  function handleClickOutside(event: MouseEvent) {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setShowNotifications(false);
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifications(false);
+      }
     }
-  }
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
-
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (!themeContext) {
     throw new Error(
@@ -63,19 +62,19 @@ useEffect(() => {
   const { toggleTheme } = themeContext;
 
   const toggleServices = () => {
-  setShowServices(prev => !prev);
-};
-
+    setShowServices((prev) => !prev);
+  };
 
   return (
     <header className="bg-white dark:bg-gray29  dark:text-white fixed left-0 w-full z-[1000]  ">
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-4 lg:px-6">
-        {/* Left Section */}
         <div className="flex gap-3 md:gap-4 text-gray-600 items-center">
           <div className="hidden lg:flex">
-               <ProfileMenu themeContext={themeContext} currentPath={currentPath} />
+            <ProfileMenu
+              themeContext={themeContext}
+              currentPath={currentPath}
+            />
           </div>
-       
 
           <button
             className="hidden hover:text-blue2 transition lg:flex items-center justify-center w-8 h-8"
@@ -84,7 +83,6 @@ useEffect(() => {
             <VectorIcon />
           </button>
 
-          {/* Theme Toggle */}
           <button
             className="hover:text-blue2 transition hidden lg:flex items-center justify-center w-7 h-7"
             aria-label="Toggle Theme"
@@ -93,7 +91,6 @@ useEffect(() => {
             {themeContext.theme === "dark" ? <IconSun /> : <MoonIcon />}
           </button>
 
-          {/* Messages */}
           <Link
             to="/ticket"
             aria-label="Messages"
@@ -105,29 +102,28 @@ useEffect(() => {
                 : "text-header-items"
             }`}
           >
-            {currentPath === "/ticket" ? <MessagesActiveIcon /> : <MessagesIcon />}
+            {currentPath === "/ticket" ? (
+              <MessagesActiveIcon />
+            ) : (
+              <MessagesIcon />
+            )}
           </Link>
 
-          {/* Notifications */}
-<div className="relative" ref={dropdownRef}>
-  <button
-    onClick={() => setShowNotifications(!showNotifications)}
-    className="hover:text-blue2 transition flex items-center justify-center w-7 h-7"
-    aria-label="Notifications"
-  >
-    {showNotifications ? <IconRingActive /> : <RingIcon />}
-  </button>
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="hover:text-blue2 transition flex items-center justify-center w-7 h-7"
+              aria-label="Notifications"
+            >
+              {showNotifications ? <IconRingActive /> : <RingIcon />}
+            </button>
 
-  {showNotifications && (
-    <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
-      <NotificationsDropdown />
-    </div>
-  )}
-</div>
-
-
-
-          {/* Mobile Theme Toggle */}
+            {showNotifications && (
+              <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
+                <NotificationsDropdown />
+              </div>
+            )}
+          </div>
           <button
             className="hover:text-blue2 transition flex lg:hidden items-center justify-center w-7 h-7"
             aria-label="Toggle Theme"
@@ -136,14 +132,11 @@ useEffect(() => {
             {themeContext.theme === "dark" ? <IconSun /> : <MoonIcon />}
           </button>
         </div>
-
-        {/* Right Section */}
         <div className="flex items-center gap-4 lg:gap-6">
-          {/* Desktop Menu */}
           <ul className="hidden lg:flex space-x-6 xl:space-x-8 text-gray1">
             <li className="relative pr-4">
               <button
-               onClick={toggleServices}
+                onClick={toggleServices}
                 className="hover:text-blue-600 transition flex items-center"
               >
                 خدمات
@@ -151,7 +144,6 @@ useEffect(() => {
                   {showServices ? <CategoryActiveIcon /> : <CategoryIcon />}
                 </span>
               </button>
-              
             </li>
 
             <li className="pr-4">
@@ -185,7 +177,11 @@ useEffect(() => {
               >
                 بازارها
                 <span className="pl-2 flex items-center justify-center w-8 h-8">
-                  {currentPath === "/market" ? <ChartActiveIcon /> : <ChartIcon />}
+                  {currentPath === "/market" ? (
+                    <ChartActiveIcon />
+                  ) : (
+                    <ChartIcon />
+                  )}
                 </span>
               </Link>
             </li>
@@ -226,15 +222,9 @@ useEffect(() => {
               </Link>
             </li>
           </ul>
-
-          {/* Logo */}
           <div className="text-blue-600 font-bold flex items-center gap-2 md:gap-3">
             <Link to="/" className="flex items-center">
-              <img
-                src={pfIcon}
-                alt="Logo"
-                className="w-6 h-6 md:w-7 md:h-7"
-              />
+              <img src={pfIcon} alt="Logo" className="w-6 h-6 md:w-7 md:h-7" />
               <img
                 src={groupIcon}
                 alt="Logo"
@@ -242,21 +232,23 @@ useEffect(() => {
               />
             </Link>
           </div>
-
-          {/* Mobile Hamburger */}
           <button
             className="lg:hidden flex items-center justify-center w-8 h-8"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle Menu"
           >
-            {mobileMenuOpen ? <IconMobileMenue/> : <IconMobileMenue/>}
+            {mobileMenuOpen ? <IconMobileMenue /> : <IconMobileMenue />}
           </button>
-          <MobileMenu open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}   onOpenServicesModal={() => setShowServices(true)}/>
-            {showServices && <ServicesBox onClose={() => setShowServices(false)} />}
-
+          <MobileMenu
+            open={mobileMenuOpen}
+            onClose={() => setMobileMenuOpen(false)}
+            onOpenServicesModal={() => setShowServices(true)}
+          />
+          {showServices && (
+            <ServicesBox onClose={() => setShowServices(false)} />
+          )}
         </div>
-     </nav>
+      </nav>
     </header>
   );
 }
-

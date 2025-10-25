@@ -1,11 +1,7 @@
 
 import React from "react";
-
-
 import DownloadCard from "./DownloadCard";
 import ContactInfo from "./ContactInfo";
-
-
 import mayket from "./../../assets/images/FooterIcon/download (1) 1.png"
 import bazzer from "./../../assets/images/FooterIcon/bazaar-logo-and-logotype 1 (1).png";
 import Logo from "./../../assets/images/FooterIcon/logo.png";
@@ -20,8 +16,6 @@ export default function Footer(): React.JSX.Element {
         <SocialLinks/>
         <img src={Logo} alt="لوگو" />
       </div>
-
-   
       <div className="border-t border-white mt-4">
         <div className="container-style mb-[14px] flex flex-col lg:flex-row lg:justify-between gap-8">
         
@@ -33,8 +27,6 @@ export default function Footer(): React.JSX.Element {
               <DownloadCard title="بازار" img={bazzer} href="https://bazaar.ir/app-link" />
             </div>
           </div>
-
-       
           <ContactInfo />
         </div>
       </div>

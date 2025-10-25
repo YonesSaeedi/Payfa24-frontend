@@ -8,7 +8,7 @@ import SendIcon from "../../../assets/icons/Home/WalletCardIcon/SendIcon";
 import WalletMines from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 import ReceiptText from "../../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
 import WithdrawModal from "../../Withdrawal/WithdrawModal";
-import DepositModal from "../../Deposit/DepositModal"; // ✅ اضافه شد
+import DepositModal from "../../Deposit/DepositModal";
 import { apiRequest } from "../../../utils/apiClient";
 import { formatPersianDigits } from "../../../utils/formatPersianDigits";
 import IconEyeClosed from "../../../assets/icons/Login/IconEyeClosed";

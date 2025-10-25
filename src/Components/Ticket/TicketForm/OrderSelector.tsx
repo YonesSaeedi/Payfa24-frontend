@@ -28,7 +28,7 @@ interface TicketInfoResponse {
   }[];
   last_orders: {
     id: number;
-    type: "buy" | "sell"; // یا string اگر انواع دیگه هم ممکنه باشه
+    type: "buy" | "sell"; 
     amount: number;
     date: string;
     name: string;
@@ -47,7 +47,7 @@ export default function OrderSelector({
   const [isLoading, setIsLoading] = useState(false);
 
 
-//  useEffect(() => {
+
 //   if (!isModalOpen) return;
 
 //   const fetchOrders = async () => {
@@ -116,8 +116,8 @@ useEffect(() => {
       const mappedOrders: Order[] = response.last_orders.map(o => ({
   id: String(o.id),
   coin: o.name,
-  type: o.type === "buy" ? "خرید" : "فروش", // تبدیل به تایپ داخلی
-  amount: String(o.amount), // تبدیل number به string
+  type: o.type === "buy" ? "خرید" : "فروش", 
+  amount: String(o.amount), 
   date: o.date || "-",
   icon: <IconOrderSelection />,
 }));
@@ -177,7 +177,7 @@ useEffect(() => {
     {isModalOpen && typeof document !== "undefined" && createPortal(
   <OrderModal 
     orders={apiOrders} 
-    isLoading={isLoading} // 👈 اضافه شد
+    isLoading={isLoading} 
     onSelectOrder={handleSelectOrder} 
     onClose={() => setIsModalOpen(false)} 
   />,
