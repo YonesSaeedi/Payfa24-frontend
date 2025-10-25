@@ -26,7 +26,8 @@ const BankCardsPage = () => {
         });
 
         if (response.status && Array.isArray(response.data) && response.data.length > 0) {
-          navigate(ROUTES.Cards_Manager, { replace: true });
+         navigate(ROUTES.BANK_CARDS, { replace: true });
+
         }
       } catch (error) {
         console.error("❌ خطا در بررسی کارت‌های موجود:", error);
@@ -42,7 +43,7 @@ const BankCardsPage = () => {
     const result = await AddCardApi(cardNumber);
     if (result) {
       setIsModalOpen(false);
-      navigate(ROUTES.Cards_Manager);
+      navigate(ROUTES.BANK_CARDS);
     }
   };
 

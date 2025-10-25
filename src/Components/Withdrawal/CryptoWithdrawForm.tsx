@@ -97,8 +97,6 @@ const handleSubmitOtp = async () => {
         codeOtp: parseInt(otpCode, 10),
       },
     });
-
-   
       setIsOtpModalOpen(false);   // اول مودال OTP بسته شود
       setOtpCode("");             // کد OTP پاک شود
       setIsTradeSuccessModalOpen(true); // سپس مودال موفقیت باز شود
@@ -109,36 +107,6 @@ const handleSubmitOtp = async () => {
   }
 };
 
-//ارسال دوباره کد OTP
-// const handleResendCode = async () => {
-//   try {
-//     setIsResending(true);
-
-//     if (activeTab === "withdraw") {
-//       // ارسال مجدد OTP برای برداشت از کیف پول
-//       const res = await apiRequest({
-//         url: `/api/wallets/crypto/withdraw/${crypto}`, // مسیر واقعی API را جایگزین کن
-//         method: "POST",
-//         data: withdrawData,
-//       });
-//       toast.success(res?.msg || "کد جدید ارسال شد");
-//     } else {
-//       // ارسال مجدد OTP برای انتقال به کاربر
-//       const res = await apiRequest({
-//         url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // مسیر واقعی API را جایگزین کن
-//         method: "POST",
-//         data: withdrawData,
-//       });
-//       toast.success(res?.msg || "کد جدید ارسال شد");
-//     }
-
-//     setResendCodeTimeLeft(120); // ریست کردن تایمر
-//   } catch (err: any) {
-//     toast.error(err?.response?.data?.msg || "خطا در ارسال مجدد کد OTP");
-//   } finally {
-//     setIsResending(false);
-//   }
-// };
 const handleResendCode = async () => {
   try {
     setIsResending(true);
@@ -190,23 +158,7 @@ useEffect(() => {
   };
 }, [isOtpModalOpen, resendCodeTimeLeft]);
 
-//دریافت اطلاعات اولیه کوین‌ها و شبکه‌ها
-// useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const res = await apiRequest({
-//           url: "/api/wallets/crypto/withdraw",
-//           method: "GET",
-//         });
-//         setCoins(res.coins || []);
-//         setAllNetworks(res.networks || []);
-//         setLevelUsed(res.level_used || {}); // ← اینجا اضافه کن
-//       } catch (err) {
-//         console.error("خطا در گرفتن اطلاعات:", err);
-//       }
-//     };
-//     fetchData();
-//   }, []);
+
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -319,16 +271,25 @@ const handleSubmit = async (e: React.FormEvent) => {
 }
 
  try {
-  await apiRequest<WithdrawResponse>({
-    url: `/api/wallets/crypto/withdraw/${crypto}`,
-    method: "POST",
-    data: {
-      network: selectedNetwork.symbol,
-      withdrawAmount,
-      withdrawAddressWallet: address,
-      withdrawAddressWalletTag: tag,
-    },
-  });
+await apiRequest<
+  { status: boolean; msg?: string }, // ✅ نوع پاسخ سرور (می‌تونی اصلاحش کنی)
+  {
+    network: string;
+    withdrawAmount: number;
+    withdrawAddressWallet: string;
+    withdrawAddressWalletTag: string;
+  } // ✅ نوع داده ارسالی
+>({
+  url: "/withdraw/crypto",
+  method: "POST",
+  data: {
+    network: selectedNetwork.symbol,
+    withdrawAmount,
+    withdrawAddressWallet: address,
+    withdrawAddressWalletTag: tag,
+  },
+});
+
 
   setWithdrawData({
     network: selectedNetwork.symbol,
@@ -408,54 +369,6 @@ const handleSubmitTransfers = async (e: React.FormEvent) => {
   }
 };
 
-
-// const handleSubmitTransferOtp = async () => {
-//   if (!otpCode) return;
-
-//   try {
-//      await apiRequest({
-//       url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // endpoint تایید OTP
-//       method: "POST",
-//       data: {
-//         ...withdrawData,
-//         codeOtp: parseInt(otpCode, 10),
-//       },
-//     });
-
-   
-//    toast.success("انتقال با موفقیت انجام شد ✅");
-//      setIsOtpModalOpen(false);
-//       setOtpCode("");
-//       setWithdrawData(null);          // پاک کردن داده بعد از موفقیت
-//       setIsTradeSuccessModalOpen(true); // مودال موفقیت
-   
-//   } catch (err: any) {
-//     toast.error(err?.response?.data?.msg || "خطا در تأیید انتقال!");
-//   }
-// };
-
-// useEffect(() => {
-//   const fetchData = async () => {
-//     try {
-//       const res = await apiRequest({
-//         url: "/api/wallets/crypto/withdraw",
-//         method: "GET",
-//       });
-//       const coinList = res.coins || [];
-//       setCoins(coinList);
-//       setAllNetworks(res.networks || []);
-//       setLevelUsed(res.level_used || {});
-
-//       // ✅ مقدار پیش‌فرض crypto = اولین ارز لیست
-//       if (coinList.length > 0) {
-//         setCrypto(coinList[0].symbol);
-//       }
-//     } catch (err) {
-//       console.error("خطا در گرفتن اطلاعات:", err);
-//     }
-//   };
-//   fetchData();
-// }, []);
 
 
 const handleSubmitTransferOtp = async () => {

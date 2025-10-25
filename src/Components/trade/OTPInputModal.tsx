@@ -36,7 +36,7 @@ const OTPInputModal = ({
   const [otpValue, setOtpValue] = useState<string>('')
   const isWaiting = !!(resendCodeTimeLeft && resendCodeTimeLeft > 0)
   const isOtpComplete = otpValue.length === OTPLength
-console.log("🔥 OTPInputModal render | resendCodeTimeLeft:", resendCodeTimeLeft);
+
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center" onClick={closeModal}>

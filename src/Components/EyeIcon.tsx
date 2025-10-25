@@ -1,7 +1,10 @@
-import React from "react";
+interface EyeIconProps {
+  onClick: () => void;
+  isVisible: boolean;
+}
 
 // props `isVisible` برای تعیین اینکه چشم باز است یا بسته
-export default function EyeIcon({ onClick, isVisible }) {
+export default function EyeIcon({ onClick, isVisible }: EyeIconProps) {
   return (
     <div
       className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center cursor-pointer"

@@ -26,7 +26,7 @@ interface SessionsResponse {
 export default function DeviceList() {
   const [activeSessions, setActiveSessions] = React.useState<Session[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [, setIsSubmitting] = useState<boolean>(false)
   const [showModal, setShowModal] = useState(false);
 
   const fetchActiveSessions = async () => {

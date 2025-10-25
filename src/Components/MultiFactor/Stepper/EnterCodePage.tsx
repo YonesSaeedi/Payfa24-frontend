@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import OTPModal from "../../OTPModal";
 import { apiRequest } from "../../../utils/apiClient";
 import { UseTwoStepVerification } from "../../../hooks/UseTwoStepVerification";

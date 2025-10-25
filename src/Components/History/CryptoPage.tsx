@@ -189,7 +189,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             onToggle={() => handleToggle("type")}
 
             
-            onSelect={(id, name) =>
+            onSelect={( name) =>
               setSelectedFilterType(typeOptions.find(o => o.name === name) || typeOptions[0])
             }
             
@@ -202,7 +202,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             selected={selectedStatus.name}
             isOpen={openDropdown === "status"}
             onToggle={() => handleToggle("status")}
-            onSelect={(id, name) =>
+            onSelect={( name) =>
               setSelectedStatus(statusOptions.find(o => o.name === name) || statusOptions[0])
             }
           />
@@ -213,7 +213,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             selected={selectedFilterFor.name}
             isOpen={openDropdown === "filterFor"}
             onToggle={() => handleToggle("filterFor")}
-            onSelect={(id, name) =>
+            onSelect={( name) =>
               setSelectedFilterFor(filterForOptions.find(o => o.name === name) || filterForOptions[0])
             }
           />

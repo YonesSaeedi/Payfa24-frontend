@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import StatusBadge from "../UI/Button/StatusBadge";
 
 import Pagination from "./Pagination";
-import TransactionModal, { Transaction as ModalTransaction } from "./TransactionModal";
+// import TransactionModal, { Transaction as ModalTransaction } from "./TransactionModal";
+import TransactionModal, { TransactionDetail } from "./TransactionModal";
 
 import TrasactionHisory from "./../../assets/images/Transaction/Transactionhistory.png";
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
@@ -15,7 +16,10 @@ import { ListDigitalCoin } from "../../constants/ListdigitalCoins";
 import { MergedOrderHistory, statusOrderOptions, TypeOrderHistory, typeOrderOptions } from "./typeHistory";
 
 
-
+interface OrdersResponse {
+  orders: TypeOrderHistory[];
+  orders_count: number;
+}
 
 
 // ---------------- اسکلتون ----------------
@@ -47,7 +51,8 @@ const OrderPage: React.FC = () => {
   const [selectedFilterType, setSelectedFilterType] = useState(typeOrderOptions[0]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [selectedTx, setSelectedTx] = useState<ModalTransaction | null>(null);
+  const [selectedTx, setSelectedTx] = useState<TransactionDetail | null>(null);
+
   const [totalPages, setTotalPages] = useState<number>(1);
   const { data: generalData } = useGetGeneralInfo();
 
@@ -68,7 +73,7 @@ const OrderPage: React.FC = () => {
     const fetchTransactionData = async () => {
       setIsLoading(true);
       try {
-        const response = await apiRequest({
+        const response = await apiRequest<OrdersResponse>({
           url: "/api/history/orders",
           method: "GET",
           params: {
@@ -140,10 +145,11 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
   setSelectedTx({
     id: tx.id.toString(),
     source: "order",
-    faName: tx.locale.fa.name || tx.name,
-    image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : null,
+    faName: tx.locale?.fa?.name || tx.name,
+    image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` :  undefined,
   });
 };
+
 
   return (
     <div dir="rtl">
@@ -170,7 +176,7 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
             selected={selectedStatus.name}
             isOpen={openDropdown === "status"}
             onToggle={() => handleToggle("status")}
-            onSelect={(id, name) =>
+            onSelect={( name) =>
               setSelectedStatus(statusOrderOptions.find(o => o.name === name) || statusOrderOptions[0])
             }
           />
@@ -183,7 +189,7 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
             selected={selectedFilterType.name}
             isOpen={openDropdown === "type"}
             onToggle={() => handleToggle("type")}
-            onSelect={(id, name) =>
+            onSelect={( name) =>
               setSelectedFilterType(typeOrderOptions.find(o => o.name === name) || typeOrderOptions[0])
             }
           />
@@ -228,10 +234,12 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
                     <span>{tx.amount_coin}</span>
                     <span>{tx.symbol}</span>
                   </div>
-                  <div className="text-center font-normal text-base">{transactionTypeMap[tx.type] || tx.type}</div>
+                  <div className="text-center font-normal text-base"> {transactionTypeMap[tx.type ?? ""] || tx.type || "نامشخص"}</div>
                   <div className="text-center font-normal text-base">{tx.amount} تومان</div>
                   <div className="text-center font-normal text-base">
-                    <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
+                   <StatusBadge 
+  text={transactionStatusMap[tx.status ?? ""] || tx.status || "نامشخص"} 
+/>
                   </div>
                   <div className="text-center font-normal text-base">{tx.dateTime}</div>
                   <div className="text-blue-600 cursor-pointer text-center font-normal text-base" onClick={() => handleOpenModal(tx)}>
@@ -272,7 +280,9 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
                       <p className="text-xs text-gray-500">{tx.symbol}</p>
                     </div>
                   </div>
-                  <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
+                 <StatusBadge 
+  text={transactionStatusMap[tx.status ?? ""] || tx.status || "نامشخص"} 
+/>
                 </div>
 
                 <div className="text-sm space-y-1 pt-5">
@@ -280,7 +290,7 @@ const handleOpenModal = (tx: MergedOrderHistory) => {
                     مقدار: <span className=" pb-4 font-normal text-[14px]">{tx.amount_coin}</span>
                   </p>
                   <p className="flex justify-between font-medium text-[12px]">
-                    نوع: <span className=" pb-4 font-normal text-[14px]">{transactionTypeMap[tx.type] || tx.type}</span>
+                    نوع: <span className=" pb-4 font-normal text-[14px]">{transactionTypeMap[tx.type ?? ""] || tx.type || "نامشخص"}</span>
                   </p>
                    <p className="flex justify-between font-medium text-[12px]">
                     قیمت: <span className=" pb-4 font-normal text-[14px]">{tx.amount} تومان</span>
