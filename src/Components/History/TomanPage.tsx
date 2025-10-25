@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import StatusBadge from "../UI/Button/StatusBadge";
 import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
 import Pagination from "./Pagination";
-import TransactionModal, { Transaction as ModalTransaction } from "./TransactionModal";
+// import TransactionModal, { Transaction as ModalTransaction } from "./TransactionModal";
+import TransactionModal, { TransactionDetail } from "./TransactionModal";
 import TrasactionHisory from "./../../assets/images/Transaction/Transactionhistory.png";
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
 import { apiRequest } from "../../utils/apiClient";
@@ -40,7 +41,7 @@ const TomanPage: React.FC = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
-    const [selectedTx, setSelectedTx] = useState<ModalTransaction | null>(null);
+   const [selectedTx, setSelectedTx] = useState<TransactionDetail | null>(null);
     const [totalPages, setTotalPages] = useState<number>(1);
 
 
@@ -166,7 +167,7 @@ useEffect(() => {
                         selected={selectedFilterType.name}
                         isOpen={openDropdown === "type"}
                         onToggle={() => handleToggle("type")}
-                        onSelect={(id, name) =>
+                        onSelect={( name) =>
                             setSelectedFilterType(typeTomanOptions.find(o => o.name === name) || typeTomanOptions[0])
                         }
                     />
@@ -179,7 +180,7 @@ useEffect(() => {
                         selected={selectedStatus.name}
                         isOpen={openDropdown === "status"}
                         onToggle={() => handleToggle("status")}
-                        onSelect={(id, name) =>
+                        onSelect={( name) =>
                             setSelectedStatus(statusTomanOptions.find(o => o.name === name) || statusTomanOptions[0])
                         }
                     />
@@ -192,7 +193,7 @@ useEffect(() => {
                         selected={selectedFilterFor.name}
                         isOpen={openDropdown === "filterFor"}
                         onToggle={() => handleToggle("filterFor")}
-                        onSelect={(id, name) =>
+                        onSelect={( name) =>
                             setSelectedFilterFor(filterForTomanOptions.find(o => o.name === name) || filterForTomanOptions[0])
                         }
                     />

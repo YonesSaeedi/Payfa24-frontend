@@ -23,37 +23,69 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
 
   if (!isOpen) return null;
 
-  const onFormSubmit = async (data: SupportCallFormInputs) => {
-    try {
-      setLoading(true);
+  // const onFormSubmit = async (data: SupportCallFormInputs) => {
+  //   try {
+  //     setLoading(true);
 
-      const response = await fetch("/api/ticket/call", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+  //     const response = await fetch("/api/ticket/call", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(data),
+  //     });
 
-      const result = await response.json();
+  //     const result = await response.json();
 
-      if (result.status) {
-        toast.success("درخواست شما با موفقیت ثبت شد ");
-        reset();
-        setTimeout(() => {
-          onClose();
-        }, 1500);
-      } else {
-        toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید ");
-      }
-    } catch (error) {
-       toast.error(  error?.response?.data?.msg || "خطایی رخ داده است.");
+  //     if (result.status) {
+  //       toast.success("درخواست شما با موفقیت ثبت شد ");
+  //       reset();
+  //       setTimeout(() => {
+  //         onClose();
+  //       }, 1500);
+  //     } else {
+  //       toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید ");
+  //     }
+  //   } catch (error) {
+  //      toast.error(  error?.response?.data?.msg || "خطایی رخ داده است.");
       
-      toast.error("ارتباط با سرور برقرار نشد ");
-    } finally {
-      setLoading(false);
+  //     toast.error("ارتباط با سرور برقرار نشد ");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const onFormSubmit = async (data: SupportCallFormInputs) => {
+  try {
+    setLoading(true);
+
+    const response = await fetch("/api/ticket/call", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      // اگر status مثل 400 یا 500 بود
+      const errorData = await response.json();
+      throw new Error(errorData?.msg || "خطایی رخ داده است.");
     }
-  };
+
+    const result = await response.json();
+
+    if (result.status) {
+      toast.success("درخواست شما با موفقیت ثبت شد");
+      reset();
+      setTimeout(onClose, 1500);
+    } else {
+      toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید");
+    }
+  } catch (err: any) {
+    toast.error(err.message || "ارتباط با سرور برقرار نشد");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
  
@@ -93,8 +125,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="tel"
                 placeholder=""
                 placeholderColor="text-black0"
-                borderClass="border-gray2"
-                heightClass="h-[48px]"
+                className="h-[48px] border-gray2"
+              
               />
             )}
           />
@@ -120,8 +152,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="text"
                 placeholder="درخواست تماس با پشتیبانی درباره..."
                 placeholderColor="text-black0"
-                borderClass="border-gray2"
-                heightClass="h-[160px]"
+                className="border-gray2 h-[160px]"
+              
               />
             )}
           />

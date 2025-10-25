@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 //صفحه دو بخشیت
 import { apiRequest } from "../../utils/apiClient"; // مسیرت رو تنظیم کن
 import BankCardForm from "./BankCardModal/BankCardForm";

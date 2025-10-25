@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useMemo } from "react";
-import IconRingNotif from "../../assets/icons/Notifications/IconRingNotif";
+import  { useEffect, useState, useMemo } from "react";
 import IconCircle from "../../assets/icons/Notifications/IconCircle";
 import { apiRequest } from "../../utils/apiClient";
 import { useNavigate } from "react-router";
-import { useRef } from "react";
 import IconRead from "../../assets/icons/Notifications/IconRead";
 
 

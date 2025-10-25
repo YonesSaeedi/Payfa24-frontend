@@ -22,11 +22,11 @@ import { useRef } from "react";
 
 import  { useEffect} from "react";
 import IconMobileMenue from "../../assets/icons/header/IconMobileMenue";
-import VectorIcon from "../../assets/icons/header/VectorIcon";
 import MobileMenu from "./MobileMenu";
 import NotificationsDropdown from "../Notification/NotificationDropDown";
 import ServicesBox from "../ServicesBox/ServicesBox";
 import ProfileMenu from "./ProfileMenu";
+import VectorIcon from "../../assets/icons/header/vectorIcon";
 
 export default function Header() {
   const themeContext = useContext(ThemeContext);

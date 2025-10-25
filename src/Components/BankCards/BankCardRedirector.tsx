@@ -4,15 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../../utils/apiClient";
 import { ROUTES } from "../../routes/routes";
 
+interface CardListResponse {
+  status: boolean;
+  data: Array<any>; // یا نوع دقیق کارت‌ها، مثلاً { id: string; cardNumber: string; ... }[]
+}
+
 export default function BankCardsRedirector() {
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkCards = async () => {
       try {
-        const res = await apiRequest({ url: "/api/account/credit-card/list", method: "GET" });
+        const res = await apiRequest<CardListResponse>({ url: "/api/account/credit-card/list", method: "GET" });
         if (res.status && Array.isArray(res.data) && res.data.length > 0) {
-          navigate(ROUTES.Cards_Manager, { replace: true });
+          navigate(ROUTES.BANK_CARDS, { replace: true });
+
         } else {
           navigate(ROUTES.BANK_CARDS, { replace: true });
         }

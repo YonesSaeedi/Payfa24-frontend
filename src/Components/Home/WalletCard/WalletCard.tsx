@@ -33,7 +33,6 @@ interface WalletResponse {
 }
 
 const WalletCard = ({
-  currency = "تومان",
   showBuySell = true,
 }: WalletCardProps) => {
   const [stateBlure, setStateBlure] = useState<boolean>(true);

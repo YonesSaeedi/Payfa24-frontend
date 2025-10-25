@@ -32,14 +32,15 @@ const TicketsDashboard: React.FC = () => {
       });
 
       // نگه داشتن همان ساختار مورد نیاز TicketList
-      const serverTickets = response.tickets.map(t => ({
-        id: t.id,
-        title: t.title,
-        status: t.status,
-        date: t.updated || t.created, // همان فیلد date
-      }));
+    const serverTickets: Ticket[] = response.tickets.map(t => ({
+  id: t.id,
+  title: t.title,
+  status: t.status as "answered" | "pending" | "closed",
+  date: t.updated || t.created,
+}));
 
-      setTickets(serverTickets);
+setTickets(serverTickets);
+
     } catch (err) {
       console.error("خطا در دریافت تیکت‌ها:", err);
     }
