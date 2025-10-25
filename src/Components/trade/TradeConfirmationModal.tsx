@@ -6,6 +6,7 @@ import { apiRequest } from "../../utils/apiClient";
 import { CryptoBuyConfirm } from "../../types/apiResponses";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import IconRefresh from "../../assets/icons/trade/Iconrefresh";
+import { AxiosError } from "axios";
 
 interface TradeConfirmationModalProps {
   setIsTradeConfirmationModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -56,7 +57,7 @@ const TradeConfirmationModal = ({
     if (isSell) {
       try {
         setIsSubmitting(true)
-        const response = await apiRequest<CryptoBuyConfirm, { amountCoin: string, id_order: number }>({
+        await apiRequest<CryptoBuyConfirm, { amountCoin: string, id_order: number }>({
           url: `/api/order/crypto/sell/${tradeConfirmationModalData?.symbol}`,
           method: 'POST',
           data: { amountCoin: String(tradeConfirmationModalData?.coinAmount), id_order: tradeConfirmationModalData?.orderID },
@@ -66,7 +67,7 @@ const TradeConfirmationModal = ({
         // toast.success('فروش با موفقیت انجام شد.')
         handleSuccessTrade()
       } catch (err) {
-        toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در تایید سفارش فروش شما مشکلی پیش آمد.');
+        toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || 'در تایید سفارش فروش شما مشکلی پیش آمد.');
         setIsTradeConfirmationModalOpen(false)
       } finally {
         setIsSubmitting(false)
@@ -74,7 +75,7 @@ const TradeConfirmationModal = ({
     } else {
       try {
         setIsSubmitting(true)
-        const response = await apiRequest<CryptoBuyConfirm, { amount: string, id_order: number }>({
+        await apiRequest<CryptoBuyConfirm, { amount: string, id_order: number }>({
           url: `/api/order/crypto/buy/${tradeConfirmationModalData?.symbol}`,
           method: 'POST',
           data: { amount: String(tradeConfirmationModalData?.tomanAmount), id_order: tradeConfirmationModalData?.orderID },
@@ -84,7 +85,7 @@ const TradeConfirmationModal = ({
         // toast.success('خرید با موفقیت انجام شد.')
         handleSuccessTrade()
       } catch (err) {
-        toast.error(err?.response?.data?.msg || err?.response?.data?.message || 'در تایید سفارش خرید شما مشکلی پیش آمد.');
+        toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || 'در تایید سفارش خرید شما مشکلی پیش آمد.');
         setIsTradeConfirmationModalOpen(false)
       } finally {
         setIsSubmitting(false)

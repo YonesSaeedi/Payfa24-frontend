@@ -2,21 +2,14 @@ import { useEffect, useState, useRef } from "react";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { Link } from "react-router";
-
-type Slide = {
-  locale?: string[];
-  sort?: string;
-  link?: string;
-  imgUrl?: string;
-  [key: string]: unknown;
-};
+import { AxiosError } from "axios";
+import { Banner, Dashboard } from "../../types/api/dashboard";
 
 const PosterSlider = () => {
-  const [slides, setSlides] = useState<Slide[]>([]);
+  const [slides, setSlides] = useState<Banner[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef<number | null>(null);
-
   // Drag state
   const [dragOffset, setDragOffset] = useState(0);
   const isDraggingRef = useRef(false);
@@ -27,16 +20,12 @@ const PosterSlider = () => {
     const fetchSlides = async () => {
       try {
         setIsLoading(true);
-        const response = await apiRequest({ url: "/api/dashboard/web" });
+        const response = await apiRequest<Dashboard>({ url: "/api/dashboard/web" });
         const banners = response?.banner?.banner;
         if (Array.isArray(banners)) setSlides(banners);
         else setSlides([]);
-      } catch (err: any) {
-        toast.error(
-          err?.response?.data?.msg ||
-          err?.response?.data?.message ||
-          "دریافت اطلاعات بنر با مشکل مواجه شد."
-        );
+      } catch (err) {
+        toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || "دریافت اطلاعات بنر با مشکل مواجه شد.");
       } finally {
         setIsLoading(false);
       }

@@ -39,9 +39,9 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [TomanBalance, setTomanBalance] = useState<number | null>(null)
-  const [currentCryptoPrice, setCurrentCryptoPrice] = useState<number | null>(null)
-  const [cryptoBalance, setCryptoBalance] = useState<number | null>(null)
+  const [TomanBalance, setTomanBalance] = useState<number>(0)
+  const [currentCryptoPrice, setCurrentCryptoPrice] = useState<number>(0)
+  const [cryptoBalance, setCryptoBalance] = useState<number>(0)
   const [voucherCode, setVoucherCode] = useState<string>('')
   const [isOtpModalOpen, setIsOtpModalOpen] = useState<boolean>(false)
   const [otpCode, setOtpCode] = useState<string>('')
@@ -137,7 +137,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     try {
       setIsLoading(true)
       const response = await apiRequest<FiatBalance>({ url: '/api/wallets/fiat/balance' })
-      setTomanBalance(response?.balance_available ?? null)
+      setTomanBalance(response?.balance_available ?? 0)
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "دریافت موجودی کاربر با مشکل مواجه شد!");
     } finally {

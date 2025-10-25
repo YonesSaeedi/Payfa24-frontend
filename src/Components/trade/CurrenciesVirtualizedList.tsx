@@ -35,20 +35,20 @@ const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ h
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-1">
               <div className="w-8 h-8 rounded-full">
-                {item.isFont ?
-                  <i className={`cf cf-${item.symbol.toLowerCase()}`} style={{ color: item.color, fontSize: '32px' }}></i>
+                {item?.isFont ?
+                  <i className={`cf cf-${item?.symbol.toLowerCase()}`} style={{ color: item?.color, fontSize: '32px' }}></i>
                   :
-                  <img src={`https://api.payfa24.org/images/currency/${item.icon}`} alt={item.symbol} className="object-contain w-full h-full" />
+                  <img src={`https://api.payfa24.org/images/currency/${item?.icon}`} alt={item?.symbol} className="object-contain w-full h-full" />
                 }
               </div>
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-normal text-black1">{item.locale.fa.name}</span>
-                <span className="text-gray3 text-xs font-normal w-min">{item.symbol}</span>
+                <span className="text-sm font-normal text-black1">{item?.locale?.fa?.name}</span>
+                <span className="text-gray3 text-xs font-normal w-min">{item?.symbol}</span>
               </div>
             </div>
             <div className="flex flex-col lg:gap-1 items-end">
               <span className="text-gray3 text-xs font-normal">قیمت خرید</span>
-              <span className="text-xs lg:text-sm font-normal text-black1">{formatPersianDigits(Number(item.priceBuy))} تومان</span>
+              <span className="text-xs lg:text-sm font-normal text-black1">{formatPersianDigits(Number(item?.priceBuy))} تومان</span>
             </div>
           </div>
         </button>
