@@ -8,7 +8,6 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   buy: "خرید",
   sell: "فروش",
   options: "خدمات",
-  Profile: "پروفایل",
   ticket: "تیکت‌ها",
   create: "ایجاد تیکت",
   authentication: 'احراز هویت',
@@ -20,13 +19,23 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   withdraw: 'برداشت',
   'market-view': 'نمای بازار',
   "kyc-basic": "احراز هویت پایه",
-   history:"خدمات",
-   order:"تاریخچه خرید و فروش",
-   toman:"تاریخچه تراکنش های تومانی",
-   Cryptocurrency:"تاریخچه تراکنش های رمز ارز",
-   fiat:"برداشت تومانی",
-   crypto:"برداشت رمز ارز",
- "add-friend": "دعوت از دوستان",
+  history: "خدمات",
+  order: "تاریخچه خرید و فروش",
+  toman: "تاریخچه تراکنش های تومانی",
+  Cryptocurrency: "تاریخچه تراکنش های رمز ارز",
+  fiat: "برداشت تومانی",
+  crypto: "برداشت رمز ارز",
+  "add-friend": "دعوت از دوستان",
+  "user-account": "حساب کاربری",
+  "change-password": "تغییر رمز عبور",
+  "multi-factor": "ورود دو مرحله ای ",
+  deposit: "واریز",
+  gateway: "درگاه پرداخت",
+  identifier: "شناسه",
+  card: "کارت به کارت",
+  receipt: "فیش بانکی",
+  wallet: "ولت اختصاصی",
+  txid: "TxID",
 
 };
 
@@ -56,6 +65,8 @@ const BreadcrumbNavigation = () => {
 }
 
 export default BreadcrumbNavigation
+
+
 
 
 

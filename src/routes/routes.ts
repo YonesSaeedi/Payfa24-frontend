@@ -9,8 +9,8 @@ export const ROUTES = {
   AUTHENTICATION_BASIC: "/kyc-basic",
   AUTHENTICATION_ADVANCED: "/kyc-advanced",
   BANK_CARDS_CONTAINER: "/services/bank-cards",
-  USER_ACCOUNT: "./authProfile",
-  BANK_ACCOUNT: "./authProfile",
+  USER_ACCOUNT: "/user-account",
+  BANK_ACCOUNT: "/authProfile",
   WALLET: "/wallet",
   CHANGE_PASSWORD: "/change-password",
   VERIFY_GOOGLE: "/verify/google",
@@ -37,13 +37,9 @@ export const ROUTES = {
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },
-
-  
 ADD_FRIEND: {
  ROOT:"/services/add-friend", // مسیر اصلی را به زیرمجموعه خدمات ببرید
 },
-
-
   DEPOSIT: "/deposit",
   DEPOSIT_GATEWAY: "/deposit/gateway",
   DEPOSIT_IDENTIFIER: "/deposit/identifier",
@@ -53,5 +49,6 @@ ADD_FRIEND: {
   DEPOSIT_TXID: "/deposit/txid",
 
 };
+
 
 

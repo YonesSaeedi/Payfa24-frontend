@@ -9,7 +9,6 @@ import Buy from "../pages/trade/Buy";
 import Sell from "../pages/trade/Sell";
 import AuthenticationBasic from "../pages/authentication/basic";
 import AuthenticationAdvance from "../pages/authentication/advance";
-import Profile from "../pages/Profile/Profile";
 import MarketPage from "../pages/MarketPage";
 import TicketPage from "../pages/Ticket/TicketPage";
 import TicketPanel from "../components/Ticket/TicketPanel";
@@ -33,6 +32,8 @@ import RecaptchaWrapper from "../components/RecaptchaWrapper";
 import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
 import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
+import UserAccount from "../pages/Profile/UserAccount";
+
 
 export default function AppRouter() {
 
@@ -51,7 +52,8 @@ export default function AppRouter() {
           <Route path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD} element={<ForgotPasswordPageSetPasswordPage />} />
         </Route>
         {/* header only pages ==================================================================================================== */}
-        <Route path={ROUTES.USER_ACCOUNT} element={<Profile />} />
+
+        <Route path={ROUTES.USER_ACCOUNT} element={<UserAccount />} />
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
         <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />
