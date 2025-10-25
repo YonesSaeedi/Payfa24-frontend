@@ -1,4 +1,3 @@
-
 export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
@@ -45,26 +44,13 @@ ADD_FRIEND: {
  ROOT:"/services/add-friend", // مسیر اصلی را به زیرمجموعه خدمات ببرید
 },
 
-PROFILE_MEN: {
-  ROOT: "/profile",
-  USER_ACCOUNT: "/profile/user-account",
- SECURITY_SETTINGS: "/profile/security-settings", // ✅ اضافه شدن مسیر تنظیمات امنیت
-    CHANGE_PASSWORD: "/profile/security-settings/change-password", // ✅ تغییر مسیر به زیرمجموعه security-settings
-    MULTI_FACTOR: "/profile/security-settings/multi-factor",
-  CONNECTED_DEVICES: "/profile/connected-devices",
-  BANK_CARDS: "/profile/bank-cards",
-  // SECURITY_SETTINGS رو حذف کن! صفحه نداره
-},
 
-DEPOSIT: "/deposit",
-DEPOSIT_GATEWAY: "/deposit/closeDeal",
-DEPOSIT_IDENTIFIER: "/deposit/identifier",
-DEPOSIT_CARD: "/deposit/card",
-DEPOSIT_RECEIPT: "/deposit/receipt",
-DEPOSIT_WALLET: "/deposit/wallet",
-DEPOSIT_TXID: "/deposit/txid",
+  DEPOSIT: "/deposit",
+  DEPOSIT_GATEWAY: "/deposit/gateway",
+  DEPOSIT_IDENTIFIER: "/deposit/identifier",
+  DEPOSIT_CARD: "/deposit/card",
+  DEPOSIT_RECEIPT: "/deposit/receipt",
+  DEPOSIT_WALLET: "/deposit/wallet",
+  DEPOSIT_TXID: "/deposit/txid",
 
 };
-
-
-

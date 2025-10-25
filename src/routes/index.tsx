@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import { ROUTES } from "./routes";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
@@ -9,7 +9,7 @@ import Buy from "../pages/trade/Buy";
 import Sell from "../pages/trade/Sell";
 import AuthenticationBasic from "../pages/authentication/basic";
 import AuthenticationAdvance from "../pages/authentication/advance";
-import Profile from "../pages/Profile/UserAccount";
+import Profile from "../pages/Profile/Profile";
 import MarketPage from "../pages/MarketPage";
 import TicketPage from "../pages/Ticket/TicketPage";
 import TicketPanel from "../components/Ticket/TicketPanel";
@@ -30,7 +30,6 @@ import MarketViewPage from "../pages/market-view/MarketViewPage";
 import TomanPage from "../components/History/TomanPage";
 import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
-import CardsManager from "../components/BankCards/BankCardsManager";
 import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
 import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
@@ -53,25 +52,8 @@ export default function AppRouter() {
           <Route path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD} element={<ForgotPasswordPageSetPasswordPage />} />
         </Route>
         {/* header only pages ==================================================================================================== */}
-        {/* <Route path={ROUTES.USER_ACCOUNT} element={<Profile />} />
-        <Route path={ROUTES.PROFILE} element={<Profile />} /> */}
-<Route path={ROUTES.PROFILE_MEN.ROOT} element={<Profile />}>
-    <Route index element={<Navigate to={ROUTES.PROFILE_MEN.USER_ACCOUNT} />} />
-    <Route path={ROUTES.PROFILE_MEN.USER_ACCOUNT.split('/').pop()} element={<UserAccount />} />
-
-    {/* ساختار تو در تو برای تنظیمات امنیت */}
-    <Route 
-        path={ROUTES.PROFILE_MEN.SECURITY_SETTINGS.split('/').pop()} 
-        element={<Outlet />}
-    >
-        <Route path="change-password" element={<ChangePassword />} />
-        <Route path="multi-factor" element={<MultiFactor />} />
-    </Route>
-</Route>
-
-
-
-
+        <Route path={ROUTES.USER_ACCOUNT} element={<UserAccount />} />
+        <Route path={ROUTES.PROFILE} element={<UserAccount />} />
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
         <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />
