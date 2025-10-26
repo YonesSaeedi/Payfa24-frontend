@@ -1,4 +1,4 @@
-// src/data/transactions.ts
+
 import React from "react";
 import TravelaIcon from "../../assets/icons/Home/CryptoTableIcon/TravelaIcon";
 import IconTravella from "../../assets/icons/transaction-history/IconTravella";

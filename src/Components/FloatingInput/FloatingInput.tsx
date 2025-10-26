@@ -2,7 +2,7 @@ import { useState, FC, ChangeEvent } from "react";
 
 interface FloatingInputProps {
   label: string;
-  value: string;
+   value: string | undefined;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   className?: string;

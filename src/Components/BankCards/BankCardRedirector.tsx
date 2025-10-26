@@ -1,4 +1,4 @@
-// BankCardsRedirector.tsx
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../../utils/apiClient";
@@ -6,7 +6,7 @@ import { ROUTES } from "../../routes/routes";
 
 interface CardListResponse {
   status: boolean;
-  data: Array<any>; // یا نوع دقیق کارت‌ها، مثلاً { id: string; cardNumber: string; ... }[]
+  data: Array<any>; 
 }
 
 export default function BankCardsRedirector() {

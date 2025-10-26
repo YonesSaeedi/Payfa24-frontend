@@ -99,7 +99,7 @@ const CryptoMarketTable: React.FC<Props> = ({
 
   return (
     <div className="w-full flex flex-col gap-6 lg:mt-16">
-      {/* Search input */}
+     
       <div className="items-center gap-4">
         <div className="w-full flex justify-between">
           <div className="lg:hidden flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">

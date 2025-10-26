@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-
 import HomeIcon from "../../assets/icons/header/HomeIcon";
 import CategoryIcon from "../../assets/icons/header/CategoryIcon";
 import WalletIcon from "../../assets/icons/header/WalletIcon";
@@ -12,12 +11,11 @@ import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconProfileMenu from "../../assets/icons/Login/IconProfileMenu";
 import { apiRequest } from "../../utils/apiClient";
-import useGetUser from "../../hooks/useGetUser"; 
+import useGetUser from "../../hooks/useGetUser";
 import IconSun from "../../assets/icons/header/IconSun";
 import MoonIcon from "../../assets/icons/HeaderLogin/MoonIcon";
 import { ROUTES } from "../../routes/routes";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
-
 
 type MobileMenuProps = {
   open: boolean;
@@ -25,7 +23,11 @@ type MobileMenuProps = {
   onOpenServicesModal: () => void;
 };
 
-export default function MobileMenu({ open, onClose, onOpenServicesModal }: MobileMenuProps) {
+export default function MobileMenu({
+  open,
+  onClose,
+  onOpenServicesModal,
+}: MobileMenuProps) {
   const themeContext = useContext(ThemeContext);
 
   if (!themeContext) {
@@ -42,8 +44,7 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
       await apiRequest({ url: "/api/auth/logout", method: "POST" });
     } catch (error) {
       console.error("Error logging out:", error);
-    }
-    finally {
+    } finally {
       localStorage.clear();
       window.location.replace("/login");
     }
@@ -52,7 +53,6 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
 
   return (
     <>
-      {/* پس‌زمینه تاریک */}
       {open && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
@@ -60,13 +60,12 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
         />
       )}
 
-      {/* منو سمت راست */}
       <div
-        className={`fixed top-0 right-0 h-full z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 ${open ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`fixed top-0 right-0 h-full z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
         dir="rtl"
       >
-        {/* هدر پروفایل */}
         <div
           dir="rtl"
           className=" py-4 px-3 flex-col items-center justify-between border shadow-md m-4 rounded-[20px] mt-12"
@@ -75,16 +74,23 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-            <div >
+            <div>
               <p className="font-semibold text-black1">
-                {isLoading ? "در حال بارگذاری..." : userData?.user.name_display || "—"}
+                {isLoading
+                  ? "در حال بارگذاری..."
+                  : userData?.user.name_display || "—"}
               </p>
               <p className="text-xs text-gray-500 pt-1">
-                {isLoading ? "" : `سطح کاربری ${userData?.user.level_account || "—"}`}
+                {isLoading
+                  ? ""
+                  : `سطح کاربری ${userData?.user.level_account || "—"}`}
               </p>
             </div>
           </div>
-          <button onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)} className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition w-full mt-4  shadow-md  hover:shadow-gray12">
+          <button
+            onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)}
+            className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition w-full mt-4  shadow-md  hover:shadow-gray12"
+          >
             ارتقا سطح
             <span className="w-5 h-5 icon-wrapper mr-1">
               <IconArrowLeft />
@@ -92,9 +98,11 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
           </button>
         </div>
 
-        {/* منو اصلی */}
         <nav className="flex flex-col gap-6 p-4 space-y-3 text-right">
-          <Link to="/" className="  flex items-center justify-start gap-2 hover:text-blue-600">
+          <Link
+            to="/"
+            className="  flex items-center justify-start gap-2 hover:text-blue-600"
+          >
             <span className=" flex items-center justify-center w-6 h-6 text-blue2">
               <HomeIcon />
             </span>
@@ -102,8 +110,8 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
           </Link>
           <button
             onClick={() => {
-              onClose();              // بستن منوی موبایل
-              onOpenServicesModal();   // باز کردن مودال خدمات
+              onClose();
+              onOpenServicesModal();
             }}
             className="flex items-center justify-start gap-2 hover:text-blue-600 w-full text-left"
           >
@@ -113,28 +121,35 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
             خدمات
           </button>
 
-          <Link to="/wallet" className="flex items-center justify-start gap-2 hover:text-blue-600">
+          <Link
+            to="/wallet"
+            className="flex items-center justify-start gap-2 hover:text-blue-600"
+          >
             <span className=" flex items-center justify-center w-6 h-6 text-blue2">
               <WalletIcon />
             </span>
             کیف پول
           </Link>
-          <Link to="/market" className=" flex items-center justify-start gap-2 hover:text-blue-600">
+          <Link
+            to="/market"
+            className=" flex items-center justify-start gap-2 hover:text-blue-600"
+          >
             <span className=" flex items-center justify-center w-6 h-6 text-blue2">
               <ChartIcon />
             </span>
             بازارها
           </Link>
-          <Link to="/trade" className=" flex items-center justify-start gap-2 hover:text-blue-600">
+          <Link
+            to="/trade"
+            className=" flex items-center justify-start gap-2 hover:text-blue-600"
+          >
             <span className=" flex items-center justify-center w-6 h-6 text-blue2">
               <BitcoinIcon />
             </span>
-
             معامله
           </Link>
         </nav>
 
-        {/* پروفایل */}
         <div className="p-4 text-right">
           <details className="w-full group">
             <summary className="flex items-center justify-between cursor-pointer  hover:text-blue2">
@@ -143,7 +158,6 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
                   <IconProfileMenu />
                 </span>
                 پروفایل
-
               </span>
               <svg
                 className="w-5 h-5 transform transition-transform duration-300 group-open:rotate-180"
@@ -152,26 +166,29 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </summary>
-            <ul dir="rtl" className="pr-4 mt-5 text-gray-600 dark:text-gray-300 space-y-4">
+            <ul
+              dir="rtl"
+              className="pr-4 mt-5 text-gray-600 dark:text-gray-300 space-y-4"
+            >
               <li
                 className="flex flex-col cursor-pointer "
                 onClick={() => setOpenSecurity(!openSecurity)}
               >
                 <div className="flex items-center justify-between hover:text-blue2 pt-2">
-                  <div className="flex items-center gap-2">
-                    {/* <span className="w-6 h-6">
-        <IconSecurity />
-      </span> */}
-                    تنظیمات امنیت
-                  </div>
+                  <div className="flex items-center gap-2">تنظیمات امنیت</div>
 
-                  {/* 🔽 آیکن فلش (خودت import کن) */}
                   <span
-                    className={`w-5 h-5 transition-transform duration-300 ${openSecurity ? "rotate-180" : "rotate-0"
-                      }`}
+                    className={`w-5 h-5 transition-transform duration-300 ${
+                      openSecurity ? "rotate-180" : "rotate-0"
+                    }`}
                   >
                     <IconChervDown />
                   </span>
@@ -179,17 +196,26 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
 
                 {openSecurity && (
                   <ul className="lg:pr-8 pt-2 space-y-2 text-gray-600 text-sm">
-                    <Link to={ROUTES.MULTI_FACTOR} className="flex items-center gap-2 hover:text-blue2 px-4 pt-4">
+                    <Link
+                      to={ROUTES.MULTI_FACTOR}
+                      className="flex items-center gap-2 hover:text-blue2 px-4 pt-4"
+                    >
                       <li>ورود دو مرحله‌ای</li>
                     </Link>
-                    <Link to={ROUTES.CHANGE_PASSWORD} className="flex items-center gap-2 hover:text-blue2 px-4 py-3">
+                    <Link
+                      to={ROUTES.CHANGE_PASSWORD}
+                      className="flex items-center gap-2 hover:text-blue2 px-4 py-3"
+                    >
                       <li>تغییر رمز عبور</li>
                     </Link>
                   </ul>
                 )}
               </li>
 
-              <Link to={ROUTES.AUTHENTICATION_BASIC} className="flex items-center gap-2 w-full">
+              <Link
+                to={ROUTES.AUTHENTICATION_BASIC}
+                className="flex items-center gap-2 w-full"
+              >
                 <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
                   {/* <span className="w-6 h-6"> <IconAuthentication /></span> */}
                   احراز هویت
@@ -203,23 +229,31 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
                 </li>
               </Link>
 
-              <Link to={ROUTES.TRANSACTION.ROOT} className="flex items-center gap-2 w-full">
+              <Link
+                to={ROUTES.TRANSACTION.ROOT}
+                className="flex items-center gap-2 w-full"
+              >
                 <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
                   {/* <span className="w-6 h-6"> <IconTransactionhistory /></span> */}
                   تاریخچه معاملات
                 </li>
               </Link>
 
-              <Link to={ROUTES.CONNECTED_DEVICES} className="flex items-center gap-2 ">
+              <Link
+                to={ROUTES.CONNECTED_DEVICES}
+                className="flex items-center gap-2 "
+              >
                 <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer ">
                   {/* <span className="w-6 h-6">  <IconConnecteddevices /></span> */}
                   دستگاه‌های متصل
                 </li>
               </Link>
 
-              <Link to={ROUTES.LOGIN} className="flex items-center gap-2 w-full">
+              <Link
+                to={ROUTES.LOGIN}
+                className="flex items-center gap-2 w-full"
+              >
                 <li className="flex items-center gap-2 text-red-500 hover:text-red-600 cursor-pointer ">
-
                   خروج از حساب کاربری
                 </li>
               </Link>
@@ -233,14 +267,22 @@ export default function MobileMenu({ open, onClose, onOpenServicesModal }: Mobil
             onClick={toggleTheme}
             className="flex items-center gap-2 font-medium text-gray-700 dark:text-gray-300"
           >
-            {theme === "dark" ? <span className="w-6 h-6 text-blue2"><IconSun /></span> : <span className="w-6 h-6 text-blue2"><MoonIcon /></span>}حالت شب
+            {theme === "dark" ? (
+              <span className="w-6 h-6 text-blue2">
+                <IconSun />
+              </span>
+            ) : (
+              <span className="w-6 h-6 text-blue2">
+                <MoonIcon />
+              </span>
+            )}
+            حالت شب
           </button>
-
         </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 p-4">
-          <span className="w-6 h-6 text-blue2"><IconExit /></span>
+        <button onClick={handleLogout} className="flex items-center gap-2 p-4">
+          <span className="w-6 h-6 text-blue2">
+            <IconExit />
+          </span>
           خروج از حساب کاربری
         </button>
       </div>

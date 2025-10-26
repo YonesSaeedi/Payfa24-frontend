@@ -7,8 +7,6 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   "trade": "معامله",
   "buy": "خرید",
   "sell": "فروش",
-  "options": "خدمات",
-  "Profile": "پروفایل",
   "ticket": "تیکت‌ها",
   "create": "ایجاد تیکت",
   "authentication": 'احراز هویت',
@@ -28,6 +26,15 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   "crypto": "برداشت رمز ارز",
   "add-friend": "دعوت از دوستان",
   "multi-factor": 'ورود دو مرحله‌ای',
+  "user-account": "حساب کاربری",
+  "change-password": "تغییر رمز عبور",
+  'deposit': "واریز",
+  'gateway': "درگاه پرداخت",
+  'identifier': "شناسه",
+  'card': "کارت به کارت",
+  'receipt': "فیش بانکی",
+  'wallet': "ولت اختصاصی",
+  'txid': "TxID",
 };
 
 const BreadcrumbNavigation = () => {
@@ -56,6 +63,8 @@ const BreadcrumbNavigation = () => {
 }
 
 export default BreadcrumbNavigation
+
+
 
 
 

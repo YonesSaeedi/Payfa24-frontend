@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 // import IconAlert from "../../assets/Icons/Login/IconAlert"; // استفاده نشده
 import IconDanger from "../../assets/icons/Deposit/IconDanger";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 // import IconVideo from "../../assets/Icons/Deposit/IconVideo"; // استفاده نشده
 
 interface DepositLayoutProps {
@@ -16,9 +17,13 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
   alertMessages,
 }) => {
   return (
-    <div className="w-full container-style h-full flex flex-col lg:flex-row items-center justify-center">
+    <div className="pt-5 w-full  container-style h-full flex flex-col items-center justify-center">
       {/* بخش اصلی (راست و چپ) */}
-      <div className=" flex شhشش w-full lg:gap-7 lg:flex-row-reverse lg:p-10 flex-col items-start mt-14 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl">
+      {/* <div> */}
+
+      {/* </div> */}
+      <BreadcrumbNavigation/>
+      <div className=" flex w-full lg:gap-7 lg:flex-row-reverse lg:p-10 flex-col items-start mt-10 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl">
         
         {/*
           بخش راست - ثابت (ستون انتخاب‌های واریز)

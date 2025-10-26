@@ -55,6 +55,7 @@ export default function StepInvite({ onNext }: { onNext: () => void }) {
       const value = data.email.trim();
       setContactValue(value)
       const payload: Record<string, string> = { recaptcha: recaptchaToken };
+
       if (/^\d+$/.test(value)) {
         payload.mobile = value;
         setContactMethod("phone");

@@ -167,6 +167,7 @@ export default function DepositPage({
   return (
     <>
       <HeaderLayout>
+        
         <DepositLayout
           step={step}
           started={started}

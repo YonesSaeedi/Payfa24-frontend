@@ -25,7 +25,6 @@ const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect
         onClick={() => onSelect(ticket)}
       />
     ))}
- 
   </div>
    
   <div className="mt-4 flex flex-col gap-2 ">

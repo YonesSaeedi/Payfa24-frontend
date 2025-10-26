@@ -7,6 +7,7 @@ import IconClose from "../../assets/icons/Login/IconClose";
 import IconAgain from "../../assets/icons/Login/IconAgain";
 import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
 import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 interface PropModal {
   type?: string;
@@ -18,7 +19,7 @@ interface ModalForm {
 }
 
 export default function TwoFactorModal({ type, closeModal }: PropModal) {
-  const { data: twoFAData, refresh } = UseTwoStepVerification()
+  const {  refresh } = UseTwoStepVerification()
   const [step, setStep] = useState(1);
 
   const { handleSubmit, setValue, watch } = useForm<ModalForm>({
@@ -43,9 +44,10 @@ export default function TwoFactorModal({ type, closeModal }: PropModal) {
         setStep(3);
         refresh()
       }
-    } catch (error) {
-      toast.error(  error?.response?.data?.msg || "خطایی رخ داده است.");
-    }
+    } catch (err) {
+  const error = err as AxiosError<{ msg?: string }>;
+  toast.error(error.response?.data?.msg || "خطایی رخ داده است.");
+}
   };
 
   const getContent = () => {

@@ -1,11 +1,10 @@
-
 import { ReactNode } from "react";
 
 type Item = {
   name: string;
   symbol: string;
   buyPrice: number;
-  change: string;
+  change: number;
   isPositive: boolean;
   icon: React.ReactNode;
 };
@@ -27,7 +26,6 @@ export default function CryptoBox({
 
   return (
     <div className="bg-gray27 rounded-2xl p-4 w-full h-[359px]">
-      {/* Header */}
       <div className="flex items-center justify-end mb-4">
         <h2 className="font-bold text-black1 pr-2">{title}</h2>
         <span className="text-blue-500 bg-blue13 w-[40px] h-[40px] rounded-[8px] inline-flex items-center justify-center">
@@ -35,11 +33,10 @@ export default function CryptoBox({
         </span>
       </div>
 
-      {/* Items */}
       <ul className="grid grid-cols-3 gap-y-2 pt-2" dir="rtl">
         {isLoading
           ? skeletonArray.map((_, i) => (
-            <li key={i} className="contents animate-pulse">
+              <li key={i} className="contents animate-pulse">
                 <div className="flex items-center gap-2">
                   <div className="w-[34px] h-[34px] bg-gray19 rounded-full"></div>
                   <div className="flex flex-col text-right leading-tight">
@@ -90,7 +87,8 @@ export default function CryptoBox({
                         : "bg-red7 text-red-600"
                     }`}
                   >
-                    {item.change}
+                    %{Math.abs(item.change).toFixed(2)}
+                    {item.isPositive ? "+" : "-"}
                   </span>
                 </div>
               </li>

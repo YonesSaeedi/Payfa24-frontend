@@ -185,7 +185,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           }`
         : "top-1/2 -translate-y-1/2 text-xs text-gray5 bg-transparent";
 
-    const placeholderStyle = hasError ? "text-red1 placeholder:text-red1" : "";
+   
 
     return (
       <div className={`relative mb-4 box-border w-full ${className}`}>
