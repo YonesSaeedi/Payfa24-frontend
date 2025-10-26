@@ -5,11 +5,11 @@ interface propSub {
   onPrev?: () => void;
 }
 
-export default function ScanQrCodePage({ onNext , onPrev }: propSub) {
+export default function ScanQrCodePage({ onNext  }: propSub) {
   const { data } = UseTwoStepVerification();
   const dataGoogleVerificationForm = data?.google;
   const svgData = dataGoogleVerificationForm?.inlineUrl;
-  const svgBase64 = svgData ? `data:image/svg+xml;base64,${btoa(svgData)}` : null;
+  const svgBase64 = svgData ? `data:image/svg+xml;base64,${btoa(svgData)}` : undefined;
 
 
   return (

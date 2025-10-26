@@ -24,7 +24,7 @@ export default function GoogleAuthFlow() {
       case 1:
         return <ScanQrCodePage onNext={handleNext} onPrev={handlePrev} />;
       case 2:
-        return <EnterCodePage onPrev={handlePrev} />;
+        return <EnterCodePage />;
       default:
         return null;
     }

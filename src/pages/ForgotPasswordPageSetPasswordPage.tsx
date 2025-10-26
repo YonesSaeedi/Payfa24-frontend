@@ -12,6 +12,19 @@ import imageForgetDark from "../assets/imageForgetDark.png";
 import imageForgetLight from "../assets/imageForgetLight.png";
 import { ThemeContext } from "../context/ThemeContext";
 
+
+interface ForgetPasswordResetResponse {
+  status: boolean;
+  msg?: string;
+}
+interface ForgetPasswordResetRequest {
+  username: string;
+  password: string;
+  password_confirmation: string;
+  tokenForget: string;
+  [key: string]: string | number | boolean | Blob | File;
+}
+
 type PasswordFormData = {
   password: string;
   confirmPassword: string;
@@ -59,7 +72,7 @@ export default function ForgotPasswordPageSetPasswordPage() {
     try {
       setIsLoading(true);
 
-      const response = await apiRequest({
+      const response = await apiRequest<ForgetPasswordResetResponse, ForgetPasswordResetRequest>({
         url: '/api/auth/forget/reset',
         method: 'POST',
         data: {
