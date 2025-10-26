@@ -23,6 +23,7 @@ import OTPInputModal from "./OTPInputModal";
 import useGetUser from "../../hooks/useGetUser";
 import useGetSettings from "../../hooks/useGetSettings";
 import { AxiosError } from "axios";
+import { DigitalBuy } from "../../types/api/digital-trade";
 
 const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const countInputRef = useRef<HTMLInputElement | null>(null)
@@ -278,8 +279,8 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       } else {
         try {
           setIsSubmitting(true)
-          const response = await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue) } })
-          setDigitalIDOrder(response?.id_order)
+          const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/api/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
+          setDigitalIDOrder(response?.order_id)
           setResendCodeTimeLeft(120)
           setIsOtpModalOpen(true)
           toast.success(response?.msgOtp)
@@ -329,11 +330,12 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       }
     }
   }
-  // handleSubmitDigitalTrade ==================================================================================================================================================
+  // handle Confirm Digital Trade ==================================================================================================================================================
   const handleSubmitDigitalBuy = async () => {
     try {
       setIsSubmitting(true)
-      await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue), codeOtp: otpCode, id_order: String(digitalIDOrder) } })
+      await apiRequest({ url: `/api/order/digital/buy/confirm`, method: 'POST', data: { codeOtp: otpCode, order_id: String(digitalIDOrder) } })
+      fetchTomanBalance()
       setIsOtpModalOpen(false)
       setIsTradeSuccessModalOpen(true)
     } catch (err) {
@@ -381,8 +383,8 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const handleResendCode = async () => {
     try {
       setResendCodeIsSubmitting(true)
-      const response = await apiRequest({ url: `/api/order/digital/buy/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: String(amountValue) } })
-      setDigitalIDOrder(response?.id_order)
+      const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/api/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
+      setDigitalIDOrder(response?.order_id)
       setResendCodeTimeLeft(120)
       setIsOtpModalOpen(true)
       toast.success(response?.msgOtp)
@@ -393,8 +395,6 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       setResendCodeIsSubmitting(false)
     }
   }
-  // console.log(userData);
-  // console.log(settingsData);
 
   return (
     <div className="w-full h-full lg:bg-white8 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between lg:border lg:border-gray21">
@@ -472,7 +472,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               {isLoading || cryptoBalance === null ?
                 <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
                 :
-                <span className="text-black1 font-normal" dir="ltr">{`${cryptoBalance} ${currentCryptocurrency?.symbol}`}</span>
+                <span className="text-black1 font-normal" dir="ltr">{`${cryptoBalance} ${currentCryptocurrency?.symbol ?? 'رمزارز'}`}</span>
               }
             </div>
             <span className="text-sm font-normal text-black1 flex items-center gap-1">
@@ -494,7 +494,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               type="text"
               inputMode="decimal"
               className="bg-transparent appearance-none outline-none w-full text-gray5 text-right"
-              placeholder={`مقدار ${currentCryptocurrency?.locale?.fa?.name} مدنظر را وارد کنید`}
+              placeholder={`مقدار ${currentCryptocurrency?.locale?.fa?.name ?? 'رمزارز'} مدنظر را وارد کنید`}
               value={countInputStr}
               onChange={handleCountChange}
               dir="ltr"

@@ -17,6 +17,8 @@ interface OTPInputModalProps {
   handleResendCode?: () => void
   resendCodeTimeLeft?: number
   resendCodeIsSubmitting?: boolean
+  isSubmitting?: boolean
+  isSubmittingText?: string
 }
 
 const OTPInputModal = ({
@@ -31,7 +33,9 @@ const OTPInputModal = ({
   editButtonText,
   handleResendCode,
   resendCodeTimeLeft,
-  resendCodeIsSubmitting
+  resendCodeIsSubmitting,
+  isSubmitting,
+  isSubmittingText = 'در حال ثبت ...'
 }: OTPInputModalProps) => {
   const [otpValue, setOtpValue] = useState<string>('')
   const isWaiting = !!(resendCodeTimeLeft && resendCodeTimeLeft > 0)
@@ -60,24 +64,24 @@ const OTPInputModal = ({
           </div>
         }
         <div className="w-full flex items-center gap-2">
+          <button
+            onClick={onSubmit}
+            className={`w-full flex-1 text-base font-bold rounded-lg py-2.5 lg:py-3 border border-transparent transition duration-200 ease-in
+                  ${resendCodeIsSubmitting || !isOtpComplete ? 'text-black1 bg-gray2' : 'bg-blue2 text-white hover:border-blue2 hover:text-blue2 hover:bg-transparent'}`}
+            disabled={resendCodeIsSubmitting || !isOtpComplete || isSubmitting}
+          >
+            {isSubmitting ? isSubmittingText : submitButtonText}
+          </button>
           {handleEdit &&
             <button
               disabled={resendCodeIsSubmitting}
               onClick={handleEdit}
-              className="w-full flex-1 text-base font-bold rounded-lg py-2.5 lg:py-3 border border-blue2 hover:border-transparent hover:text-white
-            hover:bg-blue2 transition duration-200 ease-in"
+              className="w-full flex-1 text-base font-bold rounded-lg py-2.5 lg:py-3 border border-blue2 text-blue2 hover:border-transparent hover:text-white
+                        hover:bg-blue2 transition duration-200 ease-in"
             >
               {editButtonText}
             </button>
           }
-          <button
-            onClick={onSubmit}
-            className={`w-full flex-1 text-base font-bold rounded-lg py-2.5 lg:py-3 border border-transparent transition duration-200 ease-in
-              ${resendCodeIsSubmitting || !isOtpComplete ? 'text-black1 bg-gray2' : 'bg-blue2 text-white hover:border-blue2 hover:text-blue2 hover:bg-transparent'}`}
-            disabled={resendCodeIsSubmitting || !isOtpComplete}
-          >
-            {submitButtonText}
-          </button>
         </div>
       </div>
     </div>
