@@ -71,6 +71,7 @@ const CryptoWithdrawForm: FC = () => {
   const [currentCryptoCurrency, setCurrentCryptoCurrency] = useState<CryptoItem | null>(null);
   const { data: userData } = useGetUser();
   const userMobile = userData?.user?.mobile || "شماره شما";
+ const [, setIsSubmitting] = useState(false);
 
   
 
@@ -86,26 +87,66 @@ const handleCloseOtpModal = () => {
     setOtpCode("")
   };
 
+// const handleSubmitOtp = async () => {
+//   if (!otpCode) return;
+//   try {
+//      await apiRequest({
+//      url: "/api/wallets/crypto/withdraw/confirm",
+//       method: "POST",
+//       data: {
+//         ...withdrawData,
+//         codeOtp: parseInt(otpCode, 10),
+//       },
+//     });
+//       setIsOtpModalOpen(false);   
+//       setOtpCode("");            
+//       setIsTradeSuccessModalOpen(true); 
+//       setWithdrawData(null);     
+   
+//   } catch (err) {
+//     toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.msg || "خطا در تأیید برداشت!");
+//   }
+// };
+
 const handleSubmitOtp = async () => {
-  if (!otpCode) return;
+  if (!otpCode || !withdrawData) {
+    toast.error("کد تأیید یا اطلاعات برداشت موجود نیست");
+    return;
+  }
+
   try {
-     await apiRequest({
-      url: `/api/wallets/crypto/withdraw/${crypto}`,
+    const response = await apiRequest<{
+      status: boolean;
+      msg: string;
+    }>({
+      url: "/api/wallets/crypto/withdraw/confirm",
       method: "POST",
       data: {
-        ...withdrawData,
-        codeOtp: parseInt(otpCode, 10),
+        transaction_id: withdrawData.transactionId,
+        codeOtp: otpCode,
       },
     });
-      setIsOtpModalOpen(false);   
-      setOtpCode("");            
-      setIsTradeSuccessModalOpen(true); 
-      setWithdrawData(null);     
-   
-  } catch (err) {
-    toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.msg || "خطا در تأیید برداشت!");
+
+    if (response.status) {
+      toast.success("برداشت با موفقیت تأیید شد ✅");
+      setIsOtpModalOpen(false);
+      setOtpCode("");
+      setIsTradeSuccessModalOpen(true);
+    } else {
+      toast.error(response.msg || "کد وارد شده معتبر نیست");
+    }
+  } catch (err: unknown) {
+    let message = "خطا در تأیید برداشت!";
+    if (err instanceof AxiosError && err.response?.data?.msg) {
+      message = err.response.data.msg;
+    } else if (err instanceof Error) {
+      message = err.message;
+    }
+    toast.error(message);
   }
 };
+
+
 
 const handleResendCode = async () => {
   try {
@@ -115,13 +156,13 @@ const handleResendCode = async () => {
 
     if (activeTab === "withdraw") {
       res = await apiRequest<WithdrawResponse>({
-        url: `/api/wallets/crypto/withdraw/${crypto}`,
+        url: `/api/wallets/crypto/withdraw/request`,
         method: "POST",
         data: withdrawData,
       });
     } else {
       res = await apiRequest<WithdrawResponse>({
-        url: `/api/wallets/crypto/withdraw-transfer/${crypto}`,
+        url: `/api/wallets/crypto/withdraw/transfer/request`,
         method: "POST",
         data: withdrawData,
       });
@@ -223,6 +264,96 @@ const handleNetworkChange = (id: string) => {
     setTag(""); 
   };
  
+// const handleSubmit = async (e: React.FormEvent) => {
+//   e.preventDefault();
+//   setIsLoading(true);
+
+//   if (!selectedNetwork) {
+//     toast.error("لطفاً شبکه را انتخاب کنید");
+//     setIsLoading(false);
+//     return;
+//   }
+
+//   const withdrawAmount = parseFloat(amount);
+//   const minAmount = parseFloat(selectedNetwork.withdraw_min || "0");
+//   const maxAmount = parseFloat(coins.find(c => c.symbol === crypto)?.balance_available || "0");
+
+//   if (!amount || isNaN(withdrawAmount)) {
+//     toast.error("لطفاً مقدار برداشت را وارد کنید");
+//     setIsLoading(false);
+//     return;
+//   }
+
+//   if (withdrawAmount < minAmount) {
+//     toast.error(`حداقل مقدار برداشت ${minAmount} ${crypto} است`);
+//     setIsLoading(false);
+//     return;
+//   }
+
+//   if (withdrawAmount > maxAmount) {
+//     toast.error(`موجودی کافی نیست`);
+//     setIsLoading(false);
+//     return;
+//   }
+
+//   if (selectedNetwork.tag === 1 && selectedNetwork.memoRegex) {
+//     const regex = new RegExp(selectedNetwork.memoRegex);
+//     if (!regex.test(tag)) {
+//       toast.error("مقدار Tag/Memo معتبر نیست");
+//       setIsLoading(false);
+//       return;
+//     }
+//   }
+//   if (!selectedNetwork?.symbol) {
+//   toast.error("شبکه انتخاب نشده است");
+//   setIsLoading(false);
+//   return;
+// }
+
+//  try {
+// await apiRequest<
+//   { status: boolean; msg?: string }, 
+//   {
+//     network: string;
+//     withdrawAmount: number;
+//     withdrawAddressWallet: string;
+//     withdrawAddressWalletTag: string;
+//   } 
+// >({
+//   url: "/api/wallets/crypto/withdraw/request",
+//   method: "POST",
+//   data: {
+//     network: selectedNetwork.symbol,
+//     withdrawAmount,
+//     withdrawAddressWallet: address,
+//     withdrawAddressWalletTag: tag,
+//   },
+// });
+
+
+//   setWithdrawData({
+//     network: selectedNetwork.symbol,
+//     withdrawAmount,
+//     withdrawAddressWallet: address,
+//     withdrawAddressWalletTag: tag,
+//   });
+
+//   setIsOtpModalOpen(true);
+//   setResendCodeTimeLeft(120);
+// } catch (err: unknown) {
+//   let message = "خطا در برداشت!";
+//   if (err instanceof AxiosError) {
+//     message = err.response?.data?.msg || message;
+//   } else if (err instanceof Error) {
+//     message = err.message;
+//   }
+//   toast.error(message);
+// } finally {
+//   setIsLoading(false);
+// }
+// };
+
+// ✅ ارسال درخواست برداشت رمزارز (مرحله اول)
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsLoading(true);
@@ -235,7 +366,9 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   const withdrawAmount = parseFloat(amount);
   const minAmount = parseFloat(selectedNetwork.withdraw_min || "0");
-  const maxAmount = parseFloat(coins.find(c => c.symbol === crypto)?.balance_available || "0");
+  const maxAmount = parseFloat(
+    coins.find((c) => c.symbol === crypto)?.balance_available || "0"
+  );
 
   if (!amount || isNaN(withdrawAmount)) {
     toast.error("لطفاً مقدار برداشت را وارد کنید");
@@ -255,62 +388,64 @@ const handleSubmit = async (e: React.FormEvent) => {
     return;
   }
 
-  if (selectedNetwork.tag === 1 && selectedNetwork.memoRegex) {
-    const regex = new RegExp(selectedNetwork.memoRegex);
-    if (!regex.test(tag)) {
-      toast.error("مقدار Tag/Memo معتبر نیست");
-      setIsLoading(false);
-      return;
+  if (!selectedNetwork.symbol) {
+    toast.error("شبکه انتخاب نشده است");
+    setIsLoading(false);
+    return;
+  }
+
+  try {
+    const response = await apiRequest<{
+      status: boolean;
+      msg: string;
+      data: {
+        otp: boolean;
+        msgOtp: string;
+        transaction_id: number;
+        method: string;
+      };
+    }>({
+      
+      url: "/api/wallets/crypto/withdraw/request",
+      method: "POST",
+      data: {
+        network: selectedNetwork.symbol,
+        withdrawAmount,
+        withdrawAddressWallet: address,
+        withdrawAddressWalletTag: tag,
+      },
+    });
+    
+
+    if (response.status) {
+      toast.success(response.data.msgOtp || "کد تأیید ارسال شد ✅");
+      setWithdrawData({
+        network: selectedNetwork.symbol,
+        withdrawAmount,
+        withdrawAddressWallet: address,
+        withdrawAddressWalletTag: tag,
+        transactionId: response.data.transaction_id,
+      });
+      setIsOtpModalOpen(true);
+      setResendCodeTimeLeft(120);
+      
+    } else {
+      toast.error(response.msg || "خطا در ارسال کد تأیید");
     }
+  } catch (err: unknown) {
+    let message = "خطا در ارسال درخواست برداشت!";
+    if (err instanceof AxiosError && err.response?.data?.msg) {
+      message = err.response.data.msg;
+    } else if (err instanceof Error) {
+      message = err.message;
+    }
+    toast.error(message);
+  } finally {
+    setIsLoading(false);
   }
-  if (!selectedNetwork?.symbol) {
-  toast.error("شبکه انتخاب نشده است");
-  setIsLoading(false);
-  return;
-}
-
- try {
-await apiRequest<
-  { status: boolean; msg?: string }, 
-  {
-    network: string;
-    withdrawAmount: number;
-    withdrawAddressWallet: string;
-    withdrawAddressWalletTag: string;
-  } 
->({
-  url: "/withdraw/crypto",
-  method: "POST",
-  data: {
-    network: selectedNetwork.symbol,
-    withdrawAmount,
-    withdrawAddressWallet: address,
-    withdrawAddressWalletTag: tag,
-  },
-});
-
-
-  setWithdrawData({
-    network: selectedNetwork.symbol,
-    withdrawAmount,
-    withdrawAddressWallet: address,
-    withdrawAddressWalletTag: tag,
-  });
-
-  setIsOtpModalOpen(true);
-  setResendCodeTimeLeft(120);
-} catch (err: unknown) {
-  let message = "خطا در برداشت!";
-  if (err instanceof AxiosError) {
-    message = err.response?.data?.msg || message;
-  } else if (err instanceof Error) {
-    message = err.message;
-  }
-  toast.error(message);
-} finally {
-  setIsLoading(false);
-}
 };
+
+
 
 const handleSubmitTransfers = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -351,7 +486,7 @@ const handleSubmitTransfers = async (e: React.FormEvent) => {
 
   try {
     await apiRequest({
-      url: `/api/wallets/crypto/withdraw-transfer/${crypto}`,
+    url: "/api/wallets/crypto/withdraw/transfer/request",
       method: "POST",
       data: dataToSend,
     });
@@ -372,7 +507,7 @@ const handleSubmitTransferOtp = async () => {
 
   try {
     await apiRequest({
-      url: `/api/wallets/crypto/withdraw-transfer/${crypto}`, // endpoint تایید OTP
+      url: "/api/wallets/crypto/withdraw/transfer/confirm",
       method: "POST",
       data: {
         ...withdrawData,

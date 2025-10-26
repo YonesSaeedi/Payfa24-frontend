@@ -22,7 +22,7 @@ interface Order {
 export default function TicketForm() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [, setIsOrderSelectorOpen] = useState(false);
+ 
 
   const [isFileFocused, setIsFileFocused] = useState(false);
 
@@ -121,7 +121,7 @@ export default function TicketForm() {
           setSelectedOrder={setSelectedOrder}
           register={register}
           setValue={setValue}
-          onClose={() => setIsOrderSelectorOpen(false)}
+        
         />
 
         <div className="relative w-full bg-gray37 mt-6  ">

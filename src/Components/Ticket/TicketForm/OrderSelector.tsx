@@ -15,7 +15,7 @@ interface OrderSelectorProps {
   setSelectedOrder: (order: Order | null) => void;
   register: UseFormRegister<TicketFormInputs>;
   setValue: UseFormSetValue<TicketFormInputs>;
-  onClose: () => void; 
+ 
 }
 
 interface TicketInfoResponse {
