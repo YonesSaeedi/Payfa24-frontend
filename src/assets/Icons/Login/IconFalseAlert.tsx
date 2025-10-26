@@ -1,4 +1,5 @@
 export default function IconFalseAlert() {
+
   return (
     <svg
       width="100%"
