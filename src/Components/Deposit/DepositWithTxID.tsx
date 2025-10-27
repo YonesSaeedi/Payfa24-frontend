@@ -294,7 +294,7 @@ export default function DepositWithTxID() {
           setWalletAddress(null);
         }
       } else {
-        toast.error(depositRes.message || "خطا در پردازش درخواست");
+        toast.success(depositRes.message || "درخواست شما با موفقیت ثبت شد");
       }
     } catch (err: any) {
       console.error("خطا در ارسال TxID:", err);

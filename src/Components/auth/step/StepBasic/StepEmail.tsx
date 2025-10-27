@@ -36,7 +36,7 @@ export default function StepEmail({ onNext }: Props) {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { contactType: "email", contactValue: "" },
-    resolver: yupResolver<FormValues>(getSchema),
+    resolver: yupResolver(getSchema),
   });
 
   const contactType = useWatch({ control, name: "contactType" });
@@ -184,7 +184,6 @@ export default function StepEmail({ onNext }: Props) {
               <OTPModal
                 length={4}
                 onChange={handleVerifyCode}
-                isLoading={verifyOtpMutation.isPending}
               />
             </div>
             <button

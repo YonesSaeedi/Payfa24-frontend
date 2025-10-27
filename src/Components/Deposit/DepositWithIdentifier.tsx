@@ -8,6 +8,7 @@ import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";
 import IconClose from "../../assets/icons/Login/IconClose";
 import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
+import { getBankLogo } from "../../utils/bankLogos";
 
 interface BankCard {
   id: number;
@@ -169,11 +170,16 @@ export default function DepositWithIdentifier(): React.ReactElement {
                   </div>
                 ),
 
-                icon: (
-                  <span className="w-6 h-6">
-                    <BankMelliLogo />
-                  </span>
-                ),
+                 icon: (
+                                        <img
+                                          src={
+                                            getBankLogo(card.bank) ||
+                                            "/bank-logos/bank-sayer.png"
+                                          }
+                                          alt={card.bank}
+                                          className="w-6 h-6 object-contain"
+                                        />
+                                      ),
               }))}
             />
           )}

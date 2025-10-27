@@ -1,4 +1,4 @@
-import { useState, FC, ChangeEvent } from "react";
+import { useState, FC } from "react";
 
 interface FloatingInputProps {
   label: string;
