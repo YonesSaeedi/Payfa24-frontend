@@ -1,6 +1,5 @@
-import React from "react";
-
 function BankMellatLogo() {
+
   return (
     <svg
       width="100%"

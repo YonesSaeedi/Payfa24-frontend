@@ -1,6 +1,5 @@
-import React from "react";
-
 export default function IconCardIdenty() {
+
   return (
     <svg
       width="100%"

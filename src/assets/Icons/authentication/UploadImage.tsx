@@ -1,6 +1,5 @@
-import React from "react";
-
 export default function UploadImage() {
+
   return (
     <svg
       width="100%"
