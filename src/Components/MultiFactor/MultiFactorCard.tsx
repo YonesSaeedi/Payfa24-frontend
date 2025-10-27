@@ -1,3 +1,5 @@
+
+
 interface MultiFactorCardProps {
   dataCard: {
     type?: string;
@@ -5,7 +7,7 @@ interface MultiFactorCardProps {
     text?: string;
     Title?: string;
     button?: string;
-    icon?: string;
+      icon?:  string | React.ReactNode;    
   };
   onClick: () => void;
 }

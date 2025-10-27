@@ -16,7 +16,7 @@ import { ROUTES } from "../../routes/routes";
 import OTPModal from "../../components/OTPModal";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
-
+import { AxiosError } from "axios";
 
 export default function MultiFactor() {
   const { data: twoFAData, refresh } = UseTwoStepVerification()
@@ -116,7 +116,10 @@ const [modalType, setModalType] = useState<string | null>(null);
 
 
     } catch (err) {
-      toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.message || "خطا در تایید کد.");
+    toast.error(
+  ((err as AxiosError<{ msg?: string }>)?.response?.data?.msg) ?? "خطا در تایید کد."
+);
+
     }
   };
 
@@ -145,7 +148,9 @@ const [modalType, setModalType] = useState<string | null>(null);
                           key={item.type}
                           dataCard={{
                             ...item,
-                            button: isActive ? "غیرفعال کردن" : "فعال کردن"
+                            button: isActive ? "غیرفعال کردن" : "فعال کردن",
+       
+
                           }}
                           onClick={() => handleCardClick(item.type, isActive)}
                         />
@@ -163,8 +168,9 @@ const [modalType, setModalType] = useState<string | null>(null);
 
       {isOpen && (
         <TwoFactorModal
-          type={modalType}
-          closeModal={() => setIsOpen(null)}
+      type={modalType ?? undefined}
+        closeModal={() => setIsOpen(false)}
+
         />
       )}
 

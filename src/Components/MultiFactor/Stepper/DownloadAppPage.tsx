@@ -33,7 +33,11 @@
 
 import Google from "../../../assets/Icons/MultiFactor/Google.png";
 
-export default function DownloadAppPage({ onNext }) {
+interface DownloadAppPageProps {
+  onNext: () => void; // تابع بدون ورودی و خروجی خاص
+}
+
+export default function DownloadAppPage({ onNext }: DownloadAppPageProps) {
   return (
     <div className="flex w-full flex-col items-center text-center gap-6" dir="rtl">
       <img className="w-16 h-16" src={Google} alt="Google" />

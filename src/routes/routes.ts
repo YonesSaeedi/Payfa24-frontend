@@ -8,7 +8,7 @@ export const ROUTES = {
   FORGOT_PASSWORD_SET_PASSWORD: "/forgot-password-set-password",
   AUTHENTICATION_BASIC: "/kyc-basic",
   AUTHENTICATION_ADVANCED: "/kyc-advanced",
-  BANK_CARDS_CONTAINER: "/services/bank-cards",
+  BANK_CARDS_CONTAINER: "/bank-cards",
   USER_ACCOUNT: "/user-account",
   BANK_ACCOUNT: "/authProfile",
   WALLET: "/wallet",
@@ -16,12 +16,12 @@ export const ROUTES = {
   VERIFY_GOOGLE: "/verify/google",
   MULTI_FACTOR: "/multi-factor",
   GOOGLE_AUTH_FLOW: "/google-auth-flow",
-  CONNECTED_DEVICES: "/services/connected-devices",
-  FAQ: "/services/faq",
-  BANK_CARDS: "/services/bank-cards",
+  CONNECTED_DEVICES: "/connected-devices",
+  FAQ: "/faq",
+  BANK_CARDS: "/bank-cards",
   WITHDRAWAL_FIAT: "/withdraw/fiat",
   WITHDRAWAL_CRYPTO: "/withdraw/crypto",
-  MARKET_VIEW: '/services/market-view',
+  MARKET_VIEW: '/market-view',
   TRADE: {
     ROOT: "/trade",
     BUY: "/trade/buy",
@@ -37,9 +37,9 @@ export const ROUTES = {
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },
-ADD_FRIEND: {
- ROOT:"/services/add-friend", // مسیر اصلی را به زیرمجموعه خدمات ببرید
-},
+  ADD_FRIEND: {
+    ROOT: "/add-friend",
+  },
   DEPOSIT: "/deposit",
   DEPOSIT_GATEWAY: "/deposit/gateway",
   DEPOSIT_IDENTIFIER: "/deposit/identifier",
@@ -47,8 +47,4 @@ ADD_FRIEND: {
   DEPOSIT_RECEIPT: "/deposit/receipt",
   DEPOSIT_WALLET: "/deposit/wallet",
   DEPOSIT_TXID: "/deposit/txid",
-
 };
-
-
-

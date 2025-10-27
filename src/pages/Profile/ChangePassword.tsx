@@ -11,11 +11,23 @@ import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { getChangePasswordSchemaProfile } from "../../utils/validationSchemas";
 
+interface ChangePasswordRequestBody {
+  old_password: string;
+  new_password: string;
+  confirm_new_password: string;
+  [key: string]: string | number | boolean | Blob | File; // ← اینجا
+}
+
+
 type ChangePasswordFormData = {
   currentPassword: string;
   newPassword: string;
   confirmPassword: string;
 };
+interface ChangePasswordResponse {
+  status: boolean;
+  msg?: string;
+}
 
 export default function ChangePassword() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -46,46 +58,45 @@ export default function ChangePassword() {
     /[a-z]/.test(newPasswordValue) && /[A-Z]/.test(newPasswordValue);
   const hasNumber = /\d/.test(newPasswordValue);
 
-  const onSubmit = async (data: ChangePasswordFormData) => {
-    console.log(" SUBMIT DATA:", data);
-    setIsSubmitting(true);
+ const onSubmit = async (data: ChangePasswordFormData) => {
+  setIsSubmitting(true);
 
-    try {
-      const response = await apiRequest({
-        url: "/api/account/password",
-        method: "POST",
-        data: {
-          old_password: data.currentPassword,
-          new_password: data.newPassword,
-          confirm_new_password: data.confirmPassword,
-        },
-      });
+  try {
+ const response = await apiRequest<
+  ChangePasswordResponse,
+  ChangePasswordRequestBody
+>({
+  url: "/api/account/password",
+  method: "POST",
+  data: {
+    old_password: data.currentPassword,
+    new_password: data.newPassword,
+    confirm_new_password: data.confirmPassword,
+  },
+});
 
-      console.log(" API RESPONSE:", response);
 
-      if (response.status === true) {
-        toast.success("رمز عبور با موفقیت تغییر کرد");
-        reset();
-
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 1500);
-      } else {
-        toast.error((res as any)?.msg || "خطا در تغییر رمز عبور");
-      }
-    } catch (error: any) {
-      console.error(" API ERROR:", error);
-      const errorMsg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "خطا در اتصال به سرور";
-      toast.error(errorMsg);
-    } finally {
-      setIsSubmitting(false);
+    if (response.status === true) {
+      toast.success("رمز عبور با موفقیت تغییر کرد");
+      reset();
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+    } else {
+      toast.error(response.msg || "خطا در تغییر رمز عبور");
     }
-  };
+  } catch (error: any) {
+    console.error("API ERROR:", error);
+    const errorMsg =
+      error?.response?.data?.message ||
+      error?.message ||
+      "خطا در اتصال به سرور";
+    toast.error(errorMsg);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
-  console.log(" Form State:", { errors, isValid });
 
   return (
     <>
