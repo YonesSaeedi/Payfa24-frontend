@@ -1,5 +1,5 @@
-
 export default function IdentyIcon() {
+
   return (
     <svg
       width="100%"

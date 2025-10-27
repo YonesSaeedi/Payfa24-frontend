@@ -1,4 +1,3 @@
-
 function IconInProgress() {
   return (
     <svg

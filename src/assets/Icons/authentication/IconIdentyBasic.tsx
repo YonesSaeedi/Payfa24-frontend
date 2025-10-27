@@ -1,5 +1,5 @@
-
 export default function IconIdentyBasic() {
+
   return (
     <svg
       width="100%"

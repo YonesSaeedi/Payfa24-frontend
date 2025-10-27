@@ -1,5 +1,5 @@
-
 export default function IconBank() {
+  
   return (
     <>
       <svg

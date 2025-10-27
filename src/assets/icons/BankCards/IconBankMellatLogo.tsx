@@ -1,5 +1,5 @@
-
 function BankMellatLogo() {
+
   return (
     <svg
       width="100%"

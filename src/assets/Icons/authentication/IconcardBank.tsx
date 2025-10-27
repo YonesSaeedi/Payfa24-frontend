@@ -1,5 +1,5 @@
-
 export default function IconcardBank() {
+  
   return (
     <svg
       width="100%"

@@ -1,6 +1,5 @@
-import React from "react";
-
 function ArrowLeftIcon() {
+
   return (
     <svg
       width="100%"

@@ -47,7 +47,7 @@ export default function OTPModal({ length = 5, onChange }: OTPInputProps) {
       {values.map((val, idx) => (
         <input
           key={idx}
-          ref={(el) => (inputsRef.current[idx] = el)}
+          ref={el => { inputsRef.current[idx] = el }} // the function assigned to ref={} here, must not return anything. that's why we've used {} instead of ()
           type="text"
           value={val}
           onInput={(e) => handleInput(e, idx)}
