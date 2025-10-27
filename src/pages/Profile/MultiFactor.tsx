@@ -19,7 +19,7 @@ import { apiRequest } from "../../utils/apiClient";
 import { AxiosError } from "axios";
 
 export default function MultiFactor() {
-  const { data: twoFAData, refresh } = UseTwoStepVerification()
+  const { data: twoFAData, refetch } = UseTwoStepVerification()
   const { data: userData } = useGetUser();
 
 
@@ -110,7 +110,7 @@ const [modalType, setModalType] = useState<string | null>(null);
         method: "POST",
         data: { code: otpCode }, // otpCode ارسال شود
       });
-      refresh()
+      refetch()
       toast.success((res as any)?.msg || "موفق!");
       setIsOpen(false);
 
