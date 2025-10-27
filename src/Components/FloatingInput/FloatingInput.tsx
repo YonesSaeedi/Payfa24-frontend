@@ -2,12 +2,12 @@ import { useState, FC, ChangeEvent } from "react";
 
 interface FloatingInputProps {
   label: string;
-   value: string | undefined;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  value: string; 
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   className?: string;
   placeholder?: string;
-  placeholderColor?:string;
+  placeholderColor?: string;
 }
 
 const FloatingInput: FC<FloatingInputProps> = ({

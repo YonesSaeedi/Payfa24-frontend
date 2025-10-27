@@ -10,7 +10,7 @@ interface AuthenticationLeftProps {
   bottomText?: string;
 }
 
-const AuthenticationLeft: React.FC<AuthenticationLeftProps> = ({ step, text1, text2, bottomText, }) => {
+const AuthenticationLeft: React.FC<AuthenticationLeftProps> = ({  text1, text2,  }) => {
   const context = useContext<ThemeContextType | undefined>(ThemeContext);
   if (!context) {
     throw new Error("ThemeContext must be used within a ThemeProvider");

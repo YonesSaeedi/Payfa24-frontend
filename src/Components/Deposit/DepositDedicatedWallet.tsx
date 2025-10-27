@@ -11,6 +11,17 @@ import CryptoListModal from "../trade/CryptoListModal";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { toast } from "react-toastify";
 
+interface DepositApiResponse {
+  coins?: Array<{
+    id: number;
+    symbol: string;
+    price: string;
+    balance: string;
+    network?: CoinNetwork[];
+  }>;
+  networks?: Network[];
+  wallets_txid?: WalletTxid[];
+}
 // تعریف نوع برای شبکه‌ها
 interface Network {
   id: number;
@@ -36,7 +47,10 @@ interface WalletTxid {
   address_tag: string | null;
 }
 
-const INITIAL_CURRENCY: Partial<CryptoItem & { network?: CoinNetwork[] }> = {};
+interface CryptoItemWithNetwork extends CryptoItem {
+  id: number;
+  network?: CoinNetwork[];
+}
 
 const formatPersianDigits = (num: number | string) => {
   const number = Number(num);
@@ -48,18 +62,16 @@ const formatPersianDigits = (num: number | string) => {
 export default function DepositDedicatedWallet() {
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
-  const [selectedCurrency, setSelectedCurrency] =
-    useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>(
-      INITIAL_CURRENCY
-    );
-
+  const [selectedCurrency, setSelectedCurrency] = useState<
+    Partial<CryptoItem & { network?: CoinNetwork[] }>
+  >({});
   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
   const [networks, setNetworks] = useState<Network[]>([]);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [showWalletInfo, setShowWalletInfo] = useState(false);
 
   // state برای آدرس ولت
-  const { control, watch, setValue } = useForm();
+  const { control, watch } = useForm();
   const { data: generalInfo, isLoading: isGeneralInfoLoading } =
     useGetGeneralInfo();
 
@@ -92,7 +104,7 @@ export default function DepositDedicatedWallet() {
   const fetchAndMergeCryptoData = useCallback(async () => {
     setIsDepositCoinsLoading(true);
     try {
-      const depositRes = await apiRequest({
+      const depositRes = await apiRequest<DepositApiResponse>({
         url: "/api/wallets/crypto/deposit",
         method: "GET",
       });
@@ -124,7 +136,7 @@ export default function DepositDedicatedWallet() {
 
       // تنظیم ارز پیش‌فرض (بدون انتخاب شبکه دیفالت)
       if (merged.length > 0) {
-        const first = merged[0];
+        const first = merged[0] as CryptoItemWithNetwork;
         setSelectedCurrency({
           id: first.id,
           name: first.locale?.fa?.name || first.symbol || "نام ناشناس",
@@ -166,7 +178,7 @@ export default function DepositDedicatedWallet() {
         (coin) => coin.id === selectedCurrency.id
       );
       if (selectedCoin) {
-        const depositRes = await apiRequest({
+        const depositRes = await apiRequest<DepositApiResponse>({
           url: "/api/wallets/crypto/deposit",
           method: "GET",
         });
@@ -220,7 +232,7 @@ export default function DepositDedicatedWallet() {
     }
 
     try {
-      const depositRes = await apiRequest({
+      const depositRes = await apiRequest<DepositApiResponse>({
         url: "/api/wallets/crypto/deposit",
         method: "GET",
       });
@@ -263,12 +275,36 @@ export default function DepositDedicatedWallet() {
         rules={{ required: "لطفا یک ارز انتخاب کنید" }}
         render={({ field }) => (
           <FloatingSelect
-            placeholder={
-              // ✅ فقط متن اسکلتون
-              selectedCurrency.name ? (
-                selectedCurrency.name
+            placeholder={selectedCurrency.name || ""}
+            placeholderIcon={
+              !selectedCurrency.name ? (
+                <div className="w-7 h-7 skeleton-bg rounded-full" />
+              ) : selectedCurrency.icon || selectedCurrency.isFont ? (
+                selectedCurrency.isFont ? (
+                  <i
+                    className={`cf cf-${
+                      selectedCurrency.symbol?.toLowerCase() ?? "unknown"
+                    }`}
+                    style={{
+                      color: selectedCurrency.color || "#000",
+                      fontSize: "28px",
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
+                    alt={selectedCurrency.symbol || "currency"}
+                    className="w-7 h-7 rounded-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling?.classList.remove(
+                        "hidden"
+                      );
+                    }}
+                  />
+                )
               ) : (
-                <div className="h-5 w-24 skeleton-bg rounded-sm mt-1" />
+                <div className="w-7 h-7 skeleton-bg rounded-full" />
               )
             }
             label="انتخاب رمز ارز"
@@ -285,25 +321,6 @@ export default function DepositDedicatedWallet() {
               field.onChange(value);
             }}
             onOpen={openCryptoListModal}
-            placeholderIcon={
-              // ✅ آیکون اسکلتون
-              selectedCurrency.icon || selectedCurrency.isFont ? (
-                selectedCurrency.isFont ? (
-                  <i
-                    className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
-                    style={{ color: selectedCurrency.color, fontSize: "28px" }}
-                  ></i>
-                ) : (
-                  <img
-                    src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
-                    alt={selectedCurrency.symbol}
-                    className="w-7 h-7 rounded-full object-contain"
-                  />
-                )
-              ) : (
-                <div className="w-7 h-7 skeleton-bg rounded-full" />
-              )
-            }
             placeholderClasses="text-black0"
           />
         )}
@@ -312,7 +329,7 @@ export default function DepositDedicatedWallet() {
         <div className="flex justify-between mt-2 mb-10">
           <span className="text-sm text-gray5">موجودی</span>
           <span className="text-sm text-black0">
-            {formatPersianDigits(selectedCurrency.balance)}{" "}
+            {formatPersianDigits(selectedCurrency.balance ?? "0")}{" "}
             {selectedCurrency.symbol}
           </span>
         </div>
@@ -330,20 +347,10 @@ export default function DepositDedicatedWallet() {
             label="انتخاب شبکه"
             value={field.value}
             onChange={field.onChange}
-            options={
-              networkOptions.map((option) => ({
-                value: option.value,
-                label: (
-                  <div className="flex items-center justify-between w-full py-1 rounded-md">
-                    <div className="flex items-center gap-2">
-                      <span className="lg:text-sm text-xs text-black0">
-                        {option.label}
-                      </span>
-                    </div>
-                  </div>
-                ),
-              })) || []
-            }
+            options={networkOptions.map((option) => ({
+              value: option.value,
+              label: option.label,
+            }))}
             placeholderClasses="text-black0 text-sm"
           />
         )}
@@ -400,7 +407,7 @@ export default function DepositDedicatedWallet() {
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
             disabled={!selectedCurrency.id || !selectedNetwork}
-            onClick={handleSubmit}
+            onClick={() => handleSubmit()}
           >
             ساخت آدرس
           </button>

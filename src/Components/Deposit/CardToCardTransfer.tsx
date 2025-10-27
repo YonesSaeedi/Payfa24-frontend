@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect, type ReactNode } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import BankAnsarLogo from "../../assets/icons/BankCards/IconBankAnsarLogo";
@@ -10,9 +9,10 @@ import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import Accordion from "../Withdrawal/Accordion";
 import { toast } from "react-toastify";
-import { apiRequest, AxiosError } from "../../utils/apiClient";
+import { apiRequest } from "../../utils/apiClient";
 import IconAlert from "../../assets/icons/Login/IconAlert";
 import { getValidationSchemaCardtoCard } from "../../utils/validationSchemas";
+import { AxiosError } from "axios";
 
 // --- Interfaces ---
 interface CreditCard {
@@ -44,10 +44,10 @@ interface WalletsFiatResponse {
   cardToCard: CardToCardInfo;
 }
 
-interface CardToCardRequestData {
-  amount: number;
-  card: number;
-}
+interface CardToCardRequestData extends Record<string, any> {
+   amount: number;
+   card: number;
+ }
 
 interface CardToCardResponse {
   status: boolean;
@@ -55,7 +55,7 @@ interface CardToCardResponse {
 }
 
 // --- Helper functions ---
-const bankIconMap: { [key: string]: JSX.Element } = {
+const bankIconMap: { [key: string]: ReactNode } = {
   بلوبانک: <BankMellatLogo />,
   "بانک ملی": <BankMelliLogo />,
   "بانک ملت": <BankMellatLogo />,
@@ -63,15 +63,18 @@ const bankIconMap: { [key: string]: JSX.Element } = {
   "بانک سامان": <BankMellatLogo />,
   "بانک تجارت": <BankMellatLogo />,
   "بانک کشاورزی": <BankMellatLogo />,
-  "رسالت": <BankMellatLogo />,
+  رسالت: <BankMellatLogo />,
   سایر: <BankAnsarLogo />,
 };
 
-const getBankIcon = (bankName: string): JSX.Element | null => {
+const getBankIcon = (bankName: string): ReactNode => {
   return bankIconMap[bankName] || null;
 };
 
-const formatCardNumber = (cardNumber: string, full: boolean = false): string => {
+const formatCardNumber = (
+  cardNumber: string,
+  full: boolean = false
+): string => {
   if (!cardNumber) return "—";
   if (full) return cardNumber;
   const cleaned = cardNumber.replace(/\s+/g, "");
@@ -92,32 +95,49 @@ export default function CardToCardTransfer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [timer, setTimer] = useState(0);
   const [cards, setCards] = useState<CreditCard[]>([]);
-  const [responseData, setResponseData] = useState<WalletsFiatResponse | null>(null);
+  const [responseData, setResponseData] = useState<WalletsFiatResponse | null>(
+    null
+  );
   const [loadingData, setLoadingData] = useState(true);
 
-  const { control, setValue, watch, handleSubmit, formState: { errors }, reset } = useForm<CardToCardRequestData>({
+  const {
+    control,
+    setValue,
+    watch,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<CardToCardRequestData>({
     resolver: yupResolver(getValidationSchemaCardtoCard()),
     defaultValues: { card: 0 },
   });
 
   const selectedAmount = watch("amount");
   const selectedCardId = watch("card");
-  const selectedCard = cards.find(c => c.id === selectedCardId);
+  const selectedCard = cards.find((c) => c.id === selectedCardId);
 
   // --- Fetch wallet & cardToCard data ---
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiRequest<WalletsFiatResponse>({ url: "/api/wallets/fiat", method: "GET" });
+        const response = await apiRequest<WalletsFiatResponse>({
+          url: "/api/wallets/fiat",
+          method: "GET",
+        });
         if (response.status) {
           setResponseData(response);
           setCards(response.list_cards || []);
 
           // تایمر
           if (response.cardToCard.transaction) {
-            const transactionDate = new Date(response.cardToCard.transaction.date);
+            const transactionDate = new Date(
+              response.cardToCard.transaction.date
+            );
             const endTime = transactionDate.getTime() + 30 * 60 * 1000; // 30 دقیقه بعد
-            const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+            const remaining = Math.max(
+              0,
+              Math.floor((endTime - Date.now()) / 1000)
+            );
             setTimer(remaining);
             setShowSummary(remaining > 0);
           }
@@ -138,7 +158,7 @@ export default function CardToCardTransfer() {
   useEffect(() => {
     if (showSummary && timer > 0) {
       const interval = setInterval(() => {
-        setTimer(prev => {
+        setTimer((prev) => {
           const newTimer = prev - 1;
           if (newTimer <= 0) {
             clearInterval(interval);
@@ -163,7 +183,10 @@ export default function CardToCardTransfer() {
     setIsSubmitting(true);
     try {
       const requestData = { amount: Number(data.amount), card: data.card };
-      const response = await apiRequest<CardToCardResponse, CardToCardRequestData>({
+      const response = await apiRequest<
+        CardToCardResponse,
+        CardToCardRequestData
+      >({
         url: "/api/wallets/fiat/deposit/card-to-card",
         method: "POST",
         data: requestData,
@@ -172,14 +195,22 @@ export default function CardToCardTransfer() {
       if (response.status) {
         toast.success(response.msg || "درخواست واریز با موفقیت ثبت شد. ✅");
 
-        const updatedResponse = await apiRequest<WalletsFiatResponse>({ url: "/api/wallets/fiat", method: "GET" });
+        const updatedResponse = await apiRequest<WalletsFiatResponse>({
+          url: "/api/wallets/fiat",
+          method: "GET",
+        });
         if (updatedResponse.status && updatedResponse.cardToCard.transaction) {
           setResponseData(updatedResponse);
           reset({ amount: 0, card: 0 });
 
-          const transactionDate = new Date(updatedResponse.cardToCard.transaction.date);
+          const transactionDate = new Date(
+            updatedResponse.cardToCard.transaction.date
+          );
           const endTime = transactionDate.getTime() + 30 * 60 * 1000;
-          const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+          const remaining = Math.max(
+            0,
+            Math.floor((endTime - Date.now()) / 1000)
+          );
           setTimer(remaining);
           setShowSummary(remaining > 0);
         } else {
@@ -190,16 +221,23 @@ export default function CardToCardTransfer() {
       }
     } catch (error: any) {
       const axiosError = error as AxiosError<{ msg?: string }>;
-      toast.error(axiosError.response?.data?.msg || "خطا در اتصال به سرور. دوباره امتحان کنید. ⚠️");
+      toast.error(
+        axiosError.response?.data?.msg ||
+          "خطا در اتصال به سرور. دوباره امتحان کنید. ⚠️"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   // --- Transaction summary data ---
-  const summarySourceCard = cards.find(c => c.id === responseData?.cardToCard?.transaction?.card);
+  const summarySourceCard = cards.find(
+    (c) => c.id === responseData?.cardToCard?.transaction?.card
+  );
   const finalSourceCard = showSummary ? summarySourceCard : selectedCard;
-  const finalAmount = showSummary ? responseData?.cardToCard?.transaction?.amount : Number(selectedAmount) || 0;
+  const finalAmount = showSummary
+    ? responseData?.cardToCard?.transaction?.amount
+    : Number(selectedAmount) || 0;
 
   const transactionData = {
     fromCard: formatCardNumber(finalSourceCard?.card || "", true),
@@ -208,12 +246,19 @@ export default function CardToCardTransfer() {
     toBank: responseData?.cardToCard?.card?.bank || "",
     owner: responseData?.cardToCard?.card?.name || "گروه فرهنگی و هنری",
     amount: finalAmount,
-    finalAmountWithFee: finalAmount && finalAmount >= 100000 ? (finalAmount - 100000).toLocaleString("fa-IR") : (finalAmount || 0).toLocaleString("fa-IR"),
+    finalAmountWithFee:
+      finalAmount && finalAmount >= 100000
+        ? (finalAmount - 100000).toLocaleString("fa-IR")
+        : (finalAmount || 0).toLocaleString("fa-IR"),
   };
 
   if (loadingData) return <span className="w-7 h-4 skeleton-bg"></span>;
   if (showSummary && !responseData?.cardToCard?.card)
-    return <div className="text-center py-8 text-red-500">خطا: اطلاعات کارت مقصد ناقص است. لطفاً با پشتیبانی تماس بگیرید.</div>;
+    return (
+      <div className="text-center py-8 text-red-500">
+        خطا: اطلاعات کارت مقصد ناقص است. لطفاً با پشتیبانی تماس بگیرید.
+      </div>
+    );
 
   return (
     <div className="w-full lg:px-7 my-10" dir="rtl">
@@ -221,7 +266,9 @@ export default function CardToCardTransfer() {
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Video guide */}
           <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
-            <span className="icon-wrapper w-6 h-6 text-blue2"><IconVideo /></span>
+            <span className="icon-wrapper w-6 h-6 text-blue2">
+              <IconVideo />
+            </span>
             <span>ویدیو آموزشی واریز با درگاه پرداخت</span>
           </div>
 
@@ -236,20 +283,36 @@ export default function CardToCardTransfer() {
                     placeholder="کارت مبدا را انتخاب کنید"
                     label="انتخاب کارت مبدا"
                     value={field.value?.toString() || ""}
-                    onChange={v => field.onChange(Number(v))}
-                    options={cards.map(card => ({
+                    onChange={(v) => field.onChange(Number(v))}
+                    options={cards.map((card) => ({
                       value: card.id.toString(),
                       label: (
                         <div className="flex items-center justify-between w-full py-1 rounded-md">
-                          <span className="text-sm text-black0">{card.bank}</span>
-                          <span className="text-sm text-black0">{formatCardNumber(card.card)}</span>
+                          <span className="text-sm text-black0">
+                            {card.bank}
+                          </span>
+                          <span className="text-sm text-black0">
+                            {formatCardNumber(card.card)}
+                          </span>
                         </div>
+                      )as any,
+                      icon: (
+                        <span className="w-6 h-6">
+                          {getBankIcon(card.bank)}
+                        </span>
                       ),
-                      icon: <span className="w-6 h-6">{getBankIcon(card.bank)}</span>
                     }))}
                   />
-                  {errors.card && <p className="text-red1 text-sm mt-1">{errors.card.message}</p>}
-                  {cards.length === 0 && <p className="text-yellow-500 text-sm mt-1">هیچ کارتی یافت نشد. لطفاً کارت اضافه کنید.</p>}
+                  {errors.card && (
+                    <p className="text-red1 text-sm mt-1">
+                      {errors.card.message}
+                    </p>
+                  )}
+                  {cards.length === 0 && (
+                    <p className="text-yellow-500 text-sm mt-1">
+                      هیچ کارتی یافت نشد. لطفاً کارت اضافه کنید.
+                    </p>
+                  )}
                 </>
               )}
             />
@@ -271,13 +334,22 @@ export default function CardToCardTransfer() {
                 />
               )}
             />
-            {errors.amount && <p className="text-red1 text-xs py-3">مقدار واریزی حداقل ۵۰۰,۰۰۰ تومان می باشد</p>}
+            {errors.amount && (
+              <p className="text-red1 text-xs py-3">
+                مقدار واریزی حداقل ۵۰۰,۰۰۰ تومان می باشد
+              </p>
+            )}
           </div>
 
           {/* Preset amounts */}
           <div className="flex gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
             {amounts.map((amount, index) => (
-              <button key={index} type="button" onClick={() => setPresetAmount(amount)} className="border border-gray12 rounded-lg px-7 py-2 text-gray12 text-sm">
+              <button
+                key={index}
+                type="button"
+                onClick={() => setPresetAmount(amount)}
+                className="border border-gray12 rounded-lg px-7 py-2 text-gray12 text-sm"
+              >
                 {amount} میلیون
               </button>
             ))}
@@ -285,7 +357,15 @@ export default function CardToCardTransfer() {
 
           {/* Submit */}
           <div className="mt-40">
-            <button type="submit" disabled={isSubmitting || cards.length === 0} className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg ${isSubmitting || cards.length === 0 ? "opacity-50 cursor-not-allowed" : ""}`}>
+            <button
+              type="submit"
+              disabled={isSubmitting || cards.length === 0}
+              className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg ${
+                isSubmitting || cards.length === 0
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+            >
               {isSubmitting ? "در حال ثبت درخواست..." : "درخواست کارت به کارت"}
             </button>
 
@@ -294,7 +374,10 @@ export default function CardToCardTransfer() {
               <Accordion title="راهنمای واریز کارت به کارت">
                 <ul className="list-disc pr-5 space-y-2 text-black1">
                   <li>از صحت شماره کارت مقصد (صرافی) واریز مطمئن شوید.</li>
-                  <li>پس از ثبت درخواست، فرصت محدودی (۳۰ دقیقه) برای انجام کارت به کارت خواهید داشت.</li>
+                  <li>
+                    پس از ثبت درخواست، فرصت محدودی (۳۰ دقیقه) برای انجام کارت به
+                    کارت خواهید داشت.
+                  </li>
                   <li>واریز باید حتماً از کارت انتخابی شما انجام شود.</li>
                 </ul>
               </Accordion>
@@ -306,8 +389,12 @@ export default function CardToCardTransfer() {
           {/* Summary */}
           <div className="rounded-lg text-black0 space-y-8">
             <div className="flex flex-col gap-3 text-black0 rounded-xl py-4 lg:my-3 items-center">
-              <span className="text-gray5 lg:text-lg text-sm">فرصت باقی مانده برای انجام کارت به کارت</span>
-              <span className="font-bold lg:text-2xl text-lg text-black0">{formatTimer(timer)}</span>
+              <span className="text-gray5 lg:text-lg text-sm">
+                فرصت باقی مانده برای انجام کارت به کارت
+              </span>
+              <span className="font-bold lg:text-2xl text-lg text-black0">
+                {formatTimer(timer)}
+              </span>
             </div>
 
             <div className="space-y-6 lg:text-lg text-sm">
@@ -315,13 +402,17 @@ export default function CardToCardTransfer() {
                 <span className="text-gray5">کارت مبدا</span>
                 <div className="flex gap-2 items-center">
                   <span>{transactionData.fromCard}</span>
-                  <span className="icon-wrapper lg:w-7 lg:h-7 w-6 h-6">{transactionData.fromBankIcon}</span>
+                  <span className="icon-wrapper lg:w-7 lg:h-7 w-6 h-6">
+                    {transactionData.fromBankIcon}
+                  </span>
                 </div>
               </div>
 
               <div className="flex justify-between items-center">
                 <span className="text-gray5">مبلغ تراکنش</span>
-                <span>{transactionData.amount.toLocaleString("fa-IR")} تومان</span>
+                <span>
+                  {transactionData.amount?.toLocaleString("fa-IR") ?? "0"} تومان
+                </span>
               </div>
 
               <div className="flex justify-between items-center">
@@ -339,14 +430,25 @@ export default function CardToCardTransfer() {
             </button> */}
           </div>
 
-          <div dir="rtl" className="bg-orange5 rounded-xl p-4 text-sm text-left mt-8">
+          <div
+            dir="rtl"
+            className="bg-orange5 rounded-xl p-4 text-sm text-left mt-8"
+          >
             <div className="flex text-orange1 gap-1 font-medium items-center">
-              <span className="icon-wrapper w-4 h-4"><IconAlert /></span>
+              <span className="icon-wrapper w-4 h-4">
+                <IconAlert />
+              </span>
               <span>توجه داشته باشید</span>
             </div>
             <ul className="text-right pt-2 lg:pt-4 list-disc list-inside text-black0 lg:text-[16px] leading-relaxed text-xs space-y-2">
-              <li>حتما بایستی از کارت مقصدی که انتخاب کرده‌اید و مبلغی که درج کرده‌اید تراکنش انجام شود.</li>
-              <li>پس از انجام کارت به کارت به صورت خودکار کیف پول تومانی شما شارژ می‌شود.</li>
+              <li>
+                حتما بایستی از کارت مقصدی که انتخاب کرده‌اید و مبلغی که درج
+                کرده‌اید تراکنش انجام شود.
+              </li>
+              <li>
+                پس از انجام کارت به کارت به صورت خودکار کیف پول تومانی شما شارژ
+                می‌شود.
+              </li>
             </ul>
           </div>
         </>
