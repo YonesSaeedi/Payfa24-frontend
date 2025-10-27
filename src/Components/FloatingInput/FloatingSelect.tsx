@@ -4,7 +4,7 @@ import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 
 interface Option {
   value?: string;
-  label: string;
+  label: React.ReactNode
   icon?: React.ReactNode;
 }
 

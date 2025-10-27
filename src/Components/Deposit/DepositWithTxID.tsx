@@ -1,7 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
-import IconMonnos from "../../assets/icons/Deposit/IconMonnos";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import QRCode from "react-qr-code"; // اضافه کردن پکیج react-qr-code
 import IconCopy from "../../assets/icons/AddFriend/IconCopy";
@@ -12,7 +11,6 @@ import { CryptoItem } from "../../types/crypto";
 import CryptoListModal from "../trade/CryptoListModal";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { toast } from "react-toastify";
-import BreadcrumbNavigation from "../BreadcrumbNavigation";
 
 // تعریف نوع برای شبکه‌ها
 interface Network {

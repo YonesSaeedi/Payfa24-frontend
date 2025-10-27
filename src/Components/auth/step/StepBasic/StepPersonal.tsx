@@ -116,43 +116,50 @@ export default function StepPersonal({ onNext }: Props) {
   }, [setValue, onNext]);
 
   // Mutation for submitting personal info
-  const submitPersonalInfoMutation = useMutation<ApiResponse, Error, FormData>({
-
-mutationFn: (payload: FormData) =>
-  apiRequest<ApiResponse>({ url: "/api/kyc/basic/level2", method: "POST", data: payload }),
-    onSuccess: (data) => {
-      console.log("Submit personal info response:", data);
-      if (data.status) {
-        toast.success("اطلاعات با موفقیت ثبت شد.");
-        onNext();
-      } else {
-        const isAlreadyRegistered =
-          data.msg && data.msg.includes("قبلا این اطلاعات را ثبت کرده‌اید");
-        if (isAlreadyRegistered) {
-          toast.info("اطلاعات شما قبلا ثبت شده است. به مرحله بعد می‌روید.");
-          onNext();
-        } else {
-          toast.error(data.msg || "خطا در ثبت اطلاعات.");
-        }
-      }
-    },
-    onError: (error: AxiosError<{ msg: string }>) => {
-      console.error("Submit personal info error:", error);
-      const errorMsg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
-
-      const isAlreadyRegisteredError =
-        error.response?.status === 400 &&
-        errorMsg.includes("قبلا این اطلاعات را ثبت کرده اید");
-
-      if (isAlreadyRegisteredError) {
-        // Correctly handle the 400 error by navigating to the next step
+const submitPersonalInfoMutation = useMutation<
+  ApiResponse,
+  AxiosError<{ msg: string }>,
+  FormData
+>({
+  mutationFn: (payload: FormData) =>
+    apiRequest<ApiResponse,FormData>({
+      url: "/api/kyc/basic/level2",
+      method: "POST",
+      data: payload,
+    }),
+  onSuccess: (data) => {
+    console.log("Submit personal info response:", data);
+    if (data.status) {
+      toast.success("اطلاعات با موفقیت ثبت شد.");
+      onNext();
+    } else {
+      const isAlreadyRegistered =
+        data.msg && data.msg.includes("قبلا این اطلاعات را ثبت کرده‌اید");
+      if (isAlreadyRegistered) {
         toast.info("اطلاعات شما قبلا ثبت شده است. به مرحله بعد می‌روید.");
         onNext();
       } else {
-        toast.error(errorMsg);
+        toast.error(data.msg || "خطا در ثبت اطلاعات.");
       }
-    },
-  });
+    }
+  },
+  onError: (error) => {
+    console.error("Submit personal info error:", error);
+    const errorMsg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
+
+    const isAlreadyRegisteredError =
+      error.response?.status === 400 &&
+      errorMsg.includes("قبلا این اطلاعات را ثبت کرده اید");
+
+    if (isAlreadyRegisteredError) {
+      toast.info("اطلاعات شما قبلا ثبت شده است. به مرحله بعد می‌روید.");
+      onNext();
+    } else {
+      toast.error(errorMsg);
+    }
+  },
+});
+
 
   const onSubmit = (data: FormData) => {
     const payload = {
@@ -166,12 +173,7 @@ mutationFn: (payload: FormData) =>
     submitPersonalInfoMutation.mutate(payload);
   };
 
-  const handleDateChange = (date: string | null) => {
-    if (date) {
-      setValue("dateBirth", date);
-    }
-    setIsModalOpen(false);
-  };
+
 
   return (
     <div className="w-full">

@@ -7,7 +7,6 @@ import addFriendLight from "../../assets/images/Addfriend/addFriendLight.png";
 import addFriendDark from "../../assets/images/Addfriend/addFriendDark.png";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-import IconGiftBox from "../../assets/icons/AddFriend/IconGiftBox";
 import Gift from "../../assets/images/Addfriend/GiftInvitImg.png";
 import Share from "../../assets/images/Addfriend/shareimg.png";
 import person from "../../assets/images/Addfriend/personimag.png";
@@ -27,6 +26,7 @@ import {
   ReferralReportResponse,
 } from "../../utils/api/referralApi";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
+import IconGiftBox from "../../assets/icons/AddFriend/IconGiftBox";
 
 interface InvitedUserItem extends InvitedUserReportItem { }
 interface TransactionItemExt extends TransactionItem { }
@@ -149,7 +149,7 @@ export default function AddFriend() {
 
   const BoxInvite = [
     {
-      Icon: <IconGiftBox />,
+      Icon: <IconGiftBox/>,
       Text: "مجموع درآمد شما",
       count:
         (referralReport?.referral_transaction_amount?.toLocaleString() || "0") +
