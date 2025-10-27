@@ -44,7 +44,7 @@ export default function DepositForm() {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      amount: 0,
+      // amount: 0,
       bank: "",
     },
   });

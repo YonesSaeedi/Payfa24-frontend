@@ -1,32 +1,23 @@
-import HeaderLayout from "../../layouts/HeaderLayout";
-import IconCopy from "../../assets/icons/AddFriend/IconCopy";
-import IconUserAdd from "../../assets/icons/AddFriend/IconUserAdd";
 import inviteLeftImg from "../../assets/images/Addfriend/inviteLeft.png";
 import inviteRightImg from "../../assets/images/Addfriend/inviteRight.png";
 import addFriendLight from "../../assets/images/Addfriend/addFriendLight.png";
 import addFriendDark from "../../assets/images/Addfriend/addFriendDark.png";
 import { useContext, useEffect, useRef, useState } from "react";
-import { ThemeContext } from "../../context/ThemeContext";
 import Gift from "../../assets/images/Addfriend/GiftInvitImg.png";
 import Share from "../../assets/images/Addfriend/shareimg.png";
 import person from "../../assets/images/Addfriend/personimag.png";
 import gitImg from "../../assets/images/Addfriend/giftimag.png";
 import UserImg from "../../assets/images/Addfriend/User.png";
+import { toast } from "react-toastify";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
+import HeaderLayout from '../../layouts/HeaderLayout.tsx';
+import IconCopy from "../../assets/icons/AddFriend/IconCopy";
+import IconUserAdd from "../../assets/icons/AddFriend/IconUserAdd";
+import { ThemeContext } from "../../context/ThemeContext";
+import IconGiftBox from "../../assets/icons/AddFriend/IconGiftBox";
 import IconClose from "../../assets/icons/Login/IconClose";
 import ReferralPercentBar from "../../components/ReferralPercentBar";
-
-import { toast } from "react-toastify";
-// import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
-import {
-  setReferralCommission,
-  getReferralTransactions,
-  getReferralReport,
-  InvitedUserReportItem,
-  TransactionItem,
-  ReferralReportResponse,
-} from "../../utils/api/referralApi";
-import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
-import IconGiftBox from "../../assets/icons/AddFriend/IconGiftBox";
+import { getReferralReport, getReferralTransactions, InvitedUserReportItem, ReferralReportResponse, setReferralCommission, TransactionItem } from "../../utils/api/referralApi";
 
 interface InvitedUserItem extends InvitedUserReportItem { }
 interface TransactionItemExt extends TransactionItem { }
@@ -587,7 +578,7 @@ export default function AddFriend() {
                     className="icon-wrapper w-6 h-6 cursor-pointer text-gray5 hover:text-black0"
                     onClick={() => setIsOpenModal(false)}
                   >
-                    <IconClose />
+                    <IconClose/>
                   </span>
                   <span className="text-black0 font-medium text-base">
                     تنظیم درصد سود

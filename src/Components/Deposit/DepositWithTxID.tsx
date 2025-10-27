@@ -2,7 +2,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
-import QRCode from "react-qr-code"; // اضافه کردن پکیج react-qr-code
+import QRCode from "react-qr-code";
 import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 import TextField from "../InputField/TextField";
 import Accordion from "../Withdrawal/Accordion";
@@ -12,7 +12,12 @@ import CryptoListModal from "../trade/CryptoListModal";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { toast } from "react-toastify";
 
-// تعریف نوع برای شبکه‌ها
+interface TxidPostResponse {
+  status: number;
+  data?: { wallets_txid?: WalletTxid[] };
+  message?: string;
+}
+
 interface Network {
   id: number;
   name: string;
@@ -60,6 +65,7 @@ export default function DepositWithTxID() {
     useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>(
       INITIAL_CURRENCY
     );
+
   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [networks, setNetworks] = useState<Network[]>([]);
@@ -98,7 +104,17 @@ export default function DepositWithTxID() {
   const fetchAndMergeCryptoData = useCallback(async () => {
     setIsDepositCoinsLoading(true);
     try {
-      const depositRes = await apiRequest({
+      const depositRes = await apiRequest<{
+        coins?: Array<{
+          id: number;
+          symbol: string;
+          price: string;
+          balance: string;
+          network?: CoinNetwork[];
+        }>;
+        networks?: Network[];
+        wallets_txid?: WalletTxid[];
+      }>({
         url: "/api/wallets/crypto/deposit",
         method: "GET",
       });
@@ -140,7 +156,7 @@ export default function DepositWithTxID() {
           balance: first.balance || "0",
           isFont: first.isFont || false,
           color: first.color || "#000",
-          network: first.network || [],
+          network: (first as any).network || [],
         });
       }
 
@@ -190,7 +206,17 @@ export default function DepositWithTxID() {
         (coin) => coin.id === selectedCurrency.id
       );
       if (selectedCoin) {
-        const depositRes = await apiRequest({
+        const depositRes = await apiRequest<{
+          coins?: Array<{
+            id: number;
+            symbol: string;
+            price: string;
+            balance: string;
+            network?: CoinNetwork[];
+          }>;
+          networks?: Network[];
+          wallets_txid?: WalletTxid[];
+        }>({
           url: "/api/wallets/crypto/deposit",
           method: "GET",
         });
@@ -219,11 +245,7 @@ export default function DepositWithTxID() {
   const openCryptoListModal = () => {
     setIsCryptoListModalOpen(true);
   };
-  // بالای کامپوننت style اضافه کن
-  const styles = {
-    sectionSpacing: "mb-10", // فاصله ثابت 2.5rem
-    fieldSpacing: "mb-6", // فاصله فیلدها
-  };
+
   const handleCurrencySelect = (
     crypto: CryptoItem & { network?: CoinNetwork[] }
   ) => {
@@ -243,27 +265,40 @@ export default function DepositWithTxID() {
 
   const handleSubmit = async () => {
     if (!selectedCurrency.symbol || !selectedNetwork) {
-      {toast.error("لطفا ارز و شبکه را انتخاب کنید ")}
+      toast.error("لطفاً ارز و شبکه را انتخاب کنید");
       return;
     }
-    const depositRes = await apiRequest({
-      url: `/api/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
-      method: "POST",
-      data: {
-        txid: watch("txid") || "",
-        network_id: parseInt(selectedNetwork),
-      },
-    });
-    if (depositRes.status === 200) {
-      const matchingWallet = depositRes.data.wallets_txid?.find(
-        (wallet: WalletTxid) =>
-          wallet.id_coin === selectedCurrency.id &&
-          wallet.id_net === parseInt(selectedNetwork)
-      );
-      setWalletAddress(matchingWallet?.address || null);
-      setIsAddressSubmitted(true);
-    } else {
-      // alert("خطا در پردازش درخواست: " + (depositRes.message || "وضعیت ناموفق"));
+
+    try {
+      const depositRes = await apiRequest<TxidPostResponse>({
+        url: `/api/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
+        method: "POST",
+        data: {
+          txid: watch("txid") || "",
+          network_id: parseInt(selectedNetwork),
+        },
+      });
+
+      if (depositRes.status === 200) {
+        const matchingWallet = depositRes.data?.wallets_txid?.find(
+          (wallet: WalletTxid) =>
+            wallet.id_coin === selectedCurrency.id &&
+            wallet.id_net === parseInt(selectedNetwork)
+        );
+
+        if (matchingWallet?.address) {
+          setWalletAddress(matchingWallet.address);
+          toast.success("آدرس ولت با موفقیت دریافت شد");
+        } else {
+          toast.error("آدرس ولت برای این شبکه یافت نشد");
+          setWalletAddress(null);
+        }
+      } else {
+        toast.error(depositRes.message || "خطا در پردازش درخواست");
+      }
+    } catch (err: any) {
+      console.error("خطا در ارسال TxID:", err);
+      toast.error(err.response?.data?.msg || "خطا در اتصال به سرور");
     }
   };
 
@@ -287,14 +322,7 @@ export default function DepositWithTxID() {
           rules={{ required: "لطفا یک ارز انتخاب کنید" }}
           render={({ field }) => (
             <FloatingSelect
-              placeholder={
-                // ✅ فقط متن اسکلتون
-                selectedCurrency.name ? (
-                  selectedCurrency.name
-                ) : (
-                  <div className="h-5 w-24 skeleton-bg rounded-sm mt-1" />
-                )
-              }
+              placeholder={selectedCurrency.name || ""}
               label="انتخاب رمز ارز"
               options={cryptoListData.map((crypto) => ({
                 value: crypto.symbol,
@@ -310,7 +338,6 @@ export default function DepositWithTxID() {
               }}
               onOpen={openCryptoListModal}
               placeholderIcon={
-                // ✅ آیکون اسکلتون
                 selectedCurrency.icon || selectedCurrency.isFont ? (
                   selectedCurrency.isFont ? (
                     <i

@@ -43,7 +43,7 @@ type Props = {
   initialPreviewUrl: string | null;
 };
 
-const bankIconMap: { [key: string]: JSX.Element } = {
+const bankIconMap: Record<string, React.ReactNode> = {
   بلوبانک: <BankMellatLogo />,
   "بانک ملی": <BankMelliLogo />,
   "بانک ملت": <BankMellatLogo />,
@@ -87,7 +87,7 @@ export default function DepositBankReceipt({
   });
 
   // --- آپلود فایل با progress ---
-  const uploadFile = useCallback(async (file: File, formData: FormData) => {
+  const uploadFile = useCallback(async (formData: FormData) => {
     setIsUploading(true);
     setUploadProgress(0);
 
@@ -130,7 +130,7 @@ export default function DepositBankReceipt({
       const newPreviewURL = URL.createObjectURL(file);
       setPreviewURL(newPreviewURL);
       onFileChange(file);
-      setValue("amount", "", { shouldValidate: true });
+      setValue("amount", 0, { shouldValidate: true });
     } else {
       setSelectedFile(null);
       setPreviewURL(null);
@@ -181,8 +181,7 @@ export default function DepositBankReceipt({
       formData.append("card", selectedCardId.toString());
       formData.append("file", selectedFile);
 
-      // آپلود با progress (نمایش در دکمه)
-      const uploadSuccess = await uploadFile(selectedFile, formData);
+      const uploadSuccess = await uploadFile(formData);
 
       if (uploadSuccess) {
         setTimeout(() => {

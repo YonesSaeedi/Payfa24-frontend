@@ -19,25 +19,15 @@ type FormValues = {
   CardNumber: string;
 };
 
-type UserInfo = {
-  level_kyc: number;
-  kyc: {
+interface KycCheckResponse {
+  status: boolean;
+  msg?: string;
+  kyc?: {
     basic?: {
-      name?: string;
-      family?: string;
-      mobile?: string | null;
-      email?: string | null;
-      father?: string;
-      national_code?: string;
-      date_birth?: string;
-      cardbank?: string; // تغییر نوع به string برای مطابقت با دیتا
-    };
-    advanced?: {
-      status: "pending" | "success" | "reject";
-      reason_reject?: string | null;
+      cardbank?: boolean;
     };
   };
-};
+}
 
 const schema = yup.object().shape({
   CardNumber: yup
@@ -89,7 +79,7 @@ export default function StepCard({ onNext }: Props) {
   useEffect(() => {
     const checkCardStatus = async () => {
       try {
-        const response = await apiRequest<{ status: boolean; msg?: string }>({
+        const response = await apiRequest<KycCheckResponse>({
           url: "/api/kyc/get-info",
         });
 
@@ -112,7 +102,10 @@ export default function StepCard({ onNext }: Props) {
       const payload = {
         CardNumber: data.CardNumber.replace(/-/g, ""),
       };
-      return apiRequest({
+      return apiRequest<
+        { status: boolean; msg?: string },
+        { CardNumber: string }
+      >({
         url: "/api/account/credit-card",
         method: "POST",
         data: payload,
@@ -163,7 +156,10 @@ export default function StepCard({ onNext }: Props) {
               <TextField
                 label="شماره کارت"
                 type="text"
-                error={errors.CardNumber?.message || submitCardMutation.error?.response?.data?.msg}
+                error={
+                  errors.CardNumber?.message ||
+                  submitCardMutation.error?.response?.data?.msg
+                }
                 {...field}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const formatted = formatCardNumber(e.target.value);
