@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import OTPModal from "../../OTPModal";
 import { apiRequest } from "../../../utils/apiClient";
 import { UseTwoStepVerification } from "../../../hooks/UseTwoStepVerification";
@@ -10,8 +10,8 @@ import { AxiosError } from "axios";
 
 
 export default function EnterCodePage() {
-  const { data,refresh } = UseTwoStepVerification();
-  
+  const { data, refetch } = UseTwoStepVerification();
+
   const type = data?.twofa?.type; // مقدار type برای URL
   const [code, setCode] = useState("");
   const navigate = useNavigate()
@@ -20,22 +20,22 @@ export default function EnterCodePage() {
 
     try {
       const res = await apiRequest({
-  url: `/api/account/2fa/verify/google`,
-  method: "POST",
-  data: { code },
-});
+        url: `/api/account/2fa/verify/google`,
+        method: "POST",
+        data: { code },
+      });
 
-toast.success(res.data?.msg || `تایید شد`);
+      toast.success(res.data?.msg || `تایید شد`);
 
-      refresh()
+      refetch()
       // اینجا می‌تونید بعد از موفقیت onPrev یا هر چیزی که لازمه اجرا کنید
       // onPrev();
       navigate(ROUTES.MULTI_FACTOR)
     } catch (err) {
-  const error = err as AxiosError<{ msg?: string }>;
-  const errorMsg = error.response?.data?.msg || `خطا در تأیید کد.`;
-  toast.error(errorMsg);
-}
+      const error = err as AxiosError<{ msg?: string }>;
+      const errorMsg = error.response?.data?.msg || `خطا در تأیید کد.`;
+      toast.error(errorMsg);
+    }
   };
 
   return (

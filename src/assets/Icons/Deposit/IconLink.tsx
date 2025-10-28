@@ -1,6 +1,5 @@
-import React from "react";
-
 export default function IconLink() {
+
   return (
     <>
       <svg

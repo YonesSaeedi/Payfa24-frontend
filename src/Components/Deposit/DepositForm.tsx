@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -9,10 +9,7 @@ import FloatingInput from "../FloatingInput/FloatingInput";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import IconClose from "../../assets/icons/Login/IconClose";
 
-interface PaymentGatewayRequestData {
-  amount: number;
-  card: string;
-}
+type PaymentGatewayRequestData = Record<string, string | number>;
 
 interface PaymentGatewayResponse {
   status: boolean;
@@ -27,7 +24,7 @@ const validationSchema = yup.object().shape({
   amount: yup
     .number()
     .typeError("وارد کردن مبلغ الزامی است")
-    .min(25000, "حداقل مبلغ واریز ۳۰۰,۰۰۰ تومان است")
+    .min(300000, "حداقل مبلغ واریز ۳۰۰,۰۰۰ تومان است")
     .max(25000000, "حداکثر مبلغ واریز ۲۵ میلیون تومان است"),
   bank: yup.string().nullable(),
 });
@@ -47,7 +44,7 @@ export default function DepositForm() {
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      amount: "",
+      // amount: 0,
       bank: "",
     },
   });
@@ -95,10 +92,7 @@ export default function DepositForm() {
         card: data.bank,
       };
 
-      const response = await apiRequest<
-        PaymentGatewayResponse,
-        PaymentGatewayRequestData
-      >({
+      const response = await apiRequest<PaymentGatewayResponse, PaymentGatewayRequestData>({
         url: "/api/wallets/fiat/deposit/gateway",
         method: "POST",
         data: requestData,
@@ -145,7 +139,7 @@ export default function DepositForm() {
             <>
               <FloatingInput
                 label="مقدار واریزی (تومان)"
-                value={field.value}
+                value={field.value?.toString() ?? ""}
                 onChange={field.onChange}
                 type="number"
                 placeholder="0 تومان "

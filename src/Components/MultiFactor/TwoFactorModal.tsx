@@ -19,7 +19,7 @@ interface ModalForm {
 }
 
 export default function TwoFactorModal({ type, closeModal }: PropModal) {
-  const {  refresh } = UseTwoStepVerification()
+  const { refetch } = UseTwoStepVerification()
   const [step, setStep] = useState(1);
 
   const { handleSubmit, setValue, watch } = useForm<ModalForm>({
@@ -42,12 +42,12 @@ export default function TwoFactorModal({ type, closeModal }: PropModal) {
           data: { code },
         });
         setStep(3);
-        refresh()
+        refetch()
       }
     } catch (err) {
-  const error = err as AxiosError<{ msg?: string }>;
-  toast.error(error.response?.data?.msg || "خطایی رخ داده است.");
-}
+      const error = err as AxiosError<{ msg?: string }>;
+      toast.error(error.response?.data?.msg || "خطایی رخ داده است.");
+    }
   };
 
   const getContent = () => {

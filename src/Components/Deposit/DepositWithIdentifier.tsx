@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
@@ -8,7 +8,6 @@ import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";
 import IconClose from "../../assets/icons/Login/IconClose";
 import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
-import BreadcrumbNavigation from "../BreadcrumbNavigation";
 
 interface BankCard {
   id: number;
@@ -42,21 +41,17 @@ type FiatApiResponse = {
   list_cards?: BankCard[];
   list_deposit_id?: DepositIdItem[];
   deposit_id?: DepositIdentifierResponse;
-  // بقیه فیلدهای API اینجا اضافه نمی‌شوند چون در این کامپوننت نیازی نداریم
 };
 
-export default function DepositWithIdentifier(): JSX.Element {
-  const { control, watch } = useForm<{ bank?: string }>();
+export default function DepositWithIdentifier(): React.ReactElement {
+  const { control } = useForm<{ bank?: string }>();
   const [cards, setCards] = useState<BankCard[]>([]);
-  const [depositIds, setDepositIds] = useState<DepositIdItem[]>([]);
   const [loadingCards, setLoadingCards] = useState(false);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isShown, setIsShown] = useState(false);
   const [apiResponseData, setApiResponseData] =
     useState<DepositIdentifierResponse | null>(null);
-
-  const selectedBank = watch("bank");
 
   const fetchInitial = async () => {
     setLoadingCards(true);
@@ -67,7 +62,6 @@ export default function DepositWithIdentifier(): JSX.Element {
       });
 
       setCards(res.list_cards ?? []);
-      setDepositIds(res.list_deposit_id ?? []);
     } catch (err) {
       console.error(err);
       toast.error("خطا در دریافت لیست کارت‌ها ❌");
@@ -95,21 +89,27 @@ export default function DepositWithIdentifier(): JSX.Element {
       >({
         url: "/api/wallets/fiat/deposit/gateway-id",
         method: "POST",
-        data: { id: selectedCard } as Record<string, number>,
+        // data: { id: selectedCard } as Record<string, number>,
       });
 
-      const depositData =
-        (response && "deposit_id" in response && response.deposit_id) ||
-        (response as DepositIdentifierResponse);
-
-      if (depositData && depositData.deposit_id) {
+      const depositData: DepositIdentifierResponse | null =
+        "deposit_id" in response &&
+        response.deposit_id &&
+        typeof response.deposit_id === "object"
+          ? response.deposit_id
+          : null;
+      if (
+        depositData &&
+        typeof depositData === "object" &&
+        "deposit_id" in depositData
+      ) {
         setApiResponseData(depositData);
         setIsShown(true);
         // افزودن به لیست depositIds محلی (برای هر نیاز آینده)
-        setDepositIds((prev) => [
-          ...prev,
-          { deposit_id: depositData.deposit_id, id_card: selectedCard },
-        ]);
+        // setDepositIds((prev) => [
+        //   ...prev,
+        //   { deposit_id: depositData.deposit_id, id_card: selectedCard },
+        // ]);
         toast.success("شناسه واریز با موفقیت ساخته شد ");
       } else {
         toast.success("شناسه واریز با موفقیت ساخته شد ");
@@ -146,36 +146,36 @@ export default function DepositWithIdentifier(): JSX.Element {
           control={control}
           render={({ field }) => (
             <FloatingSelect
-  placeholder={
-    loadingCards
-      ? "در حال بارگذاری کارت‌ها..."
-      : "حساب بانکی را انتخاب کنید"
-  }
-  label="کارت بانکی"
-  value={field.value}
-  onChange={(val) => {
-    field.onChange(val);
-    const selected = cards.find((c) => c.id === Number(val));
-    setSelectedCard(selected ? selected.id : null);
-    setIsShown(false);
-    setApiResponseData(null);
-  }}
-  options={cards.map((card) => ({
-    value: card.id.toString(),
- label: (
-    <div className="flex items-center justify-between w-full py-1 rounded-md">
-      <span className="text-sm  text-black0">{card.bank}</span>
-      <span className="text-sm text-black0">{card.card}</span>
-    </div>
-  ),
-  icon: (
-    <span className="w-6 h-6 ">
-      <BankMelliLogo />
-    </span>
-  ),
-  }))}
-/>
+              placeholder={
+                loadingCards
+                  ? "در حال بارگذاری کارت‌ها..."
+                  : "حساب بانکی را انتخاب کنید"
+              }
+              label="کارت بانکی"
+              value={field.value}
+              onChange={(val) => {
+                field.onChange(val);
+                const selected = cards.find((c) => c.id === Number(val));
+                setSelectedCard(selected ? selected.id : null);
+                setIsShown(false);
+                setApiResponseData(null);
+              }}
+              options={cards.map((card) => ({
+                value: card.id.toString(),
+                label: (
+                  <div className="flex items-center justify-between w-full py-1 rounded-md">
+                    <span className="text-sm text-black0">{card.bank}</span>
+                    <span className="text-sm text-black0">{card.card}</span>
+                  </div>
+                ),
 
+                icon: (
+                  <span className="w-6 h-6">
+                    <BankMelliLogo />
+                  </span>
+                ),
+              }))}
+            />
           )}
         />
       </div>

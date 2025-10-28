@@ -1,4 +1,3 @@
-import React from "react";
 import EmailIcon from "../assets/icons/authentication/EmailIcon";
 import IconUserOctagon from "../assets/icons/authentication/IconUserOctagon";
 import IconcardBank from "../assets/icons/authentication/IconcardBank";

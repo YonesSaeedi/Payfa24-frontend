@@ -4,7 +4,7 @@ import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 
 interface Option {
   value?: string;
-  label: string;
+  label: React.ReactNode
   icon?: React.ReactNode;
 }
 
@@ -114,7 +114,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
               key={option.value}
               type="button"
               onClick={() => {
-                onChange(option.value);
+                onChange(option.value ?? "");
                 setIsOpen(false);
               }}
               className={`w-full flex items-center justify-start  px-3 py-2 text-right hover:text-blue2 transition ${
@@ -131,7 +131,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
                 )}
               </span>
 
-              <div className="flex items-center justify-between w-full flex-row-reverse">
+              <div className="flex items-center justify-end w-full flex-row-reverse">
                 {option.label}
                 {option.icon && (
                   <span className="w-5 h-5 ml-2">{option.icon}</span>

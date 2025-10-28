@@ -1,6 +1,5 @@
-import React from "react";
-
 export default function IdentyIcon() {
+
   return (
     <svg
       width="100%"

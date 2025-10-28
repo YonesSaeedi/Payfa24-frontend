@@ -121,10 +121,10 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
         </button>
       </form>
       {isOpenTextModal &&
-        <div onClick={closeTextModalAndOpenSuccessModal} className="fixed cursor-pointer inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+        <div onClick={() => setIsOpenTextModal(false)} className="fixed cursor-pointer inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
           <div className="lg:w-[448px] w-full lg:rounded-lg lg:p-8 p-4 relative bg-white8" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center flex-row justify-between text-black1">
-              <span className="icon-wrapper h-6 w-6 cursor-pointer" onClick={closeTextModalAndOpenSuccessModal}><IconClose /></span>
+              <span className="icon-wrapper h-6 w-6 cursor-pointer" onClick={() => setIsOpenTextModal(false)}><IconClose /></span>
               <span className="font-normal text-base">متن تعهدنامه</span>
             </div>
             <p className="text-right mt-12 mb-6 lg:text-lg text-sm font-medium text-black1">
