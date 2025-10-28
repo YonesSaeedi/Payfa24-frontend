@@ -261,14 +261,6 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
             method: 'POST',
             data: { voucherCode: voucherCode }
           })
-          // setTradeConfirmationModalData({
-          //   coinAmount: response?.amount_coin,
-          //   tomanAmount: response?.amount,
-          //   symbol: currentCryptocurrency?.symbol ? currentCryptocurrency?.symbol : '',
-          //   unitPrice: response?.fee,
-          //   orderID: response?.id_order
-          // })
-          // setIsTradeConfirmationModalOpen(true)
           setIsTradeSuccessModalOpen(true)
         } catch (err) {
           toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
@@ -445,14 +437,6 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
             />}
           {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
           {isTradeSuccessModalOpen && <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} isSell={isSell} />}
-          {/* {isOtpModalOpen &&
-            <div className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.3)] backdrop-blur-sm flex items-center justify-center">
-              <div className="bg-white8 rounded-2xl border border-white6 py-4 px-4 lg:py-8 lg:px-10 flex flex-col gap-8 w-[328px] lg:w-[448px]">
-                <OTPModal length={6} onChange={(value: string) => setOtpCode(value)} />
-                <button className="bg-blue2 p-2 " onClick={handleSubmitDigitalBuy}>ثبت</button>
-              </div>
-            </div>
-          } */}
           {isOtpModalOpen &&
             <OTPInputModal
               titleText={`تایید ${isSell ? 'فروش' : 'خرید'} ${currentCryptocurrency?.locale?.fa?.name}`}

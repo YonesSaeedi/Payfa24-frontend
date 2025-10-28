@@ -12,112 +12,77 @@ import DepositModal from "../../Deposit/DepositModal";
 import { apiRequest } from "../../../utils/apiClient";
 import { formatPersianDigits } from "../../../utils/formatPersianDigits";
 import IconEyeClosed from "../../../assets/icons/Login/IconEyeClosed";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 interface WalletCardProps {
   balance?: number;
   currency?: string;
   showBuySell?: boolean;
 }
-
 interface Wallet {
   balance: number;
 }
-
 interface Wallets {
   toman: Wallet;
   crypto: Wallet;
 }
-
 interface WalletResponse {
   wallets: Wallets;
 }
 
-const WalletCard = ({
-  showBuySell = true,
-}: WalletCardProps) => {
+const WalletCard = ({ showBuySell = true, }: WalletCardProps) => {
   const [stateBlure, setStateBlure] = useState<boolean>(true);
   const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
-  const [showDepositModal, setShowDepositModal] = useState<boolean>(false); // ✅ اضافه شد
+  const [showDepositModal, setShowDepositModal] = useState<boolean>(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<"tether" | "toman">("toman");
+  const [balance, setBalance] = useState<WalletResponse | null>(null);
   const navigate = useNavigate();
-  const [selectedCurrency, setSelectedCurrency] = useState<"tether" | "toman">(
-    "toman"
-  );
-
-
+  // action buttons ===============================================================================================================================
   const actionButtons = [
     {
       label: "تاریخچه",
       onClick: () => navigate("/history/crypto"),
-      icon: (
-        <span className="text-blue1">
-          <ReceiptText />
-        </span>
-      ),
+      icon: <span className="text-blue1"><ReceiptText /></span>,
     },
     {
       label: "برداشت",
       onClick: () => setShowWithdrawModal(true),
-      icon: (
-        <span className="text-blue1">
-          <WalletMines />
-        </span>
-      ),
+      icon: <span className="text-blue1"><WalletMines /></span>,
     },
     {
       label: "واریز",
-      onClick: () => setShowDepositModal(true), // ✅ تغییر داده شد
-      icon: (
-        <span className="text-blue1">
-          <WalletAdd />
-        </span>
-      ),
+      onClick: () => setShowDepositModal(true),
+      icon: <span className="text-blue1"><WalletAdd /></span>,
     },
     ...(showBuySell
       ? [
-          {
-            label: "فروش",
-            onClick: () => navigate("/trade/sell"),
-            icon: (
-              <span className="text-blue1">
-                <SendIcon />
-              </span>
-            ),
-          },
-          {
-            label: "خرید",
-            onClick: () => navigate("/trade/buy"),
-            icon: (
-              <span className="text-blue1">
-                <ReceivedIcon />
-              </span>
-            ),
-          },
-        ]
+        {
+          label: "فروش",
+          onClick: () => navigate("/trade/sell"),
+          icon: <span className="text-blue1"><SendIcon /></span>,
+        },
+        {
+          label: "خرید",
+          onClick: () => navigate("/trade/buy"),
+          icon: <span className="text-blue1"><ReceivedIcon /></span>,
+        },
+      ]
       : []),
   ];
-
-  const handleCurrencyChange = (value: "tether" | "toman") => {
-    setSelectedCurrency(value);
-  };
-
-  const [balance, setBalance] = useState<WalletResponse | null>(null);
-
+  // handle currency change =====================================================================================================================
+  const handleCurrencyChange = (value: "tether" | "toman") => { setSelectedCurrency(value); };
+  // function get balance and run it once component mounted ======================================================================================
   async function getBalance() {
     try {
-      const response = await apiRequest<WalletResponse>({
-        url: "/api//dashboard/web",
-        method: "GET",
-      });
+      const response = await apiRequest<WalletResponse>({ url: "/api/dashboard/web" });
       setBalance(response);
-    } catch (error) {
-      console.error("Error fetching balance:", error);
+    } catch (err) {
+      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'دریافت اطلاعات کیف پول با مشکل مواجه شد.')
     }
   }
-
-  useEffect(() => {
-    getBalance();
-  }, []);
-
+  useEffect(() => { getBalance(); }, []);
+  // specify displayed balance currency ==========================================================================================================
   const displayBalance =
     selectedCurrency === "tether"
       ? balance?.wallets.crypto?.balance
@@ -125,36 +90,22 @@ const WalletCard = ({
 
   return (
     <div>
-      <div className="border border-gray21 rounded-xl p-6 shadow lg:w-full">
+      <div className="border border-gray21 rounded-xl p-6 shadow lg:w-full h-full">
         <div className="flex items-center justify-between mb-7">
           <CurrencyToggle onChange={handleCurrencyChange} />
-          <div
-            className="flex items-center gap-2 cursor-pointer transition-all duration-300 rounded-xl px-2 py-1"
-            onClick={() => setStateBlure((prev) => !prev)}
-          >
-            <span className="w-[22px] h-[22px] text-gray-500 group-hover:text-gray-800">
-              {stateBlure ? <VisibilityIcon /> : <IconEyeClosed />}
-            </span>
-            <span className=" text-black1 font-bold text-[18px]">
-              موجودی کیف پول شما
-            </span>
+          <div className="flex items-center gap-2 cursor-pointer transition-all duration-300 rounded-xl px-2 py-1" onClick={() => setStateBlure((prev) => !prev)}>
+            <span className="w-[22px] h-[22px] text-gray-500 group-hover:text-gray-800">{stateBlure ? <VisibilityIcon /> : <IconEyeClosed />}</span>
+            <span className=" text-black1 font-bold text-lg">موجودی کیف پول شما</span>
           </div>
         </div>
-
         <div className="text-center mb-6">
-          <div
-            className={`text-3xl flex items-center justify-center gap-3 font-bold text-black1 ${
-              !stateBlure ? "blur-md" : ""
-            }`}
-            dir="rtl"
-          >
+          <div className={`text-3xl flex items-center justify-center gap-3 font-bold text-black1 ${!stateBlure ? "blur-md" : ""}`} dir="rtl">
             <span>{formatPersianDigits(displayBalance ?? "0")}</span>
             <span>{selectedCurrency === "tether" ? "تتر" : "تومان"}</span>
           </div>
         </div>
-
         <div className="flex gap-4 m-2">
-          {actionButtons.map((btn, idx) => (
+          {actionButtons.map((btn, idx) =>
             <button
               key={idx}
               onClick={btn.onClick}
@@ -163,21 +114,13 @@ const WalletCard = ({
               <div className="w-6 h-6 mb-1.5">{btn.icon}</div>
               {btn.label}
             </button>
-          ))}
+          )}
         </div>
       </div>
-
-      {/* مودال برداشت */}
-      <WithdrawModal
-        isOpen={showWithdrawModal}
-        onClose={() => setShowWithdrawModal(false)}
-      />
-
-      {/* ✅ مودال واریز */}
-      <DepositModal
-        isOpen={showDepositModal}
-        onClose={() => setShowDepositModal(false)}
-      />
+      {/* withdraw modal ================================= */}
+      <WithdrawModal isOpen={showWithdrawModal} onClose={() => setShowWithdrawModal(false)} />
+      {/* deposit modal ================================= */}
+      <DepositModal isOpen={showDepositModal} onClose={() => setShowDepositModal(false)} />
     </div>
   );
 };

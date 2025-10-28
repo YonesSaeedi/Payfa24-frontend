@@ -80,7 +80,7 @@ function HomePage() {
       slides: mostTraded.slice(0, 4),
     },
   ];
-  // firebase stuff, Javad knows =================================================================================================================
+  // firebase stuff, Javad kenevisi knows =================================================================================================================
   // 1️⃣ ارسال توکن به سرور (فقط اگر مرورگر پشتیبانی کند)
   useEffect(() => {
     const sendTokenToServer = async () => {
@@ -121,7 +121,7 @@ function HomePage() {
         <div className="bg-white1 text-text">
           <div className="container-style" >
             <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4 bg-backgroundMain">
-              <WalletCard />
+              <div className="w-1/2 h-full"><WalletCard /></div>
               <IdentityCard
                 title="احراز هویت سطح 1"
                 items={["مشخصات فردی", "تصویر مدرک شناسایی"]}

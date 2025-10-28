@@ -53,7 +53,6 @@ export default function DepositBankReceipt({
   );
   const [walletData, setWalletData] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -133,7 +132,6 @@ export default function DepositBankReceipt({
   // --- دکمه Submit با Progress در خود دکمه ---
   const onSubmit = async (data: any) => {
     setLoading(true);
-    setError(null);
     setUploadProgress(0);
 
     try {
@@ -170,7 +168,6 @@ export default function DepositBankReceipt({
         }, 1500);
       }
     } catch (err: any) {
-      setError("خطا: " + err.message);
       console.error("خطا در onSubmit:", err);
     } finally {
       setLoading(false);
@@ -352,11 +349,10 @@ export default function DepositBankReceipt({
       />
 
       <div
-        className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all duration-300 ${
-          previewURL
-            ? "border-blue2 bg-blue2/5"
-            : "border-gray31 hover:border-gray12"
-        }`}
+        className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all duration-300 ${previewURL
+          ? "border-blue2 bg-blue2/5"
+          : "border-gray31 hover:border-gray12"
+          }`}
         onClick={handleClick}
       >
         <div className="flex flex-col items-center justify-center h-48 relative">
@@ -436,8 +432,8 @@ export default function DepositBankReceipt({
             {loading && !isUploading
               ? "در حال ارسال..."
               : !selectedFile
-              ? "ابتدا فیش را انتخاب کنید"
-              : "ثبت اطلاعات"}
+                ? "ابتدا فیش را انتخاب کنید"
+                : "ثبت اطلاعات"}
           </span>
         </button>
 

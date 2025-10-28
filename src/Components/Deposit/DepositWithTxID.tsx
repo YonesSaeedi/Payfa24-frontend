@@ -270,13 +270,10 @@ export default function DepositWithTxID() {
     }
 
     try {
-      const depositRes = await apiRequest<TxidPostResponse>({
+      const depositRes = await apiRequest<TxidPostResponse, { txid: string, network_id: number }>({
         url: `/api/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
         method: "POST",
-        data: {
-          txid: watch("txid") || "",
-          network_id: parseInt(selectedNetwork),
-        },
+        data: { txid: watch("txid") || "", network_id: parseInt(selectedNetwork), },
       });
 
       if (depositRes.status === 200) {
@@ -440,8 +437,8 @@ export default function DepositWithTxID() {
           <span className="text-sm text-black0">
             {selectedCurrency.network && selectedCurrency.network.length > 0
               ? `${formatPersianDigits(
-                  selectedCurrency.network[0].deposit_min
-                )} ${selectedCurrency.symbol}`
+                selectedCurrency.network[0].deposit_min
+              )} ${selectedCurrency.symbol}`
               : "۰ " + (selectedCurrency.symbol || "")}
           </span>
         </div>

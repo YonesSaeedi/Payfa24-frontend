@@ -7,7 +7,6 @@ import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 import Accordion from "../Withdrawal/Accordion";
 import { apiRequest } from "../../utils/apiClient";
 import IconClose from "../../assets/icons/Login/IconClose";
-import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
 import { getBankLogo } from "../../utils/bankLogos";
 
 interface BankCard {
