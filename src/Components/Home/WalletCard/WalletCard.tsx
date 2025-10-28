@@ -71,10 +71,10 @@ const WalletCard = ({ showBuySell = true, }: WalletCardProps) => {
 
   return (
     <div>
-      <div className="border border-gray21 rounded-xl p-4 lg:pt-6 lg:pb-4 lg:px-8 shadow lg:w-full h-full">
+      <div className="border border-gray21 rounded-xl p-4 lg:pt-6 lg:pb-4 lg:px-8 shadow lg:w-full h-full flex flex-col gap-[22px]">
         <div className="flex items-center justify-between mb-7">
           <CurrencyToggle onChange={handleCurrencyChange} />
-          <div className="flex items-center gap-2 cursor-pointer transition-all duration-300 rounded-xl px-2 py-1" onClick={() => setStateBlure((prev) => !prev)}>
+          <div className="flex items-center gap-1.5 cursor-pointer transition-all duration-300 rounded-xl px-2 py-1" onClick={() => setStateBlure((prev) => !prev)}>
             <span className="w-[22px] h-[22px] text-gray-500 group-hover:text-gray-800">{stateBlure ? <VisibilityIcon /> : <IconEyeClosed />}</span>
             <span className="text-black1 text-xs font-medium lg:font-bold lg:text-lg">موجودی کیف پول شما</span>
           </div>
@@ -85,17 +85,17 @@ const WalletCard = ({ showBuySell = true, }: WalletCardProps) => {
             <span>{selectedCurrency === "tether" ? "تتر" : "تومان"}</span>
           </div>
         </div>
-        <div className="flex gap-4 m-2">
-          {actionButtons.map((btn, idx) =>
+        <div className="flex gap-1.5 lg:gap-3 m-2 justify-center">
+          {actionButtons.map((btn, idx) => (
             <button
               key={idx}
               onClick={btn.onClick}
-              className="flex-1 flex flex-col items-center justify-center rounded-lg border bg-gray27 border-gray21 p-3 text-sm text-black1 hover:border-blue2 hover:shadow-sm transition"
+              className="flex-1 flex flex-col items-center justify-center rounded-lg border bg-gray27 border-gray21 p-1.5 lg:p-4 text-xs lg:text-sm text-black1 hover:border-blue2 hover:shadow-sm transition min-w-0"
             >
-              <div className="lg:w-6 lg:h-6 w-5 h-5 mb-1.5 text-blue1">{btn.icon}</div>
+              <div className="w-5 h-5 lg:w-6 lg:h-6 mb-1.5 text-blue1">{btn.icon}</div>
               {btn.label}
             </button>
-          )}
+          ))}
         </div>
       </div>
       {/* withdraw modal ================================= */}
