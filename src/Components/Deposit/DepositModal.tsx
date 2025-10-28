@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import IconClose from "../../assets/icons/Login/IconClose";
+import IconArrowLeft from "../../assets/icons/Withdrawal/IconArrowLeft";
 import { ROUTES } from "../../routes/routes";
 import IconBank from "../../assets/icons/Deposit/IconBank";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
@@ -8,7 +9,6 @@ import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
 import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
 import IconWallet from "../../assets/icons/Deposit/IconWallet";
 import IconLink from "../../assets/icons/Deposit/IconLink";
-import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 
 interface DepositModalProps {
   isOpen: boolean;
@@ -93,9 +93,9 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
             <div className="flex flex-row-reverse">
               <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
                 <span className="icon-wrapper w-7 h-7 text-blue2">
-                      <IconBank />
+                  <IconBank />
                 </span>
-              
+
               </div>
               <div className="flex flex-col text-right">
                 <span className="font-semibold text-black1">واریز با درگاه پرداخت</span>
@@ -110,7 +110,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
           <div className="flex items-center justify-between rounded-xl p-2 hover:bg-gray27 transition">
             <div className="flex items-center">
               <span className="w-6 h-6 icon-wrapper mr-2">
-                <IconArrowLeft/>
+                <IconArrowLeft />
               </span>
               <button
                 onClick={handleDepositIdentifier}
@@ -122,10 +122,10 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
             <div className="flex flex-row-reverse">
               <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                  <span className="icon-wrapper w-7 h-7 text-blue2">
-                     <IconIDentifier />
-                  </span>
-             
+                <span className="icon-wrapper w-7 h-7 text-blue2">
+                  <IconIDentifier />
+                </span>
+
               </div>
               <div className="flex flex-col text-right">
                 <span className="font-semibold text-black1">واریز با شناسه</span>
@@ -152,9 +152,9 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
             <div className="flex flex-row-reverse">
               <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                 <span className="icon-wrapper w-7 h-7 text-blue2">
-                      <IconConvertCard />
-                  </span>
+                <span className="icon-wrapper w-7 h-7 text-blue2">
+                  <IconConvertCard />
+                </span>
               </div>
               <div className="flex flex-col text-right">
                 <span className="font-semibold text-black1">واریز کارت به کارت</span>
@@ -182,8 +182,8 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
             <div className="flex flex-row-reverse">
               <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
                 <span className="icon-wrapper w-7 h-7 text-blue2">
-                     <IconReceipt />
-                  </span>
+                  <IconReceipt />
+                </span>
               </div>
               <div className="flex flex-col text-right">
                 <span className="font-semibold text-black1">فیش بانکی</span>
@@ -212,9 +212,9 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
               <div className="flex flex-row-reverse">
                 <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                
-                <span className="icon-wrapper w-7 h-7 text-blue2">
-                     <IconWallet />
+
+                  <span className="icon-wrapper w-7 h-7 text-blue2">
+                    <IconWallet />
                   </span>
                 </div>
                 <div className="flex flex-col text-right">
@@ -242,8 +242,8 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose }) => {
 
               <div className="flex flex-row-reverse">
                 <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
-                   <span className="icon-wrapper w-7 h-7 text-blue2">
-                   <IconLink />
+                  <span className="icon-wrapper w-7 h-7 text-blue2">
+                    <IconLink />
                   </span>
                 </div>
                 <div className="flex flex-col text-right">

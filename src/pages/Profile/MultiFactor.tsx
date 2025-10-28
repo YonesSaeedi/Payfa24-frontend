@@ -18,7 +18,6 @@ import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 import { AxiosError } from "axios";
 
-
 export default function MultiFactor() {
   const { data: twoFAData, refresh } = UseTwoStepVerification()
   const { data: userData } = useGetUser();

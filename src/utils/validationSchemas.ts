@@ -102,12 +102,7 @@ export const getStepInviteSchema = () => {
       "شماره تلفن وارد شده معتبر نیست.",
       "ایمیل باید شامل دامنه معتبر (مثل .com یا .ir) باشد."
     ),
-    inviteCode: yup.string().when((val, schema) => {
-      if (val[0]) {
-        return schema.required("کد دعوت الزامی است.");
-      }
-      return schema.notRequired();
-    }),
+    inviteCode: yup.string().optional(),
   });
 };
 

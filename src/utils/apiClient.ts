@@ -53,16 +53,31 @@ async function refreshAccessToken(): Promise<string | null> {
 // ---------- request interceptor ----------
 apiClient.interceptors.request.use(async (config) => {
   // allow auth routes through
-  if (
-    config.url?.includes("/auth/login") ||
-    config.url?.includes("/auth/refresh-token") ||
-    config.url?.includes("/auth/forget") ||
-    config.url?.includes("/auth/forget/reset") ||
-    config.url?.includes("/auth/login/login-2fa") ||
-    config.url?.includes("/auth/login/resend-2fa") ||
-    config.url?.includes("/auth/register") ||
-    config.url?.includes("/auth/google")
-  ) {
+  // Define public endpoints — use patterns for dynamic parts
+  const PUBLIC_ENDPOINT_PATTERNS: RegExp[] = [
+    // Auth
+    /\/auth\/login$/,
+    /\/auth\/refresh-token$/,
+    /\/auth\/forget$/,
+    /\/auth\/forget\/reset$/,
+    /\/auth\/login\/login-2fa$/,
+    /\/auth\/login\/resend-2fa$/,
+    /\/auth\/register$/,
+    /\/auth\/google$/,
+    // General
+    /\/get-general-info$/,
+    /\/coin360$/,
+    /\/chart\/crypto\/[^/]+$/,   // matches /chart/crypto/{symbol}
+    /\/aparat$/,
+    /\/logs$/,
+    /\/time$/,
+    /\/support$/,
+    /\/image\/[^/]+$/,           // matches /image/{hash}
+    // Crypto list
+    /\/list-cryptocurrencies$/,
+    /\/list-cryptocurrencies\/[^/]+$/, // matches /list-cryptocurrencies/{symbol}
+  ];
+  if (config.url && PUBLIC_ENDPOINT_PATTERNS.some((regex) => regex.test(config.url ?? ''))) {
     return config;
   }
   let token = localStorage.getItem("accessToken");
@@ -137,16 +152,13 @@ export async function apiRequest<
     // ensure Content-Type is not set so browser/axios creates multipart boundary
     if ("Content-Type" in outgoingHeaders) delete outgoingHeaders["Content-Type"];
   }
-
   // prepare body: if caller passed FormData, use it; otherwise build
   const body = isFormData
     ? data instanceof FormData
       ? (data as FormData)
       : buildFormData(data as Record<string, FormDataValue>)
     : data;
-
   const config: AxiosRequestConfig = {
-
     url,
     method,
     params,
@@ -157,7 +169,6 @@ export async function apiRequest<
     // Axios expects a function that accepts AxiosProgressEvent; we accept that type in our param
     onUploadProgress: onUploadProgress as ((progressEvent?: AxiosProgressEvent) => void) | undefined,
   };
-
   const response = await apiClient.request<TResponse>(config);
   return response.data;
 }
