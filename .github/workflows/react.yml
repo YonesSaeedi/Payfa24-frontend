@@ -1,0 +1,57 @@
+name: React Panel Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        run: |
+          if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
+            CONTAINER_NAME="react-main"
+            PORT=3200
+          elif [ "${GITHUB_REF}" == "refs/heads/dev" ]; then
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
+            CONTAINER_NAME="react-dev"
+            PORT=3300
+          fi
+
+          ssh -o StrictHostKeyChecking=no -p 22 root@45.159.114.231 "
+            cd ${TARGET_DIR}
+            
+            # پاکسازی و آپدیت سورس
+            git reset --hard HEAD
+            git clean -fd
+            git pull origin ${GITHUB_REF##*/}
+
+            # بیلد ایمیج
+            docker build -t ${CONTAINER_NAME} .
+
+            # استاپ و حذف کانتینر قبلی
+            docker stop ${CONTAINER_NAME} || true
+            docker rm ${CONTAINER_NAME} || true
+
+            # ران کانتینر جدید
+            docker run -d \
+              --name ${CONTAINER_NAME} \
+              -p ${PORT}:80 \
+              --restart unless-stopped \
+              ${CONTAINER_NAME}
+
+            # پاکسازی ایمیج‌های قدیمی
+            docker image prune -f
+          "
