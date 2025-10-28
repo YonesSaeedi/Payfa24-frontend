@@ -16,12 +16,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-const CryptoMarketTable: React.FC<Props> = ({
-  data,
-  active,
-  setActive,
-  isLoading = false,
-}) => {
+const CryptoMarketTable: React.FC<Props> = ({data,active,setActive,isLoading = false,}) => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -56,21 +51,11 @@ const CryptoMarketTable: React.FC<Props> = ({
       case 1:
         return data.filter((item) => favorites.includes(item.symbol ?? ""));
       case 2:
-        return [...data].sort(
-          (a, b) =>
-            parseFloat(a.priceChangePercent ?? "0") -
-            parseFloat(b.priceChangePercent ?? "0")
-        );
+        return [...data].sort((a, b) =>parseFloat(a.priceChangePercent ?? "0") -parseFloat(b.priceChangePercent ?? "0"));
       case 3:
-        return [...data].sort(
-          (a, b) =>
-            parseFloat(b.priceChangePercent ?? "0") -
-            parseFloat(a.priceChangePercent ?? "0")
-        );
+        return [...data].sort((a, b) =>parseFloat(b.priceChangePercent ?? "0") -parseFloat(a.priceChangePercent ?? "0"));
       case 4:
-        return [...data].sort(
-          (a, b) => parseFloat(b.quoteVolume ?? "0") - parseFloat(a.quoteVolume ?? "0")
-        );
+        return [...data].sort((a, b) => parseFloat(b.quoteVolume ?? "0") - parseFloat(a.quoteVolume ?? "0"));
       case 5:
         return [...data].sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
       default:

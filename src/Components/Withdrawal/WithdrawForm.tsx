@@ -13,6 +13,10 @@ import useGetUser from "../../hooks/useGetUser";
 import { getBankLogo } from "../../utils/bankLogos";
 import { AxiosError } from "axios";
 
+interface WithdrawRequestResponse {
+  transaction_id: number;
+  msg?: string;
+}
 interface PendingWithdrawData {
   amount: number;
   bank: BankOption;
@@ -120,7 +124,7 @@ export default function WithdrawForm() {
     };
 
     try {
-      const response = await apiRequest({
+      const response = await apiRequest<WithdrawRequestResponse , { amount: number; card: number }>({
         url: "/api/wallets/fiat/withdraw/request",
         method: "POST",
         data: requestData,

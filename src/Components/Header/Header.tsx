@@ -25,6 +25,8 @@ import NotificationsDropdown from "../Notification/NotificationDropDown";
 import ServicesBox from "../ServicesBox/ServicesBox";
 import ProfileMenu from "./ProfileMenu";
 import VectorIcon from "../../assets/icons/header/vectorIcon";
+import WalletActiveIcon from "../../assets/icons/header/WalletActiveIcon";
+import IconTradeActive from "../../assets/icons/header/IconTradeActive";
 
 export default function Header() {
   const themeContext = useContext(ThemeContext);
@@ -150,7 +152,7 @@ export default function Header() {
               <Link
                 to="/wallet"
                 className={`hover:text-blue-600 transition flex items-center ${
-                  currentPath === "/walet"
+                  currentPath === "/wallet"
                     ? themeContext.theme === "dark"
                       ? "text-primary"
                       : "text-blue-600 font-semibold"
@@ -159,8 +161,9 @@ export default function Header() {
               >
                 کیف پول
                 <span className="pl-2 flex items-center justify-center w-8 h-8">
-                  <WalletIcon />
+                    {currentPath === "/wallet" ? <WalletActiveIcon/>:  <WalletIcon />}
                 </span>
+              
               </Link>
             </li>
 
@@ -190,7 +193,7 @@ export default function Header() {
               <Link
                 to="/trade"
                 className={`hover:text-blue2 transition flex items-center ${
-                  currentPath === "/transaction"
+                  currentPath.startsWith("/trade")
                     ? themeContext.theme === "dark"
                       ? "text-primary"
                       : "text-blue2 font-semibold"
@@ -198,9 +201,10 @@ export default function Header() {
                 }`}
               >
                 معامله
-                <span className="pl-2 flex items-center justify-center w-8 h-8">
-                  <BitcoinIcon />
-                </span>
+                
+                 <span className="pl-2 flex items-center justify-center w-8 h-8">
+      {currentPath.startsWith("/trade") ? <IconTradeActive /> : <BitcoinIcon />}
+    </span>
               </Link>
             </li>
 
