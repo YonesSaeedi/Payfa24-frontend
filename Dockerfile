@@ -2,11 +2,10 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# اول همه فایل‌ها رو کپی کن
-COPY . .
+COPY package.json package-lock.json ./
+RUN npm install --legacy-peer-deps --no-audit --silent --include=dev
 
-# سپس نصب و build کن
-RUN npm install --legacy-peer-deps --no-audit --silent
+COPY . .
 RUN npm run build
 
 FROM nginx:alpine
