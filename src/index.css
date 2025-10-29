@@ -1,0 +1,124 @@
+@import url('/src/assets/cryptofonts/cryptofont.css');
+@import url("/fonts/fonts.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  font-family: "IRANSansX", sans-serif;
+}
+
+.Toastify__toast {
+  font-family: "IRANSansX", sans-serif !important;
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Optional: better font rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* base ============================================================================================================== */
+@layer base {
+
+  /* Chrome, Safari, Edge, Opera */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--extra-dark-background) inset;
+    -webkit-text-fill-color: var(--primary);
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+/* custom classes ============================================================================================================== */
+@layer utilities {
+  .container-style {
+    @apply mx-auto px-4 lg:px-10 max-w-[1360px];
+  }
+
+  .icon-wrapper {
+    @apply inline-block leading-none align-middle;
+  }
+
+  .custom-gradient-border {
+    border-image-source: linear-gradient(90deg,
+        rgba(36, 118, 255, 0) 0%,
+        #2476FF 53.37%,
+        rgba(36, 118, 255, 0) 100%);
+    border-image-slice: 1;
+  }
+
+
+  .skeleton-bg {
+    @apply bg-gray-300 dark:bg-gray-700 relative overflow-hidden;
+  }
+
+  .skeleton-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent);
+    animation: shimmer 1.5s infinite;
+    border-radius: inherit;
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+/* custom scrollbar for web apps ============================================================================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
