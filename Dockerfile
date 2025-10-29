@@ -1,15 +1,9 @@
 FROM node:20-alpine AS builder
 
-# تنظیم DNS و registry اصلی
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf && \
-    echo "nameserver 1.1.1.1" >> /etc/resolv.conf
-
-RUN npm config set registry https://registry.npmjs.org/
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm install --legacy-peer-deps --no-audit --silent
-RUN npm install -g typescript
 
 COPY . .
 RUN npm run build
