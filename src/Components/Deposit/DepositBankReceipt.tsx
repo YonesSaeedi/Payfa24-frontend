@@ -1,9 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
-import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
-import BankMellatLogo from "../../assets/icons/BankCards/IconBankMellatLogo";
-import BankAnsarLogo from "../../assets/icons/BankCards/IconBankAnsarLogo";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -12,6 +9,7 @@ import Accordion from "../Withdrawal/Accordion";
 import * as yup from "yup";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
+import { getBankLogo } from "../../utils/bankLogos";
 
 // --- اسکیما validation ---
 const schema = yup.object().shape({
@@ -43,22 +41,6 @@ type Props = {
   initialPreviewUrl: string | null;
 };
 
-const bankIconMap: Record<string, React.ReactNode> = {
-  بلوبانک: <BankMellatLogo />,
-  "بانک ملی": <BankMelliLogo />,
-  "بانک ملت": <BankMellatLogo />,
-  "بانک ایران زمین": <BankAnsarLogo />,
-  "بانک سامان": <BankMellatLogo />,
-  "بانک تجارت": <BankMellatLogo />,
-  "بانک کشاورزی": <BankMellatLogo />,
-  رسالت: <BankMellatLogo />,
-  سایر: <BankAnsarLogo />,
-};
-
-const getBankIcon = (bankName: string) => {
-  return bankIconMap[bankName] || bankIconMap["سایر"];
-};
-
 export default function DepositBankReceipt({
   onNext,
   onFileChange,
@@ -71,7 +53,6 @@ export default function DepositBankReceipt({
   );
   const [walletData, setWalletData] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -116,7 +97,6 @@ export default function DepositBankReceipt({
     }
   }, []);
 
-  // --- انتخاب فایل + نمایش فوری Preview ---
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
 
@@ -152,7 +132,6 @@ export default function DepositBankReceipt({
   // --- دکمه Submit با Progress در خود دکمه ---
   const onSubmit = async (data: any) => {
     setLoading(true);
-    setError(null);
     setUploadProgress(0);
 
     try {
@@ -189,7 +168,6 @@ export default function DepositBankReceipt({
         }, 1500);
       }
     } catch (err: any) {
-      setError("خطا: " + err.message);
       console.error("خطا در onSubmit:", err);
     } finally {
       setLoading(false);
@@ -243,9 +221,6 @@ export default function DepositBankReceipt({
                   label: (
                     <div className="flex items-center justify-between w-full py-1 rounded-md">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 icon-wrapper">
-                          {getBankIcon(card.bank)}
-                        </span>
                         <span className="lg:text-sm text-xs text-black0">
                           {card.bank}
                         </span>
@@ -254,6 +229,15 @@ export default function DepositBankReceipt({
                         {card.card}
                       </span>
                     </div>
+                  ),
+                  icon: (
+                    <img
+                      src={
+                        getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"
+                      }
+                      alt={card.bank}
+                      className="w-6 h-6 object-contain"
+                    />
                   ),
                 })) || []
               }
@@ -284,9 +268,6 @@ export default function DepositBankReceipt({
                   label: (
                     <div className="flex items-center justify-between w-full py-1 rounded-md">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 icon-wrapper">
-                          {getBankIcon(acc.name_bank)}
-                        </span>
                         <span className="lg:text-sm text-xs text-black0">
                           {acc.name_bank}
                         </span>
@@ -295,6 +276,15 @@ export default function DepositBankReceipt({
                         {acc.account_number || acc.iban_number}
                       </span>
                     </div>
+                  ),
+                  icon: (
+                    <img
+                      src={
+                        getBankLogo(acc.bank) || "/bank-logos/bank-sayer.png"
+                      }
+                      alt={acc.bank}
+                      className="w-6 h-6 object-contain"
+                    />
                   ),
                 })) || []
               }
@@ -359,11 +349,10 @@ export default function DepositBankReceipt({
       />
 
       <div
-        className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all duration-300 ${
-          previewURL
-            ? "border-blue2 bg-blue2/5"
-            : "border-gray31 hover:border-gray12"
-        }`}
+        className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all duration-300 ${previewURL
+          ? "border-blue2 bg-blue2/5"
+          : "border-gray31 hover:border-gray12"
+          }`}
         onClick={handleClick}
       >
         <div className="flex flex-col items-center justify-center h-48 relative">
@@ -412,13 +401,12 @@ export default function DepositBankReceipt({
       </div>
 
       {/* نمایش خطاها */}
-      {error && (
+      {/* {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
           {error}
         </div>
-      )}
+      )} */}
 
-      {/* دکمه ثبت - با Progress داخل دکمه */}
       <div className="mt-14">
         <button
           onClick={handleSubmit(onSubmit)}
@@ -444,8 +432,8 @@ export default function DepositBankReceipt({
             {loading && !isUploading
               ? "در حال ارسال..."
               : !selectedFile
-              ? "ابتدا فیش را انتخاب کنید"
-              : "ثبت اطلاعات"}
+                ? "ابتدا فیش را انتخاب کنید"
+                : "ثبت اطلاعات"}
           </span>
         </button>
 

@@ -1,4 +1,4 @@
-import  { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
@@ -13,6 +13,7 @@ import { apiRequest } from "../../utils/apiClient";
 import IconAlert from "../../assets/icons/Login/IconAlert";
 import { getValidationSchemaCardtoCard } from "../../utils/validationSchemas";
 import { AxiosError } from "axios";
+import { getBankLogo } from "../../utils/bankLogos";
 
 // --- Interfaces ---
 interface CreditCard {
@@ -45,9 +46,9 @@ interface WalletsFiatResponse {
 }
 
 interface CardToCardRequestData extends Record<string, any> {
-   amount: number;
-   card: number;
- }
+  amount: number;
+  card: number;
+}
 
 interface CardToCardResponse {
   status: boolean;
@@ -295,11 +296,16 @@ export default function CardToCardTransfer() {
                             {formatCardNumber(card.card)}
                           </span>
                         </div>
-                      )as any,
+                      ) as any,
                       icon: (
-                        <span className="w-6 h-6">
-                          {getBankIcon(card.bank)}
-                        </span>
+                        <img
+                          src={
+                            getBankLogo(card.bank) ||
+                            "/bank-logos/bank-sayer.png"
+                          }
+                          alt={card.bank}
+                          className="w-6 h-6 object-contain"
+                        />
                       ),
                     }))}
                   />

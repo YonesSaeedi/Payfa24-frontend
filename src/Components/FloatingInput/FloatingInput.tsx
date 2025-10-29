@@ -1,8 +1,8 @@
-import { useState, FC, ChangeEvent } from "react";
+import { useState, FC } from "react";
 
 interface FloatingInputProps {
   label: string;
-  value: string; 
+  value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   className?: string;
@@ -36,16 +36,16 @@ const FloatingInput: FC<FloatingInputProps> = ({
         onChange={onChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        placeholder={placeholder} 
+        placeholder={placeholder}
         className="block w-full px-3 py-4 border border-gray12 rounded-md z-10 
          focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 text-black0"
-// =======
-//         placeholder={placeholder}
-//         className={`
-//           block w-full px-3 ${heightClass} border rounded-md z-10
-//           focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 
-//           ${borderClass} ${placeholderColor ? `placeholder-${placeholderColor}` : "placeholder-black0"}  ${className}`}
-// >>>>>>> c971315d41958ac5ee50ccac869db7626dfcdc5d
+      // =======
+      //         placeholder={placeholder}
+      //         className={`
+      //           block w-full px-3 ${heightClass} border rounded-md z-10
+      //           focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 
+      //           ${borderClass} ${placeholderColor ? `placeholder-${placeholderColor}` : "placeholder-black0"}  ${className}`}
+      // >>>>>>> c971315d41958ac5ee50ccac869db7626dfcdc5d
       />
     </div>
   );

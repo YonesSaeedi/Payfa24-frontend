@@ -129,20 +129,25 @@ export const getChangePasswordSchema = () => {
 
 // schema برای صفحه Contact
 export const getContactSchema = () => {
-  return yup.object().shape({
-    contactType: yup.string().required("نوع تماس الزامی است."),
-    contactValue: yup
-      .string()
-      .required("مقدار تماس الزامی است.")
-      .when("contactType", {
-        is: "email",
-        then: (schema) => schema.email("ایمیل معتبر نیست."),
-        otherwise: (schema) =>
-          schema.matches(/^09\d{9}$/, "شماره موبایل معتبر نیست."),
-      }),
-  });
+  return yup
+    .object()
+    .shape({
+      contactType: yup
+        .mixed<'email' | 'mobile'>()
+        .oneOf(['email', 'mobile'] as const, "نوع تماس نامعتبر است.")
+        .required("نوع تماس الزامی است."),
+      contactValue: yup
+        .string()
+        .required("مقدار تماس الزامی است.")
+        .when("contactType", {
+          is: "email",
+          then: (schema) => schema.email("ایمیل معتبر نیست."),
+          otherwise: (schema) =>
+            schema.matches(/^09\d{9}$/, "شماره موبایل معتبر نیست."),
+        }),
+    })
+   
 };
-
 
 
 export const DepositwithIdentifierSchema = () => yup.object().shape({

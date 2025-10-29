@@ -19,14 +19,12 @@ export default function EnterCodePage() {
     if (!code || !type) return; // اعتبارسنجی اولیه
 
     try {
-      const res = await apiRequest({
+      const res: any = await apiRequest({
         url: `/api/account/2fa/verify/google`,
         method: "POST",
         data: { code },
       });
-
       toast.success(res.data?.msg || `تایید شد`);
-
       refetch()
       // اینجا می‌تونید بعد از موفقیت onPrev یا هر چیزی که لازمه اجرا کنید
       // onPrev();

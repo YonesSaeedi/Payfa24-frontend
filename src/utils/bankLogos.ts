@@ -37,13 +37,14 @@ export const banks: BankLogo[] = [
   { img: "bank-kosar.png", name: "موسسه مالی کوثر" },
   { img: "bank-ghavamin.png", name: "موسسه قوامین" },
   { img: "bank-khavarmiane.png", name: "بانک خاورمیانه" },
-  { img: "bank-resalat.png", name: "بانک قرض الحسنه رسالت" },
+  { img: "bank-resalat.png", name: "رسالت" },
   { img: "bank-noor.png", name: "موسسه نور" },
   { img: "bank-blu.png", name: "بلوبانک" },
   { img: "bank-mehreghtesad.png", name: "بانک مهر اقتصاد" },
   { img: "bank-melal.png", name: "موسسه ملل" },
   { img: "bank-markazi.png", name: "بانک مرکزی" },
 ];
+
 
 export const getBankLogo = (bankName: string) => {
   const bank = banks.find((b) => b.name === bankName);
