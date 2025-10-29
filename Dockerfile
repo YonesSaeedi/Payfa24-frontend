@@ -1,9 +1,12 @@
-FROM node:20-alpine AS builder
+FROM node:20 AS builder
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install --legacy-peer-deps --no-audit --silent --include=dev
+RUN npm install --legacy-peer-deps --no-audit --silent
+
+# اگر tsc لوکال نیست، نصب کن
+RUN npm install typescript -D
 
 COPY . .
 RUN npm run build
