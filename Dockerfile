@@ -3,13 +3,10 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install --legacy-peer-deps --no-audit --silent
-
-# نصب typescript به صورت local
-RUN npx tsc --version || npm install typescript --no-save
+RUN npm ci --legacy-peer-deps --no-audit --silent
 
 COPY . .
-RUN npm run build
+RUN npx tsc -b && npx vite build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
