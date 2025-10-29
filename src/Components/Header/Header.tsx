@@ -36,6 +36,7 @@ export default function Header() {
   const [showServices, setShowServices] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
