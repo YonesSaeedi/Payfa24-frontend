@@ -127,9 +127,9 @@ export default function DepositWithIdentifier(): React.ReactElement {
   };
 
   return (
-    <div className="w-full lg:px-5 my-10 " dir="rtl">
-      <div className="my-10 bg-blue14 px-3 py-[14px] rounded-lg text-blue2 flex items-center justify-between">
-        <div className="flex items-center  gap-2">
+    <div className="w-full" dir="rtl">
+      <div className="mb-10 bg-blue14 px-3 py-[14px] rounded-lg text-blue2 flex items-center justify-between">
+        <div className="flex items-center gap-2">
           <span className="icon-wrapper w-6 h-6 text-blue2">
             <IconVideo />
           </span>
@@ -169,16 +169,13 @@ export default function DepositWithIdentifier(): React.ReactElement {
                   </div>
                 ),
 
-                 icon: (
-                                        <img
-                                          src={
-                                            getBankLogo(card.bank) ||
-                                            "/bank-logos/bank-sayer.png"
-                                          }
-                                          alt={card.bank}
-                                          className="w-6 h-6 object-contain"
-                                        />
-                                      ),
+                icon: (
+                  <img
+                    src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"}
+                    alt={card.bank}
+                    className="w-6 h-6 object-contain"
+                  />
+                ),
               }))}
             />
           )}
@@ -244,14 +241,13 @@ export default function DepositWithIdentifier(): React.ReactElement {
       )}
 
       <div className={`${isShown ? "mt-6" : "mt-24"}`}>
-        {/* دکمه همیشه نمایش داده می‌شود، اما فعال فقط وقتی کارت انتخاب شده و فیش هنوز نمایش داده نشده */}
         <button
           onClick={handleCreateIdentifier}
           disabled={isLoading || !selectedCard || isShown}
           className={`w-full py-3 font-bold text-lg rounded-lg transition ${
             isLoading || !selectedCard || isShown
-              ? "bg-gray-400 text-white2 cursor-pointer"
-              : "text-white2 bg-blue2 hover:bg-blue2"
+              ? "bg-gray2 text-black1 cursor-pointer"
+              : "text-white2 bg-blue2 hover:bg-blue1"
           }`}
         >
           {isLoading

@@ -1,11 +1,8 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import FloatingInput from "../FloatingInput/FloatingInput";
-import BankAnsarLogo from "../../assets/icons/BankCards/IconBankAnsarLogo";
-import BankMellatLogo from "../../assets/icons/BankCards/IconBankMellatLogo";
-import BankMelliLogo from "../../assets/icons/BankCards/IconBankMelliLogo";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import Accordion from "../Withdrawal/Accordion";
 import { toast } from "react-toastify";
@@ -55,22 +52,7 @@ interface CardToCardResponse {
   msg: string;
 }
 
-// --- Helper functions ---
-const bankIconMap: { [key: string]: ReactNode } = {
-  بلوبانک: <BankMellatLogo />,
-  "بانک ملی": <BankMelliLogo />,
-  "بانک ملت": <BankMellatLogo />,
-  "بانک ایران زمین": <BankAnsarLogo />,
-  "بانک سامان": <BankMellatLogo />,
-  "بانک تجارت": <BankMellatLogo />,
-  "بانک کشاورزی": <BankMellatLogo />,
-  رسالت: <BankMellatLogo />,
-  سایر: <BankAnsarLogo />,
-};
 
-const getBankIcon = (bankName: string): ReactNode => {
-  return bankIconMap[bankName] || null;
-};
 
 const formatCardNumber = (
   cardNumber: string,
@@ -242,7 +224,15 @@ export default function CardToCardTransfer() {
 
   const transactionData = {
     fromCard: formatCardNumber(finalSourceCard?.card || "", true),
-    fromBankIcon: finalSourceCard ? getBankIcon(finalSourceCard.bank) : null,
+   fromBankIcon: finalSourceCard ? (
+  <img
+    src={getBankLogo(finalSourceCard.bank) || "/bank-logos/bank-sayer.png"}
+    alt={finalSourceCard.bank}
+    className="w-7 h-7 object-contain"
+  />
+) : null,
+
+
     toCard: responseData?.cardToCard?.card?.card || "—",
     toBank: responseData?.cardToCard?.card?.bank || "",
     owner: responseData?.cardToCard?.card?.name || "گروه فرهنگی و هنری",
@@ -262,7 +252,7 @@ export default function CardToCardTransfer() {
     );
 
   return (
-    <div className="w-full lg:px-7 my-10" dir="rtl">
+    <div className="w-full" dir="rtl">
       {!showSummary ? (
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Video guide */}

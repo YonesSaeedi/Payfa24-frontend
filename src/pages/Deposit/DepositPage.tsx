@@ -27,7 +27,7 @@ interface DepositPageProps {
 export default function DepositPage({
   selected = "gateway",
 }: DepositPageProps) {
-  const [step, _setStep] = useState<number>(1);
+  // const [step, _setStep] = useState<number>(1);
   const [started, setStarted] = useState<boolean>(false);
   const [_fiatData, setFiatData] = useState<any>(null);
   const [selectedOption, setSelectedOption] = useState<string>(() => {
@@ -169,14 +169,14 @@ export default function DepositPage({
       <HeaderLayout>
         
         <DepositLayout
-          step={step}
+          step={1}
           started={started}
           onStart={handleStart}
           alertMessages={currentAlertMessages}
         >
           {/* بخش راست - ثابت */}
           <div
-            className="w-full overflow-y-auto h-full lg:block hidden"
+            className="w-full overflow-y-auto h-full lg:block  hidden"
             dir="rtl"
           >
             <span className="text-base text-black0 mb-4">واریز تومان</span>

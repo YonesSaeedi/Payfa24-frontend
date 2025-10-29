@@ -259,7 +259,7 @@ export default function DepositDedicatedWallet() {
   };
 
   return (
-    <div className="w-full my-10" dir="rtl">
+    <div className="w-full" dir="rtl">
       {/* ویدیو آموزشی */}
       <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
         <span className="icon-wrapper w-6 h-6 text-blue2">
@@ -404,7 +404,7 @@ export default function DepositDedicatedWallet() {
             className={`w-full py-3 font-bold text-lg rounded-lg transition-colors ${
               selectedCurrency.id && selectedNetwork
                 ? "bg-blue2 text-white2 cursor-pointer"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray2 text-black1 cursor-not-allowed"
             }`}
             disabled={!selectedCurrency.id || !selectedNetwork}
             onClick={() => handleSubmit()}
