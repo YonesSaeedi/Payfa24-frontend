@@ -1,8 +1,6 @@
 import React, { ReactNode } from "react";
-// import IconAlert from "../../assets/Icons/Login/IconAlert"; // استفاده نشده
 import IconDanger from "../../assets/icons/Deposit/IconDanger";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
-// import IconVideo from "../../assets/Icons/Deposit/IconVideo"; // استفاده نشده
 
 interface DepositLayoutProps {
   step: number;

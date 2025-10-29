@@ -246,7 +246,7 @@ export default function CardToCardTransfer() {
   if (loadingData) return <span className="w-7 h-4 skeleton-bg"></span>;
   if (showSummary && !responseData?.cardToCard?.card)
     return (
-      <div className="text-center py-8 text-red-500">
+      <div className="text-center py-8 text-red1">
         خطا: اطلاعات کارت مقصد ناقص است. لطفاً با پشتیبانی تماس بگیرید.
       </div>
     );
