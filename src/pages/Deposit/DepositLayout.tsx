@@ -1,8 +1,6 @@
 import React, { ReactNode } from "react";
-// import IconAlert from "../../assets/Icons/Login/IconAlert"; // استفاده نشده
 import IconDanger from "../../assets/icons/Deposit/IconDanger";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
-// import IconVideo from "../../assets/Icons/Deposit/IconVideo"; // استفاده نشده
 
 interface DepositLayoutProps {
   step: number;
@@ -39,7 +37,7 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
 
         {/* بخش چپ -  (ستون فرم‌ها)
         */}
-        <div className="w-full lg:w-1/2 lg:px-4 pb-8  lg:bg-gray43 rounded-2xl ">
+        <div className="w-full lg:w-1/2 lg:px-10 lg:py-10 py-6 lg:bg-gray43 rounded-2xl ">
           
           {/* ۱. محتوای اصلی (فرم‌های واریز) */}
           {React.Children.map(children, (child, index) => {
@@ -54,7 +52,7 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
           
           {alertMessages.length > 0 && ( 
             <div 
-              className="bg-orange5 rounded-xl lg:p-6 p-4 flex flex-col mt-6 lg:mx-7" 
+              className="bg-orange5 rounded-xl lg:p-6 p-4 flex flex-col mt-6" 
               dir="rtl"
             >
               <div className="flex gap-1 text-orange1 lg:text-lg text-sm mb-2">
