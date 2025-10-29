@@ -7,7 +7,7 @@ interface MultiFactorCardProps {
     text?: string;
     Title?: string;
     button?: string;
-      icon?:  string | React.ReactNode;    
+    icon?:  string | React.ReactNode;    
   };
   onClick: () => void;
 }
@@ -20,7 +20,7 @@ export default function MultiFactorCard({
 
   return (
     <>
-      <div className="w-full rounded-xl lg:p-6 p-4 border border-gray21">
+      <div className="w-full rounded-xl lg:p-6 lg:h-44  p-4 border border-gray21">
         {/* بخش بالایی کارت */}
         <div className="flex items-center justify-between flex-row-reverse mb-5">
           <button

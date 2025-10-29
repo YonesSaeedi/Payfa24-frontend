@@ -8,7 +8,7 @@ import Google from "../../assets/Icons/MultiFactor/Google.png";
 import MessagesIcon from "../../assets/icons/MultiFactor/Iconmessages";
 import TwoFactorModal from "../../components/MultiFactor/TwoFactorModal";
 import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";
-import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
+// import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
 import { toast } from "react-toastify";
 import useGetUser from "../../hooks/useGetUser";
 import { useMemo } from "react";
@@ -52,13 +52,13 @@ const [modalType, setModalType] = useState<string | null>(null);
       Title: "تایید دو مرحله‌ای ایمیل",
       text: `فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به ایمیل ${userData?.user?.email ?? "..."} ارسال شده است.`,
     },
-    {
-      type: "telegram",
-      icon: <TelegramIcon />,
-      button: "فعال کردن",
-      Title: "تایید دو مرحله‌ای تلگرام",
-      text: "فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به تلگرام شما ارسال شده است.",
-    },
+    // {
+    //   type: "telegram",
+    //   icon: <TelegramIcon />,
+    //   button: "فعال کردن",
+    //   Title: "تایید دو مرحله‌ای تلگرام",
+    //   text: "فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به تلگرام شما ارسال شده است.",
+    // },
   ], [twoFAData, userData]);
 
 
@@ -85,13 +85,14 @@ const [modalType, setModalType] = useState<string | null>(null);
       // یعنی کارت فعال است → مودال غیرفعال‌سازی باز شود
       if (type === "google") {
         navigate(ROUTES.GOOGLE_AUTH_FLOW);
-      } else if (type === "telegram") {
-        navigate('/TelegramAuthFlow');
+      // } else if (type === "telegram") {
+      //   navigate('/TelegramAuthFlow');
       } else {
         setIsOpen(true);
       }
     } else {
       setIsOpenActive(true);
+       apiRequest({ url: `/api/account/2fa/verify/sms`, method: "POST" });
       // هنوز فعال نشده
     }
   };
@@ -182,13 +183,14 @@ const [modalType, setModalType] = useState<string | null>(null);
             onClick={() => setIsOpenActive(false)}
           >
             <div
-              className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
+              className="lg:max-w-md rounded-lg lg:p-8 p-4 relative bg-white8"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center flex-row-reverse justify-between">
 
+                <span>تایید دو مرحله ای</span>
                 <span
-                  className="icon-wrapper h-6 w-6 cursor-pointer"
+                  className="icon-wrapper h-6 w-6 cursor-pointer text-blue2"
                   onClick={() => setIsOpenActive(false)}
                 >
                   <IconClose />
@@ -203,7 +205,7 @@ const [modalType, setModalType] = useState<string | null>(null);
               </p>
 
               <div className="mt-[32px] mb-[48px]">
-                <OTPModal length={6} onChange={handleOtpChange} />
+                <OTPModal length={6} onChange={handleOtpChange}/>
               </div>
 
 

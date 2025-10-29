@@ -114,8 +114,6 @@
 
 // export default TextField;
 
-
-
 import React, { forwardRef, useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 
@@ -133,12 +131,11 @@ interface TextFieldProps {
   labelClassName?: string;
   labelStyle?: React.CSSProperties;
   labelBgClass?: string; // ✅ رنگ بک‌گراند لیبل از بیرون
-   inputBgClass?: string;   // ✅  داخل اضافه کردن برای بک‌گراند input
-   labelStyleClass?: string
+  inputBgClass?: string; // ✅  داخل اضافه کردن برای بک‌گراند input
+  labelStyleClass?: string;
   placeholder?: string;
   showError?: boolean; // باید بولی باشه
   [key: string]: any;
-
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
@@ -180,12 +177,10 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 
     const labelStyleClass =
       isFocused || value || hasError
-        ? `top-[-12px] right-[13px] lg:text-sm text-xs ${hasError ? "text-red1" : "text-blue2"} ${
-            labelBgClass || ""
-          }`
+        ? `top-[-12px] right-[13px] lg:text-sm text-xs ${
+            hasError ? "text-red1" : "text-blue2"
+          } ${labelBgClass || ""}`
         : "top-1/2 -translate-y-1/2 text-xs text-gray5 bg-transparent";
-
-   
 
     return (
       <div className={`relative mb-4 box-border w-full ${className}`}>
@@ -193,15 +188,12 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           dir="rtl"
           id={inputId}
           type={type}
-
           className={`w-full lg:h-[56px] h-[48px] rounded-xl border px-4  pb-1 text-sm font-normal transition-all duration-200 focus:outline-none 
     ${theme === "dark" ? "bg-transparent text-black2" : " text-gray12"} 
     ${borderColorClass} 
     ${inputBgClass || ""}   // ✅ اضافه کردن کلاس بک‌گراند
   `}
           style={{ paddingLeft: icon ? "2rem" : "1rem" }}
-
-
           ref={ref}
           value={value}
           onChange={onChange}
@@ -229,11 +221,12 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           {label}
         </label>
 
-        {showError && error && ( // متن خطا فقط با showError true و وقتی error وجود داره
-          <p className="text-red1 text-xs mt-2 pr-3" dir="rtl">
-            {error}
-          </p>
-        )}
+        {showError &&
+          error && ( // متن خطا فقط با showError true و وقتی error وجود داره
+            <p className="text-red1 text-xs mt-2 pr-3" dir="rtl">
+              {error}
+            </p>
+          )}
       </div>
     );
   }

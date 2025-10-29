@@ -13,7 +13,7 @@ interface Props {
 export default function AuthenticationRight({ step, onStart }: Props) {
   return (
     <div
-      className={`w-full h-full flex flex-col gap-6 items-end ${
+      className={`w-full h-full flex flex-col gap-6 items-end  ${
         step === 0 ? "flex" : "hidden lg:flex "
       }`}
     >
