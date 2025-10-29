@@ -5,6 +5,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install --legacy-peer-deps --no-audit --silent
 
+# نصب typescript به صورت local
+RUN npx tsc --version || npm install typescript --no-save
+
 COPY . .
 RUN npm run build
 
