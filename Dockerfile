@@ -1,25 +1,16 @@
-# Stage 1: Build React app
-FROM node:22.18.0-bullseye AS builder
+FROM node:20-alpine AS builder
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
+RUN npm config set registry https://registry.npmmirror.com
 WORKDIR /app
 
-COPY package.json ./ 
-RUN rm -rf node_modules || true
-RUN npm install --legacy-peer-deps
+COPY package.json package-lock.json ./
+RUN npm install --legacy-peer-deps --no-audit --silent
+RUN npm install -g typescript
 
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve with Nginx
 FROM nginx:alpine
-
-# پاک کردن html قدیمی
-RUN rm -rf /usr/share/nginx/html/*
-
-# کپی build React
 COPY --from=builder /app/dist /usr/share/nginx/html
-
-# کپی فایل کانفیگ Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
