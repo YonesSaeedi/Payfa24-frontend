@@ -18,6 +18,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   "withdraw": 'برداشت',
   'market-view': 'نمای بازار',
   "kyc-basic": "احراز هویت پایه",
+  "kyc-advanced":"احراز هویت پیشرفته",
   "history": "خدمات",
   "order": "تاریخچه خرید و فروش",
   "toman": "تاریخچه تراکنش های تومانی",
