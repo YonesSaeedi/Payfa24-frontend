@@ -4,7 +4,7 @@ import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import EmailIcon from "../../assets/icons/authentication/EmailIcon";
 import MultiFactorCard from "../../components/MultiFactor/MultiFactorCard";
-import Google from "../../assets/Icons/MultiFactor/Google.png";
+import Google from "../../assets/icons/MultiFactor/Google.png";
 import MessagesIcon from "../../assets/icons/MultiFactor/Iconmessages";
 import TwoFactorModal from "../../components/MultiFactor/TwoFactorModal";
 import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";

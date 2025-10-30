@@ -1,5 +1,5 @@
 // import React from "react";
-// import Google from "../../../assets/Icons/MultiFactor/Google.png";
+// import Google from "../../../assets/icons/MultiFactor/Google.png";
 // // import StepperGoogle from "../../components/MultiFactor/Stepper/StepperGoogle";
 // // import { useState } from "react";
 
@@ -31,7 +31,7 @@
 // }
 
 
-import Google from "../../../assets/Icons/MultiFactor/Google.png";
+import Google from "../../../assets/icons/MultiFactor/Google.png";
 
 interface DownloadAppPageProps {
   onNext: () => void; // تابع بدون ورودی و خروجی خاص

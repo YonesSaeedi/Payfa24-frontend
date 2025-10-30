@@ -47,9 +47,9 @@
 
 
 // import React from "react";
-// import IconDownloadApp from "../../../assets/Icons/MultiFactor/IconDownloadApp";
-// import IconScanQRcode from "../../../assets/Icons/MultiFactor/IconScanQRcode";
-// import IconSmsTracking from "../../../assets/Icons/MultiFactor/IconSmsTracking";
+// import IconDownloadApp from "../../../assets/icons/MultiFactor/IconDownloadApp";
+// import IconScanQRcode from "../../../assets/icons/MultiFactor/IconScanQRcode";
+// import IconSmsTracking from "../../../assets/icons/MultiFactor/IconSmsTracking";
 
 
 // interface Props {

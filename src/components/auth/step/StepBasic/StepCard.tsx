@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import TextField from "../../../InputField/TextField";
 import { useState, useEffect } from "react";
-import verify from "../../../../assets/Icons/authentication/verify.svg";
+import verify from "../../../../assets/icons/authentication/verify.svg";
 import { Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "../../../../utils/apiClient";
