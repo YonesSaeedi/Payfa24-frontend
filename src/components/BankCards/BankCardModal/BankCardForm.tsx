@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import BackgroundCard from "./../../../assets/images/BankCards/BackgroundCard.png";
-import BackgroundCardDark from "./../../../assets/images/BankCards/backgroundCardDark.png";
+import BackgroundCardDark from "./../../../assets/images/BankCards/BackgroundCardDark.png";
 import IconAlarmLogo from "../../../assets/icons/BankCards/IconAlarmLogo";
 import IconShetab from "../../../assets/icons/BankCards/IconShetab";
 import useGetUser from "../../../hooks/useGetUser";
