@@ -10,18 +10,25 @@ import gitImg from "../../assets/images/Addfriend/giftimag.png";
 import UserImg from "../../assets/images/Addfriend/User.png";
 import { toast } from "react-toastify";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
-import HeaderLayout from '../../layouts/HeaderLayout.tsx';
+import HeaderLayout from "../../layouts/HeaderLayout.tsx";
 import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 import IconUserAdd from "../../assets/icons/AddFriend/IconUserAdd";
 import { ThemeContext } from "../../context/ThemeContext";
 import IconGiftBox from "../../assets/icons/AddFriend/IconGiftBox";
 import IconClose from "../../assets/icons/Login/IconClose";
 import ReferralPercentBar from "../../components/ReferralPercentBar";
-import { getReferralReport, getReferralTransactions, InvitedUserReportItem, ReferralReportResponse, setReferralCommission, TransactionItem } from "../../utils/api/referralApi";
+import {
+  getReferralReport,
+  getReferralTransactions,
+  InvitedUserReportItem,
+  ReferralReportResponse,
+  setReferralCommission,
+  TransactionItem,
+} from "../../utils/api/referralApi";
 
-interface InvitedUserItem extends InvitedUserReportItem { }
-interface TransactionItemExt extends TransactionItem { }
-interface ReferralReport extends ReferralReportResponse { }
+interface InvitedUserItem extends InvitedUserReportItem {}
+interface TransactionItemExt extends TransactionItem {}
+interface ReferralReport extends ReferralReportResponse {}
 
 export default function AddFriend() {
   const context = useContext(ThemeContext);
@@ -37,7 +44,8 @@ export default function AddFriend() {
   const [transactions, setTransactions] = useState<TransactionItemExt[]>([]);
   const [invitedUsers, setInvitedUsers] = useState<InvitedUserItem[]>([]);
   const [currentPage, _setCurrentPage] = useState<number>(1);
-  const [_totalTransactionPages, setTotalTransactionPages] = useState<number>(1);
+  const [_totalTransactionPages, setTotalTransactionPages] =
+    useState<number>(1);
   const [referralReport, setReferralReport] = useState<ReferralReport | null>(
     null
   );
@@ -140,7 +148,7 @@ export default function AddFriend() {
 
   const BoxInvite = [
     {
-      Icon: <IconGiftBox/>,
+      Icon: <IconGiftBox />,
       Text: "مجموع درآمد شما",
       count:
         (referralReport?.referral_transaction_amount?.toLocaleString() || "0") +
@@ -163,7 +171,7 @@ export default function AddFriend() {
       img: person,
       title: "ثبت نام در پی فا 24",
       description:
-        "دوستان شما زمانی که با کد دعوت اختصاصی شما ثبت نام کنند واحراز هویت خودر را تکمیل و شروع به معامله کنند",
+        " دوستان شما زمانی که با کد دعوت اختصاصی شما ثبت نام کنند و احراز هویت خود را تکمیل و شروع به معامله کنند.",
     },
     {
       img: gitImg,
@@ -179,8 +187,8 @@ export default function AddFriend() {
       style={{ backgroundImage: `url(${Gift})` }}
       className="bg-center bg-no-repeat flex flex-col items-center justify-center gap-3 mt-6 py-20 rounded-lg"
     >
-      <h1 className="text-2xl font-medium text-black1">{title}</h1>
-      <p className="text-lg text-gray5 text-center">{description}</p>
+      <h1 className="lg:text-2xl text-lg font-medium text-black1">{title}</h1>
+      <p className="lg:text-lg text-md text-gray5 text-center">{description}</p>
     </div>
   );
 
@@ -202,8 +210,8 @@ export default function AddFriend() {
               </div>
               <div className="space-y-5 lg:w-[580px] w-full px-4" dir="rtl">
                 <h3 className="lg:text-xl text-sm font-medium text-black1">
-                  با دعوت از دوستانتان از 25 تا 45 درصد در سود تراکنش‌های آن‌ها
-                  پاداش بگیرید
+                  با دعوت از دوستانتان از 25 تا 30 درصد در کارمزد تراکنش‌های
+                  آن‌ها پاداش بگیرید .
                 </h3>
 
                 {LinkInvite.map((e, index) => (
@@ -220,13 +228,11 @@ export default function AddFriend() {
                           toast.info(`${e.Title} کپی شد.`);
                         }
                       }}
-
                       className={`items-center gap-1 inline-block text-gray5 lg:text-lg text-sm font-normal ${
                         !isLoading && e.Link !== "درحال بارگذاری..."
                           ? "cursor-pointer"
                           : ""
                       }`}
-
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-1">
@@ -234,7 +240,7 @@ export default function AddFriend() {
                         </div>
                       ) : (
                         <>
-                          <div>
+                          <div className="hover:text-blue2">
                             <span>{e.Link}</span>
                             <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4">
                               {e.Icon}
@@ -250,7 +256,7 @@ export default function AddFriend() {
                   {BoxInvite.map((item, index) => (
                     <div
                       key={index}
-                      className="lg:w-2/4 lg:h-[142px] w-[145px] h-[107px] border border-gray12 rounded-xl flex gap-1 items-center flex-col justify-center text-black1 font-medium"
+                      className="lg:w-2/4 lg:h-[142px] w-full h-[107px] border border-gray12 rounded-xl flex gap-1 items-center flex-col justify-center text-black1 font-medium"
                     >
                       <span className="icon-wrapper lg:w-9 lg:h-9 w-7 h-7 text-blue2">
                         {item.Icon}
@@ -267,8 +273,8 @@ export default function AddFriend() {
                   ))}
                 </div>
 
-                <div className="flex flex-row justify-between w-full py-6 border border-gray21 rounded-xl text-black0">
-                  <div className="flex flex-col items-center gap-2 w-1/2">
+                <div className="flex flex-row justify-between w-full py-6 border border-gray12 rounded-xl text-black0">
+                  <div className="flex flex-col items-center gap-2 w-1/2 ">
                     <div className="font-medium text-sm">
                       سهم دریافتی دوستتان
                     </div>
@@ -278,7 +284,7 @@ export default function AddFriend() {
                       <p>{currentCallerPercent}%</p>
                     )}
                   </div>
-                  <div className="border-l border-gray21 h-14"></div>
+                  <div className="border-l border-gray12 h-14"></div>
                   <div className="flex flex-col items-center gap-2 w-1/2">
                     <div className="font-medium text-sm">سهم دریافتی شما</div>
                     {isLoading ? (
@@ -303,16 +309,16 @@ export default function AddFriend() {
             </div>
 
             {/* Section 2 */}
-            <div className="flex justify-center gap-5 items-center flex-wrap">
+            <div className="flex w-full justify-center lg:gap-5 gap-3 items-center lg:flex-nowrap flex-wrap">
               <img
                 src={inviteLeftImg}
                 alt="inviteLeftImg"
-                className="max-w-full h-auto"
+                className="lg:w-1/2 w-full"
               />
               <img
                 src={inviteRightImg}
                 alt="inviteRightImg"
-                className="max-w-full h-auto"
+                className="lg:w-1/2 w-full" 
               />
             </div>
 
@@ -329,35 +335,34 @@ export default function AddFriend() {
                   {QuestionBox.map((item, index) => (
                     <div
                       key={index}
-                      className="flex lg:flex-col h-full w-full lg:gap-0 gap-3 flex-row lg:items-center items-start lg:text-center text-start flex-1 lg:max-w-f"
+                      className="flex lg:flex-col h-full w-full lg:gap-0 gap-3 flex-row lg:items-center items-center lg:text-center text-start flex-1"
                     >
                       <img
                         src={item.img}
                         alt={item.title}
-                        className="w-20 h-20 object-c p-1"
+                        className="lg:w-[70px] w-[50px] object-cover p-1"
                       />
-                      <div className="space-y-1">
+                      <div className="space-y-[6px]">
                         <span className="text-black1 lg:text-lg text-sm font-medium text-start">
                           {item.title}
                         </span>
-                        <p className="lg:text-sm text-xs font-normal text-gray5">
+                        <p className="lg:text-sm text-xs font-normal text-gray5 lg:mx-10">
                           {item.description}
                         </p>
                       </div>
 
-
                       {index < QuestionBox.length - 1 && (
                         <div
-                          className="lg:block hidden absolute w-[33%] h-[2px] bg-gradient-to-r from-transparent via-blue2 to-transparent opacity-70"
+                          className="lg:block hidden  absolute w-[27%] h-[2px] bg-gradient-to-r from-transparent via-blue2 to-transparent opacity-70"
                           style={{
-                            left: `${((index + 1) * 100) / QuestionBox.length
-                              }%`,
-                            top: "30px",
+                            left: `${
+                              ((index + 1) * 100) / QuestionBox.length
+                            }%`,
+                            top: 35,
                             transform: "translateX(-50%)",
                           }}
                         ></div>
                       )}
-
                     </div>
                   ))}
                 </div>
@@ -374,10 +379,11 @@ export default function AddFriend() {
                   onClick={() => {
                     setActiveTab("transactions");
                   }}
-                  className={`pb-2 lg:text-lg text-sm ${activeTab === "transactions"
+                  className={`pb-2 lg:text-lg text-sm ${
+                    activeTab === "transactions"
                       ? "text-blue2 border-b-2 border-blue2 font-normal"
                       : "text-gray5"
-                    }`}
+                  }`}
                 >
                   تراکنش‌های کاربران
                 </button>
@@ -385,10 +391,11 @@ export default function AddFriend() {
                   onClick={() => {
                     setActiveTab("invited");
                   }}
-                  className={`pb-2 lg:text-lg text-sm ${activeTab === "invited"
+                  className={`pb-2 lg:text-lg text-sm ${
+                    activeTab === "invited"
                       ? "text-blue2 border-b-2 border-blue2 font-medium"
                       : "text-gray5"
-                    }`}
+                  }`}
                 >
                   کاربران دعوت شده
                 </button>
@@ -578,7 +585,7 @@ export default function AddFriend() {
                     className="icon-wrapper w-6 h-6 cursor-pointer text-gray5 hover:text-black0"
                     onClick={() => setIsOpenModal(false)}
                   >
-                    <IconClose/>
+                    <IconClose />
                   </span>
                   <span className="text-black0 font-medium text-base">
                     تنظیم درصد سود
@@ -592,7 +599,6 @@ export default function AddFriend() {
                     selectedPercent={selectedPercent}
                     setSelectedPercent={setSelectedPercent}
                     lastChangedRef={lastChangedRef}
-
                   />
                 </div>
                 <div className="flex flex-col items-center mt-14 mb-14">
@@ -619,7 +625,6 @@ export default function AddFriend() {
                   disabled={isLoading}
                   className="w-full font-bold text-base text-white2 bg-blue2 lg:py-3 py-2 rounded-lg"
                 >
-
                   {isLoading ? "درحال ذخیره..." : "تایید"}
                 </button>
               </div>
