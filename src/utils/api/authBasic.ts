@@ -1,5 +1,5 @@
 
-import { apiRequest } from '../apiClient';
+// import { apiRequest } from '../apiClient';
 
 // interface ContactPayload {
 //   email?: string;
@@ -9,19 +9,19 @@ import { apiRequest } from '../apiClient';
 // interface VerifyPayload extends ContactPayload {
 //   code: string;
 // }
-type ContactPayload = Record<string, string | number | boolean | Blob | File> & {
-  email?: string;
-  mobile?: string;
-};
+// type ContactPayload = Record<string, string | number | boolean | Blob | File> & {
+//   email?: string;
+//   mobile?: string;
+// };
 
-type VerifyPayload = ContactPayload & {
-  code: string;
-};
+// type VerifyPayload = ContactPayload & {
+//   code: string;
+// };
 
-interface ApiResponse {
-  status: boolean;
-  msg?: string;
-}
+// interface ApiResponse {
+//   status: boolean;
+//   msg?: string;
+// }
 
 // export const sendContact = async (payload: ContactPayload) => {
 //   return apiRequest<ApiResponse>({

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import OTPModal from "../OTPModal";
 import { apiRequest } from "../../utils/apiClient";
-import tickCircle from "../../assets/Icons/MultiFactor/tick-circle.png";
+import tickCircle from "../../assets/icons/MultiFactor/tick-circle.png";
 import IconClose from "../../assets/icons/Login/IconClose";
 import IconAgain from "../../assets/icons/Login/IconAgain";
 import { UseTwoStepVerification } from "../../hooks/UseTwoStepVerification";

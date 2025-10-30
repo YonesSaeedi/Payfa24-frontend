@@ -18,7 +18,7 @@ export default function AuthenticationRight({ step, onStart }: Props) {
       }`}
     >
       {/* سطح 1 */}
-      <div className="lg:w-[498px] w-full border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 dark:text-white justify-center sm:justify-end">
+      <div className="lg:w-5/6 w-full border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 dark:text-white justify-center sm:justify-end">
         <h1 className="text-right mb-5 text-blue2">سطح 1 : احراز هویت پایه</h1>
         <div className="flex flex-row items-center justify-end">
           <span className="mr-2 text-black1">ثبت ایمیل</span>
@@ -54,7 +54,7 @@ export default function AuthenticationRight({ step, onStart }: Props) {
       </div>
 
       {/* سطح 2 */}
-      <div className="lg:w-[498px] text-gray15 w-full items-end mb-5 border-solid border-gray15 rounded-lg border-[1px] md:flex flex-col p-6 justify-center sm:justify-end">
+      <div className="lg:w-5/6  text-gray15 w-full items-end mb-5 border-solid border-gray15 rounded-lg border-[1px] md:flex flex-col p-6 justify-center sm:justify-end">
         <h1 className="text-right">سطح 2 : احراز هویت پیشرفته</h1>
         <div className="flex flex-row items-center justify-end mt-5">
           <span className="mr-2">ثبت مدرک شناسایی</span>
@@ -76,6 +76,7 @@ export default function AuthenticationRight({ step, onStart }: Props) {
           <li className="text-right">5 میلیون تومان برداشت ارزی روزانه</li>
           <li className="text-right">دسترسی به ارز Utopia USD</li>
         </ul>
+        
         </div>
       </div>
     </div>

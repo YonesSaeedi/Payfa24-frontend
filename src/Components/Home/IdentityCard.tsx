@@ -3,8 +3,10 @@ import ValidationlightIcon from "./../../assets/images/Home/ValidationIcon/40238
 import ValidationDarkIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2.png";
 import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import IdentyfyCardIcon from "../../assets/icons/Home/IdentyfyCardIcon/identyfyCardIcon";
+import { apiRequest } from "../../utils/apiClient";
+import { useQuery } from "@tanstack/react-query";
 
 interface IdentityCardProps {
   title: string;
@@ -17,16 +19,29 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
   title,
   items,
   accesses,
-
-
 }) => {
+  const navigate = useNavigate();
+
+  // فراخوانی API برای چک کردن وضعیت KYC
+  const { data: kycInfo, isLoading } = useQuery({
+    queryKey: ["kyc-info"],
+    queryFn: () =>
+      apiRequest<{ kyc: { basic?: { cardbank?: any } } }>({
+        url: "/api/kyc/get-info",
+      }),
+    staleTime: 1000 * 60,
+    retry: 1,
+  });
+
+  const handleKycNavigation = () => {
+    if (kycInfo?.kyc?.basic?.cardbank) {
+      navigate("/kyc-advanced");
+    } else {
+      navigate("/kyc-basic");
+    }
+  };
   return (
- <div className="border rounded-xl p-6 flex flex-col lg:flex-row items-right lg:justify-between border-gray21 shadow ">
-
-
-
-
-
+    <div className="border rounded-xl p-6 flex flex-col lg:flex-row items-right lg:justify-between border-gray21 shadow ">
       <div className="hidden rounded-lg lg:flex items-center justify-center ">
         <img src={ValidationlightIcon} className="block dark:hidden" />
 
@@ -34,14 +49,13 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
       </div>
 
       <div className="lg:w-1/2 flex  flex-col gap-2 text-right">
-    
         <h2 className="text-xl font-semibold text-blue2 pb-4">{title}</h2>
         <ul className="list-disc text-black1">
           {items.map((item, index) => (
             <li key={index} className="list-none">
               {item}
-               <span className="w-[19px] h-[19px] icon-wrapper ml-1">
-                 <IdentyfyCardIcon/>
+              <span className="w-[19px] h-[19px] icon-wrapper ml-1">
+                <IdentyfyCardIcon />
               </span>
             </li>
           ))}
@@ -54,16 +68,20 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
           ))}
         </ul>
 
-
-     
-
-        <Link to="/kyc-basic" className=" mt-4 bg-blue-500 text-white rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full">
-
-          <span className="pr-2 flex  w-8 h-8 ">
-            <ArrowLeftIcon />
-          </span>
-          احراز هویت
-        </Link>
+        {isLoading ? (
+          <div className=" skeleton-bg mt-4 bg-blue2 text-white2 rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full disabled:opacity-50"></div>
+        ) : (
+          <button
+            onClick={handleKycNavigation}
+            disabled={isLoading}
+            className="mt-4 bg-blue2 text-white2 rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full disabled:opacity-50"
+          >
+            <span className="pr-2 flex w-8 h-8">
+              <ArrowLeftIcon />
+            </span>
+            <span>احراز هویت</span>
+          </button>
+        )}
       </div>
     </div>
   );
