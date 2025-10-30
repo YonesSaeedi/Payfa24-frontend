@@ -3,6 +3,7 @@ import TicketItem from "./TicketItem";
 import { Ticket } from "./types";
 import Iconplus from "../../../assets/icons/ticket/Iconplus";
 import IconCall from "../../../assets/icons/ticket/IconCall";
+import TicketItemSkeleton from "./TicketItemSkelton";
 
 interface TicketListProps {
   tickets: Ticket[];
@@ -10,21 +11,30 @@ interface TicketListProps {
   onSelect: (ticket: Ticket) => void;
   onNewTicket: () => void;
   onSupportCall: () => void;
+    loading?: boolean
 }
 
-const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect,onNewTicket, onSupportCall }) => (
+const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect,onNewTicket, onSupportCall, loading }) => (
 <div dir="rtl" className="w-[500px] bg-gray38 flex flex-col rounded-[16px] h-[790px]">
   <h2 className="text-lg font-semibold mb-6 text-black1">تیکت‌های شما</h2>
 
   <div className="flex-1 overflow-auto relative">
-    {tickets.map((ticket) => (
+   {loading ? (
+    // 👇 نمایش ۴ اسکلتون به عنوان نمونه
+    Array.from({ length: 4 }).map((_, i) => <TicketItemSkeleton key={i} />)
+  ) : tickets.length > 0 ? (
+    tickets.map((ticket) => (
       <TicketItem
         key={ticket.id}
         ticket={ticket}
         active={activeTicket?.id === ticket.id}
         onClick={() => onSelect(ticket)}
       />
-    ))}
+    ))
+  ) : (
+    // 👇 وقتی تیکتی وجود ندارد
+    <div className="text-center text-gray-500 mt-10">تیکتی یافت نشد.</div>
+  )}
   </div>
    
   <div className="mt-4 flex flex-col gap-2 ">

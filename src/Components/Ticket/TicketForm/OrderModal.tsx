@@ -29,22 +29,26 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
     };
   }, [onClose]);
 
-  const mapOrderType = (type: string) => {
-    switch (type) {
-      case "buy":
-        return { text: "خرید", icon: <ReceivedIcon /> };
-      case "sell":
-        return { text: "فروش", icon: <SendIcon /> };
-      case "ticket":
-        return { text: "تیکت", icon: <IconTicket /> };
-      case "برداشت":
-        return { text: "برداشت", icon: <SendIcon /> };
-      case "واریز":
-        return { text: "واریز", icon: <ReceivedIcon /> };
-      default:
-        return { text: type, icon: null };
-    }
-  };
+ const mapOrderType = (type: string) => {
+  switch (type) {
+    case "buy":
+    case "خرید":
+      return { text: "خرید", icon: <ReceivedIcon /> };
+    case "sell":
+    case "فروش":
+      return { text: "فروش", icon: <SendIcon /> };
+    case "ticket":
+    case "تیکت":
+      return { text: "تیکت", icon: <IconTicket /> };
+    case "برداشت":
+      return { text: "برداشت", icon: <SendIcon /> };
+    case "واریز":
+      return { text: "واریز", icon: <ReceivedIcon /> };
+    default:
+      return { text: type, icon: null };
+  }
+};
+
 
   return (
     <div
@@ -87,7 +91,7 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
                 </div>
               ))
             : orders.map((order) => {
-  // نگه داشتن نوع به صورت string
+ 
   const orderType = order.type as string;
 
   const { text: orderTypeText, icon: orderIcon } = mapOrderType(orderType);
@@ -101,7 +105,7 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
       <div className="flex items-center w-full justify-between">
         <div className="flex items-center">
           <div className="w-10 h-10 ml-3 bg-blue15 rounded-lg flex items-center justify-center">
-            <span className="text-blue-500 w-6 h-6">{orderIcon}</span>
+            <span className=" w-6 h-6 text-blue2">{orderIcon}</span>
           </div>
           <div className="flex flex-col text-right">
             <p className="text-sm font-medium text-black1">{order.coin}</p>

@@ -86,7 +86,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [, setLoading] = useState(true);
 
-  // دریافت اطلاعات تیکت و پیام‌ها
+
   const fetchData = async () => {
     if (!ticket?.id) return;
     try {
@@ -173,7 +173,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
       method: "POST",
       data: formData,
       isFormData: true,
-      onUploadProgress: (event?: AxiosProgressEvent) => { // ✅ نوع درست
+      onUploadProgress: (event?: AxiosProgressEvent) => { 
         if (event?.loaded && event?.total) {
           const percent = Math.round((event.loaded * 100) / event.total);
           setUploadProgress(percent);

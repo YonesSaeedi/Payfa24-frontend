@@ -28,8 +28,8 @@ export const ROUTES = {
     SELL: "/trade/sell",
   },
   TICKET: {
-    ROOT: "/ticket",
-    CREATE: "/ticket/create",
+    ROOT: "/tickets",
+    CREATE:  "/tickets/create",
   },
   TRANSACTION: {
     ROOT: "/history",

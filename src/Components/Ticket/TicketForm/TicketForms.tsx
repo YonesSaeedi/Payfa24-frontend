@@ -10,6 +10,7 @@ import OrderSelector from "./OrderSelector";
 import axios from "axios";
 import FloatingInput from "../../FloatingInput/FloatingInput";
 
+
 interface Order {
   id: string;
   coin: string;
@@ -108,7 +109,7 @@ export default function TicketForm() {
               type="text"
               placeholder=""
               placeholderColor="gray9"
-              className="flex flex-row mb-6 h-[56px] rounded-lg border  border-gray12"
+              className="flex flex-row mb-6 h-[56px] rounded-lg border  border-gray12 font-normal text-[14px]"
             />
           )}
         />
@@ -124,23 +125,31 @@ export default function TicketForm() {
         
         />
 
-        <div className="relative w-full bg-gray37 mt-6  ">
-          <Controller
-            name="description"
-            control={control}
-            rules={{ required: "توضیحات الزامی است" }}
-            render={({ field }) => (
-              <FloatingInput
-                label="توضیحات"
-                value={field.value || ""}
-                onChange={field.onChange}
-                type="text"
-                placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."
-                placeholderColor="text-black0"
-                className="rounded-lg border-gray12"
-              />
-            )}
-          />
+        <div className="relative w-full bg-gray37 mt-2">
+      <Controller
+  name="description"
+  control={control}
+  rules={{ required: "توضیحات الزامی است" }}
+  render={({ field }) => (
+    <div className="relative w-full mt-4">
+      {/* Label داخل border */}
+      <label className="absolute right-3 top-[-8px] text-xs text-gray12 bg-gray43 px-1 z-10">
+        توضیحات
+      </label>
+      <textarea
+        {...field}
+        placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."
+        className="w-full h-[160px] px-3 pt-6 pb-3 border border-gray12 rounded-lg bg-gray43 text-black0 text-[14px] resize-none focus:outline-none focus:border-blue2"
+      />
+      {errors.description && (
+        <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
+      )}
+    </div>
+  )}
+/>
+
+
+
         </div>
         {errors.description && (
           <p className="text-red-500 text-xs mt-1">

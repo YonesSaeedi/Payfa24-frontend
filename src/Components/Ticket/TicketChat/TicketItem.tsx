@@ -24,7 +24,7 @@ const TicketItem: React.FC<TicketItemProps> = ({ ticket, active, onClick }) => {
       <div className="flex justify-between mt-2 mb-3">
         <div className="font-medium text-black1 text-base">{ticket.title}</div>
         <div className="mt-1 text-sm">
-          <StatusBadge text={statusText} /> {/* ✅ جایگزین renderStatus */}
+          <StatusBadge text={statusText} /> 
         </div>
       </div>
       <div dir="rtl" className="flex justify-between mt-3 ">

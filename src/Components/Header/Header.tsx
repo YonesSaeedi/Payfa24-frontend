@@ -32,13 +32,25 @@ export default function Header() {
   const themeContext = useContext(ThemeContext);
   const location = useLocation();
   const currentPath = location.pathname;
-
+  const [isScrolled, setIsScrolled] = useState(false);
   const [showServices, setShowServices] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+  const handleScroll = () => {
+    if (window.scrollY > 0) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -69,7 +81,12 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white dark:bg-gray29  dark:text-white fixed left-0 w-full z-[1000]  ">
+   <header
+  className={`bg-white dark:bg-gray29 dark:text-white fixed top-0 left-0 w-full z-[50] transition-all duration-300 ${
+    isScrolled ? "shadow-md border-b border-gray-200 dark:border-gray-700" : ""
+  }`}
+>
+
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-4 lg:px-6">
         <div className="flex gap-3 md:gap-4 text-gray-600 items-center">
           <div className="hidden lg:flex">
