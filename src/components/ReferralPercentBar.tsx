@@ -76,12 +76,12 @@ const ReferralPercentBar = ({
         ))}
         {/* Draggable Thumb */}
         <div
-          className="absolute top-1/2 w-4 h-4 bg-blue2 rounded-full shadow-[0_0_11.74px_0_#5091FF] -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
+          className="absolute top-1/2 w-4 h-4 bg-blue2  rounded-full shadow-[0_0_11.74px_0_#5091FF] -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
           style={{ left: `${(selectedPercent / 30) * 100}%` }}
           onPointerDown={handlePointerDown}
         >
           {/* Value Indicator */}
-          <div className="absolute left-1/2 -translate-x-1/2 px-4 -top-8 bg-blue2 text-white text-xs font-medium rounded-md py-1  whitespace-nowrap">
+          <div className="absolute left-1/2 -translate-x-1/2 lg:p-1.5 p-1 -top-8 bg-blue2 text-white text-xs font-medium rounded-md   whitespace-nowrap">
             {formatPersianDigits(Math.round(selectedPercent))}%
           </div>
         </div>

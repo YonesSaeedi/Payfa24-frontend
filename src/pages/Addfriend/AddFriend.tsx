@@ -131,7 +131,7 @@ export default function AddFriend() {
       fetchTransactionsData();
     }
     // invited نیازی به لود نداره - از report میاد
-  }, [activeTab]);
+  }, []);
 
   const LinkInvite = [
     {
@@ -185,7 +185,8 @@ export default function AddFriend() {
   const EmptyState = (title: string, description: string) => (
     <div
       style={{ backgroundImage: `url(${Gift})` }}
-      className="bg-center bg-no-repeat flex flex-col items-center justify-center gap-3 mt-6 py-20 rounded-lg"
+      className="bg-center bg-no-repeat bg-[length:150px_130px] lg:bg-[length:210px_203px] 
+             flex flex-col items-center justify-center gap-3 mt-6 py-20 rounded-lg"
     >
       <h1 className="lg:text-2xl text-lg font-medium text-black1">{title}</h1>
       <p className="lg:text-lg text-md text-gray5 text-center">{description}</p>
@@ -300,7 +301,7 @@ export default function AddFriend() {
                     setSelectedPercent(currentFriendPercent);
                     setIsOpenModal(!IsOpenModal);
                   }}
-                  className="w-full font-bold text-lg text-white2 bg-blue2 py-3 rounded-lg hover:bg-blue1"
+                  className="w-full font-bold lg:text-lg text-sm text-white2 bg-blue2 py-3 rounded-lg hover:bg-blue1"
                   disabled={isLoading}
                 >
                   {isLoading ? "درحال بارگذاری..." : "تنظیم درصد سود"}
@@ -318,7 +319,7 @@ export default function AddFriend() {
               <img
                 src={inviteRightImg}
                 alt="inviteRightImg"
-                className="lg:w-1/2 w-full" 
+                className="lg:w-1/2 w-full"
               />
             </div>
 
@@ -371,15 +372,15 @@ export default function AddFriend() {
 
             {/* Section 4 - تب‌ها */}
             <div
-              className="w-full lg:border rounded-xl border-gray21 lg:p-6 shadow-sm mt-20"
+              className="w-full lg:border rounded-xl border-gray21 lg:p-6 shadow-sm mt-20 "
               dir="rtl"
             >
-              <div className="flex flex-row-reverse lg:items-end items-center justify-center lg:justify-end gap-6 pb-2">
+              <div className="flex flex-row-reverse lg:items-end items-center justify-center lg:justify-end  pb-2">
                 <button
                   onClick={() => {
                     setActiveTab("transactions");
                   }}
-                  className={`pb-2 lg:text-lg text-sm ${
+                  className={`pb-2 lg:text-lg text-sm w-full lg:w-[164px] ${
                     activeTab === "transactions"
                       ? "text-blue2 border-b-2 border-blue2 font-normal"
                       : "text-gray5"
@@ -391,7 +392,7 @@ export default function AddFriend() {
                   onClick={() => {
                     setActiveTab("invited");
                   }}
-                  className={`pb-2 lg:text-lg text-sm ${
+                  className={`pb-2 lg:text-lg text-sm w-full lg:w-[164px] ${
                     activeTab === "invited"
                       ? "text-blue2 border-b-2 border-blue2 font-medium"
                       : "text-gray5"
@@ -403,23 +404,70 @@ export default function AddFriend() {
 
               <div className="mt-5 w-full">
                 {/* ✅ تب تراکنش‌ها */}
-                {activeTab === "transactions" &&
-                  (isLoading ? (
-                    <div className="py-10 text-center flex flex-col  gap-4 w-full">
-                      <span className="skeleton-bg w-2/6 h-8 mx-auto block rounded-md"></span>
-                      <span className="skeleton-bg w-2/6 h-6 mx-auto block rounded-md"></span>
-                    </div>
-                  ) : transactions.length > 0 ? (
-                    <div className="w-full overflow-hidden">
-                      <div className="hidden lg:grid lg:grid-cols-6 bg-gray41 p-3 text-black0 font-medium items-center text-center text-base">
-                        <span>شناسه</span>
-                        <span>تاریخ و زمان</span>
-                        <span>نام کاربر</span>
-                        <span>کل کارمزد</span>
-                        <span>پورسانت شما</span>
-                        <span>پورسانت دوستان</span>
+                {activeTab === "transactions" && (
+                  <div className="w-full overflow-hidden">
+                    {/* حالت 1: در حال لود */}
+                    {isLoading ? (
+                      <>
+                        {[...Array(6)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="mt-3 lg:mt-0 lg:p-3 p-4 gap-4 lg:gap-0 rounded-2xl lg:rounded-none border border-gray21 animate-pulse"
+                          >
+                            {/* دسکتاپ */}
+                            <div className="hidden lg:grid lg:grid-cols-6 items-center text-center gap-4">
+                              <div className="skeleton-bg h-5 w-10 mx-auto rounded-md"></div>
+                              <div className="skeleton-bg h-5 w-24 mx-auto rounded-md"></div>
+                              <div className="skeleton-bg h-5 w-20 mx-auto rounded-md"></div>
+                              <div className="skeleton-bg h-5 w-16 mx-auto rounded-md"></div>
+                              <div className="skeleton-bg h-5 w-16 mx-auto rounded-md"></div>
+                              <div className="skeleton-bg h-5 w-16 mx-auto rounded-md"></div>
+                            </div>
+
+                            {/* موبایل */}
+                            <div className="lg:hidden flex flex-col gap-3">
+                              <div className="flex flex-row justify-between items-center border-b pb-3 border-gray21">
+                                <span className="skeleton-bg w-20 h-4 rounded-md"></span>
+                                <span className="skeleton-bg w-28 h-4 rounded-md"></span>
+                              </div>
+                              <div className="flex flex-row justify-between items-center border-b pb-3 border-gray21">
+                                <span className="skeleton-bg w-16 h-4 rounded-md"></span>
+                                <span className="skeleton-bg w-28 h-4 rounded-md"></span>
+                              </div>
+                              <div className="flex flex-row justify-between items-center">
+                                <div className="flex items-center flex-col gap-2 w-1/2">
+                                  <div className="skeleton-bg w-16 h-4 rounded-md"></div>
+                                  <div className="skeleton-bg w-8 h-4 rounded-md"></div>
+                                </div>
+                                <div className="border-l border-gray21 h-10 mx-2"></div>
+                                <div className="flex items-center flex-col gap-2 w-1/2">
+                                  <div className="skeleton-bg w-20 h-4 rounded-md"></div>
+                                  <div className="skeleton-bg w-8 h-4 rounded-md"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    ) : transactions.length === 0 ? (
+                      // حالت 2: لود تموم شده ولی داده‌ای نیست
+                      <div
+                        style={{
+                          backgroundImage: `url(${Gift})`,
+                        }}
+                        className="bg-center bg-no-repeat flex flex-col items-center justify-center gap-3 mt-6 py-20 rounded-lg"
+                      >
+                        <h1 className="lg:text-2xl text-lg font-medium text-black1">
+                          هنوز تراکنشی ثبت نشده است!
+                        </h1>
+                        <p className="lg:text-lg text-md text-gray5 text-center">
+                          با دعوت از دوستانتان از تراکنش‌های آن‌ها پاداش دریافت
+                          کنید.
+                        </p>
                       </div>
-                      {transactions.map((item) => (
+                    ) : (
+                      // حالت 3: داده وجود دارد → جدول واقعی
+                      transactions.map((item) => (
                         <div
                           key={item.id}
                           className="lg:grid lg:grid-cols-6 mt-3 lg:mt-0 lg:p-3 p-4 gap-4 lg:gap-0 rounded-2xl lg:rounded-none lg:space-y-0 space-y-4 text-sm text-black0 items-center text-center border lg:border-b-0 border-gray21"
@@ -463,6 +511,8 @@ export default function AddFriend() {
                               <span>{item.percent_referral}%</span>
                             </div>
                           </div>
+
+                          {/* دسکتاپ */}
                           <span className="hidden lg:block">{item.id}</span>
                           <span className="hidden lg:block">{item.date}</span>
                           <span className="hidden lg:block">{item.name}</span>
@@ -477,14 +527,10 @@ export default function AddFriend() {
                             {item.percent_referral}%
                           </span>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    EmptyState(
-                      "هنوز تراکنشی ثبت نشده است!",
-                      "با دعوت از دوستانتان از تراکنش‌های آن‌ها پاداش دریافت کنید."
-                    )
-                  ))}
+                      ))
+                    )}
+                  </div>
+                )}
 
                 {/* ✅ تب کاربران دعوت شده */}
                 {activeTab === "invited" &&
@@ -582,7 +628,7 @@ export default function AddFriend() {
               >
                 <div className="flex justify-between items-center border-b border-gray21 pb-4">
                   <span
-                    className="icon-wrapper w-6 h-6 cursor-pointer text-gray5 hover:text-black0"
+                    className="icon-wrapper w-6 h-6 cursor-pointer text-gray12 hover:text-blue2"
                     onClick={() => setIsOpenModal(false)}
                   >
                     <IconClose />
@@ -623,7 +669,7 @@ export default function AddFriend() {
                 <button
                   onClick={handleSaveCommissionSplit}
                   disabled={isLoading}
-                  className="w-full font-bold text-base text-white2 bg-blue2 lg:py-3 py-2 rounded-lg"
+                  className="w-full font-bold text-sm text-white2 bg-blue2 lg:py-3 py-2 rounded-lg"
                 >
                   {isLoading ? "درحال ذخیره..." : "تایید"}
                 </button>
