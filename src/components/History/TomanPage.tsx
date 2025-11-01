@@ -60,7 +60,7 @@ const TomanPage: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await apiRequest<FiatResponse>({
-          url: "/api/history/fiat",
+          url: "/history/fiat",
           method: "GET",
           params: {
             page,

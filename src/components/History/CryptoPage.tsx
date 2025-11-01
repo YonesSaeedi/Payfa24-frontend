@@ -79,7 +79,7 @@ const CryptoPage: React.FC = () => {
           transaction: CryptoTransaction[];
           transaction_count: number;
         }>({
-          url: "/api/history/crypto-transaction",
+          url: "/history/crypto-transaction",
           method: "GET",
           params: {
             page,

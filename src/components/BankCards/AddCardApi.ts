@@ -21,7 +21,7 @@ export const AddCardApi= async (cardNumber: string) => {
 
   try {
     const response = await apiRequest<AddCardResponse, AddCardRequest>({
-      url: "/api/account/credit-card",
+      url: "/account/credit-card",
       method: "POST",
       data: { CardNumber: cleanedNumber },
     });

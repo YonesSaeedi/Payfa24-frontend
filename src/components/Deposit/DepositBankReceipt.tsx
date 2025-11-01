@@ -74,7 +74,7 @@ export default function DepositBankReceipt({
 
     try {
       await apiRequest({
-        url: "/api/wallets/fiat/deposit/receipt",
+        url: "/wallets/fiat/deposit/receipt",
         method: "POST",
         data: formData,
         isFormData: true,
@@ -179,7 +179,7 @@ export default function DepositBankReceipt({
     const fetchWalletData = async () => {
       try {
         const response = await apiRequest<WalletData>({
-          url: "/api/wallets/fiat",
+          url: "/wallets/fiat",
           method: "GET",
         });
         setWalletData(response);

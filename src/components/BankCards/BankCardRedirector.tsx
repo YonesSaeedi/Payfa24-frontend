@@ -15,7 +15,7 @@ export default function BankCardsRedirector() {
   useEffect(() => {
     const checkCards = async () => {
       try {
-        const res = await apiRequest<CardListResponse>({ url: "/api/account/credit-card/list", method: "GET" });
+        const res = await apiRequest<CardListResponse>({ url: "/account/credit-card/list", method: "GET" });
         if (res.status && Array.isArray(res.data) && res.data.length > 0) {
           navigate(ROUTES.BANK_CARDS, { replace: true });
 

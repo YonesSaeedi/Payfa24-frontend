@@ -4,7 +4,8 @@ import { ROUTES } from "../routes/routes";
 import { toast } from "react-toastify";
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
+  // baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
+  baseURL: "https://api.payfa24.org/api/v4",
   timeout: 10_000,
   headers: {
     // حذف Content-Type پیش‌فرض تا هنگام ارسال FormData مرورگر خودش header مناسب را بسازد

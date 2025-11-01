@@ -57,7 +57,7 @@ export default function DepositWithIdentifier(): React.ReactElement {
     setLoadingCards(true);
     try {
       const res = await apiRequest<FiatApiResponse>({
-        url: "/api/wallets/fiat",
+        url: "/wallets/fiat",
         method: "GET",
       });
 
@@ -87,7 +87,7 @@ export default function DepositWithIdentifier(): React.ReactElement {
       const response = await apiRequest<
         { deposit_id?: DepositIdentifierResponse } | DepositIdentifierResponse
       >({
-        url: "/api/wallets/fiat/deposit/gateway-id",
+        url: "/wallets/fiat/deposit/gateway-id",
         method: "POST",
         // data: { id: selectedCard } as Record<string, number>,
       });

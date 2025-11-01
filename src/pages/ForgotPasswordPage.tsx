@@ -119,7 +119,7 @@ export default function ForgotPasswordPage() {
       const payload = buildPayload(data.email, recaptchaToken, "");
 
       const response = await apiRequest<ForgotPasswordResponse, Record<string, string>>({
-        url: "/api/auth/forget",
+        url: "/auth/forget",
         method: "POST",
         data: payload,
       });
@@ -152,7 +152,7 @@ export default function ForgotPasswordPage() {
       const payload = buildPayload(formData.email, recaptchaToken, otpCode);
 
       const response = await apiRequest<ForgotPasswordResponse, Record<string, string>>({
-        url: "/api/auth/forget",
+        url: "/auth/forget",
         method: "POST",
         data: payload,
       });

@@ -64,7 +64,7 @@ export default function DepositForm() {
       try {
         setLoadingConfig(true);
         const res = await apiRequest<any>({
-          url: "/api/wallets/fiat",
+          url: "/wallets/fiat",
           method: "GET",
         });
 
@@ -137,7 +137,7 @@ export default function DepositForm() {
       };
 
       const response = await apiRequest<PaymentGatewayResponse, PaymentGatewayRequestData>({
-        url: "/api/wallets/fiat/deposit/gateway",
+        url: "/wallets/fiat/deposit/gateway",
         method: "POST",
         data: requestData,
       });

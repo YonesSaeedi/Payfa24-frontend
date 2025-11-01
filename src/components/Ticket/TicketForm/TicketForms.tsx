@@ -50,7 +50,7 @@ export default function TicketForm() {
       }
 
       const response = await apiRequest<TicketNewResponse, FormData>({
-        url: "/api/ticket/new",
+        url: "/ticket/new",
         method: "POST",
         data: formData,
         isFormData: true,

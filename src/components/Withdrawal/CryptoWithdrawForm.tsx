@@ -163,7 +163,7 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       const res = await apiRequest<WithdrawApiResponse>({
-        url: "/api/wallets/crypto/withdraw",
+        url: "/wallets/crypto/withdraw",
         method: "GET",
       });
 
@@ -406,7 +406,7 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       const res = await apiRequest<WithdrawApiResponse>({
-        url: "/api/wallets/crypto/withdraw",
+        url: "/wallets/crypto/withdraw",
         method: "GET",
       });
 

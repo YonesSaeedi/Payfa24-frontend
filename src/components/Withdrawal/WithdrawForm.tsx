@@ -66,7 +66,7 @@ export default function WithdrawForm() {
     const fetchCards = async () => {
       try {
         const response = await apiRequest<WalletResponse>({
-          url: "/api/wallets/fiat?withdraw=true",
+          url: "/wallets/fiat?withdraw=true",
           method: "GET",
         });
         setListCards(response.list_cards || []);
@@ -104,7 +104,7 @@ export default function WithdrawForm() {
     try {
       // درخواست اولیه بدون OTP
       await apiRequest({
-        url: "/api/wallets/fiat/withdraw",
+        url: "/wallets/fiat/withdraw",
         method: "POST",
         data: {
           amount: amountNumber,
@@ -137,7 +137,7 @@ export default function WithdrawForm() {
 
     try {
       await apiRequest({
-        url: "/api/wallets/fiat/withdraw",
+        url: "/wallets/fiat/withdraw",
         method: "POST",
         data: {
           amount: Number(pendingWithdrawData.amount),

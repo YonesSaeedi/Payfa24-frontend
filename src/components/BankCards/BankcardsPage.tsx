@@ -21,7 +21,7 @@ const BankCardsPage = () => {
           status: boolean;
           data: any[];
         }>({
-          url: "/api/account/credit-card/list",
+          url: "/account/credit-card/list",
           method: "GET",
         });
 

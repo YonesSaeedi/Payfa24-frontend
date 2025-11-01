@@ -83,7 +83,7 @@
 //   SetPercentRequestBody,   // TData (بدنه‌ی POST)
 //   Record<string, unknown>   // TParams — می‌تونی این خط رو حذف هم بکنی چون default دارد
 // >({
-//   url: "/api/referrals/set-percent",
+//   url: "/referrals/set-percent",
 //   method: "POST",
 //   data: data,
 // });
@@ -127,7 +127,7 @@
 //   undefined,                 // TData (GET: no body)
 //   TransactionParams          // TParams (پارامترهای query)
 // >({
-//   url: "/api/referrals/list-transaction",
+//   url: "/referrals/list-transaction",
 //   method: "GET",
 //   params,
 // });
@@ -145,7 +145,7 @@
 //   // ✅ اصلاح فراخوانی: 
 //   // در این درخواست GET، فقط TResponse را نیاز داریم.
 //   const response = await apiRequest<ReferralReportResponse>({
-//     url: "/api/referrals/get-reports",
+//     url: "/referrals/get-reports",
 //     method: "GET",
 //   });
 
@@ -210,7 +210,7 @@ export async function setReferralCommission(
 
   // برای POST بدنه داریم -> جنریک‌ها را به شکل (TResponse, TData) می‌گذاریم
   const response = await apiRequest<SetPercentResponse, SetPercentRequestBody>({
-    url: "/api/referrals/set-percent",
+    url: "/referrals/set-percent",
     method: "POST",
     data,
   });
@@ -242,7 +242,7 @@ export async function getReferralTransactions(
     undefined,
     TransactionParams
   >({
-    url: "/api/referrals/list-transaction",
+    url: "/referrals/list-transaction",
     method: "GET",
     params,
   });
@@ -253,7 +253,7 @@ export async function getReferralTransactions(
 /** GET /referrals/get-reports */
 export async function getReferralReport(): Promise<ReferralReportResponse> {
   const response = await apiRequest<ReferralReportResponse>({
-    url: "/api/referrals/get-reports",
+    url: "/referrals/get-reports",
     method: "GET",
   });
 

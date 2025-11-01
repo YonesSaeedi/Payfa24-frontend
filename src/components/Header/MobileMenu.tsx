@@ -41,7 +41,7 @@ export default function MobileMenu({
 
   const handleLogout = async () => {
     try {
-      await apiRequest({ url: "/api/auth/logout", method: "POST" });
+      await apiRequest({ url: "/auth/logout", method: "POST" });
     } catch (error) {
       console.error("Error logging out:", error);
     } finally {

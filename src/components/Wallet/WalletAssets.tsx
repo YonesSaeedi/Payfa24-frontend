@@ -78,7 +78,7 @@ const WalletAssets: React.FC = () => {
       setIsLoading(true)
       try {
         const response = await apiRequest<WalletsResponse>({
-          url: "/api/wallets/crypto",
+          url: "/wallets/crypto",
           method: "GET",
           params: { limit: 10, page: 1, search: searchTerm, sort: sortKey, justBalance: true },
         });
@@ -143,7 +143,7 @@ const WalletAssets: React.FC = () => {
       ...wallet,
       name: generalItem?.locale?.fa?.name || generalItem?.name || wallet.name,
       color: generalItem?.color,
-      isFont: generalItem.isFont,
+      isFont: generalItem?.isFont,
       icon: renderIcon,
       percent: generalItem?.percent ?? wallet.percent,
     };

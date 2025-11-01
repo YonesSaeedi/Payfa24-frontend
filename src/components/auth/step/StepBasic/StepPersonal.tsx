@@ -81,7 +81,7 @@ export default function StepPersonal({ onNext }: Props) {
     const fetchUserData = async () => {
       try {
         const response = await apiRequest<UserInfo>({
-          url: "/api/kyc/get-info",
+          url: "/kyc/get-info",
         });
         console.log("User info response stepPersonal:", response);
         if (response.kyc?.basic) {
@@ -123,7 +123,7 @@ const submitPersonalInfoMutation = useMutation<
 >({
   mutationFn: (payload: FormData) =>
     apiRequest<ApiResponse,FormData>({
-      url: "/api/kyc/basic/level2",
+      url: "/kyc/basic/level2",
       method: "POST",
       data: payload,
     }),

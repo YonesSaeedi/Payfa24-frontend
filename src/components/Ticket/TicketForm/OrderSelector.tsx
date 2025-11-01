@@ -51,7 +51,7 @@ export default function OrderSelector({
       setIsLoading(true);
       try {
         const response = await apiRequest<TicketInfoResponse>({
-          url: "/api/ticket/get-info",
+          url: "/ticket/get-info",
           method: "GET",
         });
 

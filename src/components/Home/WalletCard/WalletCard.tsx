@@ -56,7 +56,7 @@ const WalletCard = ({ showBuySell = true, }: WalletCardProps) => {
   // function get balance and run it once component mounted ======================================================================================
   async function getBalance() {
     try {
-      const response = await apiRequest<WalletResponse>({ url: "/api/dashboard/web" });
+      const response = await apiRequest<WalletResponse>({ url: "/dashboard/web" });
       setBalance(response);
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'دریافت اطلاعات کیف پول با مشکل مواجه شد.')

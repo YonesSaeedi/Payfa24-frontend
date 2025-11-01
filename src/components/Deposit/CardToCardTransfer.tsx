@@ -104,7 +104,7 @@ export default function CardToCardTransfer() {
     const fetchData = async () => {
       try {
         const response = await apiRequest<WalletsFiatResponse>({
-          url: "/api/wallets/fiat",
+          url: "/wallets/fiat",
           method: "GET",
         });
         if (response.status) {
@@ -170,7 +170,7 @@ export default function CardToCardTransfer() {
         CardToCardResponse,
         CardToCardRequestData
       >({
-        url: "/api/wallets/fiat/deposit/card-to-card",
+        url: "/wallets/fiat/deposit/card-to-card",
         method: "POST",
         data: requestData,
       });
@@ -179,7 +179,7 @@ export default function CardToCardTransfer() {
         toast.success(response.msg || "درخواست واریز با موفقیت ثبت شد. ✅");
 
         const updatedResponse = await apiRequest<WalletsFiatResponse>({
-          url: "/api/wallets/fiat",
+          url: "/wallets/fiat",
           method: "GET",
         });
         if (updatedResponse.status && updatedResponse.cardToCard.transaction) {

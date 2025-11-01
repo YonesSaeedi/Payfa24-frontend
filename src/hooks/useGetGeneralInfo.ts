@@ -5,7 +5,7 @@ import { GeneralInfo } from "../types/apiResponses"
 const useGetGeneralInfo = () => {
   return useQuery<GeneralInfo, Error>({
     queryKey: ['general'],
-    queryFn: () => { return apiRequest({ url: '/api/get-general-info' }) },
+    queryFn: () => { return apiRequest({ url: '/get-general-info' }) },
     staleTime: Infinity,         // always fresh
     gcTime: Infinity,            // never garbage collected
     refetchOnWindowFocus: false, // disable re-fetch on focus

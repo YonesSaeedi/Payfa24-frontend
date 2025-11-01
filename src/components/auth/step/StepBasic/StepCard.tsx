@@ -80,7 +80,7 @@ export default function StepCard({ onNext }: Props) {
     const checkCardStatus = async () => {
       try {
         const response = await apiRequest<KycCheckResponse>({
-          url: "/api/kyc/get-info",
+          url: "/kyc/get-info",
         });
 
         // بررسی وجود فیلد cardbank در پاسخ
@@ -106,7 +106,7 @@ export default function StepCard({ onNext }: Props) {
         { status: boolean; msg?: string },
         { CardNumber: string }
       >({
-        url: "/api/account/credit-card",
+        url: "/account/credit-card",
         method: "POST",
         data: payload,
       });

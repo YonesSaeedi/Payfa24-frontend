@@ -26,7 +26,7 @@ const TicketsDashboard: React.FC = () => {
         }[];
         last_orders: any[];
       }>({
-        url: "/api/ticket/get-info",
+        url: "/ticket/get-info",
         method: "GET",
       });
 

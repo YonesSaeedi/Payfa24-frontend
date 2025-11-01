@@ -47,7 +47,7 @@ export default function NotificationsPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await apiRequest<NotificationItem[]>({ url: "/api/notifications" });
+      const response = await apiRequest<NotificationItem[]>({ url: "/notifications" });
       setNotifications(response);
     } catch (error) {
       console.error(error);
@@ -94,7 +94,7 @@ export default function NotificationsPage() {
 
   const handleSeenAll = async () => {
     try {
-      await apiRequest({ url: "/api/notifications/seen/all", method: "POST" });
+      await apiRequest({ url: "/notifications/seen/all", method: "POST" });
       setNotifications((prev) => prev.map((n) => ({ ...n, seen: "seen" })));
     } catch (error) {
       console.error(error);

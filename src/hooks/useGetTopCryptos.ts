@@ -7,7 +7,7 @@ const useGetTopCryptos = (sortType: number, limit: number = 5) => {
     queryKey: ["top-cryptos", sortType],
     queryFn: async () => {
       const res = await apiRequest<{ list: CryptoItem[] }>({
-        url: "/api/list-cryptocurrencies",
+        url: "/list-cryptocurrencies",
         params: { sort: sortType, limit },
       });
       return res.list;

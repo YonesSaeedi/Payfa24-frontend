@@ -105,7 +105,7 @@ export default function DepositDedicatedWallet() {
     setIsDepositCoinsLoading(true);
     try {
       const depositRes = await apiRequest<DepositApiResponse>({
-        url: "/api/wallets/crypto/deposit",
+        url: "/wallets/crypto/deposit",
         method: "GET",
       });
 
@@ -179,7 +179,7 @@ export default function DepositDedicatedWallet() {
       );
       if (selectedCoin) {
         const depositRes = await apiRequest<DepositApiResponse>({
-          url: "/api/wallets/crypto/deposit",
+          url: "/wallets/crypto/deposit",
           method: "GET",
         });
         const walletEntry = depositRes.wallets_txid?.find(
@@ -233,7 +233,7 @@ export default function DepositDedicatedWallet() {
 
     try {
       const depositRes = await apiRequest<DepositApiResponse>({
-        url: "/api/wallets/crypto/deposit",
+        url: "/wallets/crypto/deposit",
         method: "GET",
       });
 

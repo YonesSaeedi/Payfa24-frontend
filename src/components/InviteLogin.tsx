@@ -66,7 +66,7 @@ export default function StepInvite({ onNext }: { onNext: () => void }) {
       if (data.inviteCode?.trim()) {
         payload.id_referral = data.inviteCode.trim();
       }
-      const response = await apiRequest<RegisterResponse, Record<string, string>>({ url: "/api/auth/register", method: "POST", data: payload });
+      const response = await apiRequest<RegisterResponse, Record<string, string>>({ url: "/auth/register", method: "POST", data: payload });
       if (response?.status === true) {
         localStorage.setItem("accessToken", response?.access_token);
         localStorage.setItem("refreshToken", response?.refresh_token);
@@ -86,7 +86,7 @@ export default function StepInvite({ onNext }: { onNext: () => void }) {
     if (otpCode.length === 5) {
       setIsConfirming(true)
       try {
-        await apiRequest<CheckResponse, Record<string, string>>({ url: "/api/auth/register/check", method: "POST", data: { code: otpCode }, });
+        await apiRequest<CheckResponse, Record<string, string>>({ url: "/auth/register/check", method: "POST", data: { code: otpCode }, });
         toast.success("حساب شما با موفقیت ایجاد شد.");
         onNext();
       } catch (err) {
@@ -99,7 +99,7 @@ export default function StepInvite({ onNext }: { onNext: () => void }) {
   const handleResend = async () => {
     setIsResending(true)
     try {
-      const response = await apiRequest<{ status?: boolean, msg?: string }>({ url: '/api/auth/register/resend', method: "POST" })
+      const response = await apiRequest<{ status?: boolean, msg?: string }>({ url: '/auth/register/resend', method: "POST" })
       setResendCodeTimeLeft(120)
       toast.success(response?.msg)
     } catch (err) { toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ارسال مجدد کد مشکلی پیش آمد؛ لطفا دوباره تلاش کنید.') }

@@ -32,7 +32,7 @@ export default function DeviceList() {
     setIsLoading(true);
     try {
       const response = await apiRequest<SessionsResponse>({
-        url: "/api/auth/sessions",
+        url: "/auth/sessions",
       });
       setActiveSessions(response.sessions);
     } catch (error) {
@@ -50,7 +50,7 @@ export default function DeviceList() {
     setIsSubmitting(true);
     try {
       await apiRequest({
-        url: "/api/auth/sessions/revoke-others",
+        url: "/auth/sessions/revoke-others",
         method: "POST",
       });
       fetchActiveSessions();

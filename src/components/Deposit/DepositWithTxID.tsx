@@ -115,7 +115,7 @@ export default function DepositWithTxID() {
         networks?: Network[];
         wallets_txid?: WalletTxid[];
       }>({
-        url: "/api/wallets/crypto/deposit",
+        url: "/wallets/crypto/deposit",
         method: "GET",
       });
 
@@ -217,7 +217,7 @@ export default function DepositWithTxID() {
           networks?: Network[];
           wallets_txid?: WalletTxid[];
         }>({
-          url: "/api/wallets/crypto/deposit",
+          url: "/wallets/crypto/deposit",
           method: "GET",
         });
         const walletEntry = depositRes.wallets_txid?.find(

@@ -137,7 +137,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const fetchTomanBalance = async () => {
     try {
       setIsLoading(true)
-      const response = await apiRequest<FiatBalance>({ url: '/api/wallets/fiat/balance' })
+      const response = await apiRequest<FiatBalance>({ url: '/wallets/fiat/balance' })
       setTomanBalance(response?.balance_available ?? 0)
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "دریافت موجودی کاربر با مشکل مواجه شد!");

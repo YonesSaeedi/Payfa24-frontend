@@ -144,7 +144,7 @@ export default function DepositPage({
   //   const fetchFiatData = async () => {
   //     try {
   //       const response = await apiRequest({
-  //         url: "/api/wallets/fiat",
+  //         url: "/wallets/fiat",
   //         method: "GET",
   //         params: { withdraw: null },
   //       });

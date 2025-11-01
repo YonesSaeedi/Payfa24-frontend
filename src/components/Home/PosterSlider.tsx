@@ -19,7 +19,7 @@ const PosterSlider = () => {
     const fetchSlides = async () => {
       try {
         setIsLoading(true);
-        const response = await apiRequest<Dashboard>({ url: "/api/dashboard/web" });
+        const response = await apiRequest<Dashboard>({ url: "/dashboard/web" });
         const banners = response?.banner?.banner;
         if (Array.isArray(banners)) setSlides(banners);
         else setSlides([]);
