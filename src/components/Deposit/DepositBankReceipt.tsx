@@ -1,57 +1,74 @@
 import { Controller, useForm } from "react-hook-form";
-import IconVideo from "../../assets/icons/Deposit/IconVideo";
-import FloatingSelect from "../FloatingInput/FloatingSelect";
 import { yupResolver } from "@hookform/resolvers/yup";
-import FloatingInput from "../FloatingInput/FloatingInput";
-import { useEffect, useRef, useState, useCallback } from "react";
+import * as yup from "yup";
+import { useCallback, useRef, useState } from "react";
 import UploadImage from "../../assets/icons/authentication/UploadImage";
 import Accordion from "../Withdrawal/Accordion";
-import * as yup from "yup";
+import FloatingSelect from "../FloatingInput/FloatingSelect";
+import FloatingInput from "../FloatingInput/FloatingInput";
+import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { getBankLogo } from "../../utils/bankLogos";
+import { formatPersianDigits } from "../../utils/formatPersianDigits";
 
-// --- اسکیما validation ---
+// ---------- validation ----------
 const schema = yup.object().shape({
   bank: yup.string().required("حساب مبدا الزامی است"),
   destinationBank: yup.string().required("حساب مقصد الزامی است"),
   amount: yup
     .number()
-    .min(1000000, "حداقل ۱ میلیون تومان")
+    .min(1_000_000, "حداقل ۱ میلیون تومان")
     .required("مقدار واریزی الزامی است"),
 });
 
-// --- نوع داده‌ها ---
-type WalletData = {
-  list_cards?: { id: number; bank: string; card: string }[];
-  receipt?: {
-    list_cards?: {
-      iban_number: string;
-      name_bank: string;
-      account_name: string;
-      account_number?: string;
-    }[];
-  };
-  deposit_id?: { destination_iban: string; destination_bank: string };
-};
-
-type Props = {
+// ---------- props ----------
+interface BankCard {
+  id: number;
+  bank: string;
+  card: string;
+}
+interface ReceiptAccount {
+  iban_number: string;
+  name_bank: string;
+  account_name: string;
+  account_number?: string;
+}
+interface DepositBankReceiptProps {
+  bankCards: BankCard[];
+  receiptAccounts: ReceiptAccount[];
   onNext: () => void;
   onFileChange: (file: File | null) => void;
   initialPreviewUrl: string | null;
-};
+}
 
+
+
+export function formatPersianCardNumber(input: string | number): string {
+  if (input === null || input === undefined || input === "") return "";
+
+  const persianMap = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+  let digitsOnly = String(input).replace(/\D/g, "");
+  if (/^\d+$/.test(digitsOnly) && digitsOnly.length < 16) {
+    digitsOnly = digitsOnly.padStart(16, "0");
+  }
+  const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, "$1-");
+  const persianGrouped = grouped.replace(/[0-9]/g, (d) => persianMap[+d]);
+
+  return persianGrouped;
+}
 export default function DepositBankReceipt({
+  bankCards,
+  receiptAccounts,
   onNext,
   onFileChange,
   initialPreviewUrl,
-}: Props) {
+}: DepositBankReceiptProps) {
   const amounts = [5, 10, 20, 50];
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(
     initialPreviewUrl
   );
-  const [walletData, setWalletData] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -67,29 +84,25 @@ export default function DepositBankReceipt({
     defaultValues: { amount: 0 },
   });
 
-  // --- آپلود فایل با progress ---
+  // ---------- upload ----------
   const uploadFile = useCallback(async (formData: FormData) => {
     setIsUploading(true);
     setUploadProgress(0);
-
     try {
       await apiRequest({
         url: "/api/wallets/fiat/deposit/receipt",
         method: "POST",
         data: formData,
         isFormData: true,
-        onUploadProgress: (event) => {
-          if (event?.total && event.loaded) {
-            const percent = Math.round((event.loaded * 100) / event.total);
-            setUploadProgress(percent);
+        onUploadProgress: (e) => {
+          if (e?.total && e.loaded) {
+            setUploadProgress(Math.round((e.loaded * 100) / e.total));
           }
         },
       });
-
       toast.success("فیش با موفقیت آپلود شد!");
       return true;
     } catch (err) {
-      console.error("خطا در آپلود:", err);
       toast.error("خطا در آپلود فیش!");
       return false;
     } finally {
@@ -97,18 +110,14 @@ export default function DepositBankReceipt({
     }
   }, []);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-
-    // پاک کردن preview قبلی
-    if (previewURL && previewURL.startsWith("blob:")) {
-      URL.revokeObjectURL(previewURL);
-    }
+  // ---------- file ----------
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (previewURL?.startsWith("blob:")) URL.revokeObjectURL(previewURL);
 
     if (file) {
       setSelectedFile(file);
-      const newPreviewURL = URL.createObjectURL(file);
-      setPreviewURL(newPreviewURL);
+      setPreviewURL(URL.createObjectURL(file));
       onFileChange(file);
       setValue("amount", 0, { shouldValidate: true });
     } else {
@@ -119,89 +128,47 @@ export default function DepositBankReceipt({
     }
   };
 
-  // --- کلیک برای انتخاب فایل ---
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
+  const handleClick = () => fileInputRef.current?.click();
 
-  // --- تنظیم مقدار واریزی ---
-  const handleAmountClick = (amount: number) => {
-    setValue("amount", amount * 1000000, { shouldValidate: true });
-  };
+  const handleAmountClick = (m: number) =>
+    setValue("amount", m * 1_000_000, { shouldValidate: true });
 
-  // --- دکمه Submit با Progress در خود دکمه ---
+  // ---------- submit ----------
   const onSubmit = async (data: any) => {
     setLoading(true);
-    setUploadProgress(0);
-
     try {
-      // چک کردن وجود فایل
-      if (!selectedFile) {
-        throw new Error("لطفاً فیش را انتخاب کنید");
-      }
+      if (!selectedFile) throw new Error("لطفاً فیش را انتخاب کنید");
 
-      // آماده‌سازی FormData
-      const selectedCardId = walletData?.list_cards?.find(
-        (c) => c.bank === data.bank
-      )?.id;
+      const card = bankCards.find((c) => c.bank === data.bank);
+      if (!card) throw new Error("کارت مبدا انتخاب نشده است");
 
-      if (!selectedCardId) {
-        throw new Error("کارت مبدا انتخاب نشده است");
-      }
-
-      const payeeIban = walletData?.receipt?.list_cards?.[0]?.iban_number;
-      if (!payeeIban) {
-        throw new Error("شماره شبا مقصد در دسترس نیست");
-      }
+      const payeeIban = receiptAccounts[0]?.iban_number;
+      if (!payeeIban) throw new Error("شماره شبا مقصد در دسترس نیست");
 
       const formData = new FormData();
       formData.append("amount", data.amount.toString());
       formData.append("payee", payeeIban);
-      formData.append("card", selectedCardId.toString());
+      formData.append("card", card.id.toString());
       formData.append("file", selectedFile);
 
-      const uploadSuccess = await uploadFile(formData);
-
-      if (uploadSuccess) {
-        setTimeout(() => {
-          onNext();
-        }, 1500);
-      }
+      const ok = await uploadFile(formData);
+      if (ok) setTimeout(onNext, 1500);
     } catch (err: any) {
-      console.error("خطا در onSubmit:", err);
+      toast.error(err.message || "خطا در ثبت اطلاعات");
     } finally {
       setLoading(false);
     }
   };
 
-  // --- بارگذاری داده‌های کیف پول ---
-  useEffect(() => {
-    const fetchWalletData = async () => {
-      try {
-        const response = await apiRequest<WalletData>({
-          url: "/api/wallets/fiat",
-          method: "GET",
-        });
-        setWalletData(response);
-      } catch (err) {
-        console.error("خطا در fetch wallet data:", err);
-      }
-    };
-    fetchWalletData();
-
-    return () => {
-      if (previewURL && previewURL.startsWith("blob:"))
-        URL.revokeObjectURL(previewURL);
-    };
-  }, [initialPreviewUrl, previewURL]);
-
+  // ---------- render ----------
   return (
     <div className="w-full" dir="rtl">
+      {/* ویدیو */}
       <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
         <span className="icon-wrapper w-6 h-6 text-blue2">
           <IconVideo />
         </span>
-        <span>ویدیو آموزشی واریز با درگاه پرداخت</span>
+        <span>ویدیو آموزشی واریز با فیش بانکی</span>
       </div>
 
       {/* کارت مبدا */}
@@ -210,44 +177,55 @@ export default function DepositBankReceipt({
           name="bank"
           control={control}
           render={({ field }) => (
-            <FloatingSelect
+            <FloatingSelect // placeholder را برای زمانی که کارتی موجود نیست، روی حالت پیش‌فرض می‌گذاریم. // چون پیغام اصلی در داخل options نمایش داده می‌شود.
               placeholder="حساب مبدا را انتخاب کنید"
               label="حساب مبدا"
               value={field.value}
-              onChange={field.onChange}
+              onChange={field.onChange} // ⬇️ منطق جدید بر اساس آرایه bankCards
               options={
-                walletData?.list_cards?.map((card: any) => ({
-                  value: card.bank,
-                  label: (
-                    <div className="flex items-center justify-between w-full py-1 rounded-md">
-                      <div className="flex items-center gap-2">
-                        <span className="lg:text-sm text-xs text-black0">
-                          {card.bank}
-                        </span>
-                      </div>
-                      <span className="lg:text-sm text-xs text-black0">
-                        {card.card}
-                      </span>
-                    </div>
-                  ),
-                  icon: (
-                    <img
-                      src={
-                        getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"
-                      }
-                      alt={card.bank}
-                      className="w-6 h-6 object-contain"
-                    />
-                  ),
-                })) || []
+                bankCards.length === 0
+                  ? [
+                      {
+                        value: "",
+                        label: (
+                          <div className="text-center w-full py-2 text-gray-500">
+                             هیچ کارت ثبت شده‌ای ندارید
+                            
+                          </div>
+                        ) as any,
+                        disabled: true, // غیرفعال کردن برای جلوگیری از انتخاب
+                        icon: null,
+                        hideIndicator: true, // حذف دایره رادیویی
+                      },
+                    ]
+                  : bankCards.map((c) => ({
+                      value: c.bank,
+                      label: (
+                        <div className="flex items-center justify-between w-full py-1">
+                          <span className="lg:text-sm text-xs text-black0">
+                            {c.bank}
+                          </span>
+                          <span className="lg:text-sm text-xs text-black0">
+                            {formatPersianCardNumber(c.card)}
+                          </span>
+                        </div>
+                      ),
+                      icon: (
+                        <img
+                          src={
+                            getBankLogo(c.bank) || "/bank-logos/bank-sayer.png"
+                          }
+                          alt={c.bank}
+                          className="w-6 h-6 object-contain"
+                        />
+                      ),
+                    }))
               }
             />
           )}
         />
         {errors.bank && (
-          <p className="text-red1 text-xs pt-2">
-            {errors.bank.message as string}
-          </p>
+          <p className="text-red1 text-xs pt-2">{errors.bank.message}</p>
         )}
       </div>
 
@@ -258,42 +236,42 @@ export default function DepositBankReceipt({
           control={control}
           render={({ field }) => (
             <FloatingSelect
-              placeholder="حساب مقصد را انتخاب کنید"
+              placeholder={
+                receiptAccounts.length
+                  ? "حساب مقصد را انتخاب کنید"
+                  : "حساب مقصد یافت نشد"
+              }
               label="حساب مقصد"
               value={field.value}
               onChange={field.onChange}
-              options={
-                walletData?.receipt?.list_cards?.map((acc: any) => ({
-                  value: acc.iban_number,
-                  label: (
-                    <div className="flex items-center justify-between w-full py-1 rounded-md">
-                      <div className="flex items-center gap-2">
-                        <span className="lg:text-sm text-xs text-black0">
-                          {acc.name_bank}
-                        </span>
-                      </div>
-                      <span className="lg:text-sm text-xs text-black0">
-                        {acc.account_number || acc.iban_number}
-                      </span>
-                    </div>
-                  ),
-                  icon: (
-                    <img
-                      src={
-                        getBankLogo(acc.bank) || "/bank-logos/bank-sayer.png"
-                      }
-                      alt={acc.bank}
-                      className="w-6 h-6 object-contain"
-                    />
-                  ),
-                })) || []
-              }
+              options={receiptAccounts.map((a) => ({
+                value: a.iban_number,
+                label: (
+                  <div className="flex items-center justify-between w-full py-1 rounded-md">
+                    <span className="lg:text-sm text-xs text-black0">
+                      {a.name_bank}
+                    </span>
+                    <span className="lg:text-sm text-xs text-black0">
+                      {a.account_number || a.iban_number}
+                    </span>
+                  </div>
+                ),
+                icon: (
+                  <img
+                    src={
+                      getBankLogo(a.name_bank) || "/bank-logos/bank-sayer.png"
+                    }
+                    alt={a.name_bank}
+                    className="w-6 h-6 object-contain"
+                  />
+                ),
+              }))}
             />
           )}
         />
         {errors.destinationBank && (
           <p className="text-red1 text-xs pt-2">
-            {errors.destinationBank.message as string}
+            {errors.destinationBank.message}
           </p>
         )}
       </div>
@@ -303,16 +281,22 @@ export default function DepositBankReceipt({
       </p>
 
       {/* مقدار واریزی */}
-      <div dir="rtl" className="mb-1.5 mt-8">
+      <div className="mb-1.5 mt-8">
         <Controller
           name="amount"
           control={control}
           render={({ field }) => (
             <FloatingInput
-              label="مقدار واریزی"
-              value={field.value?.toString() ?? ""}
-              onChange={field.onChange}
-              type="number"
+              label="مقدار واریزی (تومان)"
+              value={formatPersianDigits(field.value?.toString() ?? "")}
+              type="text"
+              onChange={(e) => {
+                const rawValue = e.target.value;
+                const englishValue = rawValue
+                  .replace(/[۰-۹]/g, (d) => ("۰۱۲۳۴۵۶۷۸۹".indexOf(d)).toString())
+                  .replace(/[^0-9]/g, "");
+                field.onChange(englishValue ? Number(englishValue) : undefined);
+              }}
               placeholder="۰ تومان"
               placeholderColor="text-black0"
             />
@@ -320,39 +304,41 @@ export default function DepositBankReceipt({
         />
         {errors.amount && (
           <p className="text-red1 text-xs py-3 pt-2">
-            مبلغ عددی صحیح وارد کنید{" "}
+            مبلغ عددی صحیح وارد کنید
           </p>
         )}
       </div>
 
+      {/* دکمه‌های مبلغ پیشنهادی */}
       <div className="flex gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
-        {amounts.map((amount, index) => (
+        {amounts.map((a, index) => (
           <button
             key={index}
             type="button"
-            onClick={() => handleAmountClick(amount)}
+            onClick={() => handleAmountClick(a)}
             className="border border-gray12 rounded-lg px-7 py-2 text-gray12 text-sm hover:bg-gray12/20 transition-colors"
           >
-            {amount} میلیون
+            {a} میلیون
           </button>
         ))}
       </div>
 
-      {/* آپلود فایل - نمایش Preview فوری */}
+      {/* آپلود فایل */}
       <p className="font-medium mb-3 text-gray5">تصویر رسید</p>
       <input
         ref={fileInputRef}
+        disabled={isUploading}
         type="file"
         accept="image/*,application/pdf"
         className="hidden"
         onChange={handleFileChange}
       />
-
       <div
-        className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all duration-300 ${previewURL
-          ? "border-blue2 bg-blue2/5"
-          : "border-gray31 hover:border-gray12"
-          }`}
+        className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all ${
+          previewURL
+            ? "border-blue2 bg-blue2/5"
+            : "border-gray31 hover:border-gray12"
+        }`}
         onClick={handleClick}
       >
         <div className="flex flex-col items-center justify-center h-48 relative">
@@ -369,12 +355,12 @@ export default function DepositBankReceipt({
             </>
           )}
 
-          {/* نمایش Preview + نام فایل */}
+          {/* پیش‌نمایش */}
           {previewURL && !isUploading && (
             <>
               <img
                 src={previewURL}
-                alt="پیش نمایش فیش"
+                alt="پیش‌نمایش"
                 className="max-h-32 max-w-full rounded-lg object-contain mb-2"
               />
               <p className="text-xs text-blue2 font-medium truncate max-w-[200px] px-2 py-1 bg-white rounded-full shadow-sm">
@@ -383,12 +369,12 @@ export default function DepositBankReceipt({
             </>
           )}
 
-          {/* Progress Bar - فقط حین آپلود (overlay) */}
+          {/* progress */}
           {isUploading && (
             <div className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center p-4">
               <div className="w-full max-w-xs bg-gray-200 h-3 rounded-full overflow-hidden mb-2">
                 <div
-                  className="bg-gradient-to-r from-blue2 via-blue1 to-green-500 h-3 rounded-full transition-all duration-300 ease-in-out shadow-sm"
+                  className="bg-gradient-to-r from-blue2 via-blue1 to-green-500 h-3 rounded-full transition-all"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
@@ -400,53 +386,26 @@ export default function DepositBankReceipt({
         </div>
       </div>
 
-      {/* نمایش خطاها */}
-      {/* {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )} */}
-
+      {/* دکمه ثبت */}
       <div className="mt-14">
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={loading || !selectedFile}
-          className="relative text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group transition-all hover:bg-blue1"
+          className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
+                ${
+                  !selectedFile
+                    ? "opacity-60 cursor-not-allowed"
+                    : "opacity-100 hover:bg-blue1"
+                }`}
         >
-          {/* Progress Bar داخل دکمه */}
-          {isUploading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-blue2 via-blue1 to-green-500 flex items-center justify-center">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span className="text-sm font-bold">{uploadProgress}%</span>
-              </div>
-            </div>
-          )}
-
-          {/* متن دکمه */}
-          <span
-            className={
-              isUploading ? "opacity-0" : "opacity-100 transition-opacity"
-            }
-          >
-            {loading && !isUploading
-              ? "در حال ارسال..."
-              : !selectedFile
-                ? "ابتدا فیش را انتخاب کنید"
-                : "ثبت اطلاعات"}
-          </span>
+          {isUploading ? "در حال ثبت درخواست..." : "درخواست کارت به کارت"}
         </button>
 
         <div className="mt-4" dir="ltr">
           <Accordion title="راهنمای فیش بانکی">
             <ul className="list-disc pr-5 space-y-2 text-black1">
-              <li>
-                از صحت آدرس صفحه‌ پرداخت و بودن در یکی از سایت‌های سامانه‌ی
-                شاپرک مطمئن شوید. (صفحه درگاه الزاما .shaparak.ir باشد)
-              </li>
-              <li>
-                مطمئن شوید مبلغ نمایش‌ داده‌شده در صفحه‌ی پرداخت درست باشد.
-              </li>
+              <li>مطمئن شوید فیش بانکی واضح و خوانا باشد.</li>
+              <li>مبلغ، تاریخ و شماره پیگیری را بررسی کنید.</li>
             </ul>
           </Accordion>
         </div>

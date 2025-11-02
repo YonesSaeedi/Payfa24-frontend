@@ -4,8 +4,10 @@ import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 
 interface Option {
   value?: string;
-  label: React.ReactNode
+  label: React.ReactNode;
   icon?: React.ReactNode;
+  disabled?: boolean;
+  hideIndicator?: boolean;
 }
 
 interface FloatingSelectProps {
@@ -19,6 +21,7 @@ interface FloatingSelectProps {
   placeholderIcon?: React.ReactNode;
   placeholderClasses?: string;
   isBankSelect?: boolean;
+  disabled?: boolean;
 }
 
 const FloatingSelect: FC<FloatingSelectProps> = ({
@@ -121,15 +124,17 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
                 value === option.value ? "text-blue2" : "text-gray12"
               }`}
             >
-              <span
-                className={`relative w-4 h-4 ml-2 rounded-full border border-gray-400 flex-shrink-0
-    ${value === option.value ? "border-blue2" : "border-gray-400"}
-  `}
-              >
-                {value === option.value && (
-                  <span className="absolute  w-2 h-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue2"></span>
-                )}
-              </span>
+              {!option.hideIndicator && (
+                <span
+                  className={`relative w-4 h-4 ml-2 rounded-full border border-gray-400 flex-shrink-0
+              ${value === option.value ? "border-blue2" : "border-gray-400"}
+              `}
+                >
+                  {value === option.value && (
+                    <span className="absolute  w-2 h-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue2"></span>
+                  )}
+                </span>
+              )}
 
               <div className="flex items-center justify-end w-full flex-row-reverse">
                 {option.label}
