@@ -149,7 +149,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     if (currentCryptocurrency) {
       try {
         setIsLoading(true)
-        const response = await apiRequest<TradeSymbolResponse>({ url: `/api/order/get-info/${currentCryptocurrency?.symbol}` })
+        const response = await apiRequest<TradeSymbolResponse>({ url: `/order/get-info/${currentCryptocurrency?.symbol}` })
         setCryptoBalance(response?.balance)
         setCurrentCryptoPrice(isSell ? response?.price?.sell : response?.price?.buy)
       } catch (err) {
