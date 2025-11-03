@@ -300,7 +300,7 @@ export default function DepositWithTxID() {
   };
 
   return (
-    <div className="w-full my-10" dir="rtl">
+    <div className="w-full " dir="rtl">
       {/* ویدیو آموزشی */}
       <div className="mb-10">
         <div className="bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">

@@ -245,7 +245,7 @@ export default function CardToCardTransfer({
             <span className="icon-wrapper w-6 h-6 text-blue2">
               <IconVideo />
             </span>
-            <span>ویدیو آموزشی واریز با درگاه پرداخت</span>
+            <span>ویدیو آموزشی کارت به کارت</span>
           </div>
 
           {/* Card select */}
