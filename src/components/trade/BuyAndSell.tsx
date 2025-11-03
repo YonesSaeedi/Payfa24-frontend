@@ -149,7 +149,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     if (currentCryptocurrency) {
       try {
         setIsLoading(true)
-        const response = await apiRequest<TradeSymbolResponse>({ url: `/api/order/get-info/${currentCryptocurrency?.symbol}` })
+        const response = await apiRequest<TradeSymbolResponse>({ url: `/order/get-info/${currentCryptocurrency?.symbol}` })
         setCryptoBalance(response?.balance)
         setCurrentCryptoPrice(isSell ? response?.price?.sell : response?.price?.buy)
       } catch (err) {
@@ -257,7 +257,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         try {
           setIsSubmitting(true)
           await apiRequest({
-            url: `/api/order/digital/sell/${currentCryptocurrency?.locale?.en?.name}`,
+            url: `/order/digital/sell/${currentCryptocurrency?.locale?.en?.name}`,
             method: 'POST',
             data: { voucherCode: voucherCode }
           })
@@ -271,7 +271,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       } else {
         try {
           setIsSubmitting(true)
-          const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/api/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
+          const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
           setDigitalIDOrder(response?.order_id)
           setResendCodeTimeLeft(120)
           setIsOtpModalOpen(true)
@@ -287,7 +287,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     else if (isSell) {
       try {
         setIsSubmitting(true)
-        const response = await apiRequest<CryptoBuy, { amountCoin: string }>({ url: `/api/order/crypto/sell/${currentCryptocurrency?.symbol}`, method: 'POST', data: { amountCoin: countInputStr } })
+        const response = await apiRequest<CryptoBuy, { amountCoin: string }>({ url: `/order/crypto/sell/${currentCryptocurrency?.symbol}`, method: 'POST', data: { amountCoin: countInputStr } })
         setTradeConfirmationModalData({
           coinAmount: response?.amount_coin,
           tomanAmount: response?.amount,
@@ -305,7 +305,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     } else {
       try {
         setIsSubmitting(true)
-        const response = await apiRequest<CryptoBuy, { amount: string }>({ url: `/api/order/crypto/buy/${currentCryptocurrency?.symbol}`, method: 'POST', data: { amount: String(amountValue) } })
+        const response = await apiRequest<CryptoBuy, { amount: string }>({ url: `/order/crypto/buy/${currentCryptocurrency?.symbol}`, method: 'POST', data: { amount: String(amountValue) } })
         setTradeConfirmationModalData({
           coinAmount: response?.amount_coin,
           tomanAmount: response?.amount,
@@ -326,7 +326,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const handleSubmitDigitalBuy = async () => {
     try {
       setIsSubmitting(true)
-      await apiRequest({ url: `/api/order/digital/buy/confirm`, method: 'POST', data: { codeOtp: otpCode, order_id: String(digitalIDOrder) } })
+      await apiRequest({ url: `/order/digital/buy/confirm`, method: 'POST', data: { codeOtp: otpCode, order_id: String(digitalIDOrder) } })
       fetchTomanBalance()
       setIsOtpModalOpen(false)
       setIsTradeSuccessModalOpen(true)
@@ -375,7 +375,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const handleResendCode = async () => {
     try {
       setResendCodeIsSubmitting(true)
-      const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/api/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
+      const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
       setDigitalIDOrder(response?.order_id)
       setResendCodeTimeLeft(120)
       setIsOtpModalOpen(true)

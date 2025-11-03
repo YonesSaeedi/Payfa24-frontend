@@ -20,7 +20,7 @@ export default function EnterCodePage() {
 
     try {
       const res: any = await apiRequest({
-        url: `/api/account/2fa/verify/google`,
+        url: `/account/2fa/verify/google`,
         method: "POST",
         data: { code },
       });

@@ -69,7 +69,7 @@ export default function NotificationsDropdown() {
     try {
       if (item.seen === "unseen") {
         await apiRequest({
-          url: `/api/notifications/seen/${item.id}`,
+          url: `/notifications/seen/${item.id}`,
           method: "PUT",
         });
         setNotifications((prev) => prev.filter((n) => n.id !== item.id));

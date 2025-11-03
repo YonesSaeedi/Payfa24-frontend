@@ -106,7 +106,7 @@ export default function DepositForm() {
     };
 
     apiRequest<any>({
-      url: `/api/wallets/fiat/deposit/gateway/${urlId}`,
+      url: `/wallets/fiat/deposit/gateway/${urlId}`,
       method: "GET",
     })
       .then((res) => {

@@ -106,7 +106,7 @@ const [modalType, setModalType] = useState<string | null>(null);
       const type = modalType; // نوع OTP
 
       const res = await apiRequest({
-        url: `/api/account/2fa/verify/${type}`, // url داینامیک
+        url: `/account/2fa/verify/${type}`, // url داینامیک
         method: "POST",
         data: { code: otpCode }, // otpCode ارسال شود
       });

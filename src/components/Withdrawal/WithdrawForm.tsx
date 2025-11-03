@@ -125,7 +125,7 @@ export default function WithdrawForm() {
 
     try {
       const response = await apiRequest<WithdrawRequestResponse , { amount: number; card: number }>({
-        url: "/api/wallets/fiat/withdraw/request",
+        url: "/wallets/fiat/withdraw/request",
         method: "POST",
         data: requestData,
       });
@@ -171,7 +171,7 @@ const transactionId = response.transaction_id;
 
     try {
       await apiRequest({
-        url: "/api/wallets/fiat/withdraw/confirm",
+        url: "/wallets/fiat/withdraw/confirm",
         method: "POST",
         data: {
           transaction_id: pendingWithdrawData.transactionId,

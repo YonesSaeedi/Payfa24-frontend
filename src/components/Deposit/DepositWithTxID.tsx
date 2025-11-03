@@ -271,7 +271,7 @@ export default function DepositWithTxID() {
 
     try {
       const depositRes = await apiRequest<TxidPostResponse, { txid: string, network_id: number }>({
-        url: `/api/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
+        url: `/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
         method: "POST",
         data: { txid: watch("txid") || "", network_id: parseInt(selectedNetwork), },
       });

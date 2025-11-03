@@ -58,7 +58,7 @@ const TradeConfirmationModal = ({
       try {
         setIsSubmitting(true)
         await apiRequest<CryptoBuyConfirm, { amountCoin: string, id_order: number }>({
-          url: `/api/order/crypto/sell/${tradeConfirmationModalData?.symbol}`,
+          url: `/order/crypto/sell/${tradeConfirmationModalData?.symbol}`,
           method: 'POST',
           data: { amountCoin: String(tradeConfirmationModalData?.coinAmount), id_order: tradeConfirmationModalData?.orderID },
         })
@@ -76,7 +76,7 @@ const TradeConfirmationModal = ({
       try {
         setIsSubmitting(true)
         await apiRequest<CryptoBuyConfirm, { amount: string, id_order: number }>({
-          url: `/api/order/crypto/buy/${tradeConfirmationModalData?.symbol}`,
+          url: `/order/crypto/buy/${tradeConfirmationModalData?.symbol}`,
           method: 'POST',
           data: { amount: String(tradeConfirmationModalData?.tomanAmount), id_order: tradeConfirmationModalData?.orderID },
         })
