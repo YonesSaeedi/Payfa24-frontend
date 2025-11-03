@@ -1,14 +1,15 @@
 // BankCardsContainer.tsx
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../utils/apiClient";
-import  BankCardsPage  from "../../components/BankCards/BankcardsPage"; // کامپوننت نه صفحه
-import  BankCardManager  from "../../components/BankCards/BankCardsManager"; // کامپوننت نه صفحه
+import  BankCardsPage  from "../../components/BankCards/BankcardsPage"; 
+import  BankCardManager  from "../../components/BankCards/BankCardsManager"; 
+import HeaderLayout from "../../layouts/HeaderLayout";
 
 export interface BankCard {
   bank_name: string;
   card_number: string;
   iban: string;
-  status: "active" | "inactive" | string; // یا فقط "active" اگر فقط همین مقدار ممکن است
+  status: "active" | "inactive" | string; 
   reason: string;
   name_family: string;
 }
@@ -49,8 +50,9 @@ export default function BankCardsContainer() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-backgroundMain">
-        <p className="text-gray-500">در حال بررسی اطلاعات کارت...</p>
+      <div className="flex items-center justify-center min-h-screen bg-white1">
+        <HeaderLayout/>
+        <p className="text-gray-500">در حال بررسی اطلاعات کارت</p>
       </div>
     );
   }

@@ -224,7 +224,7 @@ const handleResendCode = async () => {
     setTag("");
   };
 //  ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
- const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsLoading(true);
 
@@ -233,55 +233,67 @@ const handleResendCode = async () => {
     setIsLoading(false);
     return;
   }
-  const withdrawAmount = parseFloat(amount);
 
+  const withdrawAmount = parseFloat(amount);
   if (!amount || isNaN(withdrawAmount)) {
     toast.error("لطفاً مقدار برداشت را وارد کنید");
     setIsLoading(false);
     return;
   }
+
   try {
-    const response = await apiRequest<WithdrawApiResponse, {
-  coin?: string;
-  network?: string;
-  withdrawAmount?: number;
-  withdrawAddressWallet?: string;
-  withdrawAddressWalletTag?: string;}>({
-      url: "/api/wallets/crypto/withdraw/request",
-      method: "POST",
-      data: {
-        coin: crypto,
-        network: selectedNetwork?.symbol || "",
-        withdrawAmount,
-        withdrawAddressWallet: address,
-        withdrawAddressWalletTag: tag,
-      },
-    });
-   toast.success(response.data?.msgOtp || response.msg || "کد تأیید ارسال شد.");
-
-   if (!response.data) {
-  toast.error("خطا در دریافت اطلاعات تراکنش");
-  setIsLoading(false);
-  return;
-}
-
-    // ذخیره داده‌ها برای مرحله بعد (تأیید OTP)
-    setWithdrawData({
-  transactionId: response.data.transaction_id,
-  network: selectedNetwork.symbol,
-  withdrawAmount,
-  withdrawAddressWallet: address,
-  withdrawAddressWalletTag: tag,
+    const response = await apiRequest<
+  WithdrawApiResponse,
+  {
+    coin: string;
+    network: string;
+    withdrawAmount: number;
+    withdrawAddressWallet: string;
+    withdrawAddressWalletTag: string;
+  }
+>({
+  url: "/api/wallets/crypto/withdraw/request",
+  method: "POST",
+  data: {
+    coin: crypto,
+    network: selectedNetwork?.symbol || "",
+    withdrawAmount,
+    withdrawAddressWallet: address,
+    withdrawAddressWalletTag: tag,
+  },
 });
 
+    toast.success(response.data?.msgOtp || response.msg || "کد تأیید ارسال شد.");
+
+    if (!response.data?.transaction_id) {
+      toast.error("شناسه تراکنش از سرور دریافت نشد.");
+      setIsLoading(false);
+      return;
+    }
+
+    // ✅ ذخیره داده‌ها برای مرحله بعد (تأیید OTP)
+    setWithdrawData({
+      transactionId: response.data.transaction_id,
+      network: selectedNetwork.symbol,
+      withdrawAmount,
+      withdrawAddressWallet: address,
+      withdrawAddressWalletTag: tag,
+    });
+
+    // ✅ باز کردن مودال OTP
     setResendCodeTimeLeft(120);
     setIsOtpModalOpen(true);
+
   } catch (err) {
-    toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "ارسال درخواست برداشت با مشکل مواجه شد.");
+    toast.error(
+      (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
+        "ارسال درخواست برداشت با مشکل مواجه شد."
+    );
   } finally {
     setIsLoading(false);
   }
 };
+
 //  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
   const handleSubmitTransfers = async (e: React.FormEvent) => {
     e.preventDefault();

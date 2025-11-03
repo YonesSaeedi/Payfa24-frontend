@@ -18,31 +18,29 @@ const CreateTicketPage: React.FC = () => {
         <div className="w-full">
           <div className="container-style flex flex-col gap-8 lg:gap-12 pt-6">
             <BreadcrumbNavigation />
-    <div className="p-6">
+    <div>
       <div className={`${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} transition`}>
         <div className="bg-white1">
-          <div className="flex flex-col lg:flex-row gap-[40px] lg:gap-[85px] justify-center items-stretch">
-            <div className="w-full lg:w-[625px] flex-1 flex flex-col order-1 lg:order-2">
-              <div dir="rtl" className="order-1">
-                <h3 className="font-semibold mb-2 text-[20px] text-black1">ارسال تیکت برای بخش</h3>
-                <p className="text-[14px] font-normal text-gray5 pt-2 pb-6">
-                  به منظور ارایه بهتر خدمات و راهنمای دقیق‌تر، لطفاً دسته بندی زیر را انتخاب کنید تا تیم پشتیبانی سریع‌تر مشکل شما را حل کند.
-                </p>
-              </div>
-              <div className="w-full p-4 flex-1 order-2 lg:hidden">
-                <TicketForm />
-              </div>
-              <div className=" flex flex-col flex-1 order-3">
-                <h3 className="text-lg font-semibold text-right pt-4 text-black0 pb-6">سوالات متداول پیگیری سفارش</h3>
-                <div dir="rtl" className="w-full flex-1">
-                  <TradeLayoutFAQ items={FAQData.home} />
-                </div>
-              </div>
-            </div>
-            <div className="hidden lg:block w-full h-full lg:w-[543px] p-4 flex-1 order-2 lg:order-1">
-              <TicketForm />
-            </div>
-          </div>
+         <div className="flex flex-col lg:flex-row justify-center items-stretch gap-[40px] lg:gap-[85px] pb-4">
+  <div className="order-2 lg:order-2 w-full lg:w-[652px] flex flex-col pb-14">
+    <h3 className="text-lg font-semibold text-right  text-black0 pb-12 pt-2">
+      سوالات متداول پیگیری سفارش
+    </h3>
+    <div dir="rtl" className="flex-1">
+      <TradeLayoutFAQ items={FAQData.ticket} />
+    </div>
+  </div>
+
+  <div className="order-1 lg:order-1 w-full lg:w-[543px] flex flex-col">
+    <div className="flex lg:hidden w-full justify-center">
+      <TicketForm />
+    </div>
+    <div className="hidden lg:flex w-full  bg-transparent">
+      <TicketForm />
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import TicketsDashboard from "../../components/Ticket/TicketChat/TicketsDashboard";
 import TicketPanel from "../../components/Ticket/TicketForm/TicketPanel";
+import HeaderLayout from "../../layouts/HeaderLayout";
 
 
 interface Ticket {
@@ -47,9 +48,9 @@ export default function TicketsPage() {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-64">
-        
-        <span>در حال بارگذاری...</span>
+    <div className="flex items-center justify-center min-h-screen bg-white1">
+      <HeaderLayout/>
+        <p className="text-gray-500 ">در حال بررسی  تیکت های شما</p>
       </div>
     );
   if (!data)
@@ -61,7 +62,7 @@ export default function TicketsPage() {
 
   return (
     
-    <div className=" p-6">
+    <div className=" p-6 bg-white4">
       {data.tickets?.length > 0 ? <TicketsDashboard/>: <TicketPanel/>  }
     </div>
   );

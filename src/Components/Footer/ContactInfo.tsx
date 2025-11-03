@@ -4,13 +4,11 @@ import LocationIcon from "../../assets/icons/Footer/LocationIcon";
 
 export default function ContactInfo(): React.JSX.Element {
   return (
-    <div className="order-1 lg:order-2 flex flex-col text-center lg:text-end 
-  items-center lg:items-end 
-  space-y-5 justify-center pt-10">
+    <div className="order-1 lg:order-2 flex flex-col text-end items-end sm:text-center lg:text-end sm:items-center lg:items-end space-y-5 justify-center pt-10">
       <h2 className="font-bold text-2xl">ارتباط با ما</h2>
-      <div className="flex flex-col items-center lg:items-end gap-6 pt-2">
-        <div className="flex flex-col items-center lg:items-end gap-4">
-          <div className="flex items-center lg:justify-end">
+      <div className="flex flex-col items-end sm:items-center lg:items-end gap-6 pt-2">
+        <div className="flex flex-col items-end sm:items-center lg:items-end gap-4">
+          <div className="flex items-end sm:items-center lg:justify-end">
             <span className="mr-2 text-lg font-bold">تماس</span>
             <span className="w-[22px] h-[22px] icon-wrapper">
               <TelephoneIcon />
@@ -24,8 +22,8 @@ export default function ContactInfo(): React.JSX.Element {
             <span className="text-base font-normal">۰۲۱-۱۲۳۴۵۶۷۸۹</span>
           </a>
         </div>
-        <div className="flex flex-col items-center lg:items-end gap-4">
-          <div className="flex items-center lg:justify-end">
+        <div className="flex flex-col items-end sm:items-center lg:items-end gap-4">
+          <div className="flex items-end sm:items-center lg:justify-end">
             <span className="mr-2 text-lg font-bold">ایمیل</span>
             <span className="w-[22px] h-[22px] icon-wrapper">
               <EmailIcon />
@@ -51,8 +49,8 @@ export default function ContactInfo(): React.JSX.Element {
         </div>
       </div>
 
-      <div className="flex flex-col items-center lg:items-end gap-1 pt-2">
-        <div className="flex items-center lg:justify-end">
+      <div className="flex flex-col items-end sm:items-center lg:items-end gap-1 pt-2">
+        <div className="flex items-end sm:items-center lg:justify-end">
           <span className="mr-2 text-lg font-bold">آدرس</span>
           <span className="w-[22px] h-[22px] icon-wrapper">
             <LocationIcon />

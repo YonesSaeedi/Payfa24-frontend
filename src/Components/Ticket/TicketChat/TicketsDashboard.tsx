@@ -61,25 +61,54 @@ const TicketsDashboard: React.FC = () => {
         <div className="w-full">
           <div className="container-style flex flex-col gap-8 lg:gap-12 pt-6">
             <BreadcrumbNavigation />
-    <div className="flex gap-4 mt-4 mb-12 h-[790px]">
-      <div className="flex-1 flex justify-center">
-        <ChatPanel ticket={activeTicket} />
-      </div>
-
+    <div className="flex gap-[38px] mt-4 mb-12 lg:h-[790px] justify-center items-center lg:items-start lg:justify-between">
+  <div className="block lg:hidden w-full flex justify-center">
+    {!activeTicket ? (
       <TicketList
         tickets={tickets}
         activeTicket={activeTicket}
         onSelect={setActiveTicket}
-        onNewTicket={handleNewTicket} 
+        onNewTicket={handleNewTicket}
         onSupportCall={() => setIsSupportCallModalOpen(true)}
         loading={loading}
       />
+    ) : (
+      <div className="w-full">
+        <div className="flex justify-end">
+  <button
+    onClick={() => setActiveTicket(null)}
+    className="mb-4 text-blue-600 font-medium pb-4"
+  >
+    نمایش لیست تیکت ها
+  </button>
+</div>
 
-      <SupportCallModal
-        isOpen={isSupportCallModalOpen}
-        onClose={() => setIsSupportCallModalOpen(false)}
-      />
-    </div>
+        <ChatPanel ticket={activeTicket} />
+      </div>
+    )}
+  </div>
+
+  <div className="hidden lg:flex flex-1 justify-center">
+    <ChatPanel ticket={activeTicket} />
+  </div>
+
+  <div className="hidden lg:block">
+    <TicketList
+      tickets={tickets}
+      activeTicket={activeTicket}
+      onSelect={setActiveTicket}
+      onNewTicket={handleNewTicket}
+      onSupportCall={() => setIsSupportCallModalOpen(true)}
+      loading={loading}
+    />
+  </div>
+
+  <SupportCallModal
+    isOpen={isSupportCallModalOpen}
+    onClose={() => setIsSupportCallModalOpen(false)}
+  />
+</div>
+
     </div>
     </div>
     </HeaderLayout>

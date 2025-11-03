@@ -50,7 +50,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text }) => {
       className={`inline-flex items-center gap-1 px-3 py-1 rounded-[4px] ${status.bgColor}`}
     >
         {status.icon}
-      <span className={`text-sm   ${status.textColor}`}>{text}</span>
+      <span className={` text-[14px] font-normal  ${status.textColor}`}>{text}</span>
       
     </div>
   );

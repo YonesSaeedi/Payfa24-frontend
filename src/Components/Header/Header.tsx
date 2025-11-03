@@ -36,6 +36,7 @@ export default function Header() {
   const [showServices, setShowServices] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
   const dropdownRef = useRef<HTMLDivElement>(null);
 
 
@@ -112,17 +113,17 @@ export default function Header() {
           </button>
 
           <Link
-            to="/ticket"
+            to="/tickets"
             aria-label="Messages"
             className={`hover:text-blue2 transition flex items-center justify-center w-7 h-7 ${
-              currentPath === "/ticket"
+              currentPath === "/tickets"
                 ? themeContext.theme === "dark"
                   ? "text-primary"
                   : "text-blue2 font-semibold"
                 : "text-header-items"
             }`}
           >
-            {currentPath === "/ticket" ? (
+            {currentPath === "/tickets" ? (
               <MessagesActiveIcon />
             ) : (
               <MessagesIcon />

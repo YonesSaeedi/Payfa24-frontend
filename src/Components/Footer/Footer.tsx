@@ -17,8 +17,8 @@ export default function Footer(): React.JSX.Element {
         <SocialLinks />
         <img src={Logo} alt="لوگو" />
       </div>
-      <div className="border-t border-white mt-4">
-        <div className="container-style mb-[14px] flex flex-col lg:flex-row lg:justify-between gap-8 sm:items-center">
+      <div className="border-t border-white6 mt-4">
+        <div className="container-style mb-[14px] flex flex-col lg:flex-row lg:justify-between gap-8 sm:items-center items-end">
 
           <div className="order-2 lg:order-1 flex flex-col gap-4  relative lg:ml-[76px] items-center">
             <img src={mobile} alt="اپلیکیشن موبایل" />
