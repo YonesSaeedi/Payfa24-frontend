@@ -101,9 +101,11 @@ export default function CardToCardTransfer({
     handleSubmit,
     formState: { errors, isValid },
     reset,
+    trigger,
   } = useForm<CardToCardRequestData>({
     resolver: yupResolver(getValidationSchemaCardtoCard()),
     defaultValues: { card: 0 },
+    mode: "onChange",
   });
 
   const selectedAmount = watch("amount");
@@ -278,7 +280,7 @@ export default function CardToCardTransfer({
                             label: (
                               <div className="flex items-center justify-between w-full py-1 rounded-md">
                                 <span className="text-sm text-black0">
-                                  {card.bank} 
+                                  {card.bank}
                                 </span>
 
                                 <span className="text-sm text-black0">
@@ -304,7 +306,6 @@ export default function CardToCardTransfer({
                       {errors.card.message}
                     </p>
                   )}
-                
                 </>
               )}
             />
@@ -317,29 +318,30 @@ export default function CardToCardTransfer({
               control={control}
               render={({ field }) => (
                 <FloatingInput
-                  label="مقدار واریزی"
+                  label="مقدار واریزی (تومان)"
                   value={formatPersianDigits(field.value?.toString() ?? "")}
                   type="text"
                   onChange={(e) => {
                     const rawValue = e.target.value;
                     const englishValue = rawValue
-                      .replace(/[۰-۹]/g, (d) => ("۰۱۲۳۴۵۶۷۸۹".indexOf(d)).toString())
+                      .replace(/[۰-۹]/g, (d) =>
+                        "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString()
+                      )
                       .replace(/[^0-9]/g, "");
                     field.onChange(
                       englishValue ? Number(englishValue) : undefined
                     );
+                    trigger("amount");
                   }}
                   placeholder="۰ تومان"
                   placeholderColor="text-black0"
                 />
               )}
             />
-            {errors.amount && (
-              <p className="text-red1 text-xs py-3">
-                مقدار واریزی حداقل ۵۰۰,۰۰۰ تومان می باشد
-              </p>
-            )}
           </div>
+          {errors.amount && (
+            <p className="text-red1 text-xs py-3">{errors.amount.message}</p>
+          )}
 
           {/* Preset amounts */}
           <div className="flex gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">

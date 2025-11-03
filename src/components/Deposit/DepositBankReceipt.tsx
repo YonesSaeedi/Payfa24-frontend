@@ -42,8 +42,6 @@ interface DepositBankReceiptProps {
   initialPreviewUrl: string | null;
 }
 
-
-
 export function formatPersianCardNumber(input: string | number): string {
   if (input === null || input === undefined || input === "") return "";
 
@@ -81,7 +79,8 @@ export default function DepositBankReceipt({
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: { amount: 0 },
+    defaultValues: { amount: undefined },
+
   });
 
   // ---------- upload ----------
@@ -119,12 +118,12 @@ export default function DepositBankReceipt({
       setSelectedFile(file);
       setPreviewURL(URL.createObjectURL(file));
       onFileChange(file);
-      setValue("amount", 0, { shouldValidate: true });
+      // setValue("amount", 0, { shouldValidate: true });
     } else {
       setSelectedFile(null);
       setPreviewURL(null);
       onFileChange(null);
-      setValue("amount", 0, { shouldValidate: true });
+      // setValue("amount", 0, { shouldValidate: true });
     }
   };
 
@@ -189,8 +188,7 @@ export default function DepositBankReceipt({
                         value: "",
                         label: (
                           <div className="text-center w-full py-2 text-gray-500">
-                             هیچ کارت ثبت شده‌ای ندارید
-                            
+                            هیچ کارت ثبت شده‌ای ندارید
                           </div>
                         ) as any,
                         disabled: true, // غیرفعال کردن برای جلوگیری از انتخاب
@@ -223,11 +221,9 @@ export default function DepositBankReceipt({
               }
             />
           )}
-        />
-        {errors.bank && (
-          <p className="text-red1 text-xs pt-2">{errors.bank.message}</p>
-        )}
+          />
       </div>
+       
 
       {/* کارت مقصد */}
       <div className="mb-3">
@@ -293,7 +289,7 @@ export default function DepositBankReceipt({
               onChange={(e) => {
                 const rawValue = e.target.value;
                 const englishValue = rawValue
-                  .replace(/[۰-۹]/g, (d) => ("۰۱۲۳۴۵۶۷۸۹".indexOf(d)).toString())
+                  .replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString())
                   .replace(/[^0-9]/g, "");
                 field.onChange(englishValue ? Number(englishValue) : undefined);
               }}

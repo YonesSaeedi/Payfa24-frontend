@@ -233,7 +233,7 @@ export default function DepositPage({
       Icon: <IconConvertCard />,
       Title: "واریز کارت به کارت",
       description: `واریز تا سقف ${formatPersianDigits(10)} میلیون تومان`,
-      button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
+      button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
       IconMore: <IconArrowRight />,
     },
     {
