@@ -1,18 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import DepositLayout from "./DepositLayout";
 import IconBank from "../../assets/icons/Deposit/IconBank";
 import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
 import IconWallet from "../../assets/icons/Deposit/IconWallet";
 import IconLink from "../../assets/icons/Deposit/IconLink";
-
 import DepositForm from "../../components/Deposit/DepositForm";
 import CardToCardTransfer from "../../components/Deposit/CardToCardTransfer";
 import DepositWithTxID from "../../components/Deposit/DepositWithTxID";
-
-import { apiRequest } from "../../utils/apiClient";
 import DepositDedicatedWallet from "../../components/Deposit/DepositDedicatedWallet";
-
 import DepositwithIdentifier from "../../components/Deposit/DepositWithIdentifier";
 import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
@@ -27,9 +23,7 @@ interface DepositPageProps {
 export default function DepositPage({
   selected = "gateway",
 }: DepositPageProps) {
-  const [step, _setStep] = useState<number>(1);
   const [started, setStarted] = useState<boolean>(false);
-  const [_fiatData, setFiatData] = useState<any>(null);
   const [selectedOption, setSelectedOption] = useState<string>(() => {
     switch (selected) {
       case "identifier":
@@ -146,37 +140,37 @@ export default function DepositPage({
     }
   };
 
-  useEffect(() => {
-    const fetchFiatData = async () => {
-      try {
-        const response = await apiRequest({
-          url: "/api/wallets/fiat",
-          method: "GET",
-          params: { withdraw: null },
-        });
-        setFiatData(response);
-      } catch (err: any) {
-        console.error("Error fetching fiat data:", err.response?.data || err);
-      } finally {
-        // setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchFiatData = async () => {
+  //     try {
+  //       const response = await apiRequest({
+  //         url: "/wallets/fiat",
+  //         method: "GET",
+  //         params: { withdraw: null },
+  //       });
+  //       setFiatData(response);
+  //     } catch (err: any) {
+  //       console.error("Error fetching fiat data:", err.response?.data || err);
+  //     } finally {
+  //       // setLoading(false);
+  //     }
+  //   };
 
-    fetchFiatData();
-  }, []);
+  //   fetchFiatData();
+  // }, []);
   return (
     <>
       <HeaderLayout>
         
         <DepositLayout
-          step={step}
+          step={1}
           started={started}
           onStart={handleStart}
           alertMessages={currentAlertMessages}
         >
           {/* بخش راست - ثابت */}
           <div
-            className="w-full overflow-y-auto h-full lg:block hidden"
+            className="w-full overflow-y-auto h-full lg:block  hidden"
             dir="rtl"
           >
             <span className="text-base text-black0 mb-4">واریز تومان</span>

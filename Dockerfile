@@ -1,24 +1,18 @@
-# Stage 1: Build React app
-FROM node:22.18.0-bullseye AS builder
+FROM node:20-alpine AS builder
+
 WORKDIR /app
 
-COPY package.json ./ 
-RUN rm -rf node_modules || true
-RUN npm install --legacy-peer-deps
+COPY package.json package-lock.json ./
+RUN npm install --legacy-peer-deps --no-audit --silent
+RUN npm install typescript -D
 
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve with Nginx
 FROM nginx:alpine
-
-# پاک کردن html قدیمی
-RUN rm -rf /usr/share/nginx/html/*
-
-# کپی build React
+# کپی فایل‌های build شده
 COPY --from=builder /app/dist /usr/share/nginx/html
-
-# کپی فایل کانفیگ Nginx
+# کپی nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

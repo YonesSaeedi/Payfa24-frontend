@@ -76,7 +76,7 @@ export const GoogleLoginButton = ({ onSuccess }: { onSuccess: (data: Response) =
           },
           idpId: "google",
         };
-        const response = await apiRequest<Response, any>({ url: "/api/auth/google", method: "POST", data: { recaptcha, info_social }, });
+        const response = await apiRequest<Response, any>({ url: "/auth/google", method: "POST", data: { recaptcha, info_social }, });
         if (response?.status) onSuccess(response);
       },
     });

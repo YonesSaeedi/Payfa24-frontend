@@ -28,7 +28,7 @@ export default function BankCardsContainer() {
     const checkCards = async () => {
       try {
         const res = await apiRequest<BankCardsResponse>({
-          url: "/api/account/credit-card/list",
+          url: "/account/credit-card/list",
           method: "GET",
         });
 

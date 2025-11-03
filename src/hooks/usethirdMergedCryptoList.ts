@@ -7,17 +7,17 @@
 //     queries: [
 //       {
 //         queryKey: ['withdraw-info'],
-//         queryFn: () => apiRequest({ url: '/api/wallets/crypto/withdraw' }),
+//         queryFn: () => apiRequest({ url: '/wallets/crypto/withdraw' }),
 //       },
 //       {
 //         queryKey: ['general-info'],
-//         queryFn: () => apiRequest({ url: '/api/get-general-info' }),
+//         queryFn: () => apiRequest({ url: '/get-general-info' }),
 //       },
 //       {
 //         queryKey: ['crypto-prices'],
 //         queryFn: async () => {
 //           const response = await apiRequest<{ list: CryptoItem[] }>({
-//             url: '/api/list-cryptocurrencies',
+//             url: '/list-cryptocurrencies',
 //             params: { limit: 2000, page: 1 },
 //           })
 //           return response.list || []

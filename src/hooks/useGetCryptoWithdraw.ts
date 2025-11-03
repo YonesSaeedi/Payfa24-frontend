@@ -8,7 +8,7 @@ const useGetCryptoWithdraw = () => {
     queryKey: ['crypto-withdraw'],
     queryFn: async () => {
       const response = await apiRequest<CryptoWithdrawResponse>({
-        url: '/api/wallets/crypto/withdraw',
+        url: '/wallets/crypto/withdraw',
       });
       return response;
     },

@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
-import './assets/color/color-Theme.css';
+import './assets/color/color-theme.css';
 import { ThemeProvider } from './context/ThemeProvider.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'; // اضافه کردن react-query
 import { GoogleOAuthProvider } from '@react-oauth/google';

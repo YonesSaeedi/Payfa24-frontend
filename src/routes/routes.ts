@@ -40,11 +40,11 @@ export const ROUTES = {
   ADD_FRIEND: {
     ROOT: "/add-friend",
   },
-  DEPOSIT: "/deposit",
+  DEPOSIT: "/wallet/deposit",
   DEPOSIT_GATEWAY: "/deposit/gateway",
   DEPOSIT_IDENTIFIER: "/deposit/identifier",
   DEPOSIT_CARD: "/deposit/card",
-  DEPOSIT_RECEIPT: "/deposit/receipt",
+  DEPOSIT_RECEIPT: "/wallet/deposit/receipt",
   DEPOSIT_WALLET: "/deposit/wallet",
   DEPOSIT_TXID: "/deposit/txid",
 };

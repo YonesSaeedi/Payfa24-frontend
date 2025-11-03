@@ -66,7 +66,7 @@ export default function ChangePassword() {
   ChangePasswordResponse,
   ChangePasswordRequestBody
 >({
-  url: "/api/account/password",
+  url: "/account/password",
   method: "POST",
   data: {
     old_password: data.currentPassword,
