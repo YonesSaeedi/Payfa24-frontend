@@ -21,7 +21,7 @@ const useMergedCryptoList = () => {
 
   const withdrawQuery = useQuery<WithdrawResponse, Error>({
     queryKey: ["wallets-withdraw"],
-    queryFn: () => apiRequest({ url: "/api/wallets/crypto/withdraw" }),
+    queryFn: () => apiRequest({ url: "/wallets/crypto/withdraw" }),
     staleTime: 60_000,
     gcTime: 5 * 60_000,
     refetchOnWindowFocus: false,

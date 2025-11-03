@@ -12,6 +12,24 @@ import IconMoreHorizental from "../../assets/icons/Wallet/IconMoreHorizental";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import IconSearch from "../../assets/icons/market/IconSearch";
 
+interface GeneralCryptoItem {
+  symbol: string;
+  name?: string;
+  title_fa?: string;
+  color?: string;
+  icon?: string;
+  isFont?: boolean;
+  percent?: number;
+  locale?: {
+    fa?: {
+      name?: string;
+    };
+  };
+}
+
+interface GeneralInfoResponse {
+  cryptocurrency: GeneralCryptoItem[];
+}
 
 interface Wallet {
   name: string;
@@ -78,7 +96,7 @@ const WalletAssets: React.FC = () => {
       setIsLoading(true)
       try {
         const response = await apiRequest<WalletsResponse>({
-          url: "/api/wallets/crypto",
+          url: "/wallets/crypto",
           method: "GET",
           params: { limit: 10, page: 1, search: searchTerm, sort: sortKey, justBalance: true },
         });
@@ -103,51 +121,61 @@ const WalletAssets: React.FC = () => {
   };
 
   // 📌 گرفتن اطلاعات عمومی
-  const { data: generalData } = useQuery({
-    queryKey: ["general-info"],
-    queryFn: async () => {
-      const res = await fetch("/api/get-general-info");
-      if (!res.ok) throw new Error("Failed to fetch general info");
-      return res.json();
-    },
-  });
+const { data: generalData } = useQuery<GeneralInfoResponse>({
+  queryKey: ["general-info"],
+  queryFn: async () => {
+    const data = await apiRequest<GeneralInfoResponse>({
+      url: "/get-general-info",
+      method: "GET",
+    });
+    return data;
+  },
+});
+
 
   // 📌 ترکیب داده‌ها: merge walletsData + generalData
-  const cryptoData = walletsData.map((wallet) => {
-    const generalItem = generalData?.cryptocurrency.find(
-      (item: any) => item.symbol === wallet.symbol
-    );
+ // 📌 ترکیب داده‌ها: merge walletsData + generalData
+console.log("generalData:", generalData); // 👈 اینجا بذار
 
-    // 📌 شرط برای آیکون
-    const renderIcon = generalItem?.isFont ? (
-      <i
-        className={`cf cf-${wallet.symbol.toLowerCase()}`}
-        style={{ color: generalItem?.color || "#000", fontSize: "24px" }}
-      ></i>
-    ) : (
-      <img
-        src={
-          generalItem?.icon
-            ? `https://api.payfa24.org/images/currency/${generalItem.icon}`
-            : "/default-coin.png"
-        }
-        alt={wallet.symbol}
-        className="w-6 h-6 rounded-full"
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).src = "/default-coin.png";
-        }}
-      />
-    );
+const cryptoData = walletsData.map((wallet) => {
+  const generalItem = generalData?.cryptocurrency?.find(
+    (item: any) => item.symbol?.toLowerCase() === wallet.symbol?.toLowerCase()
+  );
 
-    return {
-      ...wallet,
-      name: generalItem?.locale?.fa?.name || generalItem?.name || wallet.name,
-      color: generalItem?.color,
-      isFont: generalItem.isFont,
-      icon: renderIcon,
-      percent: generalItem?.percent ?? wallet.percent,
-    };
-  });
+  console.log("🔹 wallet:", wallet);
+  console.log("🔹 generalItem:", generalItem);
+
+  const renderIcon = generalItem?.isFont ? (
+    <i
+      className={`cf cf-${wallet.symbol.toLowerCase()}`}
+      style={{ color: generalItem?.color || "#000", fontSize: "24px" }}
+    ></i>
+  ) : (
+    <img
+      src={
+        generalItem?.icon
+          ? `https://api.payfa24.org/images/currency/${generalItem.icon}`
+          : ""
+      }
+      alt={wallet.symbol}
+      className="w-6 h-6 rounded-full"
+    />
+  );
+
+  return {
+    ...wallet,
+    name:
+      generalItem?.locale?.fa?.name ||
+      generalItem?.title_fa ||
+      generalItem?.name ||
+      wallet.name ||
+      wallet.symbol,
+    color: generalItem?.color,
+    icon: renderIcon,
+    percent: generalItem?.percent ?? wallet.percent,
+  };
+});
+
 
 
 
@@ -275,7 +303,7 @@ const WalletAssets: React.FC = () => {
                   <div className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
                     {item.icon}
                     <div>
-                      <div className="font-medium truncate max-w-[100px]">{item.name}</div>
+                      <div className="font-medium truncate max-w-[500px]">{item.name}</div>
                       <div className="text-xs text-gray-500">{item.symbol}</div>
                     </div>
                   </div>

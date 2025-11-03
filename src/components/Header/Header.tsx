@@ -25,17 +25,33 @@ import NotificationsDropdown from "../Notification/NotificationDropDown";
 import ServicesBox from "../ServicesBox/ServicesBox";
 import ProfileMenu from "./ProfileMenu";
 import VectorIcon from "../../assets/icons/header/vectorIcon";
+import WalletActiveIcon from "../../assets/icons/header/WalletActiveIcon";
+import IconTradeActive from "../../assets/icons/header/IconTradeActive";
 
 export default function Header() {
   const themeContext = useContext(ThemeContext);
   const location = useLocation();
   const currentPath = location.pathname;
-
+  const [isScrolled, setIsScrolled] = useState(false);
   const [showServices, setShowServices] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+  
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+  const handleScroll = () => {
+    if (window.scrollY > 0) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -66,7 +82,12 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white dark:bg-gray29  dark:text-white fixed left-0 w-full z-[1000]  ">
+   <header
+  className={`bg-white dark:bg-gray29 dark:text-white fixed top-0 left-0 w-full z-[50] transition-all duration-300 ${
+    isScrolled ? "shadow-md border-b border-gray-200 dark:border-gray-700" : ""
+  }`}
+>
+
       <nav className="container-style mx-auto flex items-center justify-between py-4 px-4 lg:px-6">
         <div className="flex gap-3 md:gap-4 text-gray-600 items-center">
           <div className="hidden lg:flex">
@@ -92,17 +113,17 @@ export default function Header() {
           </button>
 
           <Link
-            to="/ticket"
+            to="/tickets"
             aria-label="Messages"
             className={`hover:text-blue2 transition flex items-center justify-center w-7 h-7 ${
-              currentPath === "/ticket"
+              currentPath === "/tickets"
                 ? themeContext.theme === "dark"
                   ? "text-primary"
                   : "text-blue2 font-semibold"
                 : "text-header-items"
             }`}
           >
-            {currentPath === "/ticket" ? (
+            {currentPath === "/tickets" ? (
               <MessagesActiveIcon />
             ) : (
               <MessagesIcon />
@@ -150,7 +171,7 @@ export default function Header() {
               <Link
                 to="/wallet"
                 className={`hover:text-blue-600 transition flex items-center ${
-                  currentPath === "/walet"
+                  currentPath === "/wallet"
                     ? themeContext.theme === "dark"
                       ? "text-primary"
                       : "text-blue-600 font-semibold"
@@ -159,8 +180,9 @@ export default function Header() {
               >
                 کیف پول
                 <span className="pl-2 flex items-center justify-center w-8 h-8">
-                  <WalletIcon />
+                    {currentPath === "/wallet" ? <WalletActiveIcon/>:  <WalletIcon />}
                 </span>
+              
               </Link>
             </li>
 
@@ -190,7 +212,7 @@ export default function Header() {
               <Link
                 to="/trade"
                 className={`hover:text-blue2 transition flex items-center ${
-                  currentPath === "/transaction"
+                  currentPath.startsWith("/trade")
                     ? themeContext.theme === "dark"
                       ? "text-primary"
                       : "text-blue2 font-semibold"
@@ -198,9 +220,10 @@ export default function Header() {
                 }`}
               >
                 معامله
-                <span className="pl-2 flex items-center justify-center w-8 h-8">
-                  <BitcoinIcon />
-                </span>
+                
+                 <span className="pl-2 flex items-center justify-center w-8 h-8">
+      {currentPath.startsWith("/trade") ? <IconTradeActive /> : <BitcoinIcon />}
+    </span>
               </Link>
             </li>
 

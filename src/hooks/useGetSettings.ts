@@ -5,7 +5,7 @@ import { SettingsInfo } from "../types/api/settings-info"
 const useGetSettings = () => {
   return useQuery({
     queryKey: ['settings'],
-    queryFn: () => { return apiRequest<SettingsInfo>({ url: '/api/account/settings/info' }) },
+    queryFn: () => { return apiRequest<SettingsInfo>({ url: '/account/settings/info' }) },
     staleTime: Infinity,         // always fresh
     gcTime: Infinity,            // never garbage collected
     refetchOnWindowFocus: false, // disable re-fetch on focus

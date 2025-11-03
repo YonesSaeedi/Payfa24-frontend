@@ -92,7 +92,7 @@ function HomePage() {
         if (!fcmTokenValue) return;
         const savedToken = localStorage.getItem("fcmToken");
         if (savedToken && savedToken === fcmTokenValue) return;
-        await apiRequest({ url: "/api/token-firebase", method: "PUT", data: { token: fcmTokenValue } });
+        await apiRequest({ url: "/token-firebase", method: "PUT", data: { token: fcmTokenValue } });
         localStorage.setItem("fcmToken", fcmTokenValue);
       } catch (err) {
         console.error("Failed to send token to server", err);

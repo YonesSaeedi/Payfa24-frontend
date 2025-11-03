@@ -8,18 +8,20 @@ import mobile from "./../../assets/images/FooterIcon/footer-mobile.png"
 import SocialLinks from "./SocialLinks";
 import DownloadCard from "./DownLoadCard";
 
+
+
 export default function Footer(): React.JSX.Element {
   return (
     <footer className="bg-blue11 text-white py-5">
 
-      <div className="container-style flex justify-between items-center gap-8">
+      <div className="container-style flex justify-between items-center gap-8 ">
         <SocialLinks />
         <img src={Logo} alt="لوگو" />
       </div>
-      <div className="border-t border-white mt-4">
-        <div className="container-style mb-[14px] flex flex-col lg:flex-row lg:justify-between gap-8">
+      <div className="border-t border-white6 mt-4">
+        <div className="container-style mb-[14px] flex flex-col lg:flex-row lg:justify-between gap-8 sm:items-center items-end">
 
-          <div className="order-2 lg:order-1 flex flex-col gap-4 items-end relative lg:ml-[76px] ">
+          <div className="order-2 lg:order-1 flex flex-col gap-4  relative lg:ml-[76px] items-center">
             <img src={mobile} alt="اپلیکیشن موبایل" />
             <div className="flex bg-white1 rounded-md w-[360px] h-[77px] absolute bottom-0 justify-center items-center text-black1">
               <DownloadCard title="مایکت" img={mayket} href="https://myket.ir/app-link" />

@@ -6,7 +6,7 @@ const SkeletonCard: React.FC = () => {
       className="rounded-xl shadow p-4 flex flex-col justify-between relative animate-pulse bg-gray-200 dark:bg-gray-700"
       style={{
         height: "180px",
-      }}
+      }} 
     >
       <div className="flex justify-start items-center space-x-2 mb-4">
         <div className="h-6 w-6 bg-gray-300 dark:bg-gray-600 rounded-full ml-1" />

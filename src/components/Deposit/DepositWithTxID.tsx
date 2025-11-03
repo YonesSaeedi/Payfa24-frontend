@@ -118,7 +118,7 @@ export default function DepositWithTxID() {
         networks?: Network[];
         wallets_txid?: WalletTxid[];
       }>({
-        url: "/api/wallets/crypto/deposit",
+        url: "/wallets/crypto/deposit",
         method: "GET",
       });
 
@@ -220,7 +220,7 @@ export default function DepositWithTxID() {
           networks?: Network[];
           wallets_txid?: WalletTxid[];
         }>({
-          url: "/api/wallets/crypto/deposit",
+          url: "/wallets/crypto/deposit",
           method: "GET",
         });
         const walletEntry = depositRes.wallets_txid?.find(
@@ -273,11 +273,9 @@ export default function DepositWithTxID() {
     }
 
     try {
-      const depositRes = await apiRequest<
-        TxidPostResponse,
-        { txid: string; network_id: number }
-      >({
-        url: `/api/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
+
+      const depositRes = await apiRequest<TxidPostResponse, { txid: string, network_id: number }>({
+        url: `/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
         method: "POST",
         data: {
           txid: watch("txid") || "",

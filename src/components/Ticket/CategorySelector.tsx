@@ -11,11 +11,8 @@ interface OptionSelectorProps {
   onSelect?: (id: string) => void;
 }
 
-const OptionSelector: React.FC<OptionSelectorProps> = ({
-  options,
-  onSelect,
-}) => {
-  const [active, setActive] = useState<string | null>(null); // 👈 هیچکدوم انتخاب نشده در ابتدا
+const OptionSelector: React.FC<OptionSelectorProps> = ({ options, onSelect }) => {
+  const [active, setActive] = useState<string | null>(null);
 
   const handleClick = (id: string) => {
     setActive(id);
@@ -28,25 +25,18 @@ const OptionSelector: React.FC<OptionSelectorProps> = ({
         <button
           key={option.id}
           onClick={() => handleClick(option.id)}
-          className={`flex flex-col items-center justify-center w-full h-28 rounded-xl border transition-all duration-200
-            ${
-              active === option.id
-                ? "border-blue2 text-blue2 bg-gray27"
-                : "border-gray26 text-black1 bg-gray27 hover:border-blue2 hover:text-blue2 hover:shadow-md"
-            }`}
-        >
-          <div
-            className={`mb-2 text-2xl w-8 h-8 transition-colors hover:text-blue2  ${
-              active === option.id ? "text-blue2" : "text-black1"
-            }`}
-          >
+          className={`group flex flex-col items-center justify-center w-full h-28 rounded-xl border transition-all duration-200
+           ${active === option.id ? "border-blue2 text-blue2 bg-gray27" : "border-gray26 text-black1 bg-gray27 hover:border-blue2 hover:shadow-md"}`}>
+          <div className={`mb-2 text-2xl w-8 h-8 transition-colors ${active === option.id ? "text-blue2" : "text-black1"}group-hover:text-blue2`}>
             {option.icon}
           </div>
-          <span className="text-sm font-medium">{option.label}</span>
+          <span className={`text-sm font-medium transition-colors ${active === option.id ? "text-blue2" : "text-black1"} group-hover:text-blue2`}>
+            {option.label}
+          </span>
         </button>
       ))}
     </div>
   );
 };
 
-export default OptionSelector;
+export default OptionSelector; 

@@ -85,7 +85,7 @@ const OrderPage: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await apiRequest<OrdersResponse>({
-          url: "/api/history/orders",
+          url: "/history/orders",
           method: "GET",
           params: {
             page,

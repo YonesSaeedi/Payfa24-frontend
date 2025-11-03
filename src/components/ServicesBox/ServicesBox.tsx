@@ -152,38 +152,42 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   );
 
   return (
-    <div
-      dir="rtl"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-6"
-      onClick={handleClose} // کلیک روی پس‌زمینه -> بستن مودال
-    >
-      <div
-        className={` max-h-[90%] overflow-auto bg-white8 rounded-xl shadow-lg p-6 w-[500px] h-[700] transform transition-all duration-300 ${
-          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
-        } relative`}
-        onClick={(e) => e.stopPropagation()} // جلوگیری از بسته شدن مودال با کلیک داخلش
-      >
-        <div className="flex border-b border-b-gray21 pb-4">
-          <span className="w-6 h-6 icon-wrapper ml-1">
-            <CategoryActiveIcon />
-          </span>
-          <h3 className="text-blue2">خدمات</h3>
-        </div>
-
-        <button
-          onClick={handleClose}
-          className="absolute top-5 left-4 w-7 h-7 text-gray12"
-        >
-          <IconCloseButtun />
-        </button>
-          <div className="overflow-auto max-h-[calc(700px-80px)] px-4 py-2"> {renderSection("مالی و تراکنش", financeItems)}
-        {renderSection("بازار و اطلاعات", marketItems)}
-        {renderSection(" تاریخچه", historyItems)}
-        {renderSection("پشتیبانی و حساب کاربری", supportItems)}
-        {renderSection("سایر", otherItems)}</div>
-       
-      </div>
+   <div
+  dir="rtl"
+  className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-6"
+  onClick={handleClose}
+>
+  <div
+    className={`bg-white8 rounded-xl shadow-lg p-6 w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${
+      isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+    } relative`}
+    onClick={(e) => e.stopPropagation()}
+  >
+    <div className="flex border-b border-b-gray21 pb-4">
+      <span className="w-6 h-6 icon-wrapper ml-1">
+        <CategoryActiveIcon />
+      </span>
+      <h3 className="text-blue2">خدمات</h3>
     </div>
+
+    <button
+      onClick={handleClose}
+      className="absolute top-5 left-4 w-7 h-7 text-gray12"
+    >
+      <IconCloseButtun />
+    </button>
+
+    {/* فقط این بخش اسکرول بخورد */}
+    <div className="overflow-auto flex-1 px-4 py-2">
+      {renderSection("مالی و تراکنش", financeItems)}
+      {renderSection("بازار و اطلاعات", marketItems)}
+      {renderSection("تاریخچه", historyItems)}
+      {renderSection("پشتیبانی و حساب کاربری", supportItems)}
+      {renderSection("سایر", otherItems)}
+    </div>
+  </div>
+</div>
+
   );
 };
 

@@ -4,8 +4,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import IconCloseButtun from "../../assets/icons/services/IconCloseButtun";
 import FloatingInput from "../FloatingInput/FloatingInput";
+import { apiRequest } from "../../utils/apiClient";
 
 
+type FormDataValue = string | number | boolean | Blob | File;
 
 interface SupportCallModalProps {
   isOpen: boolean;
@@ -23,32 +25,17 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
 
   if (!isOpen) return null;
 
-  const onFormSubmit = async (data: SupportCallFormInputs) => {
+ const onFormSubmit = async (data: SupportCallFormInputs) => {
   try {
     setLoading(true);
 
-    const response = await fetch("/api/ticket/call", {
+  await apiRequest<{ status: boolean; msg?: string }, Record<string, FormDataValue>>({
+      url: "/ticket/call",
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      data: data as unknown as Record<string, FormDataValue>,
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData?.msg || "خطایی رخ داده است.");
-    }
-
-    const result = await response.json();
-
-    if (result.status) {
-      toast.success("درخواست شما با موفقیت ثبت شد");
-      reset();
-      setTimeout(onClose, 1500);
-    } else {
-      toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید");
-    }
   } catch (err: any) {
-    toast.error(err.message || "ارتباط با سرور برقرار نشد");
+    toast.error(err?.response?.data?.msg || "ارتباط با سرور برقرار نشد");
   } finally {
     setLoading(false);
   }
@@ -63,7 +50,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
   >
     <div
       dir="rtl"
-      className="bg-gray43 rounded-2xl shadow-lg w-full max-w-md p-6 relative"
+      className="bg-white8 rounded-2xl shadow-lg w-full max-w-md p-6 relative"
       onClick={(e) => e.stopPropagation()} 
     >
       <button
@@ -73,11 +60,11 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
         <IconCloseButtun />
       </button>
 
-      <h2 className="text-lg font-semibold text-black1 mb-12 pt-3">
+      <h2 className="font-bold text-lg text-black1 mb-12 pt-3">
         درخواست تماس با پشتیبانی
       </h2>
 
-      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 bg-gray43">
+      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 ">
       
         <div>
           <Controller
@@ -92,7 +79,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="tel"
                 placeholder=""
                 placeholderColor="text-black0"
-                className="h-[48px] border-gray2"
+                className="lg:bg-white8 border-gray2 rounded-lg"
               
               />
             )}
@@ -118,7 +105,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="text"
                 placeholder="درخواست تماس با پشتیبانی درباره..."
                 placeholderColor="text-black0"
-                className="border-gray2 h-[160px]"
+                className="border-gray2 h-[160px] lg:bg-white8 !rounded-lg"
               
               />
             )}

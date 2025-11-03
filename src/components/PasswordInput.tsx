@@ -46,7 +46,7 @@ export default function StepPassword() {
   const onSubmit = async (data: PasswordFormData) => {
     try {
       setIsLoading(true)
-      const response: SetPasswordResponse = await apiRequest({ url: '/api/auth/register/set-password', method: 'POST', data: data })
+      const response: SetPasswordResponse = await apiRequest({ url: '/auth/register/set-password', method: 'POST', data: data })
       if (response?.status === true) {
         toast.success('با موفقیت وارد شدید.')
         navigate('/')

@@ -73,7 +73,7 @@ export default function ForgotPasswordPageSetPasswordPage() {
       setIsLoading(true);
 
       const response = await apiRequest<ForgetPasswordResetResponse, ForgetPasswordResetRequest>({
-        url: '/api/auth/forget/reset',
+        url: '/auth/forget/reset',
         method: 'POST',
         data: {
           username: state.username,

@@ -32,7 +32,7 @@ export default function DeviceList() {
     setIsLoading(true);
     try {
       const response = await apiRequest<SessionsResponse>({
-        url: "/api/auth/sessions",
+        url: "/auth/sessions",
       });
       setActiveSessions(response.sessions);
     } catch (error) {
@@ -50,7 +50,7 @@ export default function DeviceList() {
     setIsSubmitting(true);
     try {
       await apiRequest({
-        url: "/api/auth/sessions/revoke-others",
+        url: "/auth/sessions/revoke-others",
         method: "POST",
       });
       fetchActiveSessions();
@@ -65,7 +65,7 @@ export default function DeviceList() {
     setIsSubmitting(true);
     try {
       await apiRequest({
-        url: `/api/auth/sessions/revoke`,
+        url: `/auth/sessions/revoke`,
         method: "POST",
         data: { token_id },
       });
@@ -197,28 +197,30 @@ export default function DeviceList() {
                     <span className="w-1/2 h-3 skeleton-bg rounded" />
                   </div>
 
-                  <hr className="border-border" />
+                 <hr className="border-t border-gray21" />
+
 
                   <div className="flex w-full items-center justify-between text-xs font-normal">
                     <span className="w-1/2 h-3 skeleton-bg rounded" />
                     <span className="w-1/2 h-3 skeleton-bg rounded" />
                   </div>
 
-                  <hr className="border-border" />
+                  <hr className="border-t border-gray21" />
+
 
                   <div className="flex w-full items-center justify-between text-xs font-normal">
                     <span className="w-1/2 h-3 skeleton-bg rounded" />
                     <span className="w-1/2 h-3 skeleton-bg rounded" />
                   </div>
 
-                  <hr className="border-border" />
+                  <hr className="border-gray21" />
 
                   <div className="flex w-full items-center justify-between text-xs font-normal">
                     <span className="w-1/2 h-3 skeleton-bg rounded" />
                     <span className="w-1/2 h-3 skeleton-bg rounded" />
                   </div>
 
-                  <hr className="border-border" />
+                  <hr className="border-gray21" />
 
                   <div className="flex w-full justify-end">
                     <span className="w-24 h-6 skeleton-bg rounded mx-1" />

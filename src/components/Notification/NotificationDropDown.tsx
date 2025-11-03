@@ -51,7 +51,7 @@ export default function NotificationsDropdown() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await apiRequest<NotificationItem[]>({ url: "/api/notifications" });
+      const response = await apiRequest<NotificationItem[]>({ url: "/notifications" });
       const formatted = response.map((n) => ({ ...n, formattedTime: formatTime(n.time) }));
       setNotifications(formatted);
     } catch (error) {
@@ -69,7 +69,7 @@ export default function NotificationsDropdown() {
     try {
       if (item.seen === "unseen") {
         await apiRequest({
-          url: `/api/notifications/seen/${item.id}`,
+          url: `/notifications/seen/${item.id}`,
           method: "PUT",
         });
         setNotifications((prev) => prev.filter((n) => n.id !== item.id));

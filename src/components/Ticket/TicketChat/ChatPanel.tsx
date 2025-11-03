@@ -8,7 +8,6 @@ import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
 import { apiRequest } from "../../../utils/apiClient";
 import { ticketStatusMap } from "../../../utils/statusMap";
 import StatusBadge from "../../UI/Button/StatusBadge";
-import IconCircledAttach from "../../../assets/icons/ticket/IconCircledAttach";
 import axios from "axios";
 import { toast } from "react-toastify";
 import type { AxiosProgressEvent } from "axios";
@@ -78,7 +77,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [, setUploadProgress] = useState<number | null>(null);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [imageCache, setImageCache] = useState<Record<number, string>>({});
   const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
@@ -86,12 +85,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [, setLoading] = useState(true);
 
-  // دریافت اطلاعات تیکت و پیام‌ها
+
   const fetchData = async () => {
     if (!ticket?.id) return;
     try {
       const res = await apiRequest<TicketInfoResponse>({
-        url: `/api/ticket/${ticket.id}/get-info`,
+        url: `/ticket/${ticket.id}/get-info`,
         method: "GET",
       });
 
@@ -113,7 +112,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   };
 
   const fetchFileAsDataUrl = async (fileToken: string) => {
-    const filePath = `/api/image/${fileToken}`;
+    const filePath = `/image/${fileToken}`;
     const timestamp = Math.floor(Date.now() / 1000).toString();
 
     try {
@@ -169,11 +168,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
     if (selectedFile) formData.append("file", selectedFile);
 
     await apiRequest({
-      url: `/api/ticket/${ticket.id}/new`,
+      url: `/ticket/${ticket.id}/new`,
       method: "POST",
       data: formData,
       isFormData: true,
-      onUploadProgress: (event?: AxiosProgressEvent) => { // ✅ نوع درست
+      onUploadProgress: (event?: AxiosProgressEvent) => { 
         if (event?.loaded && event?.total) {
           const percent = Math.round((event.loaded * 100) / event.total);
           setUploadProgress(percent);
@@ -212,10 +211,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
     }
   };
 
-  const removeSelectedFile = () => {
-    setSelectedFile(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -230,96 +225,65 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
           className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center"
           style={{ backgroundImage: `url(${bgChat})` }}
         >
+     
           <div className="relative z-10 flex flex-col gap-4">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  dir="rtl"
-                  className={`shadow rounded-xl px-3 w-[379px] relative flex-col ${
-                    msg.isUser ? "bg-black4 text-black1" : "bg-gray40 text-black1"
-                  }`}
-                >
-                  {!msg.isUser && (
-                    <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
-                      <img
-                        src={supportAvatar}
-                        alt="پشتیبانی"
-                        className="w-6 h-6 rounded-full"
-                      />
-                      <span className="text-xs text-black1">
-                        {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
-                      </span>
-                    </div>
-                  )}
+  {ticket ? (
+    messages.map((msg) => (
+      <div
+        key={msg.id}
+        className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}
+      >
+        <div
+          dir="rtl"
+          className={`shadow rounded-xl px-3 w-[379px] relative flex-col ${
+            msg.isUser ? "bg-black4 text-black1" : "bg-gray40 text-black1"
+          }`}
+        >
+          {!msg.isUser && (
+            <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
+              <img
+                src={supportAvatar}
+                alt="پشتیبانی"
+                className="w-6 h-6 rounded-full"
+              />
+              <span className="text-xs text-black1">
+                {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
+              </span>
+            </div>
+          )}
 
-                  {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
+          {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
 
-                  {msg.file && (
-                    <div className="rounded-2xl w-fit p-2 mt-2">
-                      {imageCache[msg.id] ? (
-                        msg.file.endsWith(".pdf") ? (
-                          <a
-                            href={imageCache[msg.id]}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-blue-600 underline"
-                          >
-                            <IconCircledAttach />
-                            <span>دانلود PDF</span>
-                          </a>
-                        ) : (
-                          <img
-                            src={imageCache[msg.id]}
-                            alt="attachment"
-                            className="rounded-xl object-contain max-h-[150px] max-w-[200px] cursor-pointer"
-                            onClick={() => setFullscreenImage(imageCache[msg.id])}
-                          />
-                        )
-                      ) : (
-                        <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
-                      )}
-                    </div>
-                  )}
+          {msg.file && (
+            <div className="rounded-2xl w-fit p-2 mt-2">
+              <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
+            </div>
+          )}
 
-                  <span
-                    dir="rtl"
-                    className="text-[10px] text-gray-400 block mt-4 text-right mb-4"
-                  >
-                    {msg.timestamp}
-                  </span>
-                </div>
-              </div>
-            ))}
-
-            <div ref={bottomRef} />
-
-            {selectedFile && (
-              <div className="flex items-center justify-between rounded-full bg-white shadow px-3 py-2 mt-2 w-fit">
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={removeSelectedFile}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-red-500 text-white text-sm"
-                  >
-                    ×
-                  </button>
-                  <span className="text-sm font-medium">{selectedFile.name}</span>
-                </div>
-              </div>
-            )}
-
-            {uploadProgress !== null && (
-              <div className="w-[379px] h-1 bg-gray-300 rounded-full overflow-hidden mt-1">
-                <div
-                  className="h-full bg-blue-600 transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
-                />
-              </div>
-            )}
+          <span
+            dir="rtl"
+            className="text-[10px] text-gray-400 block mt-4 text-right mb-4"
+          >
+            {msg.timestamp}
+          </span>
+        </div>
+      </div>
+    ))
+  ) : (
+   
+    <>
+      {[1, 2].map((i) => (
+        <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+          <div dir="rtl" className="shadow rounded-xl px-3 w-[360px] h-[110px] relative flex-col bg-gray40 text-black1 animate-pulse">
+            <div className="h-4 w-32 skeleton-bg rounded mt-4 mb-2"></div>
+            <div className="h-4 w-64 skeleton-bg rounded mb-4"></div>
           </div>
+        </div>
+      ))}
+    </>
+  )}
+</div>
+
         </div>
 
         <div dir="rtl" className="p-3 flex gap-2 bg-white8">

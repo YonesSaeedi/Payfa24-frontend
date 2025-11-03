@@ -63,7 +63,7 @@ export default function LoginPage() {
       if (isPhone) payload.mobile = data.email;
       else payload.email = data.email;
       setContactMethod(isPhone ? "phone" : "email");
-      const response = await apiRequest<LoginResponse, Record<string, string>>({ url: "/api/auth/login", method: "POST", data: payload, });
+      const response = await apiRequest<LoginResponse, Record<string, string>>({ url: "/auth/login", method: "POST", data: payload, });
       // no otp needed =============================================================================
       if (response?.access_token) {
         localStorage.setItem("accessToken", response?.access_token);
@@ -91,7 +91,7 @@ export default function LoginPage() {
     if (!idUser || !token2fa || otpCode.length < 5) return;
     try {
       const res = await apiRequest<LoginResponse, { code: string, id_user: number, token2fa: string }>(
-        { url: "/api/auth/login/login-2fa", method: "POST", data: { code: otpCode, id_user: idUser, token2fa: token2fa, }, }
+        { url: "/auth/login/login-2fa", method: "POST", data: { code: otpCode, id_user: idUser, token2fa: token2fa, }, }
       );
       if (res?.access_token) {
         toast.success("ورود با موفقیت انجام شد.");
@@ -112,7 +112,7 @@ export default function LoginPage() {
     if (!idUser || !token2fa || !canResend) return;
     try {
       setResendCodeIsSubmitting(true)
-      await apiRequest({ url: "/api/auth/login/resend-2fa", method: "POST", data: { id_user: idUser, token2fa: token2fa, }, });
+      await apiRequest({ url: "/auth/login/resend-2fa", method: "POST", data: { id_user: idUser, token2fa: token2fa, }, });
       toast.success("کد جدید ارسال شد.");
       setResendTimer(120);
       setCanResend(false);

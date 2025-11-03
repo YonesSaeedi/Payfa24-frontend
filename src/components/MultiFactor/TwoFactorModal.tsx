@@ -32,12 +32,12 @@ export default function TwoFactorModal({ type, closeModal }: PropModal) {
     try {
       if (step === 1) {
         // مرحله 1: ارسال کد بدون body
-        await apiRequest({ url: `/api/account/2fa/verify/${type}`, method: "POST" });
+        await apiRequest({ url: `/account/2fa/verify/${type}`, method: "POST" });
         setStep(2);
       } else if (step === 2) {
         // مرحله 2: تأیید کد همراه body
         await apiRequest({
-          url: `/api/account/2fa/verify/${type}`,
+          url: `/account/2fa/verify/${type}`,
           method: "POST",
           data: { code },
         });

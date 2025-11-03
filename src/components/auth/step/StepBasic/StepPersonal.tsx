@@ -47,8 +47,10 @@ export default function StepPersonal({ onNext }: Props) {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+
         const response = await apiRequest<any>({
-          url: "/api/kyc/get-info",
+          url: "/kyc/get-info",
+
         });
         const basic = response.kyc?.basic;
         if (basic) {
@@ -80,7 +82,7 @@ export default function StepPersonal({ onNext }: Props) {
   >({
     mutationFn: (data) =>
       apiRequest<ApiResponse, FormData>({
-        url: "/api/kyc/basic/level2",
+        url: "/kyc/basic/level2",
         method: "POST",
         data,
       }),
@@ -89,6 +91,7 @@ export default function StepPersonal({ onNext }: Props) {
       else if (data.msg?.includes("قبلا این اطلاعات را ثبت کرده‌اید")) {
         toast.info("اطلاعات شما قبلا ثبت شده است.");
       } else toast.error(data.msg || "خطا در ثبت اطلاعات.");
+
       onNext();
     },
     onError: (error) => {

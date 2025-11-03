@@ -36,7 +36,7 @@ function BankCardManager() {
           name_family: string;
         }[];
       }>({
-        url: "/api/account/credit-card/list",
+        url: "/account/credit-card/list",
         method: "GET",
       });
 

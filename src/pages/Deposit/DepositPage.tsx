@@ -103,7 +103,7 @@ export default function DepositPage({
       try {
         setLoading(true);
         const response = await apiRequest<WalletFiatData>({
-          url: "/api/wallets/fiat",
+          url: "/wallets/fiat",
           method: "GET",
         });
         setFiatData(response);
@@ -122,7 +122,7 @@ export default function DepositPage({
     setIsCreatingIdentifier(true);
     try {
       const res = await apiRequest<DepositIdentifierResponse, { id: number }>({
-        url: "/api/wallets/fiat/deposit/gateway-id",
+        url: "/wallets/fiat/deposit/gateway-id",
         method: "POST",
         data: { id: cardId },
       });

@@ -6,7 +6,7 @@ const useGetUser = () => {
   return useQuery<GetUserResponse, Error>({
     queryKey: ['user'],
 
-    queryFn: () => { return apiRequest({ url: '/api/account/get-user' }) },
+    queryFn: () => { return apiRequest({ url: '/account/get-user' }) },
     staleTime: Infinity,         // always fresh
     gcTime: Infinity,            // never garbage collected
     refetchOnWindowFocus: false, // disable re-fetch on focus

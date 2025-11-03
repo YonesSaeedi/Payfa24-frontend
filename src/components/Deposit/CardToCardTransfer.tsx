@@ -113,6 +113,7 @@ export default function CardToCardTransfer({
   const selectedCard = cards.find((c) => c.id === selectedCardId);
 
   useEffect(() => {
+
     if (initialCardToCardInfo.transaction) {
       const transactionDate = new Date(initialCardToCardInfo.transaction.date);
       const endTime = transactionDate.getTime() + 30 * 60 * 1000; // 30 دقیقه بعد
@@ -123,6 +124,7 @@ export default function CardToCardTransfer({
     setCards(initialCards);
     setCardToCardData(initialCardToCardInfo);
   }, [initialCardToCardInfo, initialCards]);
+
 
   useEffect(() => {
     if (showSummary && timer > 0) {
@@ -155,7 +157,7 @@ export default function CardToCardTransfer({
         CardToCardResponse,
         CardToCardRequestData
       >({
-        url: "/api/wallets/fiat/deposit/card-to-card",
+        url: "/wallets/fiat/deposit/card-to-card",
         method: "POST",
         data: requestData,
       });
@@ -163,11 +165,12 @@ export default function CardToCardTransfer({
       if (response.status) {
         toast.success(response.msg || "درخواست واریز با موفقیت ثبت شد. ✅");
 
+
         const updatedResponse = await apiRequest<{
           status: boolean;
           cardToCard: CardToCardInfo;
         }>({
-          url: "/api/wallets/fiat",
+          url: "/wallets/fiat",
           method: "GET",
         });
         if (updatedResponse.status && updatedResponse.cardToCard.transaction) {

@@ -31,7 +31,7 @@ interface UserData {
 
 async function getUserInfo(): Promise<UserData> {
   const response = await apiRequest<ApiResponse>({
-    url: "/api/account/get-user",
+    url: "/account/get-user",
     method: "GET",
   });
 

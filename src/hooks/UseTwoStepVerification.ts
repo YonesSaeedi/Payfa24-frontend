@@ -22,7 +22,7 @@ interface VerificationInfo {
 export function UseTwoStepVerification() {
   return useQuery<VerificationInfo, Error>({
     queryKey: ['two-step-data'],
-    queryFn: () => { return apiRequest({ url: '/api/account/2fa/get-info' }) },
+    queryFn: () => { return apiRequest({ url: '/account/2fa/get-info' }) },
     staleTime: Infinity,         // always fresh
     gcTime: Infinity,            // never garbage collected
     refetchOnWindowFocus: false, // disable re-fetch on focus

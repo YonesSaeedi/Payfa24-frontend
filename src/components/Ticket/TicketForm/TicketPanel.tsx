@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import TicketImage from "../../assets/images/Ticket/massegeIcon/415488451_80b31582-6997-45fb-9105-49e724faee4f 1.png"
-import IconCall from "../../assets/icons/ticket/IconCall";
-import SupportCallModal from "../../components/Ticket/SupportCallModal";
+import TicketImage from "../../../assets/images/Ticket/massegeIcon/415488451_80b31582-6997-45fb-9105-49e724faee4f 1.png"
+import IconCall from "../../../assets/icons/ticket/IconCall";
+import SupportCallModal from "../SupportCallModal";
+import HeaderLayout from "../../../layouts/HeaderLayout";
+import BreadcrumbNavigation from "../../BreadcrumbNavigation";
+import { Link } from "react-router-dom";
 
 
-function TicketPage() {
+function TicketPanel() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
 
- 
 
   return (
-    <>
+    
+    <div className="h-full">
+      <HeaderLayout>
+        <div className="w-full">
+          <div className="container-style flex flex-col gap-8 lg:gap-12 pt-6">
+            <BreadcrumbNavigation />
       <SupportCallModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -42,20 +47,24 @@ function TicketPage() {
               <IconCall />
             </span>
           </button>
-
-          <button
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-2 rounded-xl bg-blue2 text-white1 text-[18px] hover:bg-blue2 transition"
-            onClick={() => navigate("/ticket/create")}
+           <Link to="/tickets/create" className="flex-1">
+            <button
+            className="w-full flex-1 flex items-center justify-center gap-2 px-6 py-2 rounded-xl bg-blue2 text-white1 text-[18px] hover:bg-blue2 transition"
           >
             ایجاد تیکت جدید
             <span className="w-6 h-6 icon-wrapper">
               <IconCall />
             </span>
-          </button>
+          </button></Link>
+         
         </div>
       </div>
-    </>
+    </div>
+    </div>
+    </HeaderLayout>
+    </div>
+    
   );
 }
 
-export default TicketPage;
+export default TicketPanel;

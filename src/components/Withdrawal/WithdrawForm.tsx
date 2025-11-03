@@ -13,6 +13,15 @@ import useGetUser from "../../hooks/useGetUser";
 import { getBankLogo } from "../../utils/bankLogos";
 import { AxiosError } from "axios";
 
+interface WithdrawRequestResponse {
+  transaction_id: number;
+  msg?: string;
+}
+interface PendingWithdrawData {
+  amount: number;
+  bank: BankOption;
+  transactionId: number;
+}
 
 interface WalletResponse {
   list_cards: { id: number; card: string; bank: string }[];
@@ -26,10 +35,10 @@ interface BankOption {
   card: string;
   id: number;
 }
-
 interface WithdrawFormValues {
   amount: string;
   bank: BankOption | null;
+  transactionId?: number;
 }
 
 export default function WithdrawForm() {
@@ -38,17 +47,17 @@ export default function WithdrawForm() {
   >([]);
   const [isOpen] = useState(false);
   const [otpCode, setOtpCode] = useState("");
-  const [pendingWithdrawData, setPendingWithdrawData] =
-    useState<WithdrawFormValues | null>(null);
+
   const [resendTimer, setResendTimer] = useState(120);
   const [, setCanResend] = useState(false);
-  // const [selectedCoin, setSelectedCoin] = useState<typeof coin | null>(null);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState(false);
   const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState(120);
   const [isResending, setIsResending] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number>(0);
   const [, setSelectedCard] = useState<number | null>(null);
+  const [pendingWithdrawData, setPendingWithdrawData] =
+    useState<PendingWithdrawData | null>(null);
 
   const { data: userData } = useGetUser();
   const userMobile = userData?.user?.mobile || "شماره شما";
@@ -58,7 +67,6 @@ export default function WithdrawForm() {
   });
   const watchAmount = useWatch({ control, name: "amount" });
   const watchBank = useWatch({ control, name: "bank" });
-  // const allFieldsFilled = watchAmount && watchBank;
   const allFieldsFilled =
     !!watchBank && !!watchAmount && Number(watchAmount) > 0;
 
@@ -66,7 +74,7 @@ export default function WithdrawForm() {
     const fetchCards = async () => {
       try {
         const response = await apiRequest<WalletResponse>({
-          url: "/api/wallets/fiat?withdraw=true",
+          url: "/wallets/fiat?withdraw=true",
           method: "GET",
         });
         setListCards(response.list_cards || []);
@@ -89,35 +97,60 @@ export default function WithdrawForm() {
     return () => clearInterval(interval);
   }, [isOpen, resendTimer]);
 
-  // const isTwoFactorEnabled = true;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (data: WithdrawFormValues) => {
     const amountNumber = Number(data.amount);
     setIsSubmitting(true);
+
+    // چک مقدار
     if (amountNumber < 100000) {
       toast.error("حداقل مقدار برداشت 100,000 تومان میباشد.");
-      setIsSubmitting(false); // ✅ باید همین‌جا باشد
+      setIsSubmitting(false);
       return;
     }
 
+    // چک کارت انتخابی
+    if (!data.bank) {
+      toast.error("لطفاً یک کارت بانکی انتخاب کنید");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // داده‌ها برای ارسال
+    const requestData = {
+      amount: amountNumber, 
+      card: data.bank.id, 
+    };
+
     try {
-      // درخواست اولیه بدون OTP
-      await apiRequest({
-        url: "/api/wallets/fiat/withdraw",
+      const response = await apiRequest<WithdrawRequestResponse , { amount: number; card: number }>({
+        url: "/wallets/fiat/withdraw/request",
         method: "POST",
-        data: {
-          amount: amountNumber,
-          card: data.bank!.id,
-        },
+        data: requestData,
       });
 
-      toast.success("کد تأیید ارسال شد ✅");
-      setPendingWithdrawData(data);
+      console.log("=== API RESPONSE ===", response);
+const transactionId = response.transaction_id;
+
+      setPendingWithdrawData({
+        amount: amountNumber,
+        bank: data.bank,
+        transactionId,
+      });
+
+      toast.success("کد تأیید ارسال شد ");
       setIsOtpModalOpen(true);
       setResendCodeTimeLeft(120);
       setIsResending(false);
     } catch (err: unknown) {
+      console.log("=== API ERROR ===");
+      if (err instanceof AxiosError) {
+             toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.msg||'در ارسال درخواست برداشت مشکلی پیش امده است')
+      } else {
+        console.log("Error:", err);
+      }
+
       let message = "خطا در برداشت!";
       if (err instanceof AxiosError && err.response?.data?.msg) {
         message = err.response.data.msg;
@@ -129,6 +162,7 @@ export default function WithdrawForm() {
       setIsSubmitting(false);
     }
   };
+
   const handleOtpSubmit = async () => {
     if (!otpCode || !pendingWithdrawData) {
       toast.error("کد OTP وارد نشده است.");
@@ -137,11 +171,10 @@ export default function WithdrawForm() {
 
     try {
       await apiRequest({
-        url: "/api/wallets/fiat/withdraw",
+        url: "/wallets/fiat/withdraw/confirm",
         method: "POST",
         data: {
-          amount: Number(pendingWithdrawData.amount),
-          card: pendingWithdrawData.bank!.id,
+          transaction_id: pendingWithdrawData.transactionId,
           codeOtp: otpCode,
         },
       });
@@ -248,7 +281,6 @@ export default function WithdrawForm() {
 
           <div className="mb-6">
             {bankOptions.length > 0 ? (
-             
               <Controller
                 name="bank"
                 control={control}

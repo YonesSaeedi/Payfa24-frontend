@@ -10,9 +10,7 @@ import Sell from "../pages/trade/Sell";
 import AuthenticationBasic from "../pages/authentication/basic";
 import AuthenticationAdvance from "../pages/authentication/advance";
 import MarketPage from "../pages/MarketPage";
-import TicketPage from "../pages/Ticket/TicketPage";
-import TicketPanel from "../components/Ticket/TicketPanel";
-import TicketLayout from "../pages/Ticket/TicketLayout";
+import TicketPages from "../pages/Ticket/TicketPages";
 import TransactionLayout from "../pages/Transaction/TransactionLayout";
 import CryptoPage from "../components/History/CryptoPage";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
@@ -33,6 +31,7 @@ import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
 import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import UserAccount from "../pages/Profile/UserAccount";
+import CreateTicketPage from "../pages/Ticket/CreateTicketPage";
 
 
 export default function AppRouter() {
@@ -67,10 +66,9 @@ export default function AppRouter() {
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
           <Route path={ROUTES.TRADE.SELL} element={<Sell />} />
         </Route>
-        <Route path={ROUTES.TICKET.ROOT} element={<TicketLayout />}>
-          <Route index element={<TicketPage />} />
-          <Route path={ROUTES.TICKET.CREATE} element={<TicketPanel />} />
-        </Route>
+       <Route path={ROUTES.TICKET.ROOT} element={<TicketPages />} />
+       <Route path={ROUTES.TICKET.CREATE} element={<CreateTicketPage />} />
+ 
         <Route path={ROUTES.TRANSACTION.ROOT} element={<TransactionLayout />}>
           <Route index element={<CryptoPage />} />                                     {/* /history */}
           <Route path={ROUTES.TRANSACTION.CRYPTO_HISTORY} element={<CryptoPage />} />  {/* /history/Crypto */}

@@ -10,13 +10,7 @@ interface FloatingInputProps {
   placeholderColor?: string;
 }
 
-const FloatingInput: FC<FloatingInputProps> = ({
-  label,
-  value,
-  onChange,
-  type = "text",
-  placeholder = "گزینه‌ای را انتخاب کنید",
-}) => {
+const FloatingInput: FC<FloatingInputProps> = ({ label, value, onChange, type = "text", placeholder = "گزینه‌ای را انتخاب کنید", className }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -37,20 +31,11 @@ const FloatingInput: FC<FloatingInputProps> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
-        className="block w-full px-3 lg:h-[56px] h-[48px] border border-gray12 rounded-lg z-10 
-         focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 text-black0"
-      // =======
-      //         placeholder={placeholder}
-      //         className={`
-      //           block w-full px-3 ${heightClass} border rounded-md z-10
-      //           focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 
-      //           ${borderClass} ${placeholderColor ? `placeholder-${placeholderColor}` : "placeholder-black0"}  ${className}`}
-      // >>>>>>> c971315d41958ac5ee50ccac869db7626dfcdc5d
+        className={` ${className} block w-full px-3 lg:h-[56px] h-[48px] border border-gray12 rounded-lg z-10 
+         focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 text-black0`}
       />
     </div>
   );
 };
 
 export default FloatingInput;
-
-

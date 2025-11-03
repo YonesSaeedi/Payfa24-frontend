@@ -29,7 +29,7 @@ export default function Advance() {
   useEffect(() => {
     const fetchAdvancedKYC = async () => {
       try {
-        const response = await apiRequest<KycGetInfo>({ url: "/api/kyc/get-info" });
+        const response = await apiRequest<KycGetInfo>({ url: "/kyc/get-info" });
         if (response?.level_kyc === null) {
           toast.warn('احراز هویت سطح مقدماتی هنوز تکمیل نشده است!')
           navigate(ROUTES.AUTHENTICATION_BASIC)
@@ -68,7 +68,7 @@ export default function Advance() {
     }
     try {
       await apiRequest({
-        url: '/api/kyc/advanced/level1',
+        url: '/kyc/advanced/level1',
         method: "POST",
         data: formData,
         timeout: 0,

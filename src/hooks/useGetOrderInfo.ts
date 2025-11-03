@@ -6,7 +6,7 @@ const useGetOrderInfo = () => {
   return useQuery({
     queryKey: ['order-info'],
     queryFn: async () => {
-      const response = await apiRequest<OrderGetInfo>({ url: '/api/order/get-info' })
+      const response = await apiRequest<OrderGetInfo>({ url: '/order/get-info' })
       return response
     },
     staleTime: 60_000,

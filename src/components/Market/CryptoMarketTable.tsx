@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import IconSearch from "../../assets/icons/market/IconSearch";
@@ -8,6 +7,7 @@ import { ROUTES } from "../../routes/routes";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import Pagination from "../History/Pagination";
 import { NewCryptoItem } from "./types";
+import IconArrowDetails from "../../assets/icons/market/CryptoMarketTable.tsx/IconArrowDetails";
 
 interface Props {
   data: NewCryptoItem[];
@@ -16,12 +16,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-const CryptoMarketTable: React.FC<Props> = ({
-  data,
-  active,
-  setActive,
-  isLoading = false,
-}) => {
+const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading = false }) => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -34,43 +29,20 @@ const CryptoMarketTable: React.FC<Props> = ({
   }, [favorites]);
 
   const itemsPerPage = 12;
-  const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  
 
-  const toggleRow = (id: number) => {
-    setExpandedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
-    );
-  };
-
-  const tabs: string[] = [
-    "همه",
-    "مورد علاقه ها",
-    "پرضررترین",
-    "پرسودترین",
-    "بیشترین معامله",
-    "تازه‌های بازار",
-  ];
+  const tabs: string[] = ["همه", "مورد علاقه ها", "پرضررترین", "پرسودترین", "بیشترین معامله", "تازه‌های بازار"];
 
   const filteredByTab = useMemo(() => {
     switch (active) {
       case 1:
         return data.filter((item) => favorites.includes(item.symbol ?? ""));
       case 2:
-        return [...data].sort(
-          (a, b) =>
-            parseFloat(a.priceChangePercent ?? "0") -
-            parseFloat(b.priceChangePercent ?? "0")
-        );
+        return [...data].sort((a, b) => parseFloat(a.priceChangePercent ?? "0") - parseFloat(b.priceChangePercent ?? "0"));
       case 3:
-        return [...data].sort(
-          (a, b) =>
-            parseFloat(b.priceChangePercent ?? "0") -
-            parseFloat(a.priceChangePercent ?? "0")
-        );
+        return [...data].sort((a, b) => parseFloat(b.priceChangePercent ?? "0") - parseFloat(a.priceChangePercent ?? "0"));
       case 4:
-        return [...data].sort(
-          (a, b) => parseFloat(b.quoteVolume ?? "0") - parseFloat(a.quoteVolume ?? "0")
-        );
+        return [...data].sort((a, b) => parseFloat(b.quoteVolume ?? "0") - parseFloat(a.quoteVolume ?? "0"));
       case 5:
         return [...data].sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
       default:
@@ -96,10 +68,15 @@ const CryptoMarketTable: React.FC<Props> = ({
 
   const totalPages = Math.ceil(filteredBySearch.length / itemsPerPage);
   const skeletonArray = Array.from({ length: itemsPerPage });
+  const [allExpanded, setAllExpanded] = useState(false);
+
+const toggleAllRows = () => {
+  setAllExpanded((prev) => !prev);
+};
+
 
   return (
     <div className="w-full flex flex-col gap-6 lg:mt-16">
-     
       <div className="items-center gap-4">
         <div className="w-full flex justify-between">
           <div className="lg:hidden flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">
@@ -123,7 +100,7 @@ const CryptoMarketTable: React.FC<Props> = ({
       {/* Tabs */}
       <div className="bg-white1 rounded-2xl shadow border border-gray21 overflow-hidden">
         <div className="flex flex-row-reverse justify-between items-center px-4 pt-8">
-          <div className="flex flex-row-reverse gap-4 text-sm text-gray24">
+          <div className="flex flex-row-reverse gap-4 text-sm text-gray24 overflow-x-auto whitespace-nowrap scrollbar-hide scroll-smooth">
             {tabs.map((tab, index) => (
               <span
                 key={index}
@@ -131,11 +108,7 @@ const CryptoMarketTable: React.FC<Props> = ({
                   setActive(index);
                   setCurrentPage(1);
                 }}
-                className={`cursor-pointer pb-2 pr-2 text-base font-normal ${
-                  active === index
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray5"
-                }`}
+                className={`cursor-pointer pb-2 pr-2 text-base font-normal flex-shrink-0 ${active === index ? "text-blue-600 border-b-2 border-blue-600" : "text-gray5"}`}
               >
                 {tab}
               </span>
@@ -161,37 +134,47 @@ const CryptoMarketTable: React.FC<Props> = ({
 
         {/* Table */}
         <div className="px-6 mt-6 overflow-x-auto">
-          <table
-            dir="rtl"
-            className="w-full text-right border-collapse min-w-[500px] table-fixed"
-          >
-            <thead>
-              <tr className="bg-gray41 text-black1 rounded-lg">
-                <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base rounded-r-lg mr-11">
-                  نام و نماد ارز
-                </th>
-                <th className="py-2.5 lg:py-4 px-4 hidden lg:table-cell font-medium text-xs lg:text-base">
-                  قیمت به USDT
-                </th>
-                <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base">
-                  قیمت خرید
-                </th>
-                <th className="py-2.5 lg:py-4 px-4 hidden lg:table-cell font-medium text-xs lg:text-base">
-                  قیمت فروش
-                </th>
-                <th className="py-2.5 lg:py-4 px-4 text-center lg:w-[32px] lg:text-nowrap font-medium text-xs lg:text-base lg:rounded-none rounded-bl-lg">
-                  تغییرات ۲۴h
-                </th>
-                <th className="py-2.5 lg:py-4 px-4 hidden lg:table-cell rounded-l-lg"></th>
-              </tr>
-            </thead>
+          <table dir="rtl" className="w-full text-right border-collapse  table-fixed">
+         <thead>
+  <tr className="bg-gray41 text-black1 rounded-lg">
+    {/* نام و نماد ارز */}
+    <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base rounded-r-lg mr-11">
+      نام و نماد ارز
+    </th>
+
+  
+    <th className={`py-2.5 lg:py-4 px-4 hidden lg:table-cell font-medium text-xs lg:text-base`}>
+      قیمت به USDT
+    </th>
+
+    <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base text-center lg:text-right align-middle">
+      {allExpanded ? "قیمت فروش" : "قیمت خرید"}
+    </th>
+
+    {/* ستون فروش / hidden در موبایل */}
+    <th className={`py-2.5 lg:py-4 px-4 hidden lg:table-cell font-medium text-xs lg:text-base`}>
+      قیمت فروش
+    </th>
+
+    {/* ستون تغییرات 24h / یا USDT در موبایل */}
+    <th className="py-2.5 lg:py-4 px-4 text-center lg:w-[32px] lg:text-nowrap font-medium text-xs lg:text-base lg:rounded-none rounded-bl-lg">
+      {allExpanded ? "قیمت به USDT" : "تغییرات ۲۴h"}
+    </th>
+
+    {/* ستون خرید/فروش دسکتاپ */}
+    <th className="py-2.5 lg:py-4 px-4 hidden lg:table-cell rounded-l-lg"></th>
+
+    {/* ستون toggle موبایل */}
+    <th className="py-2.5 px-4 lg:hidden text-center font-medium text-xs lg:text-base">
+      جزئیات
+    </th>
+  </tr>
+</thead>
+
             <tbody>
               {isLoading
                 ? skeletonArray.map((_, idx) => (
-                    <tr
-                      key={idx}
-                      className="border-b border-gray21 last:border-b-0 hover:bg-background text-right"
-                    >
+                    <tr key={idx} className="border-b border-gray21 last:border-b-0 hover:bg-background text-right">
                       <td className="py-3 px-4 flex items-start lg:gap-2 gap-1 justify-start">
                         <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full skeleton-bg"></div>
                         <div className="flex flex-col gap-0.5 lg:gap-2">
@@ -223,124 +206,88 @@ const CryptoMarketTable: React.FC<Props> = ({
                     const priceBuy = parseFloat(item.priceBuy ?? "0");
                     const priceSell = parseFloat(item.priceSell ?? "0");
                     const change24h = parseFloat(item.priceChangePercent ?? "0");
-                 
 
                     return (
-                      <React.Fragment key={id}>
-                        <tr
-                          className="border-b border-gray21 hover:bg-gray0 text-sm last:border-b-0 items-start justify-start lg:cursor-default cursor-pointer"
-                          onClick={() => toggleRow(id)}
-                        >
-                          {/* Name and symbol */}
-                          <td className="py-3 px-4 flex gap-3 items-start justify-start">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (favorites.includes(symbol)) {
-                                  setFavorites(favorites.filter((s) => s !== symbol));
-                                } else {
-                                  setFavorites([...favorites, symbol]);
-                                }
-                              }}
-                              className="flex-shrink-0 flex items-center justify-center transition-colors duration-200 overflow-hidden"
-                            >
-                              <div className="w-[22px] h-[22px]">
-                                {favorites.includes(symbol) ? (
-                                  <span className="border-gray-400 text-gray-400 w-[22px] h-[22px]">
-                                    <IconStarGold />
-                                  </span>
-                                ) : (
-                                  <span className="border-gray-400 text-gray-400 w-[22px] h-[22px]">
-                                    <IconStar />
-                                  </span>
-                                )}
-                              </div>
-                            </button>
+                     <React.Fragment key={id}>
+ <tr className="border-b border-gray21 hover:bg-gray0 text-sm last:border-b-0 items-start justify-start lg:cursor-default">
+  {/* Name and symbol */}
+  <td className="py-3 px-4 flex gap-3 items-start justify-start min-w-0 max-w-[900px]">
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        if (favorites.includes(symbol)) {
+          setFavorites(favorites.filter((s) => s !== symbol));
+        } else {
+          setFavorites([...favorites, symbol]);
+        }
+      }}
+      className="flex-shrink-0 flex items-center justify-center transition-colors duration-200 overflow-hidden"
+    >
+      <div className="w-[22px] h-[22px]">
+        {favorites.includes(symbol) ? <IconStarGold /> : <IconStar />}
+      </div>
+    </button>
 
-                            <div className="w-8 h-8 flex-shrink-0 rounded-full">
-                              {item.isFont ? (
-                                <i
-                                  className={`cf cf-${symbol.toLowerCase()}`}
-                                  style={{ color: item.color, fontSize: "32px" }}
-                                ></i>
-                              ) : (
-                                <img
-                                  src={`https://api.payfa24.org/images/currency/${item.icon}`}
-                                  alt={symbol}
-                                  className="object-contain w-full h-full"
-                                />
-                              )}
-                            </div>
+    <div className="w-8 h-8 flex-shrink-0 rounded-full">
+      {item.isFont ? (
+        <i className={`cf cf-${symbol.toLowerCase()}`} style={{ color: item.color, fontSize: "32px" }}></i>
+      ) : (
+        <img src={`https://api.payfa24.org/images/currency/${item.icon}`} alt={symbol} className="object-contain w-full h-full" />
+      )}
+    </div>
 
-                            <div className="flex flex-col min-w-0 items-start justify-start">
-                              <div className="font-medium text-black1 truncate max-w-[150px]">
-                                {name}
-                              </div>
-                              <span className="text-xs text-gray-500">{symbol}</span>
-                            </div>
-                          </td>
+    <div className="flex flex-col min-w-0 items-start justify-start">
+      <div className="font-medium text-black1 text-xs lg:text-base overflow-hidden text-ellipsis whitespace-nowrap w-full" title={name}>
+        {name}
+      </div>
+      <span className="text-[11px] lg:text-xs text-gray-500">{symbol}</span>
+    </div>
+  </td>
 
-                          <td className="py-3 px-4 text-black1 hidden lg:table-cell items-center text-xs lg:text-base font-normal">
-                            {item.fee ? `${item.fee} USDT` : "0 تومان"}
-                          </td>
+{/* ستون موبایل اول (Price Buy / Price Sell) */}
+<td className="py-3 px-4 text-black1 text-xs text-center lg:hidden">
+  {allExpanded ? formatPersianDigits(priceSell) : formatPersianDigits(priceBuy)}
+</td>
 
-                          <td className="py-3 px-4 text-black1 text-xs lg:text-base font-normal lg:table-cell">
-                            {formatPersianDigits(priceBuy)}
-                            <span className="hidden lg:inline"> تومان </span>
-                          </td>
+{/* ستون موبایل دوم (Change 24h / Price USDT) */}
+<td className="py-3 px-4 text-black1 text-center lg:hidden">
+  {allExpanded ? (item.fee ? `${item.fee} USDT` : "0 تومان") : (
+    <span className={`${change24h >= 0 ? "text-green-500" : "text-red-500"}`}>
+      {formatPersianDigits(change24h)}%
+    </span>
+  )}
+</td>
 
-                          <td className="py-3 px-4 hidden lg:table-cell text-black1">
-                            {formatPersianDigits(priceSell)} تومان
-                          </td>
+{/* Toggle Column */}
+<td
+  className="py-3 px-4 text-center lg:hidden cursor-pointer"
+  onClick={toggleAllRows} // تغییر همه ردیف‌ها
+>
+  <span className="text-gray-400 text-lg flex items-center justify-center">{allExpanded ? <span className="w-2 h-2 icon-wrraper"><IconArrowDetails/></span> :<span className="w-4 h-4"><IconArrowDetails/></span> }</span>
+</td>
 
-                          <td className="py-3 px-4 text-center text-black1">
-                            <span
-                              className={`font-normal text-xs lg:text-base ${
-                                change24h >= 0 ? "text-green-500" : "text-red-500"
-                              }`}
-                              dir="ltr"
-                            >
-                              {formatPersianDigits(change24h)}%
-                            </span>
-                          </td>
 
-                          <td className="py-3 px-4 hidden lg:table-cell text-end text-black1">
-                            <Link
-                              to={`${ROUTES.TRADE.BUY}?coin=${symbol}`}
-                              className="bg-blue2 text-white rounded-lg px-4 py-1.5 text-sm border border-transparent hover:bg-transparent hover:border-blue2 hover:text-blue2 transition duration-200 ease-in"
-                            >
-                              خرید/فروش
-                            </Link>
-                          </td>
-                        </tr>
+  {/* نسخه دسکتاپ بدون تغییر */}
+  <td className="py-3 px-4 hidden lg:table-cell">{item.fee ? `${item.fee} USDT` : "0 تومان"}</td>
+  <td className="py-3 px-4 hidden lg:table-cell">{formatPersianDigits(priceBuy)} تومان</td>
+  <td className="py-3 px-4 hidden lg:table-cell">{formatPersianDigits(priceSell)} تومان</td>
+  <td className="py-3 px-4 hidden lg:table-cell text-center">
+    <span className={`${change24h >= 0 ? "text-green-500" : "text-red-500"}`}>
+      {formatPersianDigits(change24h)}%
+    </span>
+  </td>
+  <td className="py-3 px-4 hidden lg:table-cell text-end">
+    <Link
+      to={`${ROUTES.TRADE.BUY}?coin=${symbol}`}
+      className="bg-blue2 text-white rounded-lg px-4 py-1.5 text-sm border border-transparent hover:bg-transparent hover:border-blue2 hover:text-blue2 transition duration-200 ease-in"
+    >
+      خرید/فروش
+    </Link>
+  </td>
+</tr>
 
-                        {expandedRows.includes(id) && (
-                          <tr className="lg:hidden bg-gray0 border-b border-gray21">
-                            <td colSpan={6} className="px-4 py-3 text-sm text-gray-700 space-y-2">
-                              <div className="flex justify-between">
-                                <span>قیمت خرید:</span>
-                                <span>{formatPersianDigits(priceBuy)} تومان</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>قیمت فروش:</span>
-                                <span>{formatPersianDigits(priceSell)} تومان</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>قیمت USDT:</span>
-                                <span>{item.fee ?? "0"} USDT</span>
-                              </div>
-                              <div className="text-center pt-2">
-                                <Link
-                                  to={`${ROUTES.TRADE.BUY}?coin=${symbol}`}
-                                  className="bg-blue2 text-white rounded-lg px-4 py-1.5 text-sm border border-transparent hover:bg-transparent hover:border-blue2 hover:text-blue2 transition duration-200 ease-in"
-                                >
-                                  خرید/فروش
-                                </Link>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
+</React.Fragment>
+
                     );
                   })}
 
@@ -356,11 +303,7 @@ const CryptoMarketTable: React.FC<Props> = ({
         </div>
       </div>
 
-      <Pagination
-        current={currentPage}
-        total={totalPages}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
+      <Pagination current={currentPage} total={totalPages} onPageChange={(page) => setCurrentPage(page)} />
     </div>
   );
 };
