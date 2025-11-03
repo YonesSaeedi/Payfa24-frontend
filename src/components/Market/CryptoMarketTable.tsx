@@ -142,12 +142,11 @@ const toggleAllRows = () => {
       نام و نماد ارز
     </th>
 
-    {/* ستون USDT / hidden در موبایل */}
+  
     <th className={`py-2.5 lg:py-4 px-4 hidden lg:table-cell font-medium text-xs lg:text-base`}>
       قیمت به USDT
     </th>
 
-    {/* ستون خرید یا فروش در موبایل */}
     <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base text-center lg:text-right align-middle">
       {allExpanded ? "قیمت فروش" : "قیمت خرید"}
     </th>
