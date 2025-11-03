@@ -90,7 +90,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
     if (!ticket?.id) return;
     try {
       const res = await apiRequest<TicketInfoResponse>({
-        url: `/api/ticket/${ticket.id}/get-info`,
+        url: `/ticket/${ticket.id}/get-info`,
         method: "GET",
       });
 
@@ -112,7 +112,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   };
 
   const fetchFileAsDataUrl = async (fileToken: string) => {
-    const filePath = `/api/image/${fileToken}`;
+    const filePath = `/image/${fileToken}`;
     const timestamp = Math.floor(Date.now() / 1000).toString();
 
     try {
@@ -168,7 +168,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
     if (selectedFile) formData.append("file", selectedFile);
 
     await apiRequest({
-      url: `/api/ticket/${ticket.id}/new`,
+      url: `/ticket/${ticket.id}/new`,
       method: "POST",
       data: formData,
       isFormData: true,

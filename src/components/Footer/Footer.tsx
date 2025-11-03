@@ -6,7 +6,8 @@ import bazzer from "./../../assets/images/FooterIcon/bazaar-logo-and-logotype 1 
 import Logo from "./../../assets/images/FooterIcon/logo.png";
 import mobile from "./../../assets/images/FooterIcon/footer-mobile.png"
 import SocialLinks from "./SocialLinks";
-import DownloadCard from "./DownloadCard";
+import DownloadCard from "./DownLoadCard";
+
 
 
 export default function Footer(): React.JSX.Element {

@@ -30,9 +30,9 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
     setLoading(true);
 
   await apiRequest<{ status: boolean; msg?: string }, Record<string, FormDataValue>>({
-      url: "/api/ticket/call",
+      url: "/ticket/call",
       method: "POST",
-      data,
+      data: data as unknown as Record<string, FormDataValue>,
     });
   } catch (err: any) {
     toast.error(err?.response?.data?.msg || "ارتباط با سرور برقرار نشد");

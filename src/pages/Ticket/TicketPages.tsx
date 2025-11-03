@@ -32,7 +32,7 @@ export default function TicketsPage() {
     async function fetchTickets() {
       try {
         const res = await apiRequest<TicketResponse>({
-          url: "/api/ticket/get-info",
+          url: "/ticket/get-info",
           method: "GET",
         });
         setData(res);

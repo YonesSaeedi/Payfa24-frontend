@@ -116,7 +116,7 @@ const handleSubmitOtp = async () => {
   if (isOtpSubmitting || !withdrawData) return;
   setIsOtpSubmitting(true);
   try {
-    const res = await apiRequest<{ msg: string }, { transaction_id: number; codeOtp: string }>({url: "/api/wallets/crypto/withdraw/confirm",method: "POST",data: {
+    const res = await apiRequest<{ msg: string }, { transaction_id: number; codeOtp: string }>({url: "/wallets/crypto/withdraw/confirm",method: "POST",data: {
         transaction_id: withdrawData.transactionId,
         codeOtp: otpCode,
       },
@@ -142,7 +142,7 @@ const handleResendCode = async () => {
   try {
     setIsResending(true);
     if (!withdrawData) return;
-    const res = await apiRequest<WithdrawApiResponse, WithdrawRequestData>({url: "/api/wallets/crypto/withdraw/request",method: "POST",data: withdrawData});
+    const res = await apiRequest<WithdrawApiResponse, WithdrawRequestData>({url: "/wallets/crypto/withdraw/request",method: "POST",data: withdrawData});
     toast.success(res.msg || "کد جدید ارسال شد");
     setResendCodeTimeLeft(120);
 
@@ -176,7 +176,7 @@ const handleResendCode = async () => {
     const fetchData = async () => {
       try {
         const res = await apiRequest<WithdrawApiResponse>({
-          url: "/api/wallets/crypto/withdraw",
+          url: "/wallets/crypto/withdraw",
           method: "GET",
         });
 
@@ -253,7 +253,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     withdrawAddressWalletTag: string;
   }
 >({
-  url: "/api/wallets/crypto/withdraw/request",
+  url: "/wallets/crypto/withdraw/request",
   method: "POST",
   data: {
     coin: crypto,
@@ -334,7 +334,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     try {
       const res = await apiRequest<TransferResponse>({
-        url: "/api/wallets/crypto/transfer/request",
+        url: "/wallets/crypto/transfer/request",
         method: "POST",
         data: dataToSend,
       });
@@ -362,7 +362,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     try {
       const res = await apiRequest<TransferResponse, { transaction_id: number; codeOtp: string }>({
-        url: "/api/wallets/crypto/transfer/confirm",
+        url: "/wallets/crypto/transfer/confirm",
         method: "POST",
         data: {
           transaction_id: withdrawData.transactionId,
