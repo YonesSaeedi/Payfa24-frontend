@@ -1,7 +1,7 @@
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import UploadImage from "../../assets/icons/authentication/UploadImage";
 import Accordion from "../Withdrawal/Accordion";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
@@ -158,28 +158,6 @@ export default function DepositBankReceipt({
       setLoading(false);
     }
   };
-
-
-  // --- بارگذاری داده‌های کیف پول ---
-  useEffect(() => {
-    const fetchWalletData = async () => {
-      try {
-        const response = await apiRequest<WalletData>({
-          url: "/wallets/fiat",
-          method: "GET",
-        });
-        setWalletData(response);
-      } catch (err) {
-        console.error("خطا در fetch wallet data:", err);
-      }
-    };
-    fetchWalletData();
-
-    return () => {
-      if (previewURL && previewURL.startsWith("blob:"))
-        URL.revokeObjectURL(previewURL);
-    };
-  }, [initialPreviewUrl, previewURL]);
 
   return (
     <div className="w-full" dir="rtl">
