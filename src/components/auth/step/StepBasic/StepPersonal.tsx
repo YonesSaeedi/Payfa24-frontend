@@ -1,24 +1,17 @@
 import { useContext, useState, useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 import StepperComponent from "../Stepper";
 import TextField from "../../../InputField/TextField";
-import { Controller, useForm } from "react-hook-form";
 import IconCalender from "../../../../assets/icons/authentication/IconCalender";
 import DatePickerModal from "../../../DatePicker";
 import { ThemeContext } from "../../../../context/ThemeContext";
-import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "../../../../utils/apiClient";
-import { toast } from "react-toastify";
-import { AxiosError } from "axios";
 
-
-
-interface ApiResponse {
-  status: boolean;
-  msg?: string;
-}
 type Props = {
   onNext: () => void;
-  onBack?: () => void;
 };
 
 type FormData = {
@@ -29,44 +22,18 @@ type FormData = {
   dateBirth: string;
 };
 
-type UserInfo = {
-  level_kyc: number;
-  kyc: {
-    basic?: {
-      name?: string;
-      family?: string;
-      mobile?: string | null;
-      email?: string | null;
-      father?: string;
-      national_code?: string;
-      date_birth?: string;
-      cardbank?: number;
-    };
-    advanced?: {
-      status: "pending" | "success" | "reject";
-      reason_reject?: string | null;
-    };
-  };
+type ApiResponse = {
+  status: boolean;
+  msg?: string;
 };
 
 export default function StepPersonal({ onNext }: Props) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
 
-  const formInput = [
-    { name: "family", label: "نام خانوادگی" },
-    { name: "name", label: "نام" },
-    { name: "father", label: "نام پدر" },
-    { name: "nationalCode", label: "کد ملی" },
-    { name: "dateBirth", label: "تاریخ تولد" },
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-  } = useForm<FormData>({
+  const { control, handleSubmit, setValue } = useForm<FormData>({
     defaultValues: {
       name: "",
       family: "",
@@ -76,104 +43,89 @@ export default function StepPersonal({ onNext }: Props) {
     },
   });
 
-  // Fetch user info to prefill form and navigate if already completed
+  // دریافت اطلاعات کاربر برای پر کردن فرم
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await apiRequest<UserInfo>({
+
+        const response = await apiRequest<any>({
           url: "/kyc/get-info",
+
         });
-        console.log("User info response stepPersonal:", response);
-        if (response.kyc?.basic) {
-          // Check if all required fields are filled
+        const basic = response.kyc?.basic;
+        if (basic) {
           const isCompleted =
-            response.kyc.basic.name &&
-            response.kyc.basic.family &&
-            response.kyc.basic.father &&
-            response.kyc.basic.national_code &&
-            response.kyc.basic.date_birth;
-
-          if (isCompleted) {
-            console.log(
-              "Personal info already completed. Navigating to next step."
-            );
-            onNext();
-            return;
-          }
-
-          setValue("name", response.kyc.basic.name || "");
-          setValue("family", response.kyc.basic.family || "");
-          setValue("father", response.kyc.basic.father || "");
-          setValue("nationalCode", response.kyc.basic.national_code || "");
-          setValue("dateBirth", response.kyc.basic.date_birth || "");
+            basic.name &&
+            basic.family &&
+            basic.father &&
+            basic.national_code &&
+            basic.date_birth;
+          if (isCompleted) return onNext();
+          setValue("name", basic.name || "");
+          setValue("family", basic.family || "");
+          setValue("father", basic.father || "");
+          setValue("nationalCode", basic.national_code || "");
+          setValue("dateBirth", basic.date_birth || "");
         }
-      } catch (error) {
-        console.error("Error fetching user info:", error);
+      } catch {
         toast.error("خطا در دریافت اطلاعات کاربر.");
       }
     };
     fetchUserData();
   }, [setValue, onNext]);
 
-  // Mutation for submitting personal info
-const submitPersonalInfoMutation = useMutation<
-  ApiResponse,
-  AxiosError<{ msg: string }>,
-  FormData
->({
-  mutationFn: (payload: FormData) =>
-    apiRequest<ApiResponse,FormData>({
-      url: "/kyc/basic/level2",
-      method: "POST",
-      data: payload,
-    }),
-  onSuccess: (data) => {
-    console.log("Submit personal info response:", data);
-    if (data.status) {
-      toast.success("اطلاعات با موفقیت ثبت شد.");
+  // ثبت اطلاعات
+  const submitMutation = useMutation<
+    ApiResponse,
+    AxiosError<{ msg: string }>,
+    FormData
+  >({
+    mutationFn: (data) =>
+      apiRequest<ApiResponse, FormData>({
+        url: "/kyc/basic/level2",
+        method: "POST",
+        data,
+      }),
+    onSuccess: (data) => {
+      if (data.status) toast.success("اطلاعات با موفقیت ثبت شد.");
+      else if (data.msg?.includes("قبلا این اطلاعات را ثبت کرده‌اید")) {
+        toast.info("اطلاعات شما قبلا ثبت شده است.");
+      } else toast.error(data.msg || "خطا در ثبت اطلاعات.");
+
       onNext();
-    } else {
-      const isAlreadyRegistered =
-        data.msg && data.msg.includes("قبلا این اطلاعات را ثبت کرده‌اید");
-      if (isAlreadyRegistered) {
-        toast.info("اطلاعات شما قبلا ثبت شده است. به مرحله بعد می‌روید.");
-        onNext();
-      } else {
-        toast.error(data.msg || "خطا در ثبت اطلاعات.");
-      }
-    }
-  },
-  onError: (error) => {
-    console.error("Submit personal info error:", error);
-    const errorMsg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
-
-    const isAlreadyRegisteredError =
-      error.response?.status === 400 &&
-      errorMsg.includes("قبلا این اطلاعات را ثبت کرده اید");
-
-    if (isAlreadyRegisteredError) {
-      toast.info("اطلاعات شما قبلا ثبت شده است. به مرحله بعد می‌روید.");
+    },
+    onError: (error) => {
+      const msg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
+      if (msg.includes("قبلا این اطلاعات را ثبت کرده اید"))
+        toast.info("اطلاعات شما قبلا ثبت شده است.");
+      else toast.error(msg);
       onNext();
-    } else {
-      toast.error(errorMsg);
-    }
-  },
-});
-
+    },
+  });
 
   const onSubmit = (data: FormData) => {
-    const payload = {
-      name: data.name,
-      family: data.family,
-      father: data.father,
-      nationalCode: data.nationalCode,
-      dateBirth: data.dateBirth,
-    };
-    console.log("Sending personal info payload:", payload);
-    submitPersonalInfoMutation.mutate(payload);
+    // سن کمتر از 18 سال
+    const parts = data.dateBirth
+      .split("/")
+      .map((x) =>
+        parseInt(x.replace(/[۰-۹]/g, (d) => String("0123456789".indexOf(d))))
+      );
+    const age = new Date().getFullYear() - 621 - parts[0];
+    if (age < 18) {
+      toast.error("حداقل سن مجاز ۱۸ سال است.");
+      return;
+    }
+
+    submitMutation.mutate(data);
   };
 
-
+  const formFields = [
+    { name: "family", label: "نام خانوادگی" },
+    { name: "name", label: "نام" },
+    { name: "father", label: "نام پدر" },
+    { name: "nationalCode", label: "کد ملی" },
+    { name: "dateBirth", label: "تاریخ تولد" },
+  ];
 
   return (
     <div className="w-full">
@@ -182,56 +134,50 @@ const submitPersonalInfoMutation = useMutation<
         className="lg:bg-gray9 lg:rounded-2xl lg:px-8 px-1"
       >
         <StepperComponent currentStep={1} />
+
         <div className="space-y-7 lg:space-y-8 my-14">
           <div className="flex space-x-4">
-            {formInput.slice(0, 2).map((field) => (
+            {formFields.slice(0, 2).map((field) => (
               <Controller
                 key={field.name}
                 name={field.name as "name" | "family"}
                 control={control}
-                rules={{
-                  required: `${field.label} الزامی است`,
-                }}
-                render={({ field: controllerField, fieldState }) => (
+                rules={{ required: `${field.label} الزامی است` }}
+                render={({ field: f, fieldState }) => (
                   <TextField
+                    {...f}
                     label={field.label}
-                    type="text"
                     error={fieldState.error?.message}
-                    {...controllerField}
-                    labelBgClass="bg-gray9"
+                    labelBgClass="lg:bg-gray9 bg-gray38"
                   />
                 )}
               />
             ))}
           </div>
-          {formInput.slice(2).map((field) => {
+
+          {formFields.slice(2).map((field) => {
             if (field.name === "dateBirth") {
               return (
                 <Controller
                   key={field.name}
                   name="dateBirth"
                   control={control}
-                  rules={{
-                    required: "تاریخ تولد الزامی است",
-                  }}
-                  render={({ field: controllerField, fieldState }) => (
-                    <div className="relative">
-                      <TextField
-                        label={field.label}
-                        type="text"
-                        value={controllerField.value || ""}
-                        onChange={() => {}}
-                        onBlur={() => {}}
-                        labelBgClass="bg-gray9"
-                        error={fieldState.error?.message}
-                        icon={
-                          <span className="icon-wrapper text-gray12 w-5 h-5 flex items-center justify-center cursor-pointer">
-                            <IconCalender />
-                          </span>
-                        }
-                        onIconClick={() => setIsModalOpen(true)}
-                      />
-                    </div>
+                  rules={{ required: "تاریخ تولد الزامی است" }}
+                  render={({ field: f, fieldState }) => (
+                    <TextField
+                      label={field.label}
+                      value={f.value || ""}
+                      onChange={f.onChange}
+                      onBlur={f.onBlur}
+                      labelBgClass="lg:bg-gray9 bg-gray38"
+                      error={fieldState.error?.message}
+                      icon={
+                        <span className="icon-wrapper w-5 h-5 text-gray5">
+                          <IconCalender />
+                        </span>
+                      }
+                      onIconClick={() => setIsModalOpen(true)}
+                    />
                   )}
                 />
               );
@@ -247,16 +193,15 @@ const submitPersonalInfoMutation = useMutation<
                     required: "کد ملی الزامی است",
                     pattern: {
                       value: /^\d{10}$/,
-                      message: "کد ملی باید یک عدد ۱۰ رقمی باشد",
+                      message: "کد ملی باید ۱۰ رقم باشد",
                     },
                   }}
-                  render={({ field: controllerField, fieldState }) => (
+                  render={({ field: f, fieldState }) => (
                     <TextField
+                      {...f}
                       label={field.label}
-                      type="text"
-                      {...controllerField}
                       error={fieldState.error?.message}
-                      labelBgClass="bg-gray9"
+                      labelBgClass="lg:bg-gray9 bg-gray38"
                     />
                   )}
                 />
@@ -268,16 +213,13 @@ const submitPersonalInfoMutation = useMutation<
                 key={field.name}
                 name={field.name as "father"}
                 control={control}
-                rules={{
-                  required: `${field.label} الزامی است`,
-                }}
-                render={({ field: controllerField, fieldState }) => (
+                rules={{ required: `${field.label} الزامی است` }}
+                render={({ field: f, fieldState }) => (
                   <TextField
+                    {...f}
                     label={field.label}
-                    type="text"
-                    {...controllerField}
                     error={fieldState.error?.message}
-                    labelBgClass="bg-gray9"
+                    labelBgClass="lg:bg-gray9 bg-gray38"
                   />
                 )}
               />
@@ -288,17 +230,17 @@ const submitPersonalInfoMutation = useMutation<
         <button
           type="submit"
           className="mt-1 text-lg font-bold mb-8 bg-blue1 w-full h-[56px] rounded-lg text-white2"
-          disabled={submitPersonalInfoMutation.isPending}
+          disabled={submitMutation.isPending}
         >
-          {submitPersonalInfoMutation.isPending ? "در حال ثبت..." : "تأیید"}
+          {submitMutation.isPending ? "در حال ثبت..." : "تأیید"}
         </button>
       </form>
 
       {isModalOpen && (
         <DatePickerModal
           setBirthDateBtnValue={(value) => {
-            const date = typeof value === "function" ? value(null) : value;
-            setValue("dateBirth", date ?? "");
+            const finalValue = typeof value === "string" ? value : "";
+            setValue("dateBirth", finalValue);
             setIsModalOpen(false);
           }}
           onClose={() => setIsModalOpen(false)}

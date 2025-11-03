@@ -17,9 +17,6 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
   return (
     <div className="pt-5 w-full  container-style h-full flex flex-col items-center justify-center">
       {/* بخش اصلی (راست و چپ) */}
-      {/* <div> */}
-
-      {/* </div> */}
       <BreadcrumbNavigation/>
       <div className=" flex w-full lg:gap-7 lg:flex-row-reverse lg:p-10 flex-col items-start mt-10 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl">
         
@@ -37,9 +34,8 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
 
         {/* بخش چپ -  (ستون فرم‌ها)
         */}
-        <div className="w-full lg:w-1/2 lg:px-10 lg:py-10 py-6 lg:bg-gray43 rounded-2xl ">
+        <div className="w-full lg:w-1/2 lg:px-[34px] lg:py-10 py-6 lg:bg-gray43 rounded-2xl ">
           
-          {/* ۱. محتوای اصلی (فرم‌های واریز) */}
           {React.Children.map(children, (child, index) => {
             if (index === 1) return child; 
             return null;

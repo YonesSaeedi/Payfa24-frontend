@@ -81,7 +81,7 @@ export default function AppRouter() {
         <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
         <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />
 
-        <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm />} />
+        <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm minDeposit={1000} maxDeposit={100000000}/>}/>
         <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
         <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />
         <Route path={ROUTES.DEPOSIT_RECEIPT} element={<DepositPage selected="receipt" />} />

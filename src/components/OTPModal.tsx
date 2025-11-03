@@ -53,7 +53,7 @@ export default function OTPModal({ length = 5, onChange }: OTPInputProps) {
           onInput={(e) => handleInput(e, idx)}
           onKeyDown={(e) => handleKeyDown(e, idx)}
           maxLength={1}
-          className='lg:w-[67px] lg:h-[71px] w-[44px] h-[46px] text-center flex justify-center items-center border border-gray12 outline-blue2 rounded-lg text-lg bg-white8 text-black0'
+          className='lg:w-[63px] lg:h-[63px] w-[48px] h-[48px] text-center flex justify-center items-center border border-gray12 outline-blue2 rounded-lg text-lg bg-white8 text-black0'
           inputMode="numeric"
         />
       ))}
