@@ -70,10 +70,16 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
       <button
         type="button"
         onClick={handleButtonClick}
-        className={`peer flex items-center justify-between w-full px-4 py-5 border rounded-md border-gray12 lg:bg-gray43 focus:outline-none focus:ring-1 focus:ring-blue2`}
+        className={`
+             flex items-center justify-between w-full px-4 lg:h-[56px] h-[48px] rounded-lg
+            lg:bg-gray43
+            ${
+              isOpen ? "border border-blue2" : "border border-gray12"
+            }
+        `}
       >
         <span
-          className={`flex items-center gap-3 w-full ${
+          className={`flex items-center gap-3 w-full text-xs lg:text-sm ${
             placeholderClasses || placeholderColor
           }`}
         >

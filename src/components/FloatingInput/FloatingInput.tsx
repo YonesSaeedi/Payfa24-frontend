@@ -37,7 +37,7 @@ const FloatingInput: FC<FloatingInputProps> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
-        className="block w-full px-3 py-4 border border-gray12 rounded-md z-10 
+        className="block w-full px-3 lg:h-[56px] h-[48px] border border-gray12 rounded-lg z-10 
          focus:outline-none focus:ring-0 focus:border-blue2 lg:bg-gray43 bg-gray38 text-black0"
       // =======
       //         placeholder={placeholder}

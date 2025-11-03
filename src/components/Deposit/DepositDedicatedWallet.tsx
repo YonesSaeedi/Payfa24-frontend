@@ -74,8 +74,8 @@ export default function DepositDedicatedWallet() {
   const { control, watch } = useForm();
   const { data: generalInfo, isLoading: isGeneralInfoLoading } =
     useGetGeneralInfo();
-
   const selectedNetwork = watch("network");
+  const isButtonActive = !!selectedCurrency.id && !!selectedNetwork;
   const networkOptions = useMemo(() => {
     return (
       selectedCurrency.network?.map((net) => {
@@ -336,7 +336,6 @@ export default function DepositDedicatedWallet() {
       )}
 
       {/* انتخاب شبکه */}
-      {/* انتخاب شبکه - دقیقاً مثل فیش بانکی */}
       <Controller
         name="network"
         control={control}
@@ -401,13 +400,13 @@ export default function DepositDedicatedWallet() {
       {!showWalletInfo && (
         <div className="lg:mt-40 mt-8 mb-10">
           <button
-            className={`w-full py-3 font-bold text-lg rounded-lg transition-colors ${
-              selectedCurrency.id && selectedNetwork
-                ? "bg-blue2 text-white2 cursor-pointer"
-                : "bg-gray2 text-black1 cursor-not-allowed"
+            onClick={() => handleSubmit()} // استفاده از متغیر صحیح
+            disabled={!isButtonActive}
+            className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all ${
+              !isButtonActive 
+                ? "opacity-60 cursor-not-allowed" 
+                : "opacity-100 hover:bg-blue1"
             }`}
-            disabled={!selectedCurrency.id || !selectedNetwork}
-            onClick={() => handleSubmit()}
           >
             ساخت آدرس
           </button>

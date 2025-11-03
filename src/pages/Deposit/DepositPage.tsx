@@ -278,10 +278,10 @@ export default function DepositPage({
       case "CardToCard":
         return (
           <CardToCardTransfer
-            cards={bankCards} // جدید
-            cardToCardInfo={cardToCardInfo} // جدید
-            minDeposit={minDeposit} // قبلاً داشتید، ارسال می‌کنیم
-            maxDeposit={maxDeposit} // قبلاً داشتید، ارسال می‌کنیم
+            cards={bankCards} 
+            cardToCardInfo={cardToCardInfo} 
+            minDeposit={minDeposit} 
+            maxDeposit={maxDeposit}
           />
         );
       case "Bank Receipt:":
@@ -290,7 +290,6 @@ export default function DepositPage({
             bankCards={bankCards}
             receiptAccounts={receiptAccounts}
             onNext={() => {
-              // بعد از آپلود، دوباره API بزن یا state ریست کن
               setIdentifierData(null);
             }}
             onFileChange={() => {}}
