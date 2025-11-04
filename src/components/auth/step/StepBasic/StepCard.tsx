@@ -33,39 +33,24 @@ const schema = yup.object().shape({
   CardNumber: yup
     .string()
     .required("شماره کارت الزامی است.")
-    .matches(/^\d{4}-?\d{4}-?\d{4}-?\d{4}$/, "شماره کارت باید ۱۶ رقمی باشد.")
-    .test("valid-length", "شماره کارت باید ۱۶ رقم باشد.", (value) => {
-      const digits = value ? value.replace(/-/g, "") : "";
-      return digits.length === 16;
+    .test("len", "شماره کارت باید ۱۶ رقم باشد.", (val) => {
+      return (val || "").replace(/\D/g, "").length === 16;
     }),
 });
 
-// تابع برای فرمت‌دهی شماره کارت
-const formatCardNumber = (value: string): string => {
-  const numericValue = value.replace(/[^0-9]/g, "");
-  const formattedValue = numericValue
-    .slice(0, 16)
-    .replace(/(\d{4})/g, "$1-")
-    .replace(/-$/, "");
-
-  if (formattedValue.length === 0) {
-    return "____-____-____-____";
-  }
-
-  const parts = formattedValue.split("-");
-  while (parts.length < 4) {
-    parts.push("____");
-  }
-  return parts.join("-").slice(0, 19);
+const formatCardNumber = (digits: string): string => {
+  if (!digits) return "____-____-____-____";
+  const parts = digits.match(/.{1,4}/g) || [];
+  // while (parts.length < 4) parts.push("____");
+  return parts.join("-");
 };
 
 export default function StepCard({ onNext }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     control,
     handleSubmit,
-    watch,
-    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { CardNumber: "" },
@@ -73,9 +58,6 @@ export default function StepCard({ onNext }: Props) {
     resolver: yupResolver(schema),
   });
 
-  const CardNumberValue = watch("CardNumber");
-
-  // useEffect برای بررسی وضعیت تکمیل بودن این مرحله
   useEffect(() => {
     const checkCardStatus = async () => {
       try {
@@ -83,10 +65,9 @@ export default function StepCard({ onNext }: Props) {
           url: "/kyc/get-info",
         });
 
-        // بررسی وجود فیلد cardbank در پاسخ
         if (response.kyc?.basic?.cardbank) {
-          console.log("Card info already completed. Navigating to next step.");
-          onNext();
+          console.log("Card already verified. Showing success modal.");
+          setIsModalOpen(true);
         }
       } catch (error) {
         console.error("Error checking card status:", error);
@@ -96,12 +77,9 @@ export default function StepCard({ onNext }: Props) {
     checkCardStatus();
   }, []);
 
-  // استفاده از useMutation برای مدیریت ارسال اطلاعات کارت
   const submitCardMutation = useMutation({
     mutationFn: (data: FormValues) => {
-      const payload = {
-        CardNumber: data.CardNumber.replace(/-/g, ""),
-      };
+      const payload = { CardNumber: data.CardNumber };
       return apiRequest<
         { status: boolean; msg?: string },
         { CardNumber: string }
@@ -112,16 +90,15 @@ export default function StepCard({ onNext }: Props) {
       });
     },
     onSuccess: (data) => {
-      console.log("Submit card info response:", data);
       if (data.status) {
         toast.success("شماره کارت با موفقیت ثبت شد.");
         setIsModalOpen(true);
+        onNext();
       } else {
         toast.error(data.msg || "خطا در ثبت شماره کارت.");
       }
     },
     onError: (error: AxiosError<{ msg: string }>) => {
-      console.error("Submit card info error:", error);
       const errorMsg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
       toast.error(errorMsg);
     },
@@ -152,27 +129,59 @@ export default function StepCard({ onNext }: Props) {
           <Controller
             name="CardNumber"
             control={control}
-            render={({ field }) => (
-              <TextField
-                label="شماره کارت"
-                type="text"
-                error={
-                  errors.CardNumber?.message ||
-                  submitCardMutation.error?.response?.data?.msg
+            render={({ field }) => {
+              const inputRef = (el: HTMLInputElement | null) => {
+                if (el) {
+                  // حفظ ref برای دسترسی در onKeyDown
+                  (field as any).ref = el;
                 }
-                {...field}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const formatted = formatCardNumber(e.target.value);
-                  setValue("CardNumber", formatted, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  });
-                }}
-                value={CardNumberValue}
-                labelBgClass="bg-gray9 "
-                className="input-card"
-              />
-            )}
+              };
+
+              return (
+                <TextField
+                  label="شماره کارت"
+                  type="text"
+                  error={
+                    errors.CardNumber?.message ||
+                    (submitCardMutation.error as any)?.response?.data?.msg
+                  }
+                  inputRef={inputRef}
+                  value={formatCardNumber(field.value || "")}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const input = e.target;
+                    const raw = input.value.replace(/\D/g, "").slice(0, 16);
+                    field.onChange(raw);
+                    input.value = formatCardNumber(raw);
+                  }}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (e.key === "Backspace") {
+                      e.preventDefault();
+                      const current = field.value || "";
+                      if (current.length > 0) {
+                        const newVal = current.slice(0, -1);
+                        field.onChange(newVal);
+                        const input = e.target as HTMLInputElement;
+                        input.value = formatCardNumber(newVal);
+                      }
+                    }
+                  }}
+                  onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+                    e.preventDefault();
+                    const pasted = (e.clipboardData.getData("text") || "")
+                      .replace(/\D/g, "")
+                      .slice(0, 16);
+                    field.onChange(pasted);
+                    const input = e.target as HTMLInputElement;
+                    input.value = formatCardNumber(pasted);
+                  }}
+                  placeholder="____-____-____-____"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  className="input-card text-center font-mono tracking-widest"
+                  labelBgClass="lg:bg-gray9 bg-gray38"
+                />
+              );
+            }}
           />
 
           <div className="flex gap-5 items-center lg:mt-22 mt-12 mb-60 w-full lg:flex-row flex-col">
@@ -192,14 +201,13 @@ export default function StepCard({ onNext }: Props) {
             </button>
           </div>
         </form>
+
         {isModalOpen && (
           <div>
             <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
             <div
               className="fixed inset-0 flex items-center justify-center z-50"
-              onClick={() => {
-                setIsModalOpen(false);
-              }}
+              onClick={() => setIsModalOpen(false)}
             >
               <div
                 className="rounded-lg lg:p-10 p-4 relative bg-white8"
@@ -214,7 +222,7 @@ export default function StepCard({ onNext }: Props) {
                   </h2>
                 </div>
                 <div className="w-full mt-14">
-                  <Link to={"/authenticationAdvance"}>
+                  <Link to={"/kyc-advanced"}>
                     <button
                       onClick={handleCloseModal}
                       className="w-full h-[48px] font-bold bg-blue2 text-white2 rounded-lg"

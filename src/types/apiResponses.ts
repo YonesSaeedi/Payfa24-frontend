@@ -84,6 +84,11 @@ export interface CryptoBuyConfirm {
   balance?: number
   price?: TradePrices
 }
+export interface CryptoBuySuccess {
+  status: boolean,
+  msg: string // "done successfully",
+  id_order: number // 1234
+}
 
 // ===============================================================================================================================================================================
 

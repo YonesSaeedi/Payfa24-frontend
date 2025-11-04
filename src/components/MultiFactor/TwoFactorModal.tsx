@@ -32,12 +32,12 @@ export default function TwoFactorModal({ type, closeModal }: PropModal) {
     try {
       if (step === 1) {
         // مرحله 1: ارسال کد بدون body
-        await apiRequest({ url: `/api/account/2fa/verify/${type}`, method: "POST" });
+        await apiRequest({ url: `/account/2fa/verify/${type}`, method: "POST" });
         setStep(2);
       } else if (step === 2) {
         // مرحله 2: تأیید کد همراه body
         await apiRequest({
-          url: `/api/account/2fa/verify/${type}`,
+          url: `/account/2fa/verify/${type}`,
           method: "POST",
           data: { code },
         });
@@ -95,8 +95,8 @@ export default function TwoFactorModal({ type, closeModal }: PropModal) {
       );
     } else {
       return (
-        <div className="flex flex-col items-center lg:gap-6 gap-4">
-          <img className="w-20 h-20" src={tickCircle} alt="tickCircle" />
+        <div className="w-full flex flex-col items-center lg:gap-6 gap-4">
+          <img className="w-[72px] h-[72px]" src={tickCircle} alt="tickCircle" />
           <p className="font-medium lg:text-xl text-sm text-black0">
             {type === "sms"
               ? "ورود دو مرحله‌ای با پیامک با موفقیت فعال شد!"
@@ -113,7 +113,7 @@ export default function TwoFactorModal({ type, closeModal }: PropModal) {
       onClick={closeModal}
     >
       <div
-        className="relative bg-black4 rounded-lg shadow-lg text-right lg:w-[30%] w-full mx-4 lg:p-8 p-4 flex flex-col"
+        className="relative  bg-black4 rounded-lg shadow-lg text-right lg:max-w-lg   max-w-md  mx-4 lg:p-8 p-4 flex flex-col"
         onClick={(e) => e.stopPropagation()}
         dir="rtl"
       >

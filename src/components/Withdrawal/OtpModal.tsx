@@ -36,7 +36,7 @@ const OtpModal: React.FC<OtpModalProps> = ({
 
   try {
     await apiRequest({
-      url: `/api/wallets/crypto/withdraw/${crypto}`,
+      url: `/wallets/crypto/withdraw/${crypto}`,
       method: "POST",
       data: {
         ...data,

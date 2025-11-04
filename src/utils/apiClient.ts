@@ -28,7 +28,7 @@ async function refreshAccessToken(): Promise<string | null> {
     refreshingPromise = (async () => {
       try {
         const refreshToken = localStorage.getItem("refreshToken");
-        const res = await axios.post(apiClient.defaults.baseURL + "/api/auth/refresh-token", { refreshToken });
+        const res = await axios.post(apiClient.defaults.baseURL + "/auth/refresh-token", { refreshToken });
         if (res?.data?.access_token) {
           localStorage.setItem("accessToken", res.data.access_token);
           localStorage.setItem("expiresAt", String(res.data.expires_in));

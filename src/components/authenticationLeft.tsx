@@ -18,7 +18,7 @@ const AuthenticationLeft: React.FC<AuthenticationLeftProps> = ({  text1, text2, 
   const { theme } = context;
 
   return (
-    <div className="hidden lg:flex flex-col items-center justify-center gap-6 lg:mb-16">
+    <div className="hidden lg:flex flex-col items-center justify-center gap-6 lg:mb-16 ">
       <img
         src={theme === "dark" ? enticationDark : enticationLight}
         alt="auth"

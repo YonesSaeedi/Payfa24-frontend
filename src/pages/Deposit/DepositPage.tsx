@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import DepositLayout from "./DepositLayout";
 import IconBank from "../../assets/icons/Deposit/IconBank";
@@ -14,7 +14,55 @@ import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
 import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
 import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
 import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
+import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import { apiRequest } from "../../utils/apiClient";
+import { toast } from "react-toastify";
 
+// --- Interface ---
+interface WalletFiatData {
+  wallet?: {
+    internal?: {
+      min_deposit: string | number;
+      max_deposit: string | number;
+    };
+  };
+  list_cards?: Array<{
+    id: number;
+    card: string;
+    bank: string;
+    iban: string | null;
+  }>;
+  receipt?: {
+    list_cards?: Array<{
+      iban_number: string;
+      name_bank: string;
+      account_name: string;
+      account_number?: string;
+    }>;
+  };
+  cardToCard?: {
+    transaction: {
+      id: number;
+      amount: number;
+      date: string;
+      card: number;
+    } | null;
+    card: {
+      name: string;
+      card: string;
+      bank: string;
+      iban: string | null;
+    } | null;
+  };
+}
+
+interface DepositIdentifierResponse {
+  destination_bank: string;
+  destination_owner_name: string;
+  destination_iban: string;
+  destination_account_number: string;
+  deposit_id: number | string;
+}
 
 interface DepositPageProps {
   selected?: "gateway" | "identifier" | "card" | "receipt" | "wallet" | "txid";
@@ -37,39 +85,138 @@ export default function DepositPage({
       case "txid":
         return "DepositWithTxID";
       default:
-        return "closeDeal"; // gateway
+        return "closeDeal";
     }
   });
 
-  const handleStart = () => {
-    setStarted(true);
+  const [fiatData, setFiatData] = useState<WalletFiatData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // --- برای شناسه واریز ---
+  const [identifierData, setIdentifierData] =
+    useState<DepositIdentifierResponse | null>(null);
+  const [isCreatingIdentifier, setIsCreatingIdentifier] = useState(false);
+
+  // --- API فقط اینجا ---
+  useEffect(() => {
+    const fetchFiatData = async () => {
+      try {
+        setLoading(true);
+        const response = await apiRequest<WalletFiatData>({
+          url: "/wallets/fiat",
+          method: "GET",
+        });
+        setFiatData(response);
+      } catch (err: any) {
+        console.error("Error:", err);
+        toast.error("خطا در بارگذاری اطلاعات واریز");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFiatData();
+  }, []);
+
+  // --- ساخت شناسه واریز ---
+  const handleCreateIdentifier = async (cardId: number) => {
+    setIsCreatingIdentifier(true);
+    try {
+      const res = await apiRequest<DepositIdentifierResponse, { id: number }>({
+        url: "/wallets/fiat/deposit/gateway-id",
+        method: "POST",
+        data: { id: cardId },
+      });
+
+      const data = res.deposit_id || res;
+      if (
+        typeof data === "object" &&
+        data !== null &&
+        "deposit_id" in data &&
+        data.deposit_id !== undefined &&
+        data.deposit_id !== null
+      ) {
+        setIdentifierData(data as DepositIdentifierResponse);
+        toast.success("شناسه واریز ساخته شد");
+      } else {
+        setIdentifierData(null);
+        toast.error("خطا در ساخت شناسه");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.msg || "قبلاً شناسه ساخته شده");
+    } finally {
+      setIsCreatingIdentifier(false);
+    }
   };
 
+  const handleStart = () => setStarted(true);
+
   const depositFormMessages = [
-    "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید، چراکه درصورت بروز هرگونه مشکل احتمالی، مسئولیت قضایی ناشی از این امر به عهده کاربر است و ارز هشت مسئولیتی در این زمینه ندارد.",
-    "جهت واریز وجه، حتما باید از کارت‌های بانکی به نام خودتان که در بخش کاربری ثبت و تایید شده است، استفاده نمایید.",
+    "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید...",
+    "جهت واریز وجه، حتما باید از کارت‌های بانکی به نام خودتان استفاده نمایید.",
   ];
-  const DepositWithIdentifier = [
-    "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید، چراکه درصورت بروز هرگونه مشکل احتمالی، مسئولیت قضایی ناشی از این امر به عهده کاربر است و ارز هشت مسئولیتی در این زمینه ندارد.",
-    "کارمزد واریز با شناسه: %0.05 مبلغ واریزی میباشد.برای مثال اگر مبلغ واریزی، صد میلیون تومان باشد، کارمزد 0.05 درصد آن معادل 50 هزار تومان خواهد بود",
+
+  const DepositWithIdentifierMessages = [
+    "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید...",
+    "کارمزد واریز با شناسه: %0.05 مبلغ واریزی میباشد...",
   ];
 
   let currentAlertMessages: string[] = [];
-
-  if (selectedOption === "closeDeal") {
+  if (selectedOption === "closeDeal")
     currentAlertMessages = depositFormMessages;
-  } else if (selectedOption === "Identifier") {
-    currentAlertMessages = DepositWithIdentifier;
-  } else if (selectedOption === "goodTrip") {
-    // currentAlertMessages = cardTransferMessages;
+  else if (selectedOption === "Identifier")
+    currentAlertMessages = DepositWithIdentifierMessages;
+
+  // --- لودینگ ---
+  if (loading) {
+    return (
+      <HeaderLayout>
+        <DepositLayout
+          step={1}
+          started={started}
+          onStart={handleStart}
+          alertMessages={[]}
+        >
+          <div className="w-full text-center py-10">در حال بارگذاری...</div>
+        </DepositLayout>
+      </HeaderLayout>
+    );
   }
+
+  if (!fiatData) {
+    return (
+      <HeaderLayout>
+        <DepositLayout
+          step={1}
+          started={started}
+          onStart={handleStart}
+          alertMessages={[]}
+        >
+          <div className="w-full text-center py-10 text-red-500">
+            خطا در دریافت اطلاعات. لطفاً دوباره تلاش کنید.
+          </div>
+        </DepositLayout>
+      </HeaderLayout>
+    );
+  }
+
+  // --- داده‌های تضمینی ---
+  const minDeposit = Number(fiatData.wallet?.internal?.min_deposit) || 300000;
+  const maxDeposit = Number(fiatData.wallet?.internal?.max_deposit) || 25000000;
+  const bankCards = fiatData.list_cards || []; // (CreditCard[])
+  const receiptAccounts = fiatData.receipt?.list_cards || [];
+  const cardToCardInfo = fiatData.cardToCard || {
+    transaction: null,
+    card: null,
+  };
 
   const rightOptions = [
     {
       id: "closeDeal",
       Icon: <IconBank />,
       Title: "واریز با درگاه پرداخت",
-      description: "واریز حداکثر تا 25 ملیون تومان",
+      description: `واریز حداکثر تا ${formatPersianDigits(
+        (maxDeposit / 1_000_000).toString()
+      )} میلیون تومان`,
       button: "پرداخت در لحظه",
       IconMore: <IconArrowRight />,
     },
@@ -78,23 +225,23 @@ export default function DepositPage({
       Icon: <IconIDentifier />,
       Title: "واریز با شناسه",
       description: "واریز وجه به صورت نامحدود",
-      button: " پرداخت در 20 دقیقه",
+      button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
       IconMore: <IconArrowRight />,
     },
     {
       id: "CardToCard",
       Icon: <IconConvertCard />,
-      Title: "واریز  کارت به کارت  ",
-      description: "واریز تا سقف 10 ملیون تومان",
-      button: "پرداخت در 20 دقیقه",
+      Title: "واریز کارت به کارت",
+      description: `واریز تا سقف ${formatPersianDigits(10)} میلیون تومان`,
+      button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
       IconMore: <IconArrowRight />,
     },
     {
       id: "Bank Receipt:",
       Icon: <IconReceipt />,
-      Title: "فیش بانکی ",
+      Title: "فیش بانکی",
       description: "واریز وجه به صورت نامحدود",
-      button: " پرداخت در 20 دقیقه",
+      button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
       IconMore: <IconArrowRight />,
     },
     {
@@ -118,17 +265,35 @@ export default function DepositPage({
   const renderStep = () => {
     switch (selectedOption) {
       case "closeDeal":
-        return <DepositForm />;
+        return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} />;
       case "Identifier":
-        return <DepositwithIdentifier />;
+        return (
+          <DepositwithIdentifier
+            cards={bankCards}
+            identifierData={identifierData}
+            onCreateIdentifier={handleCreateIdentifier}
+            isCreating={isCreatingIdentifier}
+          />
+        );
       case "CardToCard":
-        return <CardToCardTransfer />;
+        return (
+          <CardToCardTransfer
+            cards={bankCards} 
+            cardToCardInfo={cardToCardInfo} 
+            minDeposit={minDeposit} 
+            maxDeposit={maxDeposit}
+          />
+        );
       case "Bank Receipt:":
         return (
           <DepositBankReceipt
-            onNext={() => {}}
+            bankCards={bankCards}
+            receiptAccounts={receiptAccounts}
+            onNext={() => {
+              setIdentifierData(null);
+            }}
             onFileChange={() => {}}
-            initialPreviewUrl=""
+            initialPreviewUrl={null}
           />
         );
       case "DedicatedWallet":
@@ -136,135 +301,110 @@ export default function DepositPage({
       case "DepositWithTxID":
         return <DepositWithTxID />;
       default:
-        return <DepositForm />;
+        return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} />;
     }
   };
 
-  // useEffect(() => {
-  //   const fetchFiatData = async () => {
-  //     try {
-  //       const response = await apiRequest({
-  //         url: "/wallets/fiat",
-  //         method: "GET",
-  //         params: { withdraw: null },
-  //       });
-  //       setFiatData(response);
-  //     } catch (err: any) {
-  //       console.error("Error fetching fiat data:", err.response?.data || err);
-  //     } finally {
-  //       // setLoading(false);
-  //     }
-  //   };
-
-  //   fetchFiatData();
-  // }, []);
   return (
-    <>
-      <HeaderLayout>
-        
-        <DepositLayout
-          step={1}
-          started={started}
-          onStart={handleStart}
-          alertMessages={currentAlertMessages}
+    <HeaderLayout>
+      <DepositLayout
+        step={1}
+        started={started}
+        onStart={handleStart}
+        alertMessages={currentAlertMessages}
+      >
+        {/* بخش راست */}
+        <div
+          className="w-full overflow-y-auto h-full lg:block hidden"
+          dir="rtl"
         >
-          {/* بخش راست - ثابت */}
-          <div
-            className="w-full overflow-y-auto h-full lg:block  hidden"
-            dir="rtl"
-          >
-            <span className="text-base text-black0 mb-4">واریز تومان</span>
-            {rightOptions.slice(0, 4).map((option) => (
+          <p className="text-base text-black0 mb-4 font-medium">واریز تومان</p>
+          {rightOptions.slice(0, 4).map((option) => (
+            <div
+              key={option.id}
+              className="mt-4 cursor-pointer"
+              onClick={() => setSelectedOption(option.id)}
+            >
               <div
-                key={option.id}
-                className="p-2 cursor-pointer"
-                onClick={() => setSelectedOption(option.id)}
+                className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${
+                  selectedOption === option.id
+                    ? "border-blue2"
+                    : "border-gray50"
+                }`}
               >
-                <div
-                  className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200
-                    ${
-                      selectedOption === option.id
-                        ? "border-blue2"
-                        : "border-gray50"
-                    }
-                  `}
-                >
-                  <div>
-                    <div className="flex items-center gap-1">
-                      <div className="bg-blue14 p-3 rounded-lg bg">
-                        <span className="icon-wrapper w-7 h-7 text-blue2">
-                          {option.Icon}
-                        </span>
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-medium text-black0">
-                          {option.Title}
-                        </h2>
-                        <p className="text-sm text-gray5">
-                          {option.description}
-                        </p>
-                      </div>
+                <div>
+                  <div className="flex items-center gap-1">
+                    <div className="bg-blue14 p-3 rounded-lg">
+                      <span className="icon-wrapper w-7 h-7 text-blue2">
+                        {option.Icon}
+                      </span>
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-medium text-black0">
+                        {option.Title}
+                      </h2>
+                      <p className="text-sm text-gray5">{option.description}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <button className="border text-gray5 border-gray26 p-2 rounded-lg">
+                </div>
+                <div className="flex items-center gap-3">
+                  {option.button && (
+                    <button className="text-xs font-normal border text-gray5 border-gray26 px-2 py-[6px] rounded-lg">
                       {option.button}
                     </button>
-                    <span className="icon-wrapper w-5 h-5 text-gray5">
-                      {option.IconMore}
-                    </span>
-                  </div>
+                  )}
+                  <span className="icon-wrapper w-5 h-5 text-gray5">
+                    {option.IconMore}
+                  </span>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
 
-            <p className="mt-8 mb-4 text-black0 font-medium">واریز ارز</p>
-
-            {rightOptions.slice(4, 6).map((option) => (
+          <p className="mt-8 mb-4 text-base text-black0 font-medium">
+            واریز ارز
+          </p>
+          {rightOptions.slice(4, 6).map((option) => (
+            <div
+              key={option.id}
+              className="mt-4 cursor-pointer"
+              onClick={() => setSelectedOption(option.id)}
+            >
               <div
-                key={option.id}
-                className="p-2 cursor-pointer"
-                onClick={() => setSelectedOption(option.id)}
+                className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${
+                  selectedOption === option.id
+                    ? "border-blue2"
+                    : "border-gray50"
+                }`}
               >
-                <div
-                  className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200
-                    ${
-                      selectedOption === option.id
-                        ? "border-blue2"
-                        : "border-gray50"
-                    }
-                  `}
-                >
-                  <div>
-                    <div className="flex items-center gap-1">
-                      <div className="bg-blue14 p-3 rounded-lg bg">
-                        <span className="icon-wrapper w-7 h-7 text-blue2">
-                          {option.Icon}
-                        </span>
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-medium text-black0">
-                          {option.Title}
-                        </h2>
-                        <p className="text-sm text-gray5">
-                          {option.description}
-                        </p>
-                      </div>
+                <div>
+                  <div className="flex items-center gap-1">
+                    <div className="bg-blue14 p-3 rounded-lg">
+                      <span className="icon-wrapper w-7 h-7 text-blue2">
+                        {option.Icon}
+                      </span>
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-medium text-black0">
+                        {option.Title}
+                      </h2>
+                      <p className="text-sm text-gray5">{option.description}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="icon-wrapper w-5 h-5 text-gray5">
-                      {option.IconMore}
-                    </span>
-                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="icon-wrapper w-5 h-5 text-gray5">
+                    {option.IconMore}
+                  </span>
                 </div>
               </div>
-            ))}
-          </div>
-          {/* بخش چپ - متغیر */}
-          <div className="w-full ">{renderStep()}</div>
-        </DepositLayout>
-      </HeaderLayout>
-    </>
+            </div>
+          ))}
+        </div>
+
+        {/* بخش چپ */}
+        <div className="w-full">{renderStep()}</div>
+      </DepositLayout>
+    </HeaderLayout>
   );
 }

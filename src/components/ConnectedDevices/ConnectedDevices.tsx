@@ -65,7 +65,7 @@ export default function DeviceList() {
     setIsSubmitting(true);
     try {
       await apiRequest({
-        url: `/api/auth/sessions/revoke`,
+        url: `/auth/sessions/revoke`,
         method: "POST",
         data: { token_id },
       });

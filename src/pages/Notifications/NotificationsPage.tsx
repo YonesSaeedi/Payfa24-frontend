@@ -64,7 +64,7 @@ export default function NotificationsPage() {
     try {
       if (item.seen === "unseen") {
         await apiRequest({
-          url: `/api/notifications/seen/${item.id}`,
+          url: `/notifications/seen/${item.id}`,
           method: "PUT",
         });
 

@@ -47,6 +47,8 @@ body,
   input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0 1000px var(--extra-dark-background) inset;
     -webkit-text-fill-color: var(--primary);
+    background-color: theme("colors.white1") !important;
+    -webkit-text-fill-color: theme("colors.black0") !important;
     transition: background-color 5000s ease-in-out 0s;
   }
 }

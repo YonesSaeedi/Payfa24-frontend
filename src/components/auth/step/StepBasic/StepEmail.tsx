@@ -1,9 +1,8 @@
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { sendContact, verifyOtp } from "../../../../utils/api/authBasic";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../../../../context/ThemeContext";
 import OTPModal from "../../../OTPModal";
 import IconClose from "../../../../assets/icons/Login/IconClose";
@@ -11,6 +10,7 @@ import StepperComponent from "../Stepper";
 import TextField from "../../../InputField/TextField";
 import { getContactSchema } from "../../../../utils/validationSchemas";
 import { type ObjectSchema } from "yup";
+import { apiRequest } from "../../../../utils/apiClient";
 
 type Props = {
   onNext: () => void;
@@ -26,13 +26,13 @@ const getSchema: ObjectSchema<FormValues> = getContactSchema();
 export default function StepEmail({ onNext }: Props) {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
 
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { contactType: "email", contactValue: "" },
@@ -42,78 +42,99 @@ export default function StepEmail({ onNext }: Props) {
   const contactType = useWatch({ control, name: "contactType" });
   const contactValue = useWatch({ control, name: "contactValue" });
 
-  const sendContactMutation = useMutation({
-    mutationFn: sendContact,
-    onSuccess: (data) => {
-      console.log("SendContact response:", data);
-
-      if (data.status) {
-        setIsCodeSent(true);
-        setIsModalOpen(true);
-        toast.success(`کد تأیید به ${contactValue} ارسال شد.`);
-      } else {
-        const errorMsg =
-          data.msg ||
-          `خطا در ارسال کد به ${
-            contactType === "email" ? "ایمیل" : "شماره موبایل"
-          }.`;
-        setErrorMessage(errorMsg);
-        toast.error(errorMsg);
-      }
-    },
-    onError: (error: any) => {
-      const errorMsg =
-        error.response?.data?.msg ||
-        `خطا در ارتباط با سرور. لطفا مجددا تلاش کنید.`;
-      setErrorMessage(errorMsg);
-      toast.error(errorMsg);
+  // 🔹 دریافت اطلاعات کاربر
+  const { data: userInfo, isLoading: isLoadingInfo } = useQuery({
+    queryKey: ["kyc-info"],
+    queryFn: async () => {
+      const res = await apiRequest<{ kyc?: { basic?: { email?: string; mobile?: string } } }>({
+        url: "/kyc/get-info",
+        method: "GET",
+      });
+      return res;
     },
   });
 
-  const verifyOtpMutation = useMutation({
-    mutationFn: verifyOtp,
-    onSuccess: (data) => {
-      console.log("VerifyOtp response:", data);
-      if (data.status) {
-        toast.success("تأیید با موفقیت انجام شد! به مرحله بعدی می‌روید.");
-        setIsModalOpen(false);
+  // 🔹 وقتی اطلاعات لود شد، تصمیم بگیر ایمیل یا موبایل گرفته شود
+  useEffect(() => {
+    if (!userInfo?.kyc?.basic) return;
 
-        onNext(); // This is the correct place to call onNext
+    const { email, mobile } = userInfo.kyc.basic;
+    if (email && !mobile) {
+      setValue("contactType", "mobile");
+    } else if (mobile && !email) {
+      setValue("contactType", "email");
+    } else if (email && mobile) {
+      onNext();
+    }
+  }, [userInfo, setValue, onNext]);
+
+  // 🔹 ارسال درخواست برای ارسال کد تأیید
+  const sendContactMutation = useMutation({
+    mutationFn: async (payload: any) => {
+      return apiRequest<{ status: boolean; msg?: string }>({
+        url: "/kyc/basic/level1",
+        method: "POST",
+        data: payload,
+      });
+    },
+    onSuccess: (res) => {
+      if (res.status) {
+        toast.success(`کد تأیید به ${contactValue} ارسال شد.`);
+        setIsCodeSent(true);
+        setIsModalOpen(true);
       } else {
-        const errorMsg = data.msg || `کد تأیید نامعتبر است.`;
-        setErrorMessage(errorMsg);
-        toast.error(errorMsg);
+        toast.error(res.msg || "خطا در ارسال کد تأیید");
       }
     },
-    onError: (error: any) => {
-      const errorMsg = error.response?.data?.msg || `خطا در تأیید کد.`;
-      setErrorMessage(errorMsg);
-      toast.error(errorMsg);
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.msg || "خطا در ارسال درخواست.");
+    },
+  });
+
+  // 🔹 تأیید کد ارسال‌شده
+  const verifyOtpMutation = useMutation({
+    mutationFn: async (payload: any) => {
+      return apiRequest<{ status: boolean; msg?: string }>({
+        url: "/kyc/basic/level1",
+        method: "POST",
+        data: payload,
+      });
+    },
+    onSuccess: (res) => {
+      if (res.status) {
+        toast.success("تأیید با موفقیت انجام شد!");
+        setIsModalOpen(false);
+        onNext();
+      } else {
+        toast.error(res.msg || "کد تأیید اشتباه است.");
+      }
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.msg || "خطا در تأیید کد.");
     },
   });
 
   const onSubmitContact = (data: FormValues) => {
-    const payload = {
-      [data.contactType]: data.contactValue,
-    };
+    const payload = { [data.contactType]: data.contactValue };
     sendContactMutation.mutate(payload);
   };
 
-  const handleVerifyCode = (code: string) => {
+ const handleVerifyCode = (code: string) => {
+  // فقط وقتی کد کامل شد (۴ رقم)، درخواست بفرست
+  if (code.length === 4) {
     const payload = {
       [contactType]: contactValue,
       code,
     };
     verifyOtpMutation.mutate(payload);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  if (sendContactMutation.isPending || verifyOtpMutation.isPending) {
-    return <p className="text-center">در حال پردازش...</p>;
   }
+};
+
+
+  const handleCloseModal = () => setIsModalOpen(false);
+  if (isLoadingInfo) return <p className="text-center">در حال بارگذاری...</p>;
+  if (sendContactMutation.isPending || verifyOtpMutation.isPending)
+    return <p className="text-center">در حال پردازش...</p>;
 
   return (
     <>
@@ -128,11 +149,7 @@ export default function StepEmail({ onNext }: Props) {
               ? "ایمیل خود را وارد کنید"
               : "شماره موبایل خود را وارد کنید"}
           </p>
-          <input
-            type="hidden"
-            {...control.register("contactType")}
-            value={contactType}
-          />
+
           <Controller
             name="contactValue"
             control={control}
@@ -140,23 +157,23 @@ export default function StepEmail({ onNext }: Props) {
               <TextField
                 label={contactType === "email" ? "ایمیل" : "موبایل"}
                 type={contactType === "email" ? "email" : "tel"}
-                error={errors.contactValue?.message || errorMessage}
+                error={errors.contactValue?.message }
                 {...field}
-                labelBgClass="lg:bg-gray9 bg-white1"
+                labelBgClass="lg:bg-gray9 bg-gray38"
               />
             )}
           />
+
           <button
             type="submit"
             disabled={sendContactMutation.isPending}
             className="lg:mt-22 mt-12 w-full h-[40px] lg:h-[56px] bg-blue1 font-bold text-white2 rounded-lg"
           >
-            {sendContactMutation.isPending
-              ? "در حال ارسال..."
-              : "ارسال کد تأیید"}
+            {sendContactMutation.isPending ? "در حال ارسال..." : "ارسال کد تأیید"}
           </button>
         </div>
       </form>
+
       {isCodeSent && isModalOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center"
@@ -169,26 +186,24 @@ export default function StepEmail({ onNext }: Props) {
             <div className="flex items-center flex-row-reverse justify-between">
               <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
                 تأیید {contactType === "email" ? "ایمیل" : "موبایل"}
+                
               </h2>
               <span
-                className="icon-wrapper h-6 w-6 cursor-pointer"
+                className="icon-wrapper h-6 w-6 cursor-pointer text-gray12"
                 onClick={handleCloseModal}
               >
                 <IconClose />
               </span>
             </div>
-            <p className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24">
-              کد تأیید به {contactValue} ارسال شد.
+            <p dir="rtl" className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray12">
+              لطفا کد ارسالی به {contactType === "email" ? "ایمیل" : "موبایل"} زیرا وارد کنید {contactValue}
             </p>
             <div className="mt-[32px] mb-[48px]">
-              <OTPModal
-                length={4}
-                onChange={handleVerifyCode}
-              />
+              <OTPModal length={4} onChange={handleVerifyCode} />
             </div>
             <button
               onClick={handleCloseModal}
-              className="mt-4 w-full h-[48px] font-bold bg-blue2 text-white1 rounded-lg"
+              className="mt-4 w-full h-[48px] font-bold bg-blue2 text-white2 rounded-lg"
               disabled={verifyOtpMutation.isPending}
             >
               {verifyOtpMutation.isPending ? "در حال تأیید..." : "تأیید"}

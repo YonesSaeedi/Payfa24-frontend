@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -8,6 +8,7 @@ import Accordion from "../Withdrawal/Accordion";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import IconClose from "../../assets/icons/Login/IconClose";
+import { formatPersianDigits } from "../../utils/formatPersianDigits";
 
 type PaymentGatewayRequestData = Record<string, string | number>;
 
@@ -19,18 +20,19 @@ interface PaymentGatewayResponse {
   id: number;
 }
 
-export default function DepositForm() {
-  // مقادیر پیشنهادی (قابل فیلتر شدن)
+// props دریافتی از DepositPage
+interface DepositFormProps {
+  minDeposit: number;
+  maxDeposit: number;
+}
+
+export default function DepositForm({ minDeposit, maxDeposit }: DepositFormProps) {
   const presetAmounts = [5000000, 10000000, 20000000, 25000000];
 
-  // وضعیت لود تنظیمات
-  const [minDeposit, setMinDeposit] = useState<number>(300000);
-  const [maxDeposit, setMaxDeposit] = useState<number>(25000000);
-  const [loadingConfig, setLoadingConfig] = useState(true);
-
+  // دیگر نیازی به state برای min/max نیست! از props استفاده می‌کنیم
   const urlId = new URLSearchParams(window.location.search).get("id");
 
-  // تابع ساخت schema داینامیک
+  // schema داینامیک بر اساس props
   const getValidationSchema = (min: number, max: number) =>
     yup.object().shape({
       amount: yup
@@ -47,58 +49,22 @@ export default function DepositForm() {
     handleSubmit,
     setValue,
     watch,
-    reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm({
     resolver: yupResolver(getValidationSchema(minDeposit, maxDeposit)),
     defaultValues: {
       bank: "",
+      amount: undefined,
     },
+    mode: "onChange",
   });
 
   const amountValue = watch("amount");
-
-  // فراخوانی API برای دریافت تنظیمات کیف پول
+  const hasCheckedRef = useRef(false);
+  // فقط برای چک کردن urlId (نتیجه پرداخت)
   useEffect(() => {
-    const fetchWalletConfig = async () => {
-      try {
-        setLoadingConfig(true);
-        const res = await apiRequest<any>({
-          url: "/wallets/fiat",
-          method: "GET",
-        });
-
-        if (res?.wallet?.internal) {
-          const min = Number(res.wallet.internal.min_deposit) || 300000;
-          const max = Number(res.wallet.internal.max_deposit) || 25000000;
-
-          setMinDeposit(min);
-          setMaxDeposit(max);
-        }
-      } catch (error: any) {
-        console.error("خطا در دریافت تنظیمات کیف پول:", error);
-        toast.error("خطا در بارگذاری تنظیمات واریز. از مقادیر پیش‌فرض استفاده شد.");
-      } finally {
-        setLoadingConfig(false);
-      }
-    };
-
-    fetchWalletConfig();
-  }, []);
-
-  // ریست فرم بعد از تغییر min/max
-  useEffect(() => {
-    if (!loadingConfig) {
-      reset({
-        amount: amountValue || undefined,
-        bank: watch("bank") || "",
-      });
-    }
-  }, [minDeposit, maxDeposit, loadingConfig, reset, amountValue, watch]);
-
-  // چک کردن urlId برای نتیجه پرداخت
-  useEffect(() => {
-    if (!urlId) return;
+    if (!urlId || hasCheckedRef.current) return;
+    hasCheckedRef.current = true;
 
     const cleanUrl = () => {
       const newUrl = window.location.origin + window.location.pathname;
@@ -106,7 +72,7 @@ export default function DepositForm() {
     };
 
     apiRequest<any>({
-      url: `/api/wallets/fiat/deposit/gateway/${urlId}`,
+      url: `/wallets/fiat/deposit/gateway/${urlId}`,
       method: "GET",
     })
       .then((res) => {
@@ -117,8 +83,7 @@ export default function DepositForm() {
         }
         cleanUrl();
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
         toast.error("خطا در بررسی وضعیت تراکنش");
         cleanUrl();
       });
@@ -150,19 +115,14 @@ export default function DepositForm() {
         toast.error(response.msg || "خطا: لینک درگاه پرداخت از سرور دریافت نشد");
       }
     } catch (error: any) {
-      const serverMsg =
-        error.response?.data?.msg ||
-        "خطا در اتصال به سرور. دوباره امتحان کنید.";
+      const serverMsg = error.response?.data?.msg || "خطا در اتصال به سرور. دوباره امتحان کنید.";
       toast.error(serverMsg);
-      console.error("خطای کامل درگاه:", error);
     }
   };
 
-  
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full" dir="rtl">
-      {/*  ویدیو */}
+      {/* ویدیو */}
       <div className="mb-10 bg-blue14 px-3 py-[14px] rounded-lg text-blue2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="icon-wrapper w-6 h-6 text-blue2">
@@ -184,14 +144,16 @@ export default function DepositForm() {
             <>
               <FloatingInput
                 label="مقدار واریزی (تومان)"
-                value={field.value?.toString() ?? ""}
-                onChange={field.onChange}
-                type="number"
-                placeholder="0 تومان"
+                value={formatPersianDigits(field.value?.toString() ?? "")}
+                type="text"
+                onChange={(e) => {
+                  const rawValue = e.target.value;
+                  const englishValue = rawValue.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString()).replace(/[^0-9]/g, "");
+                  field.onChange(englishValue ? Number(englishValue) : undefined);
+                }}
+                placeholder="۰ تومان"
               />
-              {errors.amount && (
-                <p className="text-red1 text-sm mt-1">{errors.amount.message}</p>
-              )}
+              {errors.amount && <p className="text-red1 text-sm mt-1">{errors.amount.message}</p>}
             </>
           )}
         />
@@ -199,8 +161,7 @@ export default function DepositForm() {
 
       {/* پیام حداقل و حداکثر */}
       <p className="text-gray12 lg:text-sm text-xs mb-5">
-        میزان واریزی حداقل {minDeposit.toLocaleString()} تومان و حداکثر تا سقف
-        {maxDeposit.toLocaleString()} تومان
+        میزان واریزی حداقل {formatPersianDigits(minDeposit.toLocaleString())} تومان و حداکثر تا سقف {formatPersianDigits(maxDeposit.toLocaleString())} تومان
       </p>
 
       {/* دکمه‌های مبلغ پیشنهادی */}
@@ -223,7 +184,7 @@ export default function DepositForm() {
                   : "border-gray12 text-gray10 opacity-50 cursor-not-allowed"
               }`}
             >
-              {amount / 1000000} میلیون
+              {formatPersianDigits(amount / 1000000)} میلیون
             </button>
           );
         })}
@@ -232,11 +193,12 @@ export default function DepositForm() {
       {/* دکمه ارسال */}
       <div>
         <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all ${
-            isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
-          }`}
+          type="submit" // دکمه فقط زمانی فعال باشد که isValid=true و isSubmitting=false باشد
+          disabled={isSubmitting || !isValid}
+          className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
+ ${
+   isSubmitting || !isValid ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-blue1" // نمایش (opacity-100)
+ }`}
         >
           {isSubmitting ? "در حال اتصال..." : "واریز"}
         </button>
@@ -245,13 +207,8 @@ export default function DepositForm() {
         <div className="mt-4" dir="ltr">
           <Accordion title="راهنمای واریز با درگاه پرداخت">
             <ul className="list-disc pr-5 space-y-2 text-black1">
-              <li>
-                از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی
-                شاپرک مطمئن شوید. (صفحه درگاه الزاما .shaparak.ir باشد)
-              </li>
-              <li>
-                مطمئن شوید مبلغ نمایش‌ داده‌شده در صفحه‌ی پرداخت درست باشد.
-              </li>
+              <li>از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی شاپرک مطمئن شوید. (صفحه درگاه الزاما .shaparak.ir باشد)</li>
+              <li>مطمئن شوید مبلغ نمایش‌ داده‌شده در صفحه‌ی پرداخت درست باشد.</li>
             </ul>
           </Accordion>
         </div>
