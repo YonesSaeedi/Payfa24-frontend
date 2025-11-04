@@ -42,7 +42,7 @@
 // <<<<<<< HEAD
 // // export const sendContact = async (payload: ContactPayload) => {
 // //   return apiRequest<ApiResponse, ContactPayload>({
-// //     url: '/api/kyc/basic/level1',
+// //     url: '/kyc/basic/level1',
 // //     method: 'POST',
 // //     data: payload,
 // //   });
@@ -50,7 +50,7 @@
 
 // // export const verifyOtp = async (payload: VerifyPayload) => {
 // //   return apiRequest<ApiResponse, VerifyPayload>({
-// //     url: '/api/kyc/basic/level1',
+// //     url: '/kyc/basic/level1',
 // //     method: 'POST',
 // //     data: payload,
 // //   });

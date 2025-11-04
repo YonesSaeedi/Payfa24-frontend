@@ -47,7 +47,7 @@ export default function StepEmail({ onNext }: Props) {
     queryKey: ["kyc-info"],
     queryFn: async () => {
       const res = await apiRequest<{ kyc?: { basic?: { email?: string; mobile?: string } } }>({
-        url: "/api/kyc/get-info",
+        url: "/kyc/get-info",
         method: "GET",
       });
       return res;
@@ -72,7 +72,7 @@ export default function StepEmail({ onNext }: Props) {
   const sendContactMutation = useMutation({
     mutationFn: async (payload: any) => {
       return apiRequest<{ status: boolean; msg?: string }>({
-        url: "/api/kyc/basic/level1",
+        url: "/kyc/basic/level1",
         method: "POST",
         data: payload,
       });
@@ -95,7 +95,7 @@ export default function StepEmail({ onNext }: Props) {
   const verifyOtpMutation = useMutation({
     mutationFn: async (payload: any) => {
       return apiRequest<{ status: boolean; msg?: string }>({
-        url: "/api/kyc/basic/level1",
+        url: "/kyc/basic/level1",
         method: "POST",
         data: payload,
       });

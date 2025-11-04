@@ -92,7 +92,7 @@ const [modalType, setModalType] = useState<string | null>(null);
       }
     } else {
       setIsOpenActive(true);
-       apiRequest({ url: `/api/account/2fa/verify/sms`, method: "POST" });
+       apiRequest({ url: `/account/2fa/verify/sms`, method: "POST" });
       // هنوز فعال نشده
     }
   };

@@ -27,7 +27,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({
     queryKey: ["kyc-info"],
     queryFn: () =>
       apiRequest<{ kyc: { basic?: { cardbank?: any } } }>({
-        url: "/api/kyc/get-info",
+        url: "/kyc/get-info",
       }),
     staleTime: 1000 * 60,
     retry: 1,
