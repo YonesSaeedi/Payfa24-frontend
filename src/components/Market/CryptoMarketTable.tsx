@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import IconSearch from "../../assets/icons/market/IconSearch";
 import IconStar from "../../assets/icons/market/IconStar";
@@ -8,6 +8,9 @@ import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import Pagination from "../History/Pagination";
 import { NewCryptoItem } from "./types";
 import IconArrowDetails from "../../assets/icons/market/CryptoMarketTable.tsx/IconArrowDetails";
+
+
+
 
 interface Props {
   data: NewCryptoItem[];
@@ -20,9 +23,11 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [favorites, setFavorites] = useState<string[]>(() => {
-    const stored = localStorage.getItem("favorites");
+  const stored = localStorage.getItem("favorites");
     return stored ? JSON.parse(stored) : [];
   });
+const inputRefMobile = useRef<HTMLInputElement | null>(null);
+const inputRefDesktop = useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
@@ -79,21 +84,26 @@ const toggleAllRows = () => {
     <div className="w-full flex flex-col gap-6 lg:mt-16">
       <div className="items-center gap-4">
         <div className="w-full flex justify-between">
-          <div className="lg:hidden flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">
-            <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
-              <IconSearch />
-            </span>
-            <input
-              type="text"
-              placeholder="...جستجو"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="flex-1 text-sm outline-none text-right bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
-            />
-          </div>
+          <div
+  onClick={() => inputRefMobile.current?.focus()}
+  className="lg:hidden flex flex-row-reverse items-center w-full lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200 cursor-text"
+>
+  <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
+    <IconSearch />
+  </span>
+  <input
+    ref={inputRefMobile}
+    type="text"
+    placeholder="...جستجو"
+    value={search}
+    onChange={(e) => {
+      setSearch(e.target.value);
+      setCurrentPage(1);
+    }}
+    className="flex-1 text-sm outline-none text-right bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
+  />
+</div>
+
         </div>
       </div>
 
@@ -115,21 +125,26 @@ const toggleAllRows = () => {
             ))}
           </div>
 
-          <div className="hidden lg:flex flex-row-reverse items-center  lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200">
-            <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
-              <IconSearch />
-            </span>
-            <input
-              type="text"
-              placeholder="...جستجو"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="flex-1 text-sm outline-none text-right bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
-            />
-          </div>
+         <div
+  onClick={() => inputRefDesktop.current?.focus()}
+  className="hidden lg:flex flex-row-reverse items-center lg:w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200 cursor-text"
+>
+  <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
+    <IconSearch />
+  </span>
+  <input
+    ref={inputRefDesktop}
+    type="text"
+    placeholder="...جستجو"
+    value={search}
+    onChange={(e) => {
+      setSearch(e.target.value);
+      setCurrentPage(1);
+    }}
+    className="flex-1 text-sm outline-none text-right bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300"
+  />
+</div>
+
         </div>
 
         {/* Table */}
@@ -223,7 +238,7 @@ const toggleAllRows = () => {
       }}
       className="flex-shrink-0 flex items-center justify-center transition-colors duration-200 overflow-hidden"
     >
-      <div className="w-[22px] h-[22px]">
+      <div className="w-[22px] h-[22px]  text-gray12 mt-1">
         {favorites.includes(symbol) ? <IconStarGold /> : <IconStar />}
       </div>
     </button>
@@ -268,9 +283,9 @@ const toggleAllRows = () => {
 
 
   {/* نسخه دسکتاپ بدون تغییر */}
-  <td className="py-3 px-4 hidden lg:table-cell">{item.fee ? `${item.fee} USDT` : "0 تومان"}</td>
-  <td className="py-3 px-4 hidden lg:table-cell">{formatPersianDigits(priceBuy)} تومان</td>
-  <td className="py-3 px-4 hidden lg:table-cell">{formatPersianDigits(priceSell)} تومان</td>
+ <td className="py-3 px-4 hidden lg:table-cell text-black1">{item.fee ? `${formatPersianDigits(item.fee)} USDT` : "۰ تومان"}</td>
+  <td className="py-3 px-4 hidden lg:table-cell text-black1">{formatPersianDigits(priceBuy)} تومان</td>
+  <td className="py-3 px-4 hidden lg:table-cell text-black1">{formatPersianDigits(priceSell)} تومان</td>
   <td className="py-3 px-4 hidden lg:table-cell text-center">
     <span className={`${change24h >= 0 ? "text-green-500" : "text-red-500"}`}>
       {formatPersianDigits(change24h)}%

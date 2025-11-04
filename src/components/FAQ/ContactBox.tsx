@@ -6,12 +6,12 @@ import SocialLinks from "../Footer/SocialLinks";
 const ContactBox: React.FC = () => {
   return (
     <div className="flex flex-col justify-end items-end lg:pt-24">
-      <h2 className=" text-black1 pb-8 text-xl font-medium">
-        راه‌های ارتباطی با ما
+      <h2 className=" text-black1 pb-8 text-xl font-medium pt-8 lg:pt-0">
+        راه‌های ارتباطی با ما 
       </h2>
 
-      <div className="flex justify-between gap-5">
-        <div className="w-[190px] h-[130px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2   hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
+      <div className="flex justify-between w-full gap-5">
+        <div className="w-full lg:w-[190px] h-[130px]  border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2   hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
           <div className="w-12 h-12 ">
             <IconEmail />
           </div>{" "}
@@ -34,7 +34,7 @@ const ContactBox: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-[190px] h-[130px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center gap-2   hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
+        <div className="w-full lg:w-[190px] h-[130px]   border-gray21   rounded-[12px] border flex flex-col justify-center items-center gap-2   hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
           <div className="w-12 h-12 ">
             <IconCall />
           </div>
@@ -55,7 +55,7 @@ const ContactBox: React.FC = () => {
         </div>
       </div>
 
-      <div className="w-[400px] h-[110px] bg-gray27 border-gray21 rounded-[12px] border flex flex-col justify-center items-center mt-4  hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
+      <div className="w-full lg:w-[400px] h-[110px]  border-gray21 rounded-[12px] border flex flex-col justify-center items-center mt-4  hover:shadow-sm hover:scale-105 transition-all duration-300 cursor-pointer">
        <p className="text-black1 text-md ">ما را در شبکه های اجتماعی دنبال کنید </p>
 
      

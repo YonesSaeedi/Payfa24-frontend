@@ -77,8 +77,7 @@ export default function AppRouter() {
         </Route>
         <Route path={ROUTES.FAQ} element={<FaqLayout />} />
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevicesLayout />} />
-        {/* <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
-        <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
+  
         <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />
 
         <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm />} />

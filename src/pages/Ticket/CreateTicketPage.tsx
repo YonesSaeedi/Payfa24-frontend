@@ -16,7 +16,7 @@ const CreateTicketPage: React.FC = () => {
      <div className="h-full">
       <HeaderLayout>
         <div className="w-full">
-          <div className="container-style flex flex-col gap-8 lg:gap-12 pt-6">
+          <div className="lg:container-style flex flex-col gap-8 lg:gap-12 pt-6">
             <BreadcrumbNavigation />
     <div>
       <div className={`${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} transition`}>

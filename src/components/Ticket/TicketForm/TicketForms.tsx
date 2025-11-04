@@ -77,7 +77,7 @@ export default function TicketForm() {
     }
   };
 
-  const isFormComplete = watchedFields[0]?.trim() && watchedFields[1]?.trim() && selectedOrder;
+ const isFormComplete = watchedFields[0]?.trim() || watchedFields[1]?.trim() || selectedOrder;
   const fileDivRef = useRef<HTMLDivElement | null>(null);
 useEffect(() => {
   function handleClickOutside(event: MouseEvent) {
@@ -93,25 +93,29 @@ useEffect(() => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} dir="rtl" className="h-full w-[543px] flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl px-6">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-6">
         <h2 className="text-2xl font-medium text-center text-black1 mt-10 mb-12">ایجاد تیکت جدید</h2>
-        <Controller
-          name="title"
-          control={control}
-          rules={{ required: "عنوان تیکت الزامی است" }}
-          render={({ field }) => (
-            <FloatingInput
-              label="عنوان تیکت"
-              value={field.value || ""}
-              onChange={field.onChange}
-              type="text"
-              placeholder=""
-              placeholderColor="gray9"
-              className="flex flex-row mb-6 h-[56px] rounded-lg border  border-gray12 font-normal text-[14px]"
-            />
-          )}
-        />
-        {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+        <div className="flex flex-col gap-1">
+  <Controller
+    name="title"
+    control={control}
+    rules={{ required: "عنوان تیکت الزامی است" }}
+    render={({ field }) => (
+      <FloatingInput
+        label="عنوان تیکت"
+        value={field.value || ""}
+        onChange={field.onChange}
+        type="text"
+        placeholder=""
+        placeholderColor="gray9"
+        className="flex flex-row h-[56px] rounded-lg border border-gray12 font-normal text-[14px]"
+      />
+    )}
+  />
+  {errors.title && (
+    <p className="text-red-500 text-xs mt-[2px]">{errors.title.message}</p>
+  )}
+</div>
 
         <OrderSelector selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} register={register} setValue={setValue} />
 
@@ -121,21 +125,21 @@ useEffect(() => {
             control={control}
             rules={{ required: "توضیحات الزامی است" }}
             render={({ field }) => (
-              <div className="relative w-full mt-4">
+              <div className="relative w-full">
                 <label className="absolute right-3 top-[-8px] text-xs text-gray12 lg:bg-gray43 bg-white1 px-1 z-10">توضیحات</label>
                 <textarea
                   {...field}
                   placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."
-                  className="w-full h-[160px] px-3 pt-6 pb-3 border border-gray12 rounded-lg lg:bg-gray43 bg-white1 text-black0 text-[14px] resize-none focus:outline-none focus:border-blue2"
+                  className="w-full h-[160px] px-3 pt-6  border border-gray12 rounded-lg lg:bg-gray43 bg-white1 text-black0 text-[14px] resize-none focus:outline-none focus:border-blue2"
                 />
-                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+                {errors.description && <p className="text-red-500 text-xs ">{errors.description.message}</p>}
               </div>
             )}
           />
         </div>
       
 
-        <div className="relative w-full mt-5">
+        <div className="relative w-full">
           <label
             className={`absolute right-3 text-xs -top-2 px-1 z-40 bg-gray38 lg:bg-gray43 transition-colors duration-200 
       ${isFileFocused ? "text-blue2" : "text-gray12"}`}
@@ -154,7 +158,7 @@ useEffect(() => {
     fileInputRef.current?.click();
     setIsFileFocused(true); 
   }}
-                  className={`w-full border rounded-md px-3 py-4 flex justify-between items-center cursor-pointer transition-colors duration-200 
+                  className={`w-full border rounded-lg px-3 py-2 flex justify-between items-center  border-gray12 cursor-pointer transition-colors duration-200 
           ${isFileFocused ? "border-blue2" : "border-gray12"}`}
                 >
                   <div className="flex items-center gap-2 h-[36px] rounded-[10px]">

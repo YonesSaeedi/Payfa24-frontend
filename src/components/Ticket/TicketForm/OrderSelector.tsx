@@ -125,7 +125,7 @@ const orderDivRef = useRef<HTMLButtonElement | null>(null);
   setIsModalOpen(true);
   setIsOrderFocused(true);
 }}
-       className={`w-full border rounded-lg p-5 text-sm text-right lg:bg-gray37 flex items-center justify-between  mb-3 h-[56px] pl-4 pr-4 transition-colors duration-200
+       className={`w-full border rounded-lg p-5 text-sm text-right lg:bg-gray37 flex items-center justify-between   h-[56px] pl-4 pr-4 transition-colors duration-200
   ${isOrderFocused ? "border-blue2" : "border-gray12"}`}
 
       >

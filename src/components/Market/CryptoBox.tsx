@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { formatPersianDigits } from "../../utils/formatPersianDigits";
 
 type Item = {
   name: string;
@@ -16,12 +17,7 @@ type CryptoBoxProps = {
   isLoading?: boolean;
 };
 
-export default function CryptoBox({
-  title,
-  iconTop,
-  items,
-  isLoading = false,
-}: CryptoBoxProps) {
+export default function CryptoBox({ title, iconTop, items, isLoading = false }: CryptoBoxProps) {
   const skeletonArray = Array.from({ length: 6 });
 
   return (
@@ -57,38 +53,25 @@ export default function CryptoBox({
           : items.map((item, index) => (
               <li key={`${item.symbol}-${index}`} className="contents">
                 <div className="flex items-center gap-2">
-                  <span className="w-[34px] h-[34px] flex items-center justify-center">
-                    {item.icon}
-                  </span>
+                  <span className="w-[34px] h-[34px] flex items-center justify-center">{item.icon}</span>
                   <div className="flex flex-col text-right leading-tight">
-                    <span className="text-black1 mb-2 font-normal text-base whitespace-nowrap">
-                      {item.name.length > 10
-                        ? item.name.substring(0, 10) + "..."
-                        : item.name}
-                    </span>
-                    <span className="text-xs text-gray12 uppercase">
-                      {item.symbol}
-                    </span>
+                    <span className="text-black1 mb-2 font-normal text-base whitespace-nowrap">{item.name.length > 10 ? item.name.substring(0, 10) + "..." : item.name}</span>
+                    <span className="text-xs text-gray12 uppercase">{item.symbol}</span>
                   </div>
                 </div>
 
                 <div className="flex justify-center w-[150px] pt-2">
-                  <span className="text-gray5 tabular-nums">
-                    {item.buyPrice.toLocaleString()}
-                  </span>
+                  <span className="text-gray5 tabular-nums">{formatPersianDigits(item.buyPrice.toLocaleString())}</span>
                   <span className="text-gray5 text-sm pr-1">تومان</span>
                 </div>
 
                 <div className="w-full flex justify-end">
                   <span
                     className={`rounded-md text-xs font-bold w-[68px] h-[30px] mt-2 flex items-center justify-center px-2 ${
-                      item.isPositive
-                        ? "bg-green9 text-green-600"
-                        : "bg-red7 text-red-600"
+                      item.isPositive ? "bg-green9 text-green-600" : "bg-red7 text-red-600"
                     }`}
                   >
-                    %{Math.abs(item.change).toFixed(2)}
-                    {item.isPositive ? "+" : "-"}
+                    {formatPersianDigits(Math.abs(item.change).toFixed(2))}%{item.isPositive ? "+" : "-"}
                   </span>
                 </div>
               </li>

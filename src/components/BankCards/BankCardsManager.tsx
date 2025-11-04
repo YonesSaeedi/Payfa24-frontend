@@ -86,11 +86,11 @@ function BankCardManager() {
             <BreadcrumbNavigation />
           </div>
           <div className=" flex flex-col lg:flex-row gap-4 lg:gap-12 pb-8">
-            <div className="w-full lg:w-2/5">
+            <div className="w-full lg:w-2/5 px-4 lg:px-0">
               <BankCardForm onSave={handleAddCard} />
             </div>
 
-            <div className=" lg:w-3/5 pt-10 lg:pt-0 pr-4">
+            <div className=" lg:w-3/5 pt-10 lg:pt-0 ">
               {loading ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {Array.from({ length: 4 }).map((_, i) => (

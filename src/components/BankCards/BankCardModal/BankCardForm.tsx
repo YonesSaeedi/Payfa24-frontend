@@ -106,7 +106,8 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
       </div>
 
       <div
-        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6 max-w-[600px]"
+        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6 w-full
+    lg:max-w-[600px]"
         style={{
           backgroundImage: `url(${
             isDark ? BackgroundCardDark : BackgroundCard

@@ -15,7 +15,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-   <div className="flex gap-6 pb-3 mb-6 text-sm font-medium overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing">
+   <div className="flex gap-6 pb-3 mb-6 text-sm font-medium overflow-x-auto scrollbar-hide  active:cursor-grabbing">
   {tabs.map((tab) => (
     <button
       key={tab.id}
@@ -29,7 +29,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ activeTab, setActiveTab }) => {
       {tab.label}
     </button>
   ))}
-</div>
+</div> 
 
   );
 };

@@ -3,9 +3,10 @@ import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import IconClose from "../../assets/icons/Login/IconClose";
 import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesIcon";
 import WalletAddIcon from "../../assets/icons/Home/WalletCardIcon/WalletAddIcon";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../routes/routes"; // مسیر دقیق فایل routes را چک کنید
+import { ROUTES } from "../../routes/routes"; 
 import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
+import { Link } from "react-router-dom";
+
 
 type ActionModalProps = {
   open: boolean;
@@ -14,8 +15,8 @@ type ActionModalProps = {
   symbol: string;
 };
 
-export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name }) => {
-  const navigate = useNavigate();
+export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name, symbol }) => {
+  
   if (!open) return null;
 
   return (
@@ -30,8 +31,9 @@ export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name })
         </div>
 
         <div className="flex flex-col gap-2">
-          <button
-            onClick={() => navigate(ROUTES.TRADE.BUY)}
+         {/* خرید */}
+          <Link
+            to={`${ROUTES.TRADE.BUY}?coin=${symbol}`}
             className="px-3 py-2 text-sm text-black1 hover:bg-gray12 flex items-center gap-2 rounded-md"
           >
             <span className="w-10 h-10 bg-blue7 rounded-[8px] flex items-center justify-center text-blue2">
@@ -39,23 +41,25 @@ export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name })
                 <ReceivedIcon />
               </span>
             </span>
-
             خرید
-          </button>
-          <button
-            onClick={() => navigate(ROUTES.TRADE.SELL)}
+          </Link>
+
+          {/* فروش */}
+          <Link
+            to={`${ROUTES.TRADE.SELL}?coin=${symbol}`}
             className="px-3 py-2 text-sm text-black1 hover:bg-gray12 flex items-center gap-2 rounded-md"
           >
             <span className="w-10 h-10 bg-blue7 rounded-[8px] flex items-center justify-center text-blue2">
               <span className="w-5 h-5 flex items-center justify-center">
-                <SendIcon/>
+                <SendIcon />
               </span>
             </span>
-
             فروش
-          </button>
-          <button
-            onClick={() => navigate(ROUTES.DEPOSIT)}
+          </Link>
+
+          {/* واریز */}
+          <Link
+            to={`${ROUTES.DEPOSIT}?coin=${symbol}`}
             className="px-3 py-2 text-sm text-black1 hover:bg-gray12 flex items-center gap-2 rounded-md"
           >
             <span className="w-10 h-10 bg-blue7 rounded-[8px] flex items-center justify-center text-blue2">
@@ -63,20 +67,21 @@ export const ActionModal: React.FC<ActionModalProps> = ({ open, onClose, name })
                 <WalletAddIcon />
               </span>
             </span>
-
             واریز
-          </button>
-          <button
-            onClick={() => navigate(ROUTES.WITHDRAWAL_FIAT)}
-            className="px-3 py-2 text-sm text-black1 hover:bg-gray12 flex items-center gap-2 rounded-md">
+          </Link>
+
+          {/* برداشت */}
+          <Link
+            to={`${ROUTES.WITHDRAWAL_FIAT}?coin=${symbol}`}
+            className="px-3 py-2 text-sm text-black1 hover:bg-gray12 flex items-center gap-2 rounded-md"
+          >
             <span className="w-10 h-10 bg-blue7 rounded-[8px] flex items-center justify-center text-blue2">
               <span className="w-5 h-5 flex items-center justify-center">
                 <WalletMinesIcon />
               </span>
             </span>
-
             برداشت
-          </button>
+          </Link>
         </div>
       </div>
     </div>

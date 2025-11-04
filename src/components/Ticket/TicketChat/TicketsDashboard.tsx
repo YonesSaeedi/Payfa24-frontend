@@ -59,7 +59,7 @@ const TicketsDashboard: React.FC = () => {
      <div className="h-full">
       <HeaderLayout>
         <div className="w-full">
-          <div className="container-style flex flex-col gap-8 lg:gap-12 pt-6">
+          <div className="lg:container-style flex flex-col gap-8 lg:gap-12 pt-6">
             <BreadcrumbNavigation />
     <div className="flex gap-[38px] mt-4 mb-12 lg:h-[790px] justify-center items-center lg:items-start lg:justify-between">
   <div className="block lg:hidden w-full flex justify-center">

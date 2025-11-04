@@ -16,7 +16,7 @@ function TicketPanel() {
     <div className="h-full">
       <HeaderLayout>
         <div className="w-full">
-          <div className="container-style flex flex-col gap-8 lg:gap-12 pt-6">
+          <div className=" flex flex-col gap-8 lg:gap-12 pt-6">
             <BreadcrumbNavigation />
       <SupportCallModal
         isOpen={isModalOpen}

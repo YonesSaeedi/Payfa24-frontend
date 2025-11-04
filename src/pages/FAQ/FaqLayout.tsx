@@ -40,39 +40,41 @@ const FAQPage: React.FC = () => {
             <BreadcrumbNavigation />
           </div>
 
-          <div className="w-full  flex flex-col px-4 z-10 relative">
+          <div className="w-full  flex flex-col  z-10 relative">
             <img
               src={questions}
               className="absolute top-2 -right-[23px] w-64 rotate-[8deg] dark:hidden -z-10 hidden lg:block" alt="question background" />
             <div className="lg:flex items-center">
-              <div className="flex-col  flex justify-between gap-24 lg:flex-row-reverse">
+              <div className="flex-col  flex justify-between lg:gap-24 lg:flex-row-reverse">
                 <div className="flex flex-col items-center justify-center">
                   <h1 className=" mb-2 text-black1 text-4xl font-bold">
                     سوالات متداول
                   </h1>
                   <div className="w-full max-w-md">
-                    <p className="text-gray-500 text-center md:text-right pt-4 w-full text-lg font-normal">
-                      سوالات خود را در این بخش جستجو کنید. در صورت نیافتن پاسخ از
-                      طریق راه‌های ارتباطی سوال خود را با ما در میان بگذارید.
-                    </p>
+               <p  dir="rtl" className="text-gray-500 text-center pt-4 w-full text-lg font-normal text-[18px] ">
+  سوالات خود را در این بخش جستجو کنید. در صورت نیافتن پاسخ از
+  طریق راه‌های ارتباطی سوال خود را با ما در میان بگذارید.
+</p>
+
+
                     <div className="w-full relative mt-10">
                       <input
                         dir="rtl"
                         type="text"
-                        placeholder="جستجو"
+                        placeholder="جستجو..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full border rounded-lg px-4 pr-10 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white1 border-gray21"
+                        className="w-full border rounded-xl h-[56px] px-4 pr-10 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white1 border-gray21"
                       />
 
-                      <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none w-5 h-5 top-[9px] text-gray-400">
+                      <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none w-5 h-5 top-[17px] text-gray-400">
                         <IconSearch />
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex justify-center items-center order-1">
+                <div className="flex justify-center items-center order-first lg:order-none">
                   <img src={question} className="dark:hidden" />
                   <img
                     src={questions}
@@ -88,13 +90,13 @@ const FAQPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col lg:flex-row-reverse gap-8 items-center lg:items-start text-center lg:text-right">
+            <div className="flex flex-col lg:flex-row-reverse gap-8 items-start  lg:text-right">
               <div
                 dir="rtl"
                 className="flex flex-col items-center lg:items-start w-full max-w-[900px] mx-auto px-4 lg:px-0"
               >
                 <div className="pt-6 w-full lg:w-auto flex gap-3 flex-col">
-                  <span className="text-2xl font-bold text-black1 pb-[28px]">سوالات پرتکرار</span>
+                  <span className="lg:text-2xl lg:font-bold text-black1 pb-[28px] text-sm font-bold">سوالات پرتکرار</span>
                   <FAQTabs activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
 
@@ -111,7 +113,7 @@ const FAQPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className=" lg:pt-0 pb-6">
+              <div className=" lg:pt-0 w-full lg:w-auto px-4 lg:px-0">
                 <ContactBox />
               </div>
             </div>
