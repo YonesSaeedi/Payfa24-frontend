@@ -32,9 +32,11 @@ import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import UserAccount from "../pages/Profile/UserAccount";
 import CreateTicketPage from "../pages/Ticket/CreateTicketPage";
-
+import NotFoundPage from "../pages/NotFoundPage";
+import useAuth from "../hooks/useAuth";
 
 export default function AppRouter() {
+  const { isAuthenticated } = useAuth()
 
   return (
     <BrowserRouter>
@@ -51,7 +53,6 @@ export default function AppRouter() {
           <Route path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD} element={<ForgotPasswordPageSetPasswordPage />} />
         </Route>
         {/* header only pages ==================================================================================================== */}
-
         <Route path={ROUTES.USER_ACCOUNT} element={<UserAccount />} />
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
@@ -66,9 +67,8 @@ export default function AppRouter() {
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
           <Route path={ROUTES.TRADE.SELL} element={<Sell />} />
         </Route>
-       <Route path={ROUTES.TICKET.ROOT} element={<TicketPages />} />
-       <Route path={ROUTES.TICKET.CREATE} element={<CreateTicketPage />} />
- 
+        <Route path={ROUTES.TICKET.ROOT} element={<TicketPages />} />
+        <Route path={ROUTES.TICKET.CREATE} element={<CreateTicketPage />} />
         <Route path={ROUTES.TRANSACTION.ROOT} element={<TransactionLayout />}>
           <Route index element={<CryptoPage />} />                                     {/* /history */}
           <Route path={ROUTES.TRANSACTION.CRYPTO_HISTORY} element={<CryptoPage />} />  {/* /history/Crypto */}
@@ -80,22 +80,18 @@ export default function AppRouter() {
         {/* <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
         <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
         <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />
-
-        <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm minDeposit={1000} maxDeposit={100000000}/>}/>
+        <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm minDeposit={1000} maxDeposit={100000000} />} />
         <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
         <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />
         <Route path={ROUTES.DEPOSIT_RECEIPT} element={<DepositPage selected="receipt" />} />
         <Route path={ROUTES.DEPOSIT_WALLET} element={<DepositPage selected="wallet" />} />
-
         <Route path={ROUTES.DEPOSIT_TXID} element={<DepositPage selected="txid" />} />
-
-
         <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />
         {/* header + Footer pages ==================================================================================================== */}
         <Route path={ROUTES.HOME} element={<HomePage />} />
         <Route path={ROUTES.MARKET} element={<MarketPage />} />
         {/* protected pages ========================================================================================================== */}
-        <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />
+        <Route path="*" element={isAuthenticated ? <NotFoundPage /> : <Navigate to={ROUTES.LOGIN} replace />} />
       </Routes >
     </BrowserRouter >
   );
