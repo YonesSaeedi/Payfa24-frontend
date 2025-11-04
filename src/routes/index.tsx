@@ -57,7 +57,7 @@ export default function AppRouter() {
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
         <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />
-        <Route path={ROUTES.ADD_FRIEND.ROOT} element={<AddFriend />} />
+        <Route path={ROUTES.ADD_FRIEND} element={<AddFriend />} />
         <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
         <Route path={ROUTES.WALLET} element={<Wallet />} />
         <Route path={ROUTES.WITHDRAWAL_FIAT} element={<WithdrawPage />} />
@@ -77,9 +77,7 @@ export default function AppRouter() {
         </Route>
         <Route path={ROUTES.FAQ} element={<FaqLayout />} />
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevicesLayout />} />
-        {/* <Route path={ROUTES.BANK_CARDS} element={<BankCardsPage />} />
-        <Route path={ROUTES.Cards_Manager} element={<CardsManager />} /> */}
-        <Route path={ROUTES.BANK_CARDS_CONTAINER} element={<BankCardsContainer />} />
+        <Route path={ROUTES.BANK_CARDS} element={<BankCardsContainer />} />
         <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm minDeposit={1000} maxDeposit={100000000} />} />
         <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
         <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />

@@ -70,7 +70,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     {
       label: "کارت‌ها",
       icon: <IconCards />,
-      route: ROUTES.BANK_CARDS_CONTAINER,
+      route: ROUTES.BANK_CARDS,
     },
   ];
 
@@ -124,7 +124,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       route: ROUTES.NOTIFICATIONS,
     },
     { label: "مقالات", icon: <IconPersonalCard /> },
-    { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND.ROOT },
+    { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND },
   ];
 
   const renderSection = (title: string, items: ServiceItem[]) => (
