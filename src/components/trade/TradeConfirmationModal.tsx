@@ -3,13 +3,14 @@ import IconWarning2 from "../../assets/icons/trade/IconWarning2";
 import { TradeConfirmationData } from "../../types/tradePage";
 import { toast } from "react-toastify";
 import { apiRequest } from "../../utils/apiClient";
-import { CryptoBuyConfirm } from "../../types/apiResponses";
+import { CryptoBuySuccess } from "../../types/apiResponses";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import IconRefresh from "../../assets/icons/trade/Iconrefresh";
 import { AxiosError } from "axios";
 
 interface TradeConfirmationModalProps {
   setIsTradeConfirmationModalOpen: Dispatch<SetStateAction<boolean>>;
+  setTransactionSuccessId: Dispatch<SetStateAction<number>>;
   isSell: boolean
   tradeConfirmationModalData: TradeConfirmationData
   fetchCryptoBalanceAndPrice: () => Promise<void>
@@ -25,7 +26,8 @@ const TradeConfirmationModal = ({
   fetchCryptoBalanceAndPrice,
   fetchTomanBalance,
   handleCancelTrade,
-  handleSuccessTrade
+  handleSuccessTrade,
+  setTransactionSuccessId
 }: TradeConfirmationModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [timeLeft, setTimeLeft] = useState<number>(10)
@@ -57,14 +59,14 @@ const TradeConfirmationModal = ({
     if (isSell) {
       try {
         setIsSubmitting(true)
-        await apiRequest<CryptoBuyConfirm, { amountCoin: string, id_order: number }>({
+        const response = await apiRequest<CryptoBuySuccess, { amountCoin: string, id_order: number }>({
           url: `/order/crypto/sell/${tradeConfirmationModalData?.symbol}`,
           method: 'POST',
           data: { amountCoin: String(tradeConfirmationModalData?.coinAmount), id_order: tradeConfirmationModalData?.orderID },
         })
         fetchTomanBalance()
         fetchCryptoBalanceAndPrice()
-        // toast.success('فروش با موفقیت انجام شد.')
+        setTransactionSuccessId(response?.id_order)
         handleSuccessTrade()
       } catch (err) {
         toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || 'در تایید سفارش فروش شما مشکلی پیش آمد.');
@@ -75,14 +77,14 @@ const TradeConfirmationModal = ({
     } else {
       try {
         setIsSubmitting(true)
-        await apiRequest<CryptoBuyConfirm, { amount: string, id_order: number }>({
+        const response = await apiRequest<CryptoBuySuccess, { amount: string, id_order: number }>({
           url: `/order/crypto/buy/${tradeConfirmationModalData?.symbol}`,
           method: 'POST',
           data: { amount: String(tradeConfirmationModalData?.tomanAmount), id_order: tradeConfirmationModalData?.orderID },
         })
         fetchTomanBalance()
         fetchCryptoBalanceAndPrice()
-        // toast.success('خرید با موفقیت انجام شد.')
+        setTransactionSuccessId(response?.id_order)
         handleSuccessTrade()
       } catch (err) {
         toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || 'در تایید سفارش خرید شما مشکلی پیش آمد.');
