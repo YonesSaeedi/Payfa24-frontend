@@ -44,7 +44,7 @@ export interface CryptoDetail {
   stock?: string;
   txid?: string;
   type?: string;
-   fee?: number;
+  fee?: number;
   withdrawFee?: string;
   source: "crypto";
   image?: string;
@@ -85,7 +85,7 @@ export type TransactionDetail = OrderDetail | CryptoDetail | FiatDetail;
 interface TransactionModalProps {
   tx: TransactionDetail;
   onClose: () => void;
-  visibleFields?: string[]; 
+  visibleFields?: string[];
 }
 
 
@@ -93,7 +93,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState<TransactionDetail | null>(null);
 
- 
+
   //   if (!tx.id || !tx.source) return;
 
   //   const fetchDetails = async () => {
@@ -102,13 +102,13 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
   //       let url = "";
   //       switch (tx.source) {
   //         case "order":
-  //           url = `/api/history/orders/${tx.id}`;
+  //           url = `/history/orders/${tx.id}`;
   //           break;
   //         case "crypto":
-  //           url = `/api/history/crypto-transaction/${tx.id}`;
+  //           url = `/history/crypto-transaction/${tx.id}`;
   //           break;
   //         case "fiat":
-  //           url = `/api/history/fiat/${tx.id}`;
+  //           url = `/history/fiat/${tx.id}`;
   //           break;
   //       }
 
@@ -188,51 +188,51 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
 
   //   fetchDetails();
   // }, [tx]);
-useEffect(() => {
-  if (!tx.id || !tx.source) return;
+  useEffect(() => {
+    if (!tx.id || !tx.source) return;
 
-  const fetchDetails = async () => {
-    setLoading(true);
-    try {
-      let url = "";
-      switch (tx.source) {
-        case "order":
-          url = `/api/history/orders/${tx.id}`;
-          break;
-        case "crypto":
-          url = `/api/history/crypto-transaction/${tx.id}`;
-          break;
-        case "fiat":
-          url = `/api/history/fiat/${tx.id}`;
-          break;
+    const fetchDetails = async () => {
+      setLoading(true);
+      try {
+        let url = "";
+        switch (tx.source) {
+          case "order":
+            url = `/history/orders/${tx.id}`;
+            break;
+          case "crypto":
+            url = `/history/crypto-transaction/${tx.id}`;
+            break;
+          case "fiat":
+            url = `/history/fiat/${tx.id}`;
+            break;
+        }
+
+        if (tx.source === "order") {
+          const res = await apiRequest<{ order: OrderDetail }>({ url, method: "GET" });
+          if (res.order) {
+            setDetail({ ...res.order, source: "order" });
+          }
+        } else if (tx.source === "crypto") {
+          const res = await apiRequest<{ transaction: CryptoDetail }>({ url, method: "GET" });
+          if (res.transaction) {
+            setDetail({ ...res.transaction, source: "crypto" });
+          }
+        } else if (tx.source === "fiat") {
+          const res = await apiRequest<{ transaction: FiatDetail }>({ url, method: "GET" });
+          if (res.transaction) {
+            setDetail({ ...res.transaction, source: "fiat" });
+          }
+        }
+
+      } catch (err) {
+        console.error("خطا در دریافت جزئیات تراکنش:", err);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      if (tx.source === "order") {
-        const res = await apiRequest<{ order: OrderDetail }>({ url, method: "GET" });
-        if (res.order) {
-          setDetail({ ...res.order, source: "order" });
-        }
-      } else if (tx.source === "crypto") {
-        const res = await apiRequest<{ transaction: CryptoDetail }>({ url, method: "GET" });
-        if (res.transaction) {
-          setDetail({ ...res.transaction, source: "crypto" });
-        }
-      } else if (tx.source === "fiat") {
-        const res = await apiRequest<{ transaction: FiatDetail }>({ url, method: "GET" });
-        if (res.transaction) {
-          setDetail({ ...res.transaction, source: "fiat" });
-        }
-      }
-
-    } catch (err) {
-      console.error("خطا در دریافت جزئیات تراکنش:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchDetails();
-}, [tx]);
+    fetchDetails();
+  }, [tx]);
 
 
   const renderIcon = () => {
@@ -256,7 +256,7 @@ useEffect(() => {
 
   if (!tx) return null;
 
-  
+
 
   return (
     <div
@@ -267,7 +267,7 @@ useEffect(() => {
         className="bg-white8 rounded-2xl p-6 w-[90%] max-w-md relative shadow-xl  max-h-[85vh] overflow-y-auto animate-fadeIn"
         onClick={(e) => e.stopPropagation()}
       >
-   
+
         <div className="flex justify-between items-center   pb-4 mb-4">
           <h2 className="font-semibold text-lg text-black0">جزئیات تراکنش</h2>
           <button
@@ -278,12 +278,12 @@ useEffect(() => {
           </button>
         </div>
 
-      
+
         {loading ? (
-          <SkeletonTransactionModal/>
+          <SkeletonTransactionModal />
         ) : detail ? (
           <>
-    
+
             <div className="flex flex-col items-center mb-6">
               {renderIcon()}
               <h3 className="font-bold text-lg mt-3 text-gray-800">
@@ -294,7 +294,7 @@ useEffect(() => {
               )}
             </div>
 
-       
+
             <div className="grid grid-cols-1 gap-3 text-sm text-black0">
               {detail.status && (
                 <DetailRow
@@ -314,9 +314,9 @@ useEffect(() => {
                   value={transactionTypeMap[detail.type] || detail.type}
                 />
               )}
-            {"amount" in detail && detail.amount && "symbol" in detail && detail.symbol && (
-  <DetailRow label="مقدار" value={detail.amount} symbol={detail.symbol} />
-)}
+              {"amount" in detail && detail.amount && "symbol" in detail && detail.symbol && (
+                <DetailRow label="مقدار" value={detail.amount} symbol={detail.symbol} />
+              )}
 
               {"amountCoin" in detail && detail.amountCoin && (
                 <DetailRow label="مقدار ارز" value={detail.amountCoin} />
