@@ -10,9 +10,10 @@ interface CurrenciesVirtualizedListProps {
   width: number | string;
   setCurrentCryptoCurrency: (cryptocurrency: CryptoItem) => void
   closeModal: () => void
+  isSell?: boolean
 }
 
-const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ height, itemHeight, items, width, setCurrentCryptoCurrency, closeModal }) => {
+const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ height, itemHeight, items, width, setCurrentCryptoCurrency, closeModal, isSell }) => {
   const Row: React.FC<ListChildComponentProps<(CryptoItem | null)[]>> = ({ index, style, data, }) => {
     const item = data[index];
 
@@ -47,8 +48,8 @@ const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ h
               </div>
             </div>
             <div className="flex flex-col lg:gap-1 items-end">
-              <span className="text-gray3 text-xs font-normal">قیمت خرید</span>
-              <span className="text-xs lg:text-sm font-normal text-black1">{formatPersianDigits(Number(item?.priceBuy))} تومان</span>
+              <span className="text-gray3 text-xs font-normal">{isSell ? 'قیمت فروش' : 'قیمت خرید'}</span>
+              <span className="text-xs lg:text-sm font-normal text-black1">{formatPersianDigits(Number(isSell ? item?.priceSell : item?.priceBuy))} تومان</span>
             </div>
           </div>
         </button>

@@ -425,6 +425,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               setCurrentCryptoCurrency={setCurrentCryptocurrency}
               isCryptoListLoading={isCryptoListLoading}
               digitalCryptoListData={Object.values(mergedDigitalCryptosData)}
+              isSell={isSell}
             />}
           {isTradeConfirmationModalOpen &&
             <TradeConfirmationModal
