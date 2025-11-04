@@ -1,21 +1,15 @@
-import { useContext } from "react"
 import Header from "../components/Header/Header"
-import { ThemeContext } from "../context/ThemeContext";
 
 type HeaderLayoutProps = {
   children?: React.ReactNode
 }
-const HeaderLayout = ({ children }: HeaderLayoutProps) => {
-   
-  const context = useContext(ThemeContext);
-  if (!context) throw new Error("ThemeContext is undefined");
-  const {theme} = context;
 
+const HeaderLayout = ({ children }: HeaderLayoutProps) => {
 
   return (
-    <div className={`min-h-screen flex flex-col  ${theme === "dark" ? 'bg-white4' :'bg-white4'}`}>
-      <Header/>
-      <div className="pt-[64px]"> {/* فاصله محتوا از هدر */}
+    <div className='min-h-screen flex flex-col bg-white4'>
+      <Header />
+      <div className="pt-16 pb-5 lg:pb-20"> {/* فاصله محتوا از هدر */}
         {children}
       </div>
     </div>
