@@ -9,35 +9,31 @@ import WalletMines from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIc
 import ReceiptText from "../../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
 import WithdrawModal from "../../Withdrawal/WithdrawModal";
 import DepositModal from "../../Deposit/DepositModal";
-import { apiRequest } from "../../../utils/apiClient";
 import { formatPersianDigits } from "../../../utils/formatPersianDigits";
 import IconEyeClosed from "../../../assets/icons/Login/IconEyeClosed";
-import { toast } from "react-toastify";
-import { AxiosError } from "axios";
 import { ROUTES } from "../../../routes/routes";
 
 interface WalletCardProps {
   balance?: number;
   currency?: string;
   showBuySell?: boolean;
+  walletData?: Wallets
+  isLoading: boolean
 }
 interface Wallet {
-  balance: number;
+  balance?: number;
 }
 interface Wallets {
-  toman: Wallet;
-  crypto: Wallet;
-}
-interface WalletResponse {
-  wallets: Wallets;
+  toman?: Wallet;
+  crypto?: Wallet;
 }
 
-const WalletCard = ({ showBuySell = true, }: WalletCardProps) => {
+const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardProps) => {
   const [stateBlure, setStateBlure] = useState<boolean>(true);
   const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
   const [showDepositModal, setShowDepositModal] = useState<boolean>(false);
   const [selectedCurrency, setSelectedCurrency] = useState<"tether" | "toman">("toman");
-  const [balance, setBalance] = useState<WalletResponse | null>(null);
+  const [balance, setBalance] = useState<Wallets | null>(null);
   const navigate = useNavigate();
   // action buttons ===============================================================================================================================
   const actionButtons = [
@@ -54,20 +50,23 @@ const WalletCard = ({ showBuySell = true, }: WalletCardProps) => {
   // handle currency change =====================================================================================================================
   const handleCurrencyChange = (value: "tether" | "toman") => { setSelectedCurrency(value); };
   // function get balance and run it once component mounted ======================================================================================
-  async function getBalance() {
-    try {
-      const response = await apiRequest<WalletResponse>({ url: "/dashboard/web" });
-      setBalance(response);
-    } catch (err) {
-      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'دریافت اطلاعات کیف پول با مشکل مواجه شد.')
-    }
-  }
-  useEffect(() => { getBalance(); }, []);
+  // async function getBalance() {
+  //   try {
+  //     const response = await apiRequest<WalletResponse>({ url: "/dashboard/web" });
+  //     setBalance(response);
+  //   } catch (err) {
+  //     toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'دریافت اطلاعات کیف پول با مشکل مواجه شد.')
+  //   }
+  // }
+  // useEffect(() => { getBalance(); }, []);
+  useEffect(() => {
+    setBalance(walletData ?? null)
+  }, [walletData])
   // specify displayed balance currency ==========================================================================================================
   const displayBalance =
     selectedCurrency === "tether"
-      ? balance?.wallets.crypto?.balance
-      : balance?.wallets.toman?.balance;
+      ? balance?.crypto?.balance
+      : balance?.toman?.balance;
 
   return (
     <div>
@@ -81,7 +80,11 @@ const WalletCard = ({ showBuySell = true, }: WalletCardProps) => {
         </div>
         <div className="text-center mb-6">
           <div className={`text-base lg:text-2xl flex items-center justify-center gap-3 font-bold text-black1 ${!stateBlure ? "blur-md" : ""}`} dir="rtl">
-            <span>{formatPersianDigits(displayBalance ?? "0")}</span>
+            {isLoading ?
+              <span className="skeleton-bg h-5 lg:h-7 lg:w-36 w-20 rounded"></span>
+              :
+              <span>{formatPersianDigits(displayBalance ?? "0")}</span>
+            }
             <span>{selectedCurrency === "tether" ? "تتر" : "تومان"}</span>
           </div>
         </div>
