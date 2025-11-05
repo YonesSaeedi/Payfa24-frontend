@@ -35,9 +35,7 @@ export const ROUTES = {
     TOMAN_HISTORY: "/history/toman",
     ORDER_HISTORY: "/history/order",
   },
-  ADD_FRIEND: {
-    ROOT: "/add-friend",
-  },
+  ADD_FRIEND: "/add-friend",
   DEPOSIT: "/deposit",
   DEPOSIT_GATEWAY: "/deposit/gateway",
   DEPOSIT_IDENTIFIER: "/deposit/identifier",

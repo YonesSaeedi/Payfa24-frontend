@@ -86,8 +86,6 @@ export default function CardToCardTransfer({
   cards: initialCards,
   cardToCardInfo: initialCardToCardInfo,
 }: CardToCardTransferProps) {
-   const minDeposit = 200000; // ✅ حداقل مبلغ به تومان
-  const maxDeposit = 25000000; // (اختیاری) حداکثر مبلغ
   const amounts = [1, 5, 10, 15]; // میلیون تومان
   const [showSummary, setShowSummary] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -96,6 +94,7 @@ export default function CardToCardTransfer({
   const [cardToCardData, setCardToCardData] = useState<CardToCardInfo>(
     initialCardToCardInfo
   );
+  
   const {
     control,
     setValue,
@@ -105,7 +104,7 @@ export default function CardToCardTransfer({
     reset,
     trigger,
   } = useForm<CardToCardRequestData>({
-    resolver: yupResolver(getValidationSchemaCardtoCard(minDeposit, maxDeposit)),
+    resolver: yupResolver(getValidationSchemaCardtoCard()),
 
     defaultValues: { card: 0 },
     mode: "onChange",

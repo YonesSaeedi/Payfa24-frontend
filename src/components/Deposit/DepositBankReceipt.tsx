@@ -249,7 +249,7 @@ const isFormComplete =
                       {a.name_bank}
                     </span>
                     <span className="lg:text-sm text-xs text-black0">
-                      {a.account_number || a.iban_number}
+                      {toPersianDigits(a.account_number || a.iban_number)}
                     </span>
                   </div>
                 ),
