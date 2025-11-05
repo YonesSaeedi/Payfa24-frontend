@@ -13,6 +13,7 @@ import TradeSuccessModal from "../trade/TradeSuccessModal";
 import IconClose from "../../assets/icons/Login/IconClose";
 import useGetUser from "../../hooks/useGetUser";
 import { AxiosError } from "axios";
+import { ROUTES } from "../../routes/routes";
 
 interface WithdrawApiResponse {
   status: boolean;
@@ -85,13 +86,13 @@ const CryptoWithdrawForm: FC = () => {
   const [isOtpSubmitting, setIsOtpSubmitting] = useState(false);
   const { data: mergedCryptosData, isLoading: isCryptoListLoading } = useMergedCryptoList();
   const [withdrawData, setWithdrawData] = useState<{
-  transactionId: number;
-  coin?: string;
-  network?: string;
-  withdrawAmount?: number;
-  withdrawAddressWallet?: string;
-  withdrawAddressWalletTag?: string;
-} | null>(null);
+    transactionId: number;
+    coin?: string;
+    network?: string;
+    withdrawAmount?: number;
+    withdrawAddressWallet?: string;
+    withdrawAddressWalletTag?: string;
+  } | null>(null);
   const [levelUsed, setLevelUsed] = useState<{ daily_withdrawal_crypto?: number }>({});
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
@@ -111,47 +112,48 @@ const CryptoWithdrawForm: FC = () => {
     setIsOtpModalOpen(false);
     setOtpCode("");
   };
-// handle submit otp ============================================================================================
-const handleSubmitOtp = async () => {
-  if (isOtpSubmitting || !withdrawData) return;
-  setIsOtpSubmitting(true);
-  try {
-    const res = await apiRequest<{ msg: string }, { transaction_id: number; codeOtp: string }>({url: "/wallets/crypto/withdraw/confirm",method: "POST",data: {
-        transaction_id: withdrawData.transactionId,
-        codeOtp: otpCode,
-      },
-    });
-    toast.success(res.msg || "برداشت با موفقیت تأیید شد ✅");
-    // ✅ ریست کامل state‌ها
-    setIsOtpModalOpen(false);
-    setOtpCode("");
-    setResendCodeTimeLeft(0);
-    setWithdrawData(null);
-    setIsTradeSuccessModalOpen(true);
-  } catch (err) {
-    toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||"در تایید کد مشکلی پیش آمد.");
-  } finally {
-    setIsOtpSubmitting(false);
-  }
-};
-// handle resend ==================================================================================================
-const handleResendCode = async () => {
-  console.log('resend executed!');
-  
-  if (!withdrawData || resendCodeTimeLeft) return;
-  try {
-    setIsResending(true);
-    if (!withdrawData) return;
-    const res = await apiRequest<WithdrawApiResponse, WithdrawRequestData>({url: "/wallets/crypto/withdraw/request",method: "POST",data: withdrawData});
-    toast.success(res.msg || "کد جدید ارسال شد");
-    setResendCodeTimeLeft(120);
+  // handle submit otp ============================================================================================
+  const handleSubmitOtp = async () => {
+    if (isOtpSubmitting || !withdrawData) return;
+    setIsOtpSubmitting(true);
+    try {
+      const res = await apiRequest<{ msg: string }, { transaction_id: number; codeOtp: string }>({
+        url: "/wallets/crypto/withdraw/confirm", method: "POST", data: {
+          transaction_id: withdrawData.transactionId,
+          codeOtp: otpCode,
+        },
+      });
+      toast.success(res.msg || "برداشت با موفقیت تأیید شد ✅");
+      // ✅ ریست کامل state‌ها
+      setIsOtpModalOpen(false);
+      setOtpCode("");
+      setResendCodeTimeLeft(0);
+      setWithdrawData(null);
+      setIsTradeSuccessModalOpen(true);
+    } catch (err) {
+      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "در تایید کد مشکلی پیش آمد.");
+    } finally {
+      setIsOtpSubmitting(false);
+    }
+  };
+  // handle resend ==================================================================================================
+  const handleResendCode = async () => {
+    console.log('resend executed!');
 
-  } catch (err) {
-    toast.error((err as AxiosError<{msg?:string}>).response?.data?.msg || "در ارسال مجدد کد مشکلی پیش آمد.") 
-  } finally {
-    setIsResending(false);
-  }
-};
+    if (!withdrawData || resendCodeTimeLeft) return;
+    try {
+      setIsResending(true);
+      if (!withdrawData) return;
+      const res = await apiRequest<WithdrawApiResponse, WithdrawRequestData>({ url: "/wallets/crypto/withdraw/request", method: "POST", data: withdrawData });
+      toast.success(res.msg || "کد جدید ارسال شد");
+      setResendCodeTimeLeft(120);
+
+    } catch (err) {
+      toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || "در ارسال مجدد کد مشکلی پیش آمد.")
+    } finally {
+      setIsResending(false);
+    }
+  };
 
 
 
@@ -171,7 +173,7 @@ const handleResendCode = async () => {
     };
   }, [isOtpModalOpen, resendCodeTimeLeft]);
 
- //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -224,78 +226,78 @@ const handleResendCode = async () => {
     setSelectedNetwork(net);
     setTag("");
   };
-//  ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsLoading(true);
+  //  ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  if (!selectedNetwork) {
-    toast.error("لطفاً شبکه را انتخاب کنید");
-    setIsLoading(false);
-    return;
-  }
-
-  const withdrawAmount = parseFloat(amount);
-  if (!amount || isNaN(withdrawAmount)) {
-    toast.error("لطفاً مقدار برداشت را وارد کنید");
-    setIsLoading(false);
-    return;
-  }
-
-  try {
-    const response = await apiRequest<
-  WithdrawApiResponse,
-  {
-    coin: string;
-    network: string;
-    withdrawAmount: number;
-    withdrawAddressWallet: string;
-    withdrawAddressWalletTag: string;
-  }
->({
-  url: "/wallets/crypto/withdraw/request",
-  method: "POST",
-  data: {
-    coin: crypto,
-    network: selectedNetwork?.symbol || "",
-    withdrawAmount,
-    withdrawAddressWallet: address,
-    withdrawAddressWalletTag: tag,
-  },
-});
-
-    toast.success(response.data?.msgOtp || response.msg || "کد تأیید ارسال شد.");
-
-    if (!response.data?.transaction_id) {
-      toast.error("شناسه تراکنش از سرور دریافت نشد.");
+    if (!selectedNetwork) {
+      toast.error("لطفاً شبکه را انتخاب کنید");
       setIsLoading(false);
       return;
     }
 
-    // ✅ ذخیره داده‌ها برای مرحله بعد (تأیید OTP)
-    setWithdrawData({
-      transactionId: response.data.transaction_id,
-      network: selectedNetwork.symbol,
-      withdrawAmount,
-      withdrawAddressWallet: address,
-      withdrawAddressWalletTag: tag,
-    });
+    const withdrawAmount = parseFloat(amount);
+    if (!amount || isNaN(withdrawAmount)) {
+      toast.error("لطفاً مقدار برداشت را وارد کنید");
+      setIsLoading(false);
+      return;
+    }
 
-    // ✅ باز کردن مودال OTP
-    setResendCodeTimeLeft(120);
-    setIsOtpModalOpen(true);
+    try {
+      const response = await apiRequest<
+        WithdrawApiResponse,
+        {
+          coin: string;
+          network: string;
+          withdrawAmount: number;
+          withdrawAddressWallet: string;
+          withdrawAddressWalletTag: string;
+        }
+      >({
+        url: "/wallets/crypto/withdraw/request",
+        method: "POST",
+        data: {
+          coin: crypto,
+          network: selectedNetwork?.symbol || "",
+          withdrawAmount,
+          withdrawAddressWallet: address,
+          withdrawAddressWalletTag: tag,
+        },
+      });
 
-  } catch (err) {
-    toast.error(
-      (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
+      toast.success(response.data?.msgOtp || response.msg || "کد تأیید ارسال شد.");
+
+      if (!response.data?.transaction_id) {
+        toast.error("شناسه تراکنش از سرور دریافت نشد.");
+        setIsLoading(false);
+        return;
+      }
+
+      // ✅ ذخیره داده‌ها برای مرحله بعد (تأیید OTP)
+      setWithdrawData({
+        transactionId: response.data.transaction_id,
+        network: selectedNetwork.symbol,
+        withdrawAmount,
+        withdrawAddressWallet: address,
+        withdrawAddressWalletTag: tag,
+      });
+
+      // ✅ باز کردن مودال OTP
+      setResendCodeTimeLeft(120);
+      setIsOtpModalOpen(true);
+
+    } catch (err) {
+      toast.error(
+        (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
         "ارسال درخواست برداشت با مشکل مواجه شد."
-    );
-  } finally {
-    setIsLoading(false);
-  }
-};
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-//  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
+  //  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
   const handleSubmitTransfers = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isOtpModalOpen) return;
@@ -370,14 +372,14 @@ const handleSubmit = async (e: React.FormEvent) => {
         },
       });
 
-     if (res.status) {
-  toast.success(res.msg || "انتقال با موفقیت انجام شد ✅");
-  setIsOtpModalOpen(false);
-  setOtpCode("");
-  setWithdrawData(null); 
-  setIsTradeSuccessModalOpen(true);
-}
- else {
+      if (res.status) {
+        toast.success(res.msg || "انتقال با موفقیت انجام شد ✅");
+        setIsOtpModalOpen(false);
+        setOtpCode("");
+        setWithdrawData(null);
+        setIsTradeSuccessModalOpen(true);
+      }
+      else {
         toast.error(res.msg || "کد تأیید نامعتبر است");
       }
     } catch (err: any) {
@@ -394,285 +396,282 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   return (
     <>
-    <form
-      onSubmit={activeTab === "withdraw" ? handleSubmit : handleSubmitTransfers}
-      className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between  overflow-y-auto lg:border lg:border-gray26"
-    >
-      <div>
-        {/* 🔹 بخش ویدیو آموزشی */}
-        <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2  justify-between">
-          <div className="flex flex-row">
-            <span className="w-6 h-6 icon-wrapper text-blue17">
-              <IconVideo />
-            </span>
-            <h2 className="font-normal text-blue17 mr-2">ویدیو آموزشی برداشت رمز ارز</h2>
-          </div>
-
-          <span className="w-6 h-6 icon-wrapper  text-blue17 ">
-            <IconClose />
-          </span>
-        </div>
-
-        {/* 🔹 تب‌ها */}
-        <div dir="rtl" className="flex mb-6 ">
-          {/*تب "برداشت از کیف پول"*/}
-          <button
-            type="button"
-            onClick={() => setActiveTab("withdraw")}
-            className={`flex-1 py-3 text-center font-medium transition-colors ${
-              activeTab === "withdraw" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-blue-500"
-            }`}
-          >
-            برداشت از کیف پول
-          </button>
-
-          {/*تب "انتقال به کاربر پی فا"*/}
-          <button
-            type="button"
-            onClick={() => setActiveTab("transfer")}
-            className={`flex-1 py-3 text-center font-medium transition-colors ${
-              activeTab === "transfer" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-blue-500"
-            }`}
-          >
-            انتقال به کاربر پی فا
-          </button>
-        </div>
-
-        {/* 🔹 محتوای تب برداشت از کیف پول */}
-        {activeTab === "withdraw" && (
-          <div dir="rtl" className="mb-6 relative">
-            {/* انتخاب رمز ارز*/}
-            <div className="relative w-full mb-6">
-              <button
-                type="button"
-                onClick={() => setIsCurrencyModalOpen(true)}
-                className="flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray12 lg:bg-gray43  bg-gray38 focus:outline-none focus:ring-1 focus:ring-blue2"
-              >
-                {currentCryptoCurrency ? (
-                  <span className="flex items-center gap-2">
-                    {currentCryptoCurrency.isFont ? (
-                      <i
-                        className={`cf cf-${currentCryptoCurrency.symbol.toLowerCase()}`}
-                        style={{
-                          color: currentCryptoCurrency.color,
-                          fontSize: "24px",
-                        }}
-                      ></i>
-                    ) : (
-                      <img
-                        src={`https://api.payfa24.org/images/currency/${currentCryptoCurrency.icon}`}
-                        alt={currentCryptoCurrency.symbol}
-                        className="w-6 h-6 object-contain"
-                      />
-                    )}
-                    <span className="text-black1 font-medium">{currentCryptoCurrency.symbol}</span>
-                  </span>
-                ) : (
-                  <span className="text-gray12">انتخاب ارز</span>
-                )}
-
-                <svg className="w-4 h-4 text-gray12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">
-                انتخاب ارز
-              </label>
+      <form
+        onSubmit={activeTab === "withdraw" ? handleSubmit : handleSubmitTransfers}
+        className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between  overflow-y-auto lg:border lg:border-gray26"
+      >
+        <div>
+          {/* 🔹 بخش ویدیو آموزشی */}
+          <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2  justify-between">
+            <div className="flex flex-row">
+              <span className="w-6 h-6 icon-wrapper text-blue17">
+                <IconVideo />
+              </span>
+              <h2 className="font-normal text-blue17 mr-2">ویدیو آموزشی برداشت رمز ارز</h2>
             </div>
 
-            
-            {crypto ? (
-              <div dir="rtl" className="mb-6">
-                <FloatingSelect
-                  label="شبکه برداشت"
-                  value={selectedNetworkId || ""}
-                  onChange={handleNetworkChange}
-                  options={availableNetworks.map((n) => ({
-                    value: String(n.id),
-                    label: `${n.displayName || n.name || n.symbol || n.id} (${n.name || n.symbol || n.id})`,
-                  }))}
-                />
-              </div>
-            ) : (
-              <div className="w-full border rounded-lg p-3 text-center text-gray-500 border-gray12 mb-6">ابتدا رمز ارز مورد نظر را انتخاب کنید</div>
-            )}
+            <span className="w-6 h-6 icon-wrapper  text-blue17 ">
+              <IconClose />
+            </span>
+          </div>
 
-            {/* مقدار برداشت */}
-            {selectedNetworkId && (
+          {/* 🔹 تب‌ها */}
+          <div dir="rtl" className="flex mb-6 ">
+            {/*تب "برداشت از کیف پول"*/}
+            <button
+              type="button"
+              onClick={() => setActiveTab("withdraw")}
+              className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "withdraw" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-blue-500"
+                }`}
+            >
+              برداشت از کیف پول
+            </button>
+
+            {/*تب "انتقال به کاربر پی فا"*/}
+            <button
+              type="button"
+              onClick={() => setActiveTab("transfer")}
+              className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "transfer" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-blue-500"
+                }`}
+            >
+              انتقال به کاربر پی فا
+            </button>
+          </div>
+
+          {/* 🔹 محتوای تب برداشت از کیف پول */}
+          {activeTab === "withdraw" && (
+            <div dir="rtl" className="mb-6 relative">
+              {/* انتخاب رمز ارز*/}
+              <div className="relative w-full mb-6">
+                <button
+                  type="button"
+                  onClick={() => setIsCurrencyModalOpen(true)}
+                  className="flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray12 lg:bg-gray43  bg-gray38 focus:outline-none focus:ring-1 focus:ring-blue2"
+                >
+                  {currentCryptoCurrency ? (
+                    <span className="flex items-center gap-2">
+                      {currentCryptoCurrency.isFont ? (
+                        <i
+                          className={`cf cf-${currentCryptoCurrency.symbol.toLowerCase()}`}
+                          style={{
+                            color: currentCryptoCurrency.color,
+                            fontSize: "24px",
+                          }}
+                        ></i>
+                      ) : (
+                        <img
+                          src={`https://api.payfa24.org/images/currency/${currentCryptoCurrency.icon}`}
+                          alt={currentCryptoCurrency.symbol}
+                          className="w-6 h-6 object-contain"
+                        />
+                      )}
+                      <span className="text-black1 font-medium">{currentCryptoCurrency.symbol}</span>
+                    </span>
+                  ) : (
+                    <span className="text-gray12">انتخاب ارز</span>
+                  )}
+
+                  <svg className="w-4 h-4 text-gray12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">
+                  انتخاب ارز
+                </label>
+              </div>
+
+
+              {crypto ? (
+                <div dir="rtl" className="mb-6">
+                  <FloatingSelect
+                    label="شبکه برداشت"
+                    value={selectedNetworkId || ""}
+                    onChange={handleNetworkChange}
+                    options={availableNetworks.map((n) => ({
+                      value: String(n.id),
+                      label: `${n.displayName || n.name || n.symbol || n.id} (${n.name || n.symbol || n.id})`,
+                    }))}
+                  />
+                </div>
+              ) : (
+                <div className="w-full border rounded-lg p-3 text-center text-gray-500 border-gray12 mb-6">ابتدا رمز ارز مورد نظر را انتخاب کنید</div>
+              )}
+
+              {/* مقدار برداشت */}
+              {selectedNetworkId && (
+                <div className="mt-4 relative z-10 flex flex-col gap-6">
+                  <div>
+                    <FloatingInput label="مقدار" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" className="border border-gray12 mb-6" />
+                    {/* 🔹 توضیحات زیر input */}
+                    <div className="text-md text-gray5 mt-3 space-y-2">
+                      {/* ردیف اول */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span>موجودی قابل برداشت</span>
+                        <span className="font-medium text-black0">
+                          {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toFixed(8)} {crypto}
+                        </span>
+                      </div>
+                      {/* ردیف دوم */}
+                      <div className="flex items-center justify-between ">
+                        <span>مقدار برداشت روزانه معادل</span>
+                        <span className="font-medium text-black0">{levelUsed.daily_withdrawal_crypto?.toLocaleString() || "—"} تومان</span>
+                      </div>
+                      {/* ردیف سوم */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span>حداقل مجاز برداشت</span>
+                        <span className="font-medium text-black0">
+                          {selectedNetwork?.withdraw_min || "—"} {crypto}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* آدرس مقصد */}
+                  <div className="pt-2">
+                    <FloatingInput
+                      label="آدرس کیف پول مقصد"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      type="text"
+                      className="border border-gray12"
+                    />
+                    <p className="text-xs text-gray5 mt-2">با درج کردن آدرس اشتباه ممکن است باعث از دست رفتن دارایی شما شود.</p>
+                  </div>
+
+                  {/* فقط اگر شبکه نیاز به Tag/Memo دارد */}
+                  {selectedNetwork?.tag === 1 && (
+                    <div>
+                      <FloatingInput label="آدرس ممو" value={tag} onChange={(e) => setTag(e.target.value)} type="text" />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          {/* 🔹 محتوای تب انتقال به کاربر پی‌فا */}
+          {activeTab === "transfer" && (
+            <div dir="rtl" className="mb-6 relative">
+              {/* انتخاب رمز ارز 1-*/}
+              <div className="relative w-full mb-6">
+                <button
+                  type="button"
+                  onClick={() => setIsCurrencyModalOpen(true)}
+                  className="flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray12 lg:bg-gray43  bg-gray38 focus:outline-none focus:ring-1 focus:ring-blue2"
+                >
+                  {currentCryptoCurrency ? (
+                    <span className="flex items-center gap-2">
+                      {currentCryptoCurrency.isFont ? (
+                        <i
+                          className={`cf cf-${currentCryptoCurrency.symbol.toLowerCase()}`}
+                          style={{
+                            color: currentCryptoCurrency.color,
+                            fontSize: "24px",
+                          }}
+                        ></i>
+                      ) : (
+                        <img
+                          src={`https://api.payfa24.org/images/currency/${currentCryptoCurrency.icon}`}
+                          alt={currentCryptoCurrency.symbol}
+                          className="w-6 h-6 object-contain"
+                        />
+                      )}
+                      <span className="text-black1 font-medium">{currentCryptoCurrency.symbol}</span>
+                    </span>
+                  ) : (
+                    <span className="text-gray12">انتخاب ارز</span>
+                  )}
+
+                  <svg className="w-4 h-4 text-gray12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">
+                  انتخاب ارز
+                </label>
+              </div>
+              {/* مقدار برداشت */}
+
               <div className="mt-4 relative z-10 flex flex-col gap-6">
                 <div>
                   <FloatingInput label="مقدار" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" className="border border-gray12 mb-6" />
                   {/* 🔹 توضیحات زیر input */}
                   <div className="text-md text-gray5 mt-3 space-y-2">
-                    {/* ردیف اول */}
                     <div className="flex items-center justify-between mb-4">
                       <span>موجودی قابل برداشت</span>
                       <span className="font-medium text-black0">
                         {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toFixed(8)} {crypto}
                       </span>
                     </div>
-                    {/* ردیف دوم */}
-                    <div className="flex items-center justify-between ">
+                    <div className="flex items-center justify-between">
                       <span>مقدار برداشت روزانه معادل</span>
                       <span className="font-medium text-black0">{levelUsed.daily_withdrawal_crypto?.toLocaleString() || "—"} تومان</span>
                     </div>
-                    {/* ردیف سوم */}
-                    <div className="flex items-center justify-between mb-2">
-                      <span>حداقل مجاز برداشت</span>
-                      <span className="font-medium text-black0">
-                        {selectedNetwork?.withdraw_min || "—"} {crypto}
-                      </span>
-                    </div>
                   </div>
                 </div>
-                {/* آدرس مقصد */}
-                <div className="pt-2">
+                {/* موبایل یا ایمیل دریافت کننده */}
+                <div className="pt-4">
                   <FloatingInput
-                    label="آدرس کیف پول مقصد"
+                    label="موبایل یا ایمیل دریافت کننده"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     type="text"
                     className="border border-gray12"
                   />
-                  <p className="text-xs text-gray5 mt-2">با درج کردن آدرس اشتباه ممکن است باعث از دست رفتن دارایی شما شود.</p>
+                  <p className="text-xs text-gray5 mt-2">با درج کردن موبایل یا ایمیل اشتباه ممکن است باعث از دست رفتن دارایی شما شود.</p>
                 </div>
-
-                {/* فقط اگر شبکه نیاز به Tag/Memo دارد */}
-                {selectedNetwork?.tag === 1 && (
-                  <div>
-                    <FloatingInput label="آدرس ممو" value={tag} onChange={(e) => setTag(e.target.value)} type="text" />
-                  </div>
-                )}
               </div>
-            )}
-          </div>
-        )}
-        {/* 🔹 محتوای تب انتقال به کاربر پی‌فا */}
-        {activeTab === "transfer" && (
-          <div dir="rtl" className="mb-6 relative">
-            {/* انتخاب رمز ارز 1-*/}
-            <div className="relative w-full mb-6">
+            </div>
+          )}
+        </div>
+        <div>
+          {/* 🔹 دکمه تایید */}
+          {(activeTab === "withdraw" || activeTab === "transfer") && (
+            <div>
               <button
-                type="button"
-                onClick={() => setIsCurrencyModalOpen(true)}
-                className="flex items-center justify-between w-full px-3 py-5 border rounded-md border-gray12 lg:bg-gray43  bg-gray38 focus:outline-none focus:ring-1 focus:ring-blue2"
+                type="submit"
+                disabled={isLoading || (activeTab === "withdraw" ? !allWithdrawFieldsFilled : !allTransferFieldsFilled)}
+                className={`w-full py-3 rounded-lg mb-2 mt-24 font-bold text-[18px] transition-colors duration-300 ${isLoading || (activeTab === "withdraw" ? !allWithdrawFieldsFilled : !allTransferFieldsFilled)
+                    ? "bg-gray12 text-white cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600 text-white"
+                  }`}
               >
-                {currentCryptoCurrency ? (
-                  <span className="flex items-center gap-2">
-                    {currentCryptoCurrency.isFont ? (
-                      <i
-                        className={`cf cf-${currentCryptoCurrency.symbol.toLowerCase()}`}
-                        style={{
-                          color: currentCryptoCurrency.color,
-                          fontSize: "24px",
-                        }}
-                      ></i>
-                    ) : (
-                      <img
-                        src={`https://api.payfa24.org/images/currency/${currentCryptoCurrency.icon}`}
-                        alt={currentCryptoCurrency.symbol}
-                        className="w-6 h-6 object-contain"
-                      />
-                    )}
-                    <span className="text-black1 font-medium">{currentCryptoCurrency.symbol}</span>
-                  </span>
-                ) : (
-                  <span className="text-gray12">انتخاب ارز</span>
-                )}
-
-                <svg className="w-4 h-4 text-gray12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                {isLoading ? "در حال ارسال..." : "تأیید"}
               </button>
-
-              <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">
-                انتخاب ارز
-              </label>
             </div>
-            {/* مقدار برداشت */}
-
-            <div className="mt-4 relative z-10 flex flex-col gap-6">
-              <div>
-                <FloatingInput label="مقدار" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" className="border border-gray12 mb-6" />
-                {/* 🔹 توضیحات زیر input */}
-                <div className="text-md text-gray5 mt-3 space-y-2">
-                  <div className="flex items-center justify-between mb-4">
-                    <span>موجودی قابل برداشت</span>
-                    <span className="font-medium text-black0">
-                      {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toFixed(8)} {crypto}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>مقدار برداشت روزانه معادل</span>
-                    <span className="font-medium text-black0">{levelUsed.daily_withdrawal_crypto?.toLocaleString() || "—"} تومان</span>
-                  </div>
-                </div>
-              </div>
-              {/* موبایل یا ایمیل دریافت کننده */}
-              <div className="pt-4">
-                <FloatingInput
-                  label="موبایل یا ایمیل دریافت کننده"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  type="text"
-                  className="border border-gray12"
-                />
-                <p className="text-xs text-gray5 mt-2">با درج کردن موبایل یا ایمیل اشتباه ممکن است باعث از دست رفتن دارایی شما شود.</p>
-              </div>
-            </div>
+          )}
+          {/* 🔹راهنمای برداشت رمز ارز*/}
+          <div className="mt-2" dir="ltr">
+            <Accordion title="راهنمای برداشت رمز ارز">
+              <ul className="list-disc pr-5 space-y-2 text-black1">
+                <li>
+                  از برداشت مستقیم از آدرس خود به مقصد اکسچنچ‌های جهانی که در شروط استفاده از خدمات خود به کاربران ایرانی با محدودیت ساخته اند به ویژه اکسچنچ های
+                  آمریکایی، حتما از کیف پول شخصی و آدرس های یک بار مصرف و انتقال چند لایه بین آدرس های خود استفاده کنید.
+                </li>
+                <li>در تعیین شبکه برداشت دقت لازم را داشته باشید و از پشتیبانی کیف پول مقصد از شبکه انتخابی اطمینان حاصل کنید.</li>
+                <li>در صورت برداشت به آدرس های دفتر ، نیاز به ورود دو مرحله و استفاده از رمز یک بر مصرف نمیباشد.</li>
+                <li>در صورتی که آدرس مقصد متعلق به کاربر پی فا 24 باشد. انتقال به صورت رایگان انجام خواهد شد .</li>
+                <li>به دستور مقام قضایی فاصله بین واریز ریالی و برداشت رمز ارز بین 72 ساعت ممکن است طول بکشد.</li>
+              </ul>
+            </Accordion>
+          </div>
+        </div>
+        {isCurrencyModalOpen && (
+          <div dir="rtl">
+            <CryptoListModal
+              setIsCryptoListModalOpen={setIsCurrencyModalOpen}
+              cryptoListData={mergedCryptosData}
+              setCurrentCryptoCurrency={handleSetCurrentCryptoCurrency}
+              isCryptoListLoading={isCryptoListLoading}
+            />
           </div>
         )}
-      </div>
-      <div>
-        {/* 🔹 دکمه تایید */}
-        {(activeTab === "withdraw" || activeTab === "transfer") && (
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading || (activeTab === "withdraw" ? !allWithdrawFieldsFilled : !allTransferFieldsFilled)}
-              className={`w-full py-3 rounded-lg mb-2 mt-24 font-bold text-[18px] transition-colors duration-300 ${
-                isLoading || (activeTab === "withdraw" ? !allWithdrawFieldsFilled : !allTransferFieldsFilled)
-                  ? "bg-gray12 text-white cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-600 text-white"
-              }`}
-            >
-              {isLoading ? "در حال ارسال..." : "تأیید"}
-            </button>
+        {isTradeSuccessModalOpen && (
+          <div dir="rtl">
+            <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} linkTo={ROUTES.TRANSACTION.CRYPTO_HISTORY} />
           </div>
         )}
-        {/* 🔹راهنمای برداشت رمز ارز*/}
-        <div className="mt-2" dir="ltr">
-          <Accordion title="راهنمای برداشت رمز ارز">
-            <ul className="list-disc pr-5 space-y-2 text-black1">
-              <li>
-                از برداشت مستقیم از آدرس خود به مقصد اکسچنچ‌های جهانی که در شروط استفاده از خدمات خود به کاربران ایرانی با محدودیت ساخته اند به ویژه اکسچنچ های
-                آمریکایی، حتما از کیف پول شخصی و آدرس های یک بار مصرف و انتقال چند لایه بین آدرس های خود استفاده کنید.
-              </li>
-              <li>در تعیین شبکه برداشت دقت لازم را داشته باشید و از پشتیبانی کیف پول مقصد از شبکه انتخابی اطمینان حاصل کنید.</li>
-              <li>در صورت برداشت به آدرس های دفتر ، نیاز به ورود دو مرحله و استفاده از رمز یک بر مصرف نمیباشد.</li>
-              <li>در صورتی که آدرس مقصد متعلق به کاربر پی فا 24 باشد. انتقال به صورت رایگان انجام خواهد شد .</li>
-              <li>به دستور مقام قضایی فاصله بین واریز ریالی و برداشت رمز ارز بین 72 ساعت ممکن است طول بکشد.</li>
-            </ul>
-          </Accordion>
-        </div>
-      </div>
-      {isCurrencyModalOpen && (
-        <div dir="rtl">
-          <CryptoListModal
-            setIsCryptoListModalOpen={setIsCurrencyModalOpen}
-            cryptoListData={mergedCryptosData}
-            setCurrentCryptoCurrency={handleSetCurrentCryptoCurrency}
-            isCryptoListLoading={isCryptoListLoading}
-          />
-        </div>
-      )}
-      {isTradeSuccessModalOpen && (
-        <div dir="rtl">
-          <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} isSell={false} />
-        </div>
-      )}
-    </form>
+      </form>
       {isOtpModalOpen && (
         <div dir="rtl">
           <OTPInputModal
@@ -686,10 +685,10 @@ const handleSubmit = async (e: React.FormEvent) => {
             mainText={`لطفاً کد ارسال شده به شماره ${userMobile} را وارد کنید`}
             submitButtonText="تأیید"
             titleText="تأیید برداشت"
-            />
+          />
         </div>
       )}
-      </>
+    </>
   );
 };
 

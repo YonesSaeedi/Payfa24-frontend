@@ -17,6 +17,7 @@ interface TradeConfirmationModalProps {
   fetchTomanBalance: () => Promise<void>
   handleCancelTrade: () => void
   handleSuccessTrade: () => void
+  handleEmptyInputs?: () => void
 }
 
 const TradeConfirmationModal = ({
@@ -27,7 +28,8 @@ const TradeConfirmationModal = ({
   fetchTomanBalance,
   handleCancelTrade,
   handleSuccessTrade,
-  setTransactionSuccessId
+  setTransactionSuccessId,
+  handleEmptyInputs,
 }: TradeConfirmationModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [timeLeft, setTimeLeft] = useState<number>(10)
@@ -68,6 +70,7 @@ const TradeConfirmationModal = ({
         fetchCryptoBalanceAndPrice()
         setTransactionSuccessId(response?.id_order)
         handleSuccessTrade()
+        if (handleEmptyInputs) handleEmptyInputs()
       } catch (err) {
         toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || 'در تایید سفارش فروش شما مشکلی پیش آمد.');
         setIsTradeConfirmationModalOpen(false)
@@ -86,6 +89,7 @@ const TradeConfirmationModal = ({
         fetchCryptoBalanceAndPrice()
         setTransactionSuccessId(response?.id_order)
         handleSuccessTrade()
+        if (handleEmptyInputs) handleEmptyInputs()
       } catch (err) {
         toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || 'در تایید سفارش خرید شما مشکلی پیش آمد.');
         setIsTradeConfirmationModalOpen(false)

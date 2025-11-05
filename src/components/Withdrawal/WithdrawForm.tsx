@@ -12,6 +12,7 @@ import { useWatch } from "react-hook-form";
 import useGetUser from "../../hooks/useGetUser";
 import { getBankLogo } from "../../utils/bankLogos";
 import { AxiosError } from "axios";
+import { ROUTES } from "../../routes/routes";
 
 interface WithdrawRequestResponse {
   transaction_id: number;
@@ -119,19 +120,19 @@ export default function WithdrawForm() {
 
     // داده‌ها برای ارسال
     const requestData = {
-      amount: amountNumber, 
-      card: data.bank.id, 
+      amount: amountNumber,
+      card: data.bank.id,
     };
 
     try {
-      const response = await apiRequest<WithdrawRequestResponse , { amount: number; card: number }>({
+      const response = await apiRequest<WithdrawRequestResponse, { amount: number; card: number }>({
         url: "/wallets/fiat/withdraw/request",
         method: "POST",
         data: requestData,
       });
 
       console.log("=== API RESPONSE ===", response);
-const transactionId = response.transaction_id;
+      const transactionId = response.transaction_id;
 
       setPendingWithdrawData({
         amount: amountNumber,
@@ -146,7 +147,7 @@ const transactionId = response.transaction_id;
     } catch (err: unknown) {
       console.log("=== API ERROR ===");
       if (err instanceof AxiosError) {
-             toast.error((err as AxiosError<{msg?:string}>)?.response?.data?.msg||'در ارسال درخواست برداشت مشکلی پیش امده است')
+        toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ارسال درخواست برداشت مشکلی پیش امده است')
       } else {
         console.log("Error:", err);
       }
@@ -340,11 +341,10 @@ const transactionId = response.transaction_id;
           <button
             type="submit"
             disabled={!allFieldsFilled || isSubmitting}
-            className={`w-full py-3 rounded-lg mt-24 font-bold text-[18px] transition-colors duration-300 ${
-              !allFieldsFilled || isSubmitting
+            className={`w-full py-3 rounded-lg mt-24 font-bold text-[18px] transition-colors duration-300 ${!allFieldsFilled || isSubmitting
                 ? "bg-gray12  text-white cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600 text-white"
-            }`}
+              }`}
           >
             {isSubmitting ? "درحال برداشت وجه" : "برداشت"}
           </button>
@@ -376,7 +376,7 @@ const transactionId = response.transaction_id;
         <div dir="rtl">
           <TradeSuccessModal
             setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen}
-            isSell={false}
+            linkTo={ROUTES.TRANSACTION.TOMAN_HISTORY}
           />
         </div>
       )}

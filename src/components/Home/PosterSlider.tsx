@@ -1,13 +1,10 @@
 import { useEffect, useState, useRef } from "react";
-import { apiRequest } from "../../utils/apiClient";
-import { toast } from "react-toastify";
 import { Link } from "react-router";
-import { AxiosError } from "axios";
-import { Banner, Dashboard } from "../../types/api/dashboard";
+import { Banner } from "../../types/api/dashboard";
 
-const PosterSlider = () => {
+const PosterSlider = ({ bannersData, isLoading }: { bannersData: Banner[] | undefined, isLoading: boolean }) => {
   const [slides, setSlides] = useState<Banner[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef<number | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
@@ -15,24 +12,27 @@ const PosterSlider = () => {
   const startXRef = useRef(0);
   const draggedRef = useRef(false);
 
+  // useEffect(() => {
+  //   const fetchSlides = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const response = await apiRequest<Dashboard>({ url: "/dashboard/web" });
+  //       const banners = response?.banner?.banner;
+  //       if (Array.isArray(banners)) setSlides(banners);
+  //       else setSlides([]);
+  //     } catch (err) {
+  //       toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || "دریافت اطلاعات داشبورد با مشکل مواجه شد.");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchSlides();
+  // }, []);
   useEffect(() => {
-    const fetchSlides = async () => {
-      try {
-        setIsLoading(true);
-        const response = await apiRequest<Dashboard>({ url: "/dashboard/web" });
-        const banners = response?.banner?.banner;
-        if (Array.isArray(banners)) setSlides(banners);
-        else setSlides([]);
-      } catch (err) {
-        toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || "دریافت اطلاعات بنر با مشکل مواجه شد.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchSlides();
-  }, []);
+    if (Array.isArray(bannersData)) setSlides(bannersData);
+    else setSlides([]);
+  }, [bannersData])
 
- 
   useEffect(() => {
     if (!slides.length) return;
     intervalRef.current = window.setInterval(() => {

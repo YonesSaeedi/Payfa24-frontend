@@ -9,37 +9,32 @@ import WalletMines from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIc
 import ReceiptText from "../../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
 import WithdrawModal from "../../Withdrawal/WithdrawModal";
 import DepositModal from "../../Deposit/DepositModal";
-import { apiRequest } from "../../../utils/apiClient";
 import { formatPersianDigits } from "../../../utils/formatPersianDigits";
 import IconEyeClosed from "../../../assets/icons/Login/IconEyeClosed";
-import { toast } from "react-toastify";
-import { AxiosError } from "axios";
 import { ROUTES } from "../../../routes/routes";
 
 interface WalletCardProps {
   showBuySell?: boolean;
+  walletData?: Wallets;
+  isLoading: boolean;
 }
 interface Wallet {
-  balance: number;
+  balance?: number;
 }
 interface Wallets {
-  toman: Wallet;
-  crypto: Wallet;
-}
-interface WalletResponse {
-  wallets: Wallets;
+  toman?: Wallet;
+  crypto?: Wallet;
 }
 
-const WalletCard = ({ showBuySell = true }: WalletCardProps) => {
-  const [showBalance, setShowBalance] = useState(true);
+const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
-  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
-  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showBalance, setShowBalance] = useState(true);
+  // const [stateBlure, setStateBlure] = useState<boolean>(true);
+  const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
+  const [showDepositModal, setShowDepositModal] = useState<boolean>(false);
   const [selectedCurrency, setSelectedCurrency] = useState<"tether" | "toman">("toman");
-  const [balance, setBalance] = useState<WalletResponse | null>(null);
-
-  const fakeBalance = 123456;
-
+  const [balance, setBalance] = useState<Wallets | null>(null);
+  // action buttons ===============================================================================================================================
   const actionButtons = [
     { label: "تاریخچه", route: ROUTES.TRANSACTION.CRYPTO_HISTORY, icon: <ReceiptText /> },
     { label: "برداشت", onClick: () => setShowWithdrawModal(true), icon: <WalletMines /> },
@@ -51,31 +46,27 @@ const WalletCard = ({ showBuySell = true }: WalletCardProps) => {
         ]
       : []),
   ];
-
-  async function getBalance() {
-    try {
-      const response = await apiRequest<WalletResponse>({ url: "/dashboard/web" });
-      setBalance(response);
-    } catch (err) {
-      toast.error(
-        (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
-          "دریافت اطلاعات کیف پول با مشکل مواجه شد."
-      );
-    }
-  }
-
+  // handle currency change =====================================================================================================================
+  // const handleCurrencyChange = (value: "tether" | "toman") => {
+  //   setSelectedCurrency(value);
+  // };
+  // function get balance and run it once component mounted ======================================================================================
+  // async function getBalance() {
+  //   try {
+  //     const response = await apiRequest<WalletResponse>({ url: "/dashboard/web" });
+  //     setBalance(response);
+  //   } catch (err) {
+  //     toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'دریافت اطلاعات کیف پول با مشکل مواجه شد.')
+  //   }
+  // }
+  // useEffect(() => { getBalance(); }, []);
   useEffect(() => {
-    getBalance();
-  }, []);
+    setBalance(walletData ?? null);
+  }, [walletData]);
+  // specify displayed balance currency ==========================================================================================================
+  const displayBalance = selectedCurrency === "tether" ? balance?.crypto?.balance : balance?.toman?.balance;
 
-  const displayBalance =
-    selectedCurrency === "tether"
-      ? balance?.wallets.crypto?.balance
-      : balance?.wallets.toman?.balance;
-
-  const shownBalance = showBalance
-    ? formatPersianDigits(displayBalance ?? 0)
-    : formatPersianDigits(fakeBalance);
+  const shownBalance = showBalance ? formatPersianDigits(displayBalance ?? 0) : formatPersianDigits(1234567);
 
   // 🔹 تغییر همزمان blur و مقدار
   const handleToggleBalance = () => {
@@ -92,34 +83,21 @@ const WalletCard = ({ showBuySell = true }: WalletCardProps) => {
         {/* بالا */}
         <div className="flex items-center justify-between mb-7">
           <CurrencyToggle onChange={(v) => setSelectedCurrency(v)} />
-          <div
-            className="flex items-center gap-1.5 cursor-pointer transition-all duration-300 rounded-xl px-2 py-1"
-            onClick={handleToggleBalance}
-          >
-            <span className="w-[22px] h-[22px] text-gray-500 group-hover:bg-blue2">
-              {showBalance ? <VisibilityIcon /> : <IconEyeClosed />}
-            </span>
-            <span className="text-black1 text-xs font-medium lg:font-bold lg:text-lg hover:text-blue2">
-              موجودی کیف پول شما
-            </span>
+          <div className="flex items-center gap-1.5 cursor-pointer transition-all duration-300 rounded-xl px-2 py-1" onClick={handleToggleBalance}>
+            <span className="w-[22px] h-[22px] text-gray-500 group-hover:bg-blue2">{showBalance ? <VisibilityIcon /> : <IconEyeClosed />}</span>
+            <span className="text-black1 text-xs font-medium lg:font-bold lg:text-lg hover:text-blue2">موجودی کیف پول شما</span>
           </div>
         </div>
 
         {/* موجودی */}
         <div className="text-center mb-6">
-          <div
-            className="text-base lg:text-2xl flex items-center justify-center gap-3 font-bold text-black1 transition-all duration-300"
-            dir="rtl"
-            style={{ userSelect: "none" }}
-          >
-            <span
-              className={`transition-all duration-300 ${
-                !showBalance || isAnimating ? "blur-md text-gray-500" : ""
-              }`}
-            >
-              {shownBalance}
-            </span>
-            <span >{selectedCurrency === "tether" ? "تتر" : "تومان"}</span>
+          <div className="text-base lg:text-2xl flex items-center justify-center gap-3 font-bold text-black1 transition-all duration-300" dir="rtl" style={{ userSelect: "none" }}>
+            {isLoading ? (
+              <span className="skeleton-bg h-5 lg:h-7 lg:w-36 w-20 rounded"></span>
+            ) : (
+              <span className={`transition-all duration-300 ${!showBalance || isAnimating ? "blur text-gray-500" : ""}`}>{shownBalance}</span>
+            )}
+            <span>{selectedCurrency === "tether" ? "تتر" : "تومان"}</span>
           </div>
         </div>
 
