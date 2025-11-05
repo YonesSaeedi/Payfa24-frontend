@@ -139,7 +139,7 @@ function HomePage() {
             <div className="w-full pt-7">
               <CryptoTable data={Object.values(mergedCryptosData)} isLoading={isLoading} />
             </div>
-            <div id="qustionBox" className="pt-12 lg:pb-28 pb-14">
+            <div id="qustionBox" className="pt-12">
               <QuestionBox />
             </div>
           </div>

@@ -10,9 +10,11 @@ type CryptoListModalProps = {
   setCurrentCryptoCurrency: (cryptocurrency: CryptoItem) => void
   isCryptoListLoading?: boolean
   digitalCryptoListData?: CryptoItem[]
+  isSell?: boolean
+  clearInputs?: () => void
 }
 
-const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentCryptoCurrency, isCryptoListLoading, digitalCryptoListData }: CryptoListModalProps) => {
+const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentCryptoCurrency, isCryptoListLoading, digitalCryptoListData, isSell, clearInputs }: CryptoListModalProps) => {
   const [isDollarCurrencies, setIsDollarCurrencies] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [searchResults, setSearchResults] = useState<CryptoItem[]>([])
@@ -92,6 +94,8 @@ const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentC
             width='100%'
             setCurrentCryptoCurrency={setCurrentCryptoCurrency}
             closeModal={() => setIsCryptoListModalOpen(false)}
+            isSell={isSell}
+            clearInputs={clearInputs ?? undefined}
           />
         </div>
       </div>

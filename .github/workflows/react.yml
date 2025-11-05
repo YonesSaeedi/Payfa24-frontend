@@ -48,8 +48,7 @@ jobs:
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
-            echo 'Pulling base image...'
-            docker pull node:22.18.0-bullseye
+        
 
             echo 'Building new Docker image...'
             docker build \

@@ -24,6 +24,7 @@ import useGetUser from "../../hooks/useGetUser";
 import useGetSettings from "../../hooks/useGetSettings";
 import { AxiosError } from "axios";
 import { DigitalBuy } from "../../types/api/digital-trade";
+import { toFixedNoExponential } from "../../utils/toFixedNoExponential";
 
 const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const countInputRef = useRef<HTMLInputElement | null>(null)
@@ -49,9 +50,16 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const [resendCodeIsSubmitting, setResendCodeIsSubmitting] = useState<boolean>(false)
   const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState<number>(0)
   const [digitalIDOrder, setDigitalIDOrder] = useState<number | null>(null)
+  const [transactionSuccessId, setTransactionSuccessId] = useState<number>(0)
   const { currentCryptocurrency, setCurrentCryptocurrency } = useOutletContext<{ currentCryptocurrency: CryptoItem | null; setCurrentCryptocurrency: React.Dispatch<React.SetStateAction<CryptoItem | null>>; }>();
   const [searchParams] = useSearchParams()
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
+  // empty inputs and set percent bar to zero =============================================================================================================
+  const handleClearInputs = () => {
+    setAmountValue('')
+    setCountInputStr('')
+    setSelectedPercent(0)
+  }
   // handles count input change ============================================================================================================================
   const handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     lastChangedRef.current = 'input';
@@ -63,7 +71,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       const max = isSell ? cryptoBalance : TomanBalance / currentCryptoPrice;
       if (num > max) {
         num = max;
-        val = String(Math.round(max * 1e8) / 1e8);
+        val = toFixedNoExponential(Math.round(max * 1e8) / 1e8);
       }
       setCountInputStr(val);
       setAmountValue(Math.round(num * currentCryptoPrice * 100) / 100);
@@ -81,13 +89,13 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     else if (isSell && num > cryptoBalance * currentCryptoPrice) num = cryptoBalance * currentCryptoPrice
     const rounded = Math.round(num * 100) / 100;
     setAmountValue(rounded);
-    setCountInputStr(String(Math.round((rounded / currentCryptoPrice) * 1e8) / 1e8));
+    setCountInputStr(toFixedNoExponential(Math.round((rounded / currentCryptoPrice) * 1e8) / 1e8));
   };
   // handles filling the count input by 'all balance' button ====================================================================================================
   const handleFillCount = () => {
     if (!cryptoBalance) return
     const roundedCount = isSell ? cryptoBalance : Math.round((TomanBalance / currentCryptoPrice) * 1e8) / 1e8;
-    setCountInputStr(String(roundedCount));
+    setCountInputStr(toFixedNoExponential(roundedCount));
     setAmountValue(Math.round((roundedCount * currentCryptoPrice) * 100) / 100);
     setSelectedPercent(100)
   };
@@ -96,7 +104,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     if (!TomanBalance) return
     const roundedAmount = isSell ? Math.round(cryptoBalance * currentCryptoPrice * 100) / 100 : TomanBalance;
     setAmountValue(roundedAmount);
-    setCountInputStr(String(Math.round((roundedAmount / currentCryptoPrice) * 1e8) / 1e8));
+    setCountInputStr(toFixedNoExponential(Math.round((roundedAmount / currentCryptoPrice) * 1e8) / 1e8));
     setSelectedPercent(100)
   };
   // syncing the percent bar and inputs together =============================================================================================================
@@ -121,13 +129,13 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       } else if (isSell) {
         const newCount = Math.round((cryptoBalance * selectedPercent / 100) * 1e8) / 1e8;
         const newAmount = Math.round(newCount * currentCryptoPrice * 100) / 100;
-        if (Number(countInputStr) !== newCount) setCountInputStr(String(newCount));
+        if (Number(countInputStr) !== newCount) setCountInputStr(toFixedNoExponential(newCount));
         if ((amountValue || 0) !== newAmount) setAmountValue(newAmount);
       } else {
         const newAmount = Math.round((TomanBalance * selectedPercent / 100) * 100) / 100;
         const newCount = Math.round(newAmount / currentCryptoPrice * 1e8) / 1e8;
         if ((amountValue || 0) !== newAmount) setAmountValue(newAmount);
-        if (Number(countInputStr) !== newCount) setCountInputStr(String(newCount));
+        if (Number(countInputStr) !== newCount) setCountInputStr(toFixedNoExponential(newCount));
       }
     }
     // Reset the change source after applying
@@ -330,6 +338,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       fetchTomanBalance()
       setIsOtpModalOpen(false)
       setIsTradeSuccessModalOpen(true)
+      handleClearInputs()
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
     } finally {
@@ -424,6 +433,8 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               setCurrentCryptoCurrency={setCurrentCryptocurrency}
               isCryptoListLoading={isCryptoListLoading}
               digitalCryptoListData={Object.values(mergedDigitalCryptosData)}
+              isSell={isSell}
+              clearInputs={handleClearInputs}
             />}
           {isTradeConfirmationModalOpen &&
             <TradeConfirmationModal
@@ -434,9 +445,15 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               fetchTomanBalance={fetchTomanBalance}
               handleCancelTrade={handleCancelTrade}
               handleSuccessTrade={handleSuccessTrade}
+              setTransactionSuccessId={setTransactionSuccessId}
+              handleEmptyInputs={handleClearInputs}
             />}
           {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
-          {isTradeSuccessModalOpen && <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} isSell={isSell} />}
+          {isTradeSuccessModalOpen && <TradeSuccessModal
+            setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen}
+            successMsg={`${isSell ? 'فروش ' : 'خرید '}با موفقیت انجام شد.`}
+            linkTo={`${ROUTES.TRANSACTION.ORDER_HISTORY}?id=${transactionSuccessId}`}
+          />}
           {isOtpModalOpen &&
             <OTPInputModal
               titleText={`تایید ${isSell ? 'فروش' : 'خرید'} ${currentCryptocurrency?.locale?.fa?.name}`}
