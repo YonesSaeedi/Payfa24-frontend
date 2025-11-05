@@ -11,9 +11,10 @@ interface CurrenciesVirtualizedListProps {
   setCurrentCryptoCurrency: (cryptocurrency: CryptoItem) => void
   closeModal: () => void
   isSell?: boolean
+  clearInputs?: () => void
 }
 
-const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ height, itemHeight, items, width, setCurrentCryptoCurrency, closeModal, isSell }) => {
+const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ height, itemHeight, items, width, setCurrentCryptoCurrency, closeModal, isSell, clearInputs }) => {
   const Row: React.FC<ListChildComponentProps<(CryptoItem | null)[]>> = ({ index, style, data, }) => {
     const item = data[index];
 
@@ -29,6 +30,7 @@ const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ h
           onClick={() => {
             setCurrentCryptoCurrency(item)
             closeModal()
+            if (clearInputs) clearInputs()
           }}
           dir="rtl"
           className="w-full px-3 lg:px-4 py-1 lg:py-2 rounded-lg border border-gray26 bg-gray33 flex items-center hover:bg-gray6 hover:border-blue2"
