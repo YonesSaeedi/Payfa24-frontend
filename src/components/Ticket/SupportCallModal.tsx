@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import IconCloseButtun from "../../assets/icons/services/IconCloseButtun";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import { apiRequest } from "../../utils/apiClient";
+import IconIntoCircle from "../../assets/icons/Wallet/IconIntoCircle";
 
 
 type FormDataValue = string | number | boolean | Blob | File;
@@ -50,7 +51,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
   >
     <div
       dir="rtl"
-      className="bg-white8 rounded-2xl shadow-lg w-full max-w-md p-6 relative"
+      className="bg-white8 rounded-2xl shadow-lg  w-[480px] p-4 relative !h-[526px]"
       onClick={(e) => e.stopPropagation()} 
     >
       <button
@@ -60,11 +61,11 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
         <IconCloseButtun />
       </button>
 
-      <h2 className="font-bold text-lg text-black1 mb-12 pt-3">
+      <h2 className="font-bold text-lg text-black1 pt-3">
         درخواست تماس با پشتیبانی
       </h2>
 
-      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 ">
+      <form onSubmit={handleSubmit(onFormSubmit)} className="pt-[51px]">
       
         <div>
           <Controller
@@ -79,7 +80,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="tel"
                 placeholder=""
                 placeholderColor="text-black0"
-                className="lg:bg-white8 border-gray2 rounded-lg"
+                className="!bg-white8 border-gray21 rounded-lg font-normal text-[14px]"
+                 labelClassName="!bg-white8 !font-normal !text-[14px]"
               
               />
             )}
@@ -87,12 +89,18 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
           {errors.number && (
             <p className="text-red-500 text-xs mt-1">{errors.number.message}</p>
           )}
-          <p className="text-xs text-gray-500 mt-1">
-            لطفا موبایلی که درخواست تماس تلفنی با آن را دارید وارد کنید.
-          </p>
+          <div className="flex items-center gap-1 mt-1">
+  <span>
+    <IconIntoCircle />
+  </span>
+  <p className="text-[12px] font-normal text-gray-500">
+    لطفا موبایلی که درخواست تماس تلفنی با آن را دارید وارد کنید.
+  </p>
+</div>
+
         </div>
 
-        <div className="pt-8 pb-8">
+        <div className="pt-8">
           <Controller
             name="description"
             control={control}
@@ -105,8 +113,8 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="text"
                 placeholder="درخواست تماس با پشتیبانی درباره..."
                 placeholderColor="text-black0"
-                className="border-gray2 h-[160px] lg:bg-white8 !rounded-lg"
-              
+                className="border-gray21  !bg-white8 !rounded-lg !h-[186px]"
+                labelClassName="!bg-white8 !font-normal !text-[14px]"
               />
             )}
           />
@@ -118,7 +126,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-2 rounded-lg font-medium transition text-white ${
+          className={`w-full py-2 rounded-lg font-medium h-12 transition text-white mt-12 ${
             loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
           }`}
         >

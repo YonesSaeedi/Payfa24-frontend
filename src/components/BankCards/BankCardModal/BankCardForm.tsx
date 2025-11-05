@@ -121,7 +121,7 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
         </div>
 
         <div className="relative w-full mb-2">
-          <input
+          <input dir="rtl"
             id="cardNumber"
             type="text"
             value={cardNumber}
@@ -151,7 +151,8 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
     placeholder:text-gray-400
     placeholder:text-2xl
      placeholder:tracking-[0.1em]
-    placeholder:text-center
+    [&::placeholder]:text-center
+
     focus:outline-none
     focus:ring-2 focus:ring-blue-400
     focus:border-none

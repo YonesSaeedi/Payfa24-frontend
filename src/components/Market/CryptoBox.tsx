@@ -55,7 +55,7 @@ export default function CryptoBox({ title, iconTop, items, isLoading = false }: 
                 <div className="flex items-center gap-2">
                   <span className="w-[34px] h-[34px] flex items-center justify-center">{item.icon}</span>
                   <div className="flex flex-col text-right leading-tight">
-                    <span className="text-black1 mb-2 font-normal text-base whitespace-nowrap">{item.name.length > 10 ? item.name.substring(0, 10) + "..." : item.name}</span>
+                    <span className="text-black1 mb-1/2 font-normal text-base whitespace-nowrap">{item.name.length > 10 ? item.name.substring(0, 10) + "..." : item.name}</span>
                     <span className="text-xs text-gray12 uppercase">{item.symbol}</span>
                   </div>
                 </div>

@@ -153,7 +153,8 @@ const toggleAllRows = () => {
          <thead>
   <tr className="bg-gray41 text-black1 rounded-lg">
     {/* نام و نماد ارز */}
-    <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base rounded-r-lg mr-11">
+    <th className="py-2.5 lg:py-4 px-4 font-medium text-xs lg:text-base rounded-r-lg mr-11 
+">
       نام و نماد ارز
     </th>
 
@@ -252,7 +253,7 @@ const toggleAllRows = () => {
     </div>
 
     <div className="flex flex-col min-w-0 items-start justify-start">
-      <div className="font-medium text-black1 text-xs lg:text-base overflow-hidden text-ellipsis whitespace-nowrap w-full" title={name}>
+      <div className=" text-black1 text-xs lg:text-base overflow-hidden text-ellipsis whitespace-nowrap w-full text-[18px] font-normal" title={name}>
         {name}
       </div>
       <span className="text-[11px] lg:text-xs text-gray-500">{symbol}</span>
@@ -283,10 +284,10 @@ const toggleAllRows = () => {
 
 
   {/* نسخه دسکتاپ بدون تغییر */}
- <td className="py-3 px-4 hidden lg:table-cell text-black1">{item.fee ? `${formatPersianDigits(item.fee)} USDT` : "۰ تومان"}</td>
-  <td className="py-3 px-4 hidden lg:table-cell text-black1">{formatPersianDigits(priceBuy)} تومان</td>
-  <td className="py-3 px-4 hidden lg:table-cell text-black1">{formatPersianDigits(priceSell)} تومان</td>
-  <td className="py-3 px-4 hidden lg:table-cell text-center">
+ <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{item.fee ? `${formatPersianDigits(item.fee)} USDT` : "۰ تومان"}</td>
+  <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianDigits(priceBuy)} تومان</td>
+  <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianDigits(priceSell)} تومان</td>
+  <td className="py-3 px-4 hidden lg:table-cell text-center font-normal text-base">
     <span className={`${change24h >= 0 ? "text-green-500" : "text-red-500"}`}>
       {formatPersianDigits(change24h)}%
     </span>

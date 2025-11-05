@@ -17,18 +17,26 @@ const FAQPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = (
-    activeTab === "all"
-      ? [...FAQData.home, ...FAQData.trade, ...FAQData.account]
-      : activeTab === "general"
-        ? FAQData.home
-        : activeTab === "buy-sell"
+  activeTab === "all"
+    ? [...FAQData.home, ...FAQData.trade, ...FAQData.account]
+    : activeTab === "general"
+      ? FAQData.home
+      : activeTab === "buy-sell"
+        ? FAQData.trade
+        : activeTab === "deposit-withdraw"
           ? FAQData.trade
-          : activeTab === "deposit-withdraw"
-            ? FAQData.trade
-            : activeTab === "register"
-              ? FAQData.account
-              : []
-  ).filter((item: FAQItem) => item.question.toLowerCase().includes(searchTerm.toLowerCase()));
+          : activeTab === "register"
+            ? FAQData.account
+            : []
+)
+.filter((item: FAQItem) =>
+  item.question.toLowerCase().includes(searchTerm.toLowerCase())
+)
+.filter((item, index, self) =>
+  index === self.findIndex((t) => t.question === item.question)
+);
+
+
 
 
   return (
@@ -47,7 +55,7 @@ const FAQPage: React.FC = () => {
             <div className="lg:flex items-center">
               <div className="flex-col  flex justify-between lg:gap-24 lg:flex-row-reverse">
                 <div className="flex flex-col items-center justify-center">
-                  <h1 className=" mb-2 text-black1 text-4xl font-bold">
+                  <h1 className=" mb-2 text-black1 lg:text-4xl lg:font-bold font-bold text-base">
                     سوالات متداول
                   </h1>
                   <div className="w-full max-w-md">
@@ -93,14 +101,14 @@ const FAQPage: React.FC = () => {
             <div className="flex flex-col lg:flex-row-reverse gap-8 items-start  lg:text-right">
               <div
                 dir="rtl"
-                className="flex flex-col items-center lg:items-start w-full max-w-[900px] mx-auto px-4 lg:px-0"
+                className="flex flex-col items-center lg:items-start w-full max-w-[900px] mx-auto  lg:px-0"
               >
                 <div className="pt-6 w-full lg:w-auto flex gap-3 flex-col">
-                  <span className="lg:text-2xl lg:font-bold text-black1 pb-[28px] text-sm font-bold">سوالات پرتکرار</span>
+                  <span className="lg:text-2xl lg:font-bold text-black1 pb-2 lg:pb-4 text-sm font-bold">سوالات پرتکرار</span>
                   <FAQTabs activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
 
-                <div className="w-full lg:w-auto mt-2 lg:pb-12">
+                <div className="w-full lg:w-auto  lg:pb-12">
                   {filteredItems.length > 0 ? (
                     <TradeLayoutFAQ items={filteredItems} />
                   ) : (

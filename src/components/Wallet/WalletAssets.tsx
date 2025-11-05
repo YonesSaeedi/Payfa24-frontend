@@ -7,16 +7,14 @@ import WalletMinesIcon from "../../assets/icons/Home/WalletCardIcon/WalletMinesI
 import IconMoreHorizental from "../../assets/icons/Wallet/IconMoreHorizental";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import IconSearch from "../../assets/icons/market/IconSearch";
-import { ROUTES } from "../../routes/routes"; 
+import { ROUTES } from "../../routes/routes";
 import { apiRequest } from "../../utils/apiClient";
 import { ActionModal } from "./ActionModal";
 import IconMoreVertical from "../../assets/icons/Wallet/IconMoreVertical";
 import { Link } from "react-router-dom";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
-import Pagination from "../History/Pagination"; 
-
-
-
+import Pagination from "../History/Pagination";
+import EmptyWallet from './../../assets/EmptyWallet.png';
 
 interface GeneralCryptoItem {
   symbol: string;
@@ -76,8 +74,7 @@ const WalletAssets: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
-const [totalPages, setTotalPages] = useState(1);
-
+  const [totalPages, setTotalPages] = useState(1);
 
   // 📌 هندل ریسایز
   useEffect(() => {
@@ -98,38 +95,36 @@ const [totalPages, setTotalPages] = useState(1);
   }, []);
 
   // 📌 تابع fetchData
-const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNum: number) => {
-  setIsLoading(true);
-  try {
-    const response = await apiRequest<WalletsResponse>({
-      url: "/wallets/crypto",
-      method: "GET",
-      params: { 
-        limit: 10,
-        page: pageNum,
-        search: searchTerm,
-        sort: sortKey,
-        justBalance: true,
-      },
-    });
+  const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNum: number) => {
+    setIsLoading(true);
+    try {
+      const response = await apiRequest<WalletsResponse>({
+        url: "/wallets/crypto",
+        method: "GET",
+        params: {
+          limit: 10,
+          page: pageNum,
+          search: searchTerm,
+          sort: sortKey,
+          justBalance: true,
+        },
+      });
 
-    setWalletsData(response.wallets || []);
+      setWalletsData(response.wallets || []);
 
-    if (response.crypto_count) {
-      setTotalPages(Math.ceil(response.crypto_count / 10));
+      if (response.crypto_count) {
+        setTotalPages(Math.ceil(response.crypto_count / 10));
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  } finally {
-    setIsLoading(false);
-  }
-}, []);
+  }, []);
 
-
- useEffect(() => {
-  fetchData(search, selectedSortKey, page);
-}, [search, selectedSortKey, page, fetchData]);
-
+  useEffect(() => {
+    fetchData(search, selectedSortKey, page);
+  }, [search, selectedSortKey, page, fetchData]);
 
   // 📌 هندل تغییر sort
   const handleSort = (key: string) => {
@@ -187,6 +182,11 @@ const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNu
     };
   });
 
+  const formatNumber = (num: number, decimals = 8) => {
+  return formatPersianDigits(Number(num.toFixed(decimals)).toString());
+};
+
+
   return (
     <div dir="rtl" className="p-4 bg-white1 rounded-xl border border-gray21 w-full overflow-visible">
       <div className="flex items-center justify-between mb-3">
@@ -205,7 +205,10 @@ const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNu
         <div className="relative  inline-block text-right max-w-[50%]" ref={dropdownRef}>
           <button
             onClick={() => setOpenDropdown(!openDropdown)}
-            className={`border rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1 transition-colors duration-200 ${openDropdown ? "border-blue2" : "border-gray19"}`}>
+            className={`border rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1 transition-colors duration-200 ${
+              openDropdown ? "border-blue2" : "border-gray19"
+            }`}
+          >
             {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
             <span className={`w-4 h-4 transition-transform duration-200 text-gray12 ${openDropdown ? "rotate-180" : ""}`}>
               <IconChervDown />
@@ -223,7 +226,6 @@ const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNu
         </div>
       </div>
 
-
       <div>
         <div className="w-full text-sm text-right border-collapse text-black1">
           <div className="hidden lg:grid grid-cols-5 w-full bg-gray41 text-black1 text-sm font-medium h-12 items-center rounded-lg">
@@ -233,16 +235,14 @@ const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNu
             <span className="text-center">موجودی شما</span>
             <span className="text-center">معادل موجودی</span>
           </div>
-
           <div>
             {isLoading ? (
-              // 👇 اسکلتون
+             
               [...Array(2)].map((_, index) => (
                 <div
                   key={index}
-                  className="border-b grid grid-cols-2 lg:grid-cols-5 border rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 last:border-b-0 mb-2 lg:m-0 animate-pulse"
+                  className="border-b grid grid-cols-2 lg:grid-cols-5 border border-gray21 rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 last:border-b-0 mb-2 lg:m-0 animate-pulse"
                 >
-                 
                   <div className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
                     <div className="w-8 h-8 rounded-full skeleton-bg"></div>
                     <div className="flex flex-col gap-1">
@@ -251,22 +251,18 @@ const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNu
                     </div>
                   </div>
 
-             
                   <div className="px-4 py-3 hidden lg:flex justify-center items-center">
                     <div className="w-16 h-4 rounded-md skeleton-bg"></div>
                   </div>
 
-                
                   <div className="px-4 py-3 hidden lg:flex justify-center items-center">
                     <div className="w-16 h-4 rounded-md skeleton-bg"></div>
                   </div>
 
-              
                   <div className="px-4 py-3 hidden lg:flex justify-center items-center">
                     <div className="w-24 h-4 rounded-md skeleton-bg"></div>
                   </div>
 
-               
                   <div className="px-2 py-3 text-center relative whitespace-nowrap flex items-center justify-between">
                     <span></span>
                     <div className="flex flex-col items-end justify-center gap-2">
@@ -279,17 +275,16 @@ const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNu
               ))
             ) : cryptoData.length === 0 ? (
               <div className="flex flex-col items-center justify-center ">
-                <div className=" flex items-center justify-center text-[#75A4FE] w-20 h-20 m-10 ">
-                  <WalletMinesIcon />
-                </div>
+               <div className="flex items-center justify-center">
+  <img src={EmptyWallet} alt="Empty Wallet" className="w-full h-full object-contain" />
+</div>
                 <span className="block text-center text-black2 mb-10 text-base font-normal">کیف پول دارایی‌های شما خالی است!</span>
               </div>
             ) : (
-             
               cryptoData.map((item, index) => (
                 <div
                   key={index}
-                  className="border-b grid grid-cols-2 lg:grid-cols-5 border rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 lg:last:border-b-0 mb-2 lg:m-0"
+                  className="border-b grid grid-cols-2 lg:grid-cols-5 border border-gray21 rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 lg:last:border-b-0 mb-2 lg:m-0"
                 >
                   <div className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
                     {item.icon}
@@ -300,98 +295,71 @@ const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNu
                   </div>
 
                   <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
-  {formatPersianDigits(item.price.toLocaleString())}
-</span>
-
-
-                  <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">{formatPersianDigits(item.fee_toman.toLocaleString())}</span>
+                    {formatPersianDigits(item.price.toLocaleString())} USDT
+                  </span>
 
                   <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
-                    {formatPersianDigits(item.balance.toLocaleString())} {item.symbol}
+                    {formatPersianDigits(item.fee_toman.toLocaleString())}
+                  </span>
 
+                  <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
+                  {formatNumber(item.balance, 8)} {item.symbol}
                   </span>
 
                   <div className="px-2 py-3 text-center relative whitespace-nowrap group flex items-center justify-between">
                     <span></span>
                     <div className="flex flex-col items-end justify-center text-xs lg:text-sm font-normal">
-                      <span className="whitespace-nowrap">{formatPersianDigits((item.price * item.balance).toFixed(2))} دلار</span>
+                      <span className="whitespace-nowrap">  {formatNumber(item.price * item.balance, 2)} دلار</span>
                       <span className="whitespace-nowrap lg:hidden">معادل {item.balance} تومان</span>
                     </div>
-<button className="rounded-full transition w-4 h-4 flex items-center justify-center" onClick={() => {
-    if (isMobile) {
-      setOpenModalId(openModalId === index ? null : index);
-    } else {
-      setOpenMenuId(openMenuId === index ? null : index);
-    }
-  }}
->
-  {isMobile
-  ? openModalId === index
-    ? <IconMoreVertical />
-    : <IconMoreHorizental />
-  : openMenuId === index
-    ? <IconMoreVertical />
-    : <IconMoreHorizental />
-}
-
-</button>
+                    <button
+                      className="rounded-full transition w-4 h-4 flex items-center justify-center"
+                      onClick={() => {
+                        if (isMobile) {
+                          setOpenModalId(openModalId === index ? null : index);
+                        } else {
+                          setOpenMenuId(openMenuId === index ? null : index);
+                        }
+                      }}
+                    >
+                      {isMobile ? openModalId === index ? <IconMoreVertical /> : <IconMoreHorizental /> : openMenuId === index ? <IconMoreVertical /> : <IconMoreHorizental />}
+                    </button>
                     {!isMobile && openMenuId === index && (
                       <div
                         ref={menuRef}
                         className="absolute left-[25px] mt-2 top-6 w-[226px] bg-white8 overflow-hidden border border-gray21 shadow-md rounded-lg flex flex-col z-10"
                       >
-                        <Link
-  to={`${ROUTES.TRADE.BUY}?coin=${item.symbol}`}
-  className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
->
-  <span className="text-blue1 w-5 h-5 flex items-center justify-center">
-    <ReceivedIcon />
-  </span>
-  <span className="text-blue1">خرید</span>
-</Link>
+                        <Link to={`${ROUTES.TRADE.BUY}?coin=${item.symbol}`} className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2">
+                          <span className="text-blue1 w-5 h-5 flex items-center justify-center">
+                            <ReceivedIcon />
+                          </span>
+                          <span className="text-blue1">خرید</span>
+                        </Link>
 
-<Link
-  to={`${ROUTES.TRADE.SELL}?coin=${item.symbol}`}
-  className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
->
-  <span className="text-blue1 w-5 h-5 flex items-center justify-center">
-    <SendIcon />
-  </span>
-  <span className="text-blue1">فروش</span>
-</Link>
+                        <Link to={`${ROUTES.TRADE.SELL}?coin=${item.symbol}`} className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2">
+                          <span className="text-blue1 w-5 h-5 flex items-center justify-center">
+                            <SendIcon />
+                          </span>
+                          <span className="text-blue1">فروش</span>
+                        </Link>
 
-<Link
-  to={`${ROUTES.DEPOSIT}?coin=${item.symbol}`}
-  className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
->
-  <span className="text-blue1 w-5 h-5 flex items-center justify-center">
-    <WalletAddIcon />
-  </span>
-  <span className="text-blue1">واریز</span>
-</Link>
+                        <Link to={`${ROUTES.DEPOSIT}?coin=${item.symbol}`} className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2">
+                          <span className="text-blue1 w-5 h-5 flex items-center justify-center">
+                            <WalletAddIcon />
+                          </span>
+                          <span className="text-blue1">واریز</span>
+                        </Link>
 
-<Link
-  to={`${ROUTES.WITHDRAWAL_FIAT}?coin=${item.symbol}`}
-  className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
->
-  <span className="text-blue1 w-5 h-5 flex items-center justify-center">
-    <WalletMinesIcon />
-  </span>
-  <span className="text-blue1">برداشت</span>
-</Link>
-
+                        <Link to={`${ROUTES.WITHDRAWAL_FIAT}?coin=${item.symbol}`} className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2">
+                          <span className="text-blue1 w-5 h-5 flex items-center justify-center">
+                            <WalletMinesIcon />
+                          </span>
+                          <span className="text-blue1">برداشت</span>
+                        </Link>
                       </div>
                     )}
 
-                    {isMobile && (
-  <ActionModal
-    open={openModalId === index}
-    onClose={() => setOpenModalId(null)}
-    name={item.name}
-    symbol={item.symbol}
-  />
-)}
-
+                    {isMobile && <ActionModal open={openModalId === index} onClose={() => setOpenModalId(null)} name={item.name} symbol={item.symbol} />}
                   </div>
                 </div>
               ))
@@ -399,16 +367,9 @@ const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNu
           </div>
         </div>
       </div>
-      
-{totalPages > 1 && (
-  <Pagination
-    current={page}
-    total={totalPages}
-    onPageChange={(newPage) => setPage(newPage)}
-  />
-)}
+
+      {totalPages > 1 && <Pagination current={page} total={totalPages} onPageChange={(newPage) => setPage(newPage)} />}
     </div>
-    
   );
 };
 
