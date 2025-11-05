@@ -40,7 +40,7 @@ export const ROUTES = {
   ADD_FRIEND: {
     ROOT: "/add-friend",
   },
-  DEPOSIT: "/wallet/deposit",
+  DEPOSIT: "/deposit",
   DEPOSIT_GATEWAY: "/deposit/gateway",
   DEPOSIT_IDENTIFIER: "/deposit/identifier",
   DEPOSIT_CARD: "/deposit/card",

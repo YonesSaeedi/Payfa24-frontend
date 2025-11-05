@@ -18,11 +18,11 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
   const {theme} = context;
 
   return (
-    <div className="w-full h-screen flex flex-col lg:flex-row dark:bg-white4">
+    <div className="w-full flex flex-col lg:flex-row dark:bg-white4">
       {/* image section */}
       <div className="w-full">
         {image && (
-          <div className={`flex h-full flex-col items-center justify-around  px-4   rounded-e-2xl  ${theme === "dark" ? "bg-gray0" : "lg:bg-gray0 bg-none"} `}>
+          <div className={`flex h-full flex-col items-center justify-around  px-4   lg:rounded-e-2xl  ${theme === "dark" ? "bg-gray0" : "lg:bg-gray0 bg-none"} `}>
             {/* logo && button (Icon)*/}
             <div className="flex justify-between items-center w-full lg:px-8 px-2 py-6 flex-row-reverse">
               <div>
@@ -58,7 +58,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
       </div>
 
       {/* Form Section */}
-      <div className=" w-full  lg:pt-8 pt-10  flex flex-col items-center justify-center ">
+      <div className=" w-full h-screen  lg:pt-8 pt-10  flex flex-col items-center justify-center ">
        {children}
       </div>
     </div>

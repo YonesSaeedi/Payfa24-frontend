@@ -128,7 +128,7 @@ export default function DepositForm({ minDeposit, maxDeposit }: DepositFormProps
           <span className="icon-wrapper w-6 h-6 text-blue2">
             <IconVideo />
           </span>
-          <span>ویدیو آموزشی واریز با درگاه پرداخت</span>
+          <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با درگاه پرداخت</span>
         </div>
         <span className="icon-wrapper w-5 h-5 text-blue2">
           <IconClose />
@@ -165,7 +165,7 @@ export default function DepositForm({ minDeposit, maxDeposit }: DepositFormProps
       </p>
 
       {/* دکمه‌های مبلغ پیشنهادی */}
-      <div className="flex gap-2 items-center mb-40 flex-wrap justify-center">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center mb-40 flex-wrap justify-center ">
         {presetAmounts.map((amount, index) => {
           const isValid = amount >= minDeposit && amount <= maxDeposit;
           const isSelected = Number(amountValue) === amount;
@@ -176,7 +176,7 @@ export default function DepositForm({ minDeposit, maxDeposit }: DepositFormProps
               key={index}
               onClick={() => isValid && setPresetAmount(amount)}
               disabled={!isValid}
-              className={`border rounded-lg lg:px-7 px-4 py-2 lg:text-sm text-xs transition-all ${
+              className={`border rounded-lg w-full py-2 lg:text-sm text-xs transition-all ${
                 isSelected
                   ? "border-blue2 text-blue2"
                   : isValid

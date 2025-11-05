@@ -11,6 +11,7 @@ import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { getBankLogo } from "../../utils/bankLogos";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import { toPersianDigits } from "./CardToCardTransfer";
 
 // ---------- validation ----------
 const schema = yup.object().shape({
@@ -71,17 +72,18 @@ export default function DepositBankReceipt({
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  resolver: yupResolver(schema),
+  defaultValues: { amount: undefined, bank: "", destinationBank: "" },
+});
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: { amount: undefined },
+const watchAll = watch();
+const isFormComplete =
+  !!watchAll.bank &&
+  !!watchAll.destinationBank &&
+  !!watchAll.amount &&
+  !!selectedFile;
 
-  });
 
   // ---------- upload ----------
   const uploadFile = useCallback(async (formData: FormData) => {
@@ -166,7 +168,7 @@ export default function DepositBankReceipt({
         <span className="icon-wrapper w-6 h-6 text-blue2">
           <IconVideo />
         </span>
-        <span>ویدیو آموزشی واریز با فیش بانکی</span>
+        <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با فیش بانکی</span>
       </div>
 
       {/* کارت مبدا */}
@@ -313,7 +315,8 @@ export default function DepositBankReceipt({
             onClick={() => handleAmountClick(a)}
             className="border border-gray12 rounded-lg px-7 py-2 text-gray12 text-sm hover:bg-gray12/20 transition-colors"
           >
-            {a} میلیون
+          {toPersianDigits(a)} میلیون
+
           </button>
         ))}
       </div>
@@ -385,10 +388,10 @@ export default function DepositBankReceipt({
       <div className="mt-14">
         <button
           onClick={handleSubmit(onSubmit)}
-          disabled={loading || !selectedFile}
+          disabled={!isFormComplete || loading}
           className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
                 ${
-                  !selectedFile
+                  !isFormComplete
                     ? "opacity-60 cursor-not-allowed"
                     : "opacity-100 hover:bg-blue1"
                 }`}

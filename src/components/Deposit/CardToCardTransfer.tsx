@@ -86,7 +86,9 @@ export default function CardToCardTransfer({
   cards: initialCards,
   cardToCardInfo: initialCardToCardInfo,
 }: CardToCardTransferProps) {
-  const amounts = [5, 10, 20, 50]; // میلیون تومان
+   const minDeposit = 200000; // ✅ حداقل مبلغ به تومان
+  const maxDeposit = 25000000; // (اختیاری) حداکثر مبلغ
+  const amounts = [1, 5, 10, 15]; // میلیون تومان
   const [showSummary, setShowSummary] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isApiLoading, setIsApiLoading] = useState(false);
@@ -103,7 +105,8 @@ export default function CardToCardTransfer({
     reset,
     trigger,
   } = useForm<CardToCardRequestData>({
-    resolver: yupResolver(getValidationSchemaCardtoCard()),
+    resolver: yupResolver(getValidationSchemaCardtoCard(minDeposit, maxDeposit)),
+
     defaultValues: { card: 0 },
     mode: "onChange",
   });
@@ -248,7 +251,7 @@ export default function CardToCardTransfer({
             <span className="icon-wrapper w-6 h-6 text-blue2">
               <IconVideo />
             </span>
-            <span>ویدیو آموزشی کارت به کارت</span>
+            <span className="lg:text-sm text-xs">ویدیو آموزشی کارت به کارت</span>
           </div>
 
           {/* Card select */}
@@ -347,13 +350,13 @@ export default function CardToCardTransfer({
           )}
 
           {/* Preset amounts */}
-          <div className="flex gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
             {amounts.map((amount, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => setPresetAmount(amount)}
-                className="border border-gray12 rounded-lg px-7 py-2 text-gray12 text-sm"
+                className="border border-gray12 rounded-lg w-full py-2 lg:text-sm text-xs transition-all text-gray12 hover:text-blue2 hover:border-blue2"
               >
                 {formatPersianDigits(amount)} میلیون
               </button>
