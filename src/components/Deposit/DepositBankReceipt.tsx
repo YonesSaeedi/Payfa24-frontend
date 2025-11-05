@@ -177,11 +177,11 @@ const isFormComplete =
           name="bank"
           control={control}
           render={({ field }) => (
-            <FloatingSelect // placeholder را برای زمانی که کارتی موجود نیست، روی حالت پیش‌فرض می‌گذاریم. // چون پیغام اصلی در داخل options نمایش داده می‌شود.
+            <FloatingSelect
               placeholder="حساب مبدا را انتخاب کنید"
               label="حساب مبدا"
               value={field.value}
-              onChange={field.onChange} // ⬇️ منطق جدید بر اساس آرایه bankCards
+              onChange={field.onChange}
               options={
                 bankCards.length === 0
                   ? [
@@ -192,9 +192,9 @@ const isFormComplete =
                             هیچ کارت ثبت شده‌ای ندارید
                           </div>
                         ) as any,
-                        disabled: true, // غیرفعال کردن برای جلوگیری از انتخاب
+                        disabled: true, 
                         icon: null,
-                        hideIndicator: true, // حذف دایره رادیویی
+                        hideIndicator: true, 
                       },
                     ]
                   : bankCards.map((c) => ({
@@ -246,7 +246,7 @@ const isFormComplete =
                 label: (
                   <div className="flex items-center justify-between w-full py-1 rounded-md">
                     <span className="lg:text-sm text-xs text-black0">
-                      {a.name_bank}
+                      {a.account_name}
                     </span>
                     <span className="lg:text-sm text-xs text-black0">
                       {toPersianDigits(a.account_number || a.iban_number)}
