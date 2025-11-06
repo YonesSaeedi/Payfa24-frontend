@@ -82,19 +82,14 @@ const formatTimer = (seconds: number) => {
 };
 
 // --- Component ---
-export default function CardToCardTransfer({
-  cards: initialCards,
-  cardToCardInfo: initialCardToCardInfo,
-}: CardToCardTransferProps) {
+export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo: initialCardToCardInfo }: CardToCardTransferProps) {
   const amounts = [1, 5, 10, 15]; // میلیون تومان
   const [showSummary, setShowSummary] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isApiLoading, setIsApiLoading] = useState(false);
   const [cards, setCards] = useState<CreditCard[]>(initialCards);
-  const [cardToCardData, setCardToCardData] = useState<CardToCardInfo>(
-    initialCardToCardInfo
-  );
-  
+  const [cardToCardData, setCardToCardData] = useState<CardToCardInfo>(initialCardToCardInfo);
+
   const {
     control,
     setValue,
@@ -115,7 +110,6 @@ export default function CardToCardTransfer({
   const selectedCard = cards.find((c) => c.id === selectedCardId);
 
   useEffect(() => {
-
     if (initialCardToCardInfo.transaction) {
       const transactionDate = new Date(initialCardToCardInfo.transaction.date);
       const endTime = transactionDate.getTime() + 30 * 60 * 1000; // 30 دقیقه بعد
@@ -126,7 +120,6 @@ export default function CardToCardTransfer({
     setCards(initialCards);
     setCardToCardData(initialCardToCardInfo);
   }, [initialCardToCardInfo, initialCards]);
-
 
   useEffect(() => {
     if (showSummary && timer > 0) {
@@ -155,10 +148,7 @@ export default function CardToCardTransfer({
     setIsApiLoading(true);
     try {
       const requestData = { amount: Number(data.amount), card: data.card };
-      const response = await apiRequest<
-        CardToCardResponse,
-        CardToCardRequestData
-      >({
+      const response = await apiRequest<CardToCardResponse, CardToCardRequestData>({
         url: "/wallets/fiat/deposit/card-to-card",
         method: "POST",
         data: requestData,
@@ -166,7 +156,6 @@ export default function CardToCardTransfer({
 
       if (response.status) {
         toast.success(response.msg || "درخواست واریز با موفقیت ثبت شد. ✅");
-
 
         const updatedResponse = await apiRequest<{
           status: boolean;
@@ -179,14 +168,9 @@ export default function CardToCardTransfer({
           setCardToCardData(updatedResponse.cardToCard);
           reset({ amount: 0, card: 0 });
 
-          const transactionDate = new Date(
-            updatedResponse.cardToCard.transaction.date
-          );
+          const transactionDate = new Date(updatedResponse.cardToCard.transaction.date);
           const endTime = transactionDate.getTime() + 30 * 60 * 1000;
-          const remaining = Math.max(
-            0,
-            Math.floor((endTime - Date.now()) / 1000)
-          );
+          const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
           setTimer(remaining);
           setShowSummary(remaining > 0);
         } else {
@@ -197,49 +181,30 @@ export default function CardToCardTransfer({
       }
     } catch (error: any) {
       const axiosError = error as AxiosError<{ msg?: string }>;
-      toast.error(
-        axiosError.response?.data?.msg ||
-          "خطا در اتصال به سرور. دوباره امتحان کنید. ⚠️"
-      );
+      toast.error(axiosError.response?.data?.msg || "خطا در اتصال به سرور. دوباره امتحان کنید. ⚠️");
     } finally {
       // setIsSubmitting(false);
     }
   }; // --- Transaction summary data ---
 
-  const summarySourceCard = cards.find(
-    (c) => c.id === cardToCardData?.transaction?.card
-  );
+  const summarySourceCard = cards.find((c) => c.id === cardToCardData?.transaction?.card);
   const finalSourceCard = showSummary ? summarySourceCard : selectedCard;
-  const finalAmount = showSummary
-    ? cardToCardData?.transaction?.amount
-    : Number(selectedAmount) || 0;
+  const finalAmount = showSummary ? cardToCardData?.transaction?.amount : Number(selectedAmount) || 0;
 
   const transactionData = {
     fromCard: formatPersianCardNumber(finalSourceCard?.card || ""),
     fromBankIcon: finalSourceCard ? (
-      <img
-        src={getBankLogo(finalSourceCard.bank) || "/bank-logos/bank-sayer.png"}
-        alt={finalSourceCard.bank}
-        className="w-7 h-7 object-contain"
-      />
+      <img src={getBankLogo(finalSourceCard.bank) || "/bank-logos/bank-sayer.png"} alt={finalSourceCard.bank} className="w-7 h-7 object-contain" />
     ) : null,
 
     toCard: cardToCardData?.card?.card || "—",
     toBank: cardToCardData?.card?.bank || "",
     owner: cardToCardData?.card?.name || "گروه فرهنگی و هنری",
     amount: finalAmount,
-    finalAmountWithFee:
-      finalAmount && finalAmount >= 100000
-        ? formatPersianDigits(finalAmount - 100000)
-        : formatPersianDigits(finalAmount || 0),
+    finalAmountWithFee: finalAmount && finalAmount >= 100000 ? formatPersianDigits(finalAmount - 100000) : formatPersianDigits(finalAmount || 0),
   };
 
-  if (showSummary && !cardToCardData?.card)
-    return (
-      <div className="text-center py-8 text-red1">
-        خطا: اطلاعات کارت مقصد ناقص است. لطفاً با پشتیبانی تماس بگیرید.
-      </div>
-    );
+  if (showSummary && !cardToCardData?.card) return <div className="text-center py-8 text-red1">خطا: اطلاعات کارت مقصد ناقص است. لطفاً با پشتیبانی تماس بگیرید.</div>;
 
   return (
     <div className="w-full" dir="rtl">
@@ -258,61 +223,37 @@ export default function CardToCardTransfer({
             <Controller
               name="card"
               control={control}
-              render={({ field }) => (
-                <>
-                  <FloatingSelect
-                    placeholder="کارت مبدا را انتخاب کنید"
-                    label="انتخاب کارت مبدا"
-                    value={field.value?.toString() || ""}
-                    onChange={(v) => field.onChange(Number(v))}
-                    options={
-                      cards.length === 0
-                        ? [
-                            {
-                              value: "", // ⬅️ نمایش پیغام مورد نظر شما
-                              label: (
-                                <div className="text-center w-full py-2 text-gray-500">
-                                  هیچ کارت ثبت شده‌ای ندارید
-                                </div>
-                              ) as any,
-                              disabled: true,
-                              icon: null,
-                              hideIndicator: true,
-                            },
-                          ]
-                        : cards.map((card) => ({
-                            value: card.id.toString(),
-                            label: (
-                              <div className="flex items-center justify-between w-full py-1 rounded-md">
-                                <span className="text-sm text-black0">
-                                  {card.bank}
-                                </span>
+              render={({ field }) => {
+                const hasCards = cards.length > 0;
 
-                                <span className="text-sm text-black0">
-                                  {formatPersianCardNumber(card.card)}
-                                </span>
-                              </div>
-                            ) as any,
-                            icon: (
-                              <img
-                                src={
-                                  getBankLogo(card.bank) ||
-                                  "/bank-logos/bank-sayer.png"
-                                }
-                                alt={card.bank}
-                                className="w-6 h-6 object-contain"
-                              />
-                            ),
-                          }))
-                    }
-                  />
-                  {errors.card && (
-                    <p className="text-red1 text-sm mt-1">
-                      {errors.card.message}
-                    </p>
-                  )}
-                </>
-              )}
+                return (
+                  <>
+                    <FloatingSelect
+                      placeholder={hasCards ? "کارت مبدا را انتخاب کنید" : "هیچ کارت ثبت‌ شده‌ای ندارید"}
+                      label="انتخاب کارت مبدا"
+                      value={hasCards ? field.value?.toString() || "" : ""}
+                      onChange={field.onChange}
+                      disabled={!hasCards}
+                      options={
+                        hasCards
+                          ? cards.map((card) => ({
+                              value: card.id.toString(),
+                              label: (
+                                <div className="flex items-center justify-between w-full py-1 rounded-md">
+                                  <span className="text-sm text-black0">{card.bank}</span>
+                                  <span className="text-sm text-black0">{formatPersianCardNumber(card.card)}</span>
+                                </div>
+                              ),
+                              icon: <img src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"} alt={card.bank} className="w-6 h-6 object-contain" />,
+                            }))
+                          : [] 
+                      }
+                    />
+
+                    {errors.card && <p className="text-red1 text-sm mt-1">{errors.card.message}</p>}
+                  </>
+                );
+              }}
             />
           </div>
 
@@ -328,14 +269,8 @@ export default function CardToCardTransfer({
                   type="text"
                   onChange={(e) => {
                     const rawValue = e.target.value;
-                    const englishValue = rawValue
-                      .replace(/[۰-۹]/g, (d) =>
-                        "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString()
-                      )
-                      .replace(/[^0-9]/g, "");
-                    field.onChange(
-                      englishValue ? Number(englishValue) : undefined
-                    );
+                    const englishValue = rawValue.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString()).replace(/[^0-9]/g, "");
+                    field.onChange(englishValue ? Number(englishValue) : undefined);
                     trigger("amount");
                   }}
                   placeholder="۰ تومان"
@@ -344,9 +279,7 @@ export default function CardToCardTransfer({
               )}
             />
           </div>
-          {errors.amount && (
-            <p className="text-red1 text-xs py-3">{errors.amount.message}</p>
-          )}
+          {errors.amount && <p className="text-red1 text-xs py-3">{errors.amount.message}</p>}
 
           {/* Preset amounts */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
@@ -368,11 +301,7 @@ export default function CardToCardTransfer({
               type="submit"
               disabled={isApiLoading || !isValid || cards.length === 0}
               className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
-                ${
-                  isApiLoading || !isValid || cards.length === 0
-                    ? "opacity-60 cursor-not-allowed"
-                    : "opacity-100 hover:bg-blue1"
-                }`}
+                ${isApiLoading || !isValid || cards.length === 0 ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-blue1"}`}
             >
               {isApiLoading ? "در حال ثبت درخواست..." : "درخواست کارت به کارت"}
             </button>
@@ -382,10 +311,7 @@ export default function CardToCardTransfer({
               <Accordion title="راهنمای واریز کارت به کارت">
                 <ul className="list-disc pr-5 space-y-2 text-black1">
                   <li>از صحت شماره کارت مقصد (صرافی) واریز مطمئن شوید.</li>
-                  <li>
-                    پس از ثبت درخواست، فرصت محدودی (۳۰ دقیقه) برای انجام کارت به
-                    کارت خواهید داشت.
-                  </li>
+                  <li>پس از ثبت درخواست، فرصت محدودی (۳۰ دقیقه) برای انجام کارت به کارت خواهید داشت.</li>
                   <li>واریز باید حتماً از کارت انتخابی شما انجام شود.</li>
                 </ul>
               </Accordion>
@@ -397,59 +323,35 @@ export default function CardToCardTransfer({
           {/* Summary */}
           <div className="rounded-lg text-black0 space-y-8">
             <div className="flex flex-col gap-3 text-black0 rounded-xl  py-4 items-center bg-gray47">
-              <span className=" lg:text-base text-sm">
-                فرصت باقی مانده برای انجام کارت به کارت
-              </span>
-              <span className="font-bold lg:text-xl text-base ">
-                {toPersianDigits(formatTimer(timer))}
-              </span>
+              <span className=" lg:text-base text-sm">فرصت باقی مانده برای انجام کارت به کارت</span>
+              <span className="font-bold lg:text-xl text-base ">{toPersianDigits(formatTimer(timer))}</span>
             </div>
 
             <div className="space-y-6 ">
               <div className="flex justify-between items-center">
                 <span className="text-gray5 lg:text-lg text-sm">کارت مبدا</span>
                 <div className="flex gap-2 items-center">
-                  <span className="text-sm lg:text-base">
-                    {transactionData.fromCard}
-                  </span>
-                  <span className="icon-wrapper lg:w-7 lg:h-7 w-6 h-6">
-                    {transactionData.fromBankIcon}
-                  </span>
+                  <span className="text-sm lg:text-base">{transactionData.fromCard}</span>
+                  <span className="icon-wrapper lg:w-7 lg:h-7 w-6 h-6">{transactionData.fromBankIcon}</span>
                 </div>
               </div>
 
               <div className="flex justify-between items-center">
-                <span className="text-gray5 lg:text-lg text-sm">
-                  مبلغ تراکنش
-                </span>
-                <span className="text-sm lg:text-base">
-                  {formatPersianDigits(transactionData.amount ?? 0)} تومان
-                </span>
+                <span className="text-gray5 lg:text-lg text-sm">مبلغ تراکنش</span>
+                <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.amount ?? 0)} تومان</span>
               </div>
 
               <div className="flex justify-between items-center">
-                <span className="text-gray5 lg:text-lg text-sm">
-                  شماره کارت مقصد
-                </span>
-                <span className="text-sm lg:text-base">
-                  {formatPersianCardNumber(transactionData.toCard)}
-                </span>
+                <span className="text-gray5 lg:text-lg text-sm">شماره کارت مقصد</span>
+                <span className="text-sm lg:text-base">{formatPersianCardNumber(transactionData.toCard)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray5 lg:text-lg text-sm">
-                  شماره کارت مقصد
-                </span>
-                <span className="text-sm lg:text-base">
-                  {transactionData.owner}
-                </span>
+                <span className="text-gray5 lg:text-lg text-sm">شماره کارت مقصد</span>
+                <span className="text-sm lg:text-base">{transactionData.owner}</span>
               </div>
               <div className="flex justify-between items-center lg:pb-52">
-                <span className="text-gray5 lg:text-lg text-sm">
-                  مبلغ نهایی با کسر کارمزد
-                </span>
-                <span className="text-sm lg:text-base">
-                  {transactionData.finalAmountWithFee} تومان
-                </span>
+                <span className="text-gray5 lg:text-lg text-sm">مبلغ نهایی با کسر کارمزد</span>
+                <span className="text-sm lg:text-base">{transactionData.finalAmountWithFee} تومان</span>
               </div>
             </div>
             {/* <button type="button" onClick={() => setShowSummary(false)} className="mt-8 text-blue2 bg-gray-100 w-full py-3 font-bold text-lg rounded-lg">
@@ -457,10 +359,7 @@ export default function CardToCardTransfer({
             </button> */}
           </div>
 
-          <div
-            dir="rtl"
-            className="bg-orange5 rounded-xl p-4 text-sm text-left mt-8"
-          >
+          <div dir="rtl" className="bg-orange5 rounded-xl p-4 text-sm text-left mt-8">
             <div className="flex text-orange1 gap-1 font-medium items-center">
               <span className="icon-wrapper w-4 h-4">
                 <IconAlert />
@@ -468,14 +367,8 @@ export default function CardToCardTransfer({
               <span>توجه داشته باشید</span>
             </div>
             <ul className="text-right pt-2 lg:pt-4 list-disc list-inside text-black0 lg:text-[16px] leading-relaxed text-xs space-y-2">
-              <li>
-                حتما بایستی از کارت مقصدی که انتخاب کرده‌اید و مبلغی که درج
-                کرده‌اید تراکنش انجام شود.
-              </li>
-              <li>
-                پس از انجام کارت به کارت به صورت خودکار کیف پول تومانی شما شارژ
-                می‌شود.
-              </li>
+              <li>حتما بایستی از کارت مقصدی که انتخاب کرده‌اید و مبلغی که درج کرده‌اید تراکنش انجام شود.</li>
+              <li>پس از انجام کارت به کارت به صورت خودکار کیف پول تومانی شما شارژ می‌شود.</li>
             </ul>
           </div>
         </>
