@@ -84,9 +84,9 @@ export const GoogleLoginButton = ({ onSuccess }: { onSuccess: (data: Response) =
   };
 
   return (
-    <div className="flex border border-primary rounded-xl w-full h-12 items-center justify-center gap-2 mt-7 mb-5 cursor-pointer" onClick={handleLogin}>
-      <span className="w-5 h-5"><IconGoogle /></span>
-      <span className="text-black1 text-base font-semibold">اکانت گوگل</span>
+    <div className="flex border border-gray12 lg:rounded-xl rounded-lg w-full h-12 items-center justify-center gap-2 mt-7 mb-5 cursor-pointer" onClick={handleLogin}>
+      <span className="icon-wrapper w-[22px] h-[22px]"><IconGoogle /></span>
+      <span className="text-gray12 text-sm font-semibold ">اکانت گوگل</span>
     </div>
   );
 };

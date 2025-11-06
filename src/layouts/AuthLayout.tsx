@@ -22,13 +22,13 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
       {/* image section */}
       <div className="w-full">
         {image && (
-          <div className={`flex h-full flex-col items-center justify-around  px-4   lg:rounded-e-2xl  ${theme === "dark" ? "bg-gray0" : "lg:bg-gray0 bg-none"} `}>
+          <div className={`flex h-full flex-col items-center justify-around lg:rounded-e-2xl  ${theme === "dark" ? "bg-gray0" : "lg:bg-gray0 bg-none"} `}>
             {/* logo && button (Icon)*/}
-            <div className="flex justify-between items-center w-full lg:px-8 px-2 py-6 flex-row-reverse">
+            <div className="flex justify-between items-center w-full lg:px-16 px-4 py-8 flex-row-reverse">
               <div>
-                <img src={Logo} alt="Logo" className="h-10" />
+                <img src={Logo} alt="Logo" className="lg:w-[57px] lg:h-[51px] w-[32px] h-[28px]" />
               </div>
-              <div className="flex flex-row-reverse gap-4 items-center ">
+              <div className="flex flex-row-reverse gap-6 items-center">
                 <button
                   onClick={toggleTheme}
                   className=" rounded-full "
@@ -50,7 +50,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
             <img
               src={image}
               alt="Authentication Visual"
-              className=" object-contain"
+              className="object-fill lg:object-contain lg:w-[915px] lg:h-[608px] w-[312px] h-[207px] "
               onError={(e) => console.error("Failed to load image:", image, e)}
             />
           </div>
@@ -58,7 +58,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
       </div>
 
       {/* Form Section */}
-      <div className=" w-full h-screen  lg:pt-8 pt-10  flex flex-col items-center justify-center ">
+      <div className="w-full lg:h-screen lg:pt-8 py-10 flex flex-col items-center justify-center ">
        {children}
       </div>
     </div>
