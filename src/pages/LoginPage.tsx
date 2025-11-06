@@ -19,6 +19,7 @@ import { GoogleLoginButton } from "../firebase/GoogleLoginButton";
 import { LoginResponse } from "../types/api/login";
 import { AxiosError } from "axios";
 import OTPInputModal from "../components/trade/OTPInputModal";
+import { toPersianDigits } from "../components/Deposit/CardToCardTransfer";
 
 type LoginFormData = {
   email: string;
@@ -44,7 +45,11 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { executeRecaptcha } = useGoogleReCaptcha();
   const loginSchema = getLoginSchema();
-  const { handleSubmit, control, formState: { errors } } = useForm<LoginFormData>({ resolver: yupResolver(loginSchema), defaultValues: { email: "", password: "", }, });
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<LoginFormData>({ resolver: yupResolver(loginSchema), defaultValues: { email: "", password: "" } });
   // timer for resend =====================================================================================================================================================================
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -58,12 +63,12 @@ export default function LoginPage() {
       setIsLoading(true);
       if (!executeRecaptcha) return;
       const recaptchaToken = await executeRecaptcha("login");
-      const payload: Record<string, string> = { recaptcha: recaptchaToken, password: data.password, };
+      const payload: Record<string, string> = { recaptcha: recaptchaToken, password: data.password };
       const isPhone = /^\d+$/.test(data.email);
       if (isPhone) payload.mobile = data.email;
       else payload.email = data.email;
       setContactMethod(isPhone ? "phone" : "email");
-      const response = await apiRequest<LoginResponse, Record<string, string>>({ url: "/auth/login", method: "POST", data: payload, });
+      const response = await apiRequest<LoginResponse, Record<string, string>>({ url: "/auth/login", method: "POST", data: payload });
       // no otp needed =============================================================================
       if (response?.access_token) {
         localStorage.setItem("accessToken", response?.access_token);
@@ -90,9 +95,11 @@ export default function LoginPage() {
   const handleConfirm = async () => {
     if (!idUser || !token2fa || otpCode.length < 5) return;
     try {
-      const res = await apiRequest<LoginResponse, { code: string, id_user: number, token2fa: string }>(
-        { url: "/auth/login/login-2fa", method: "POST", data: { code: otpCode, id_user: idUser, token2fa: token2fa, }, }
-      );
+      const res = await apiRequest<LoginResponse, { code: string; id_user: number; token2fa: string }>({
+        url: "/auth/login/login-2fa",
+        method: "POST",
+        data: { code: otpCode, id_user: idUser, token2fa: token2fa },
+      });
       if (res?.access_token) {
         toast.success("ورود با موفقیت انجام شد.");
         localStorage.setItem("accessToken", res?.access_token);
@@ -111,14 +118,16 @@ export default function LoginPage() {
   const handleResend = async () => {
     if (!idUser || !token2fa || !canResend) return;
     try {
-      setResendCodeIsSubmitting(true)
-      await apiRequest({ url: "/auth/login/resend-2fa", method: "POST", data: { id_user: idUser, token2fa: token2fa, }, });
+      setResendCodeIsSubmitting(true);
+      await apiRequest({ url: "/auth/login/resend-2fa", method: "POST", data: { id_user: idUser, token2fa: token2fa } });
       toast.success("کد جدید ارسال شد.");
       setResendTimer(120);
       setCanResend(false);
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "خطا در ارسال مجدد.");
-    } finally { setResendCodeIsSubmitting(false) }
+    } finally {
+      setResendCodeIsSubmitting(false);
+    }
   };
   // google login btn functionality ========================================================================================================================================
   const handleLoginResponse = (data: LoginResponse) => {
@@ -145,69 +154,70 @@ export default function LoginPage() {
 
   return (
     <AuthLayout image={theme === "dark" ? imageLoginDark : imageLoginLight}>
-      <div className="flex items-center justify-center" dir="rtl">
-        <div className="w-full max-w-md px-4">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <h1 className="text-[28px] font-bold text-blue2 mb-2 text-center">ورود به پی‌فا24</h1>
-            <p className="font-normal mb-10 lg:text-lg text-sm text-center text-black1">برای ورود ایمیل یا شماره همراه خود را وارد کنید</p>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label="ایمیل یا شماره همراه"
-                  type="text"
-                  error={errors.email?.message}
-                  {...field}
-                  labelBgClass="bg-white4"
-                  showError=" "
-                />
-              )}
-            />
-            <div className="sm:text-sm text-xs font-normal pb-6 flex gap-1 items-end justify-start text-gray12">
-              <span className="icon-wrapper h-4 w-4"><IconAlert /></span>
-              <p>توجه داشته باشید که در دامنه (panel.payfa24.com) باشید.</p>
-            </div>
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label="رمز عبور خود را وارد کنید"
-                  type={showPassword ? "text" : "password"}
-                  error={errors.password?.message}
-                  icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
-                  onIconClick={() => setShowPassword((prev) => !prev)}
-                  {...field}
-                  labelBgClass="bg-white4"
-                />
-              )}
-            />
-            <Link to={"/forgot-password"}>
-              <div className="flex justify-between items-center mb-10">
-                <p className="text-gray12 text-sm font-normal">رمز عبور خود را فراموش کرده‌اید؟</p>
-                <span className="font-normal text-blue2 cursor-pointer text-[14px]">بازیابی رمز عبور</span>
-              </div>
-            </Link>
-            <button type="submit" className="w-full h-[48px] rounded-xl bg-blue2 text-white2 font-bold text-lg" disabled={isLoading}>{isLoading ? "در حال ارسال ..." : "ادامه"}</button>
-            <p className="text-sm font-normal text-gray12 pt-3 pb-10 text-start">
-              هنوز ثبت نام نکرده‌اید؟
-              <Link className="text-blue2 text-sm px-1 font-normal" to={"/register"}>ساخت حساب کاربری</Link>
-            </p>
-            <div className="flex items-center justify-center">
-              <div className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}></div>
-              <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
-              <div className="flex-grow h-[1px] bg-gray19"></div>
-            </div>
-            <GoogleLoginButton onSuccess={handleLoginResponse} />
-          </form>
+      {/* <div className="flex items-center justify-center bg-red-700" dir="rtl"> */}
+      <form onSubmit={handleSubmit(onSubmit)} className="lg:max-w-md w-full lg:px-4 px-4 lg:pt-10" dir="rtl">
+        <h1 className="lg:text-[28px] text-xl font-bold text-blue2 text-center">ورود به پی‌فا{toPersianDigits(24)}</h1>
+        <p className="font-normal lg:mb-10 mb-7 lg:text-lg text-sm text-center text-black1 pt-3">برای ورود ایمیل یا شماره همراه خود را وارد کنید</p>
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => <TextField label="ایمیل یا شماره همراه" type="text" error={errors.email?.message} {...field} labelBgClass="bg-white4" />}
+        />
+        <div className="sm:text-sm text-xs font-normal lg:mb-6 mb-5 mt-2  flex gap-1 items-center justify-start text-gray12">
+          <span className="icon-wrapper h-4 w-4">
+            <IconAlert />
+          </span>
+          <p>توجه داشته باشید که در دامنه (panel.payfa24.com) باشید.</p>
         </div>
-      </div>
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              label="رمز عبور خود را وارد کنید"
+              type={showPassword ? "text" : "password"}
+              error={errors.password?.message}
+              icon={showPassword ? <IconEyeOpen /> : <IconEyeClosed />}
+              onIconClick={() => setShowPassword((prev) => !prev)}
+              {...field}
+              labelBgClass="bg-white4"
+            />
+          )}
+        />
+        <Link to={"/forgot-password"}>
+          <div className="flex justify-between items-center lg:mb-10 mb-[49px] lg:mt-[10px] mt-2">
+            <p className="text-gray12 text-sm font-normal">رمز عبور خود را فراموش کرده‌اید؟</p>
+            <span className="font-normal text-blue2 cursor-pointer text-[14px]">بازیابی رمز عبور</span>
+          </div>
+        </Link>
+        <button type="submit" className="w-full h-[48px] lg:rounded-xl rounded-lg bg-blue2 text-white2 font-bold lg:text-lg text-sm" disabled={isLoading}>
+          {isLoading ? "در حال ارسال ..." : "ادامه"}
+        </button>
+        <p className="text-sm font-normal text-gray12 mt-3 lg:mb-10 mb-8 text-start">
+          هنوز ثبت نام نکرده‌اید؟
+          <Link className="text-blue2 text-sm px-1 font-normal" to={"/register"}>
+            ساخت حساب کاربری
+          </Link>
+        </p>
+        <div className="flex items-center justify-center mb-4">
+          <div className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}></div>
+          <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
+          <div className="flex-grow h-[1px] bg-gray19"></div>
+        </div>
+        <GoogleLoginButton onSuccess={handleLoginResponse} />
+      </form>
+      {/* </div> */}
       {/* otp modal ================================================================================================================================== */}
-      {isOpen &&
+      {isOpen && (
         <OTPInputModal
-          titleText='تایید ورود'
-          mainText={contactMethod === "email" ? 'کد ارسال شده به ایمیل خود را وارد کنید' : contactMethod === "phone" ? 'کد ارسال شده به پیامک خود را وارد کنید.' : 'کد ارسال شده را وارد کنید.'}
+          titleText="تایید ورود"
+          mainText={
+            contactMethod === "email"
+              ? "کد ارسال شده به ایمیل خود را وارد کنید"
+              : contactMethod === "phone"
+              ? "کد ارسال شده به پیامک خود را وارد کنید."
+              : "کد ارسال شده را وارد کنید."
+          }
           closeModal={() => setIsOpen(false)}
           OTPLength={6}
           onSubmit={handleConfirm}
@@ -216,7 +226,7 @@ export default function LoginPage() {
           resendCodeTimeLeft={resendTimer}
           onChange={(value: string) => setOtpCode(value)}
         />
-      }
+      )}
       {/* {isOpen && (
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>

@@ -36,7 +36,7 @@ export const ROUTES = {
     ORDER_HISTORY: "/history/order",
   },
   ADD_FRIEND: "/add-friend",
-  DEPOSIT: "/wallet/deposit",
+  DEPOSIT: "/deposit",
   DEPOSIT_GATEWAY: "/deposit/gateway",
   DEPOSIT_IDENTIFIER: "/deposit/identifier",
   DEPOSIT_CARD: "/deposit/card",

@@ -76,7 +76,7 @@ const OTPInputModal = ({
             <button
               disabled={resendCodeIsSubmitting}
               onClick={handleEdit}
-              className="w-full flex-1 text-base font-bold rounded-lg py-2.5 lg:py-3 border border-blue2 text-blue2 hover:border-transparent hover:text-white
+              className="w-full flex-1 lg:text-base text-sm font-bold rounded-lg py-2.5 lg:py-3 border border-blue2 text-blue2 hover:border-transparent hover:text-white
                         hover:bg-blue2 transition duration-200 ease-in"
             >
               {editButtonText}

@@ -170,14 +170,14 @@ export default function DepositPage({
   if (loading) {
     return (
       <HeaderLayout>
-        <DepositLayout
+       <DepositLayout
           step={1}
           started={started}
           onStart={handleStart}
           alertMessages={[]}
         >
-          <div className="w-full text-center py-10">در حال بارگذاری...</div>
-        </DepositLayout>
+        <div className="w-full text-center py-10"></div>
+        </DepositLayout> 
       </HeaderLayout>
     );
   }
@@ -191,8 +191,8 @@ export default function DepositPage({
           onStart={handleStart}
           alertMessages={[]}
         >
-          <div className="w-full text-center py-10 text-red-500">
-            خطا در دریافت اطلاعات. لطفاً دوباره تلاش کنید.
+          <div>
+            {/* خطا در دریافت اطلاعات. لطفاً دوباره تلاش کنید. */}
           </div>
         </DepositLayout>
       </HeaderLayout>
@@ -200,7 +200,7 @@ export default function DepositPage({
   }
 
   // --- داده‌های تضمینی ---
-  const minDeposit = Number(fiatData.wallet?.internal?.min_deposit) || 300000;
+  const minDeposit = Number(fiatData.wallet?.internal?.min_deposit) || 200000;
   const maxDeposit = Number(fiatData.wallet?.internal?.max_deposit) || 25000000;
   const bankCards = fiatData.list_cards || []; // (CreditCard[])
   const receiptAccounts = fiatData.receipt?.list_cards || [];
@@ -232,7 +232,7 @@ export default function DepositPage({
       id: "CardToCard",
       Icon: <IconConvertCard />,
       Title: "واریز کارت به کارت",
-      description: `واریز تا سقف ${formatPersianDigits(10)} میلیون تومان`,
+      description: `واریز تا سقف ${formatPersianDigits(15)} میلیون تومان`,
       button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
       IconMore: <IconArrowRight />,
     },
@@ -333,13 +333,13 @@ export default function DepositPage({
                 }`}
               >
                 <div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <div className="bg-blue14 p-3 rounded-lg">
                       <span className="icon-wrapper w-7 h-7 text-blue2">
                         {option.Icon}
                       </span>
                     </div>
-                    <div>
+                    <div className="flex flex-col gap-1">
                       <h2 className="text-lg font-medium text-black0">
                         {option.Title}
                       </h2>
