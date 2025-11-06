@@ -127,29 +127,31 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND },
   ];
 
-  const renderSection = (title: string, items: ServiceItem[]) => (
-    <div dir="rtl" className=" mb-6 ">
-      <h3 dir="rtl" className="text-right text-black1  font-medium mb-4 mt-5">
-        {title}
-      </h3>
- <div className="container-style grid grid-cols-3  gap-2">
-  {items.map((item, i) => (
-    <div key={i} className="p-1">
-      <div
-        onClick={() => handleItemClick(item)}
-        className="flex flex-col items-center w-[100px] justify-center h-[79px] rounded-lg hover:border-blue2 cursor-pointer transition border border-gray21 bg-gray33"
-      >
-        <span className="w-6 h-6 text-blue2">{item.icon}</span>
-        <span className="text-sm text-gray-700 dark:text-gray-200 text-center mt-2 whitespace-nowrap">
-          {item.label}
-        </span>
-      </div>
-    </div>
-  ))}
-</div>
+ const renderSection = (title: string, items: ServiceItem[]) => (
+  <div dir="rtl" className="mb-6">
+    <h3 dir="rtl" className="text-right text-black1 font-medium mb-3 mt-7">
+      {title}
+    </h3>
 
+    {/* ✅ تغییرات اینجاست */}
+    <div className="px-9 grid grid-cols-4 gap-4">
+      {items.map((item, i) => (
+        <div key={i} className="p-1">
+          <div
+            onClick={() => handleItemClick(item)}
+            className="flex flex-col items-center w-[84px] h-[72px] justify-center rounded-lg hover:border-blue2 cursor-pointer transition border border-gray21 bg-gray33"
+          >
+            <span className="w-6 h-6 text-blue2">{item.icon}</span>
+            <span className="text-sm text-gray-700 dark:text-gray-200 text-center mt-2 whitespace-nowrap">
+              {item.label}
+            </span>
+          </div>
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
+
 
   return (
    <div
@@ -158,7 +160,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   onClick={handleClose}
 >
   <div
-    className={`bg-white8 rounded-xl shadow-lg p-6 w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${
+    className={`bg-white8 rounded-xl shadow-lg p-6 px-[22px] w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${
       isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
     } relative`}
     onClick={(e) => e.stopPropagation()}
@@ -178,7 +180,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     </button>
 
     {/* فقط این بخش اسکرول بخورد */}
-    <div className="overflow-auto flex-1 px-4 py-2">
+    <div className="overflow-auto flex-1">
       {renderSection("مالی و تراکنش", financeItems)}
       {renderSection("بازار و اطلاعات", marketItems)}
       {renderSection("تاریخچه", historyItems)}

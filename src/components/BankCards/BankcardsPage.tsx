@@ -11,7 +11,6 @@ import { apiRequest } from "../../utils/apiClient";
 
 const BankCardsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isChecking, setIsChecking] = useState(true); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,9 +30,7 @@ const BankCardsPage = () => {
         }
       } catch (error) {
         console.error("❌ خطا در بررسی کارت‌های موجود:", error);
-      } finally {
-        setIsChecking(false); 
-      }
+      } 
     };
 
     checkExistingCards();
@@ -47,13 +44,7 @@ const BankCardsPage = () => {
     }
   };
 
-  if (isChecking) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-backgroundMain">
-        <p className="text-gray-500">در حال بررسی اطلاعات کارت...</p>
-      </div>
-    );
-  }
+  
 
   return (
     <HeaderLayout>
