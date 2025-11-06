@@ -10,7 +10,6 @@ import Sell from "../pages/trade/Sell";
 import AuthenticationBasic from "../pages/authentication/basic";
 import AuthenticationAdvance from "../pages/authentication/advance";
 import MarketPage from "../pages/MarketPage";
-import TicketPages from "../pages/Ticket/TicketPages";
 import TransactionLayout from "../pages/Transaction/TransactionLayout";
 import CryptoPage from "../components/History/CryptoPage";
 import NotificationsPage from "../pages/Notifications/NotificationsPage";
@@ -27,13 +26,16 @@ import MarketViewPage from "../pages/market-view/MarketViewPage";
 import TomanPage from "../components/History/TomanPage";
 import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
-import BankCardsContainer from "../pages/BankCards/BankCardsContainer";
 import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import UserAccount from "../pages/Profile/UserAccount";
 import CreateTicketPage from "../pages/Ticket/CreateTicketPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import useAuth from "../hooks/useAuth";
+import BankCardsRoute from "../pages/BankCards/BankCardsRoute";
+import TicketsRoute from "../pages/Ticket/TicketsRoute";
+
+
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth()
@@ -67,7 +69,7 @@ export default function AppRouter() {
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
           <Route path={ROUTES.TRADE.SELL} element={<Sell />} />
         </Route>
-        <Route path={ROUTES.TICKET.ROOT} element={<TicketPages />} />
+        <Route path={ROUTES.TICKET.ROOT} element={<TicketsRoute />} />
         <Route path={ROUTES.TICKET.CREATE} element={<CreateTicketPage />} />
         <Route path={ROUTES.TRANSACTION.ROOT} element={<TransactionLayout />}>
           <Route index element={<CryptoPage />} />                                     {/* /history */}
@@ -77,7 +79,8 @@ export default function AppRouter() {
         </Route>
         <Route path={ROUTES.FAQ} element={<FaqLayout />} />
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevicesLayout />} />
-        <Route path={ROUTES.BANK_CARDS} element={<BankCardsContainer />} />
+        <Route path={ROUTES.BANK_CARDS} element={<BankCardsRoute />} />
+
         <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm minDeposit={1000} maxDeposit={100000000} />} />
         <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
         <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />

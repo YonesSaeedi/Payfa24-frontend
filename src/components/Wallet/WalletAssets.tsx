@@ -188,6 +188,9 @@ const WalletAssets: React.FC = () => {
 
 
   return (
+
+  <div className="flex flex-col gap-6">
+    {/* ✅ کل جدول و فیلترها */}
     <div dir="rtl" className="p-4 bg-white1 rounded-xl border border-gray21 w-full overflow-visible">
       <div className="flex items-center justify-between mb-3">
         <div className="relative w-1/2">
@@ -202,7 +205,7 @@ const WalletAssets: React.FC = () => {
             className="border border-gray19 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
           />
         </div>
-        <div className="relative  inline-block text-right max-w-[50%]" ref={dropdownRef}>
+        <div className="relative inline-block text-right max-w-[50%]" ref={dropdownRef}>
           <button
             onClick={() => setOpenDropdown(!openDropdown)}
             className={`border rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1 transition-colors duration-200 ${
@@ -217,7 +220,11 @@ const WalletAssets: React.FC = () => {
           {openDropdown && (
             <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col">
               {sortOptions.map((option) => (
-                <button key={option.key} onClick={() => handleSort(option.key)} className="w-full text-right px-3 py-2 hover:bg-gray-100 text-sm text-black1 whitespace-nowrap">
+                <button
+                  key={option.key}
+                  onClick={() => handleSort(option.key)}
+                  className="w-full text-right px-3 py-2 hover:bg-gray-100 text-sm text-black1 whitespace-nowrap"
+                >
                   {option.label}
                 </button>
               ))}
@@ -237,7 +244,6 @@ const WalletAssets: React.FC = () => {
           </div>
           <div>
             {isLoading ? (
-             
               [...Array(2)].map((_, index) => (
                 <div
                   key={index}
@@ -250,19 +256,15 @@ const WalletAssets: React.FC = () => {
                       <div className="w-12 h-3 rounded-md skeleton-bg"></div>
                     </div>
                   </div>
-
                   <div className="px-4 py-3 hidden lg:flex justify-center items-center">
                     <div className="w-16 h-4 rounded-md skeleton-bg"></div>
                   </div>
-
                   <div className="px-4 py-3 hidden lg:flex justify-center items-center">
                     <div className="w-16 h-4 rounded-md skeleton-bg"></div>
                   </div>
-
                   <div className="px-4 py-3 hidden lg:flex justify-center items-center">
                     <div className="w-24 h-4 rounded-md skeleton-bg"></div>
                   </div>
-
                   <div className="px-2 py-3 text-center relative whitespace-nowrap flex items-center justify-between">
                     <span></span>
                     <div className="flex flex-col items-end justify-center gap-2">
@@ -275,9 +277,9 @@ const WalletAssets: React.FC = () => {
               ))
             ) : cryptoData.length === 0 ? (
               <div className="flex flex-col items-center justify-center ">
-               <div className="flex items-center justify-center">
-  <img src={EmptyWallet} alt="Empty Wallet" className="w-full h-full object-contain" />
-</div>
+                <div className="flex items-center justify-center">
+                  <img src={EmptyWallet} alt="Empty Wallet" className="w-full h-full object-contain" />
+                </div>
                 <span className="block text-center text-black2 mb-10 text-base font-normal">کیف پول دارایی‌های شما خالی است!</span>
               </div>
             ) : (
@@ -293,23 +295,19 @@ const WalletAssets: React.FC = () => {
                       <div className="text-xs text-gray-500">{item.symbol}</div>
                     </div>
                   </div>
-
                   <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
                     {formatPersianDigits(item.price.toLocaleString())} USDT
                   </span>
-
                   <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
                     {formatPersianDigits(item.fee_toman.toLocaleString())}
                   </span>
-
                   <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
-                  {formatNumber(item.balance, 8)} {item.symbol}
+                    {formatNumber(item.balance, 8)} {item.symbol}
                   </span>
-
                   <div className="px-2 py-3 text-center relative whitespace-nowrap group flex items-center justify-between">
                     <span></span>
                     <div className="flex flex-col items-end justify-center text-xs lg:text-sm font-normal">
-                      <span className="whitespace-nowrap">  {formatNumber(item.price * item.balance, 2)} دلار</span>
+                      <span className="whitespace-nowrap">{formatNumber(item.price * item.balance, 2)} دلار</span>
                       <span className="whitespace-nowrap lg:hidden">معادل {item.balance} تومان</span>
                     </div>
                     <button
@@ -322,35 +320,44 @@ const WalletAssets: React.FC = () => {
                         }
                       }}
                     >
-                      {isMobile ? openModalId === index ? <IconMoreVertical /> : <IconMoreHorizental /> : openMenuId === index ? <IconMoreVertical /> : <IconMoreHorizental />}
+                      {isMobile ? (openModalId === index ? <IconMoreVertical /> : <IconMoreHorizental />) : openMenuId === index ? <IconMoreVertical /> : <IconMoreHorizental />}
                     </button>
                     {!isMobile && openMenuId === index && (
                       <div
                         ref={menuRef}
                         className="absolute left-[25px] mt-2 top-6 w-[226px] bg-white8 overflow-hidden border border-gray21 shadow-md rounded-lg flex flex-col z-10"
                       >
-                        <Link to={`${ROUTES.TRADE.BUY}?coin=${item.symbol}`} className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2">
+                        <Link
+                          to={`${ROUTES.TRADE.BUY}?coin=${item.symbol}`}
+                          className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                        >
                           <span className="text-blue1 w-5 h-5 flex items-center justify-center">
                             <ReceivedIcon />
                           </span>
                           <span className="text-blue1">خرید</span>
                         </Link>
-
-                        <Link to={`${ROUTES.TRADE.SELL}?coin=${item.symbol}`} className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2">
+                        <Link
+                          to={`${ROUTES.TRADE.SELL}?coin=${item.symbol}`}
+                          className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                        >
                           <span className="text-blue1 w-5 h-5 flex items-center justify-center">
                             <SendIcon />
                           </span>
                           <span className="text-blue1">فروش</span>
                         </Link>
-
-                        <Link to={`${ROUTES.DEPOSIT}?coin=${item.symbol}`} className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2">
+                        <Link
+                          to={`${ROUTES.DEPOSIT}?coin=${item.symbol}`}
+                          className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                        >
                           <span className="text-blue1 w-5 h-5 flex items-center justify-center">
                             <WalletAddIcon />
                           </span>
                           <span className="text-blue1">واریز</span>
                         </Link>
-
-                        <Link to={`${ROUTES.WITHDRAWAL_FIAT}?coin=${item.symbol}`} className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2">
+                        <Link
+                          to={`${ROUTES.WITHDRAWAL_FIAT}?coin=${item.symbol}`}
+                          className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+                        >
                           <span className="text-blue1 w-5 h-5 flex items-center justify-center">
                             <WalletMinesIcon />
                           </span>
@@ -358,8 +365,14 @@ const WalletAssets: React.FC = () => {
                         </Link>
                       </div>
                     )}
-
-                    {isMobile && <ActionModal open={openModalId === index} onClose={() => setOpenModalId(null)} name={item.name} symbol={item.symbol} />}
+                    {isMobile && (
+                      <ActionModal
+                        open={openModalId === index}
+                        onClose={() => setOpenModalId(null)}
+                        name={item.name}
+                        symbol={item.symbol}
+                      />
+                    )}
                   </div>
                 </div>
               ))
@@ -367,9 +380,17 @@ const WalletAssets: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {totalPages > 1 && <Pagination current={page} total={totalPages} onPageChange={(newPage) => setPage(newPage)} />}
     </div>
+
+    {/* ✅ pagination بیرون از جدول */}
+    {totalPages > 1 && (
+      <div className="flex justify-center">
+        <Pagination current={page} total={totalPages} onPageChange={(newPage) => setPage(newPage)} />
+      </div>
+    )}
+  </div>
+
+
   );
 };
 
