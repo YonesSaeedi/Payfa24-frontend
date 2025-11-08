@@ -4,7 +4,7 @@ export interface LoginResponse {
   refresh_token?: string;
   id_user?: number;
   token2fa?: string;
-  twofaType?: string;
+  twofaType?: 'email' | 'sms' | 'google';
   status?: boolean;
   msg?: string;
 }
