@@ -265,7 +265,7 @@ export default function DepositDedicatedWallet() {
         <span className="icon-wrapper w-6 h-6 text-blue2">
           <IconVideo />
         </span>
-        <span>ویدیو آموزشی واریز با ولت اختصاصی</span>
+        <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با ولت اختصاصی</span>
       </div>
 
       {/* انتخاب ارز */}

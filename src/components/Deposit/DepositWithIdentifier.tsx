@@ -129,7 +129,7 @@ export default function DepositWithIdentifier({
           <span className="icon-wrapper w-6 h-6 text-blue2">
             <IconVideo />
           </span>
-          <span>ویدیو آموزشی واریز با  شناسه</span>
+          <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با  شناسه</span>
         </div>
         <span className="icon-wrapper w-5 h-5 text-blue2">
           <IconClose />

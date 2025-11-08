@@ -51,19 +51,11 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 
     const inputId = name;
 
-    const borderColorClass = hasError
-      ? "border-red1"
-      : isFocused
-      ? "border-blue2"
-      : value
-      ? "border-blue2"
-      : "border-gray5";
+    const borderColorClass = hasError ? "border-red1" : isFocused ? "border-blue2" : value ? "border-blue2" : "border-gray5";
 
     const labelStyleClass =
       isFocused || value || hasError
-        ? `top-[-12px] right-[13px] lg:text-sm text-xs ${
-            hasError ? "text-red1" : "text-blue2"
-          } ${labelBgClass || ""}`
+        ? `top-[-12px] right-[13px] lg:text-sm text-xs ${hasError ? "text-red1" : "text-blue2 "} ${labelBgClass || ""}`
         : "top-1/2 -translate-y-1/2 text-xs text-gray5 bg-transparent";
 
     return (
@@ -72,11 +64,11 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           dir="rtl"
           id={inputId}
           type={type}
-          className={`w-full bg-transparent lg:h-[56px] h-[48px] text-black0 rounded-xl border border-gray12 px-4  pb-1 text-sm font-normal transition-all duration-200 focus:outline-none 
-    ${theme === "dark" ? "bg-transparent text-black2" : " text-gray12"} 
-    ${borderColorClass} 
-    ${inputBgClass || ""}   // ✅ اضافه کردن کلاس بک‌گراند
-  `}
+          className={`w-full bg-transparent lg:h-[56px] h-[48px] text-black0 rounded-xl border px-4 pb-1 text-sm font-normal transition-all duration-200 focus:outline-none
+              ${theme === "dark" ? "bg-transparent text-black2" : "text-gray12"}
+              ${borderColorClass} 
+              ${inputBgClass || ""}   
+         `}
           style={{ paddingLeft: icon ? "2rem" : "1rem" }}
           ref={ref}
           value={value}
@@ -90,18 +82,12 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         />
 
         {icon && (
-          <span
-            onClick={onIconClick}
-            className="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer h-5 w-5"
-          >
+          <span onClick={onIconClick} className="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer h-5 w-5">
             <span className="icon-wrapper h-5 w-5">{icon}</span>
           </span>
         )}
 
-        <label
-          htmlFor={inputId}
-          className={`absolute right-3 transition-all duration-200 pointer-events-none px-1 ${labelStyleClass}`}
-        >
+        <label htmlFor={inputId} className={`absolute right-3 transition-all duration-200 pointer-events-none px-1 ${labelStyleClass}`}>
           {label}
         </label>
 

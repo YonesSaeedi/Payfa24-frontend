@@ -8,7 +8,7 @@ import IdentyIcon from "../../assets/icons/authentication/IdentyIcon";
 import IconCardIdenty from "../../assets/icons/authentication/IconCardIdenty";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import { Link } from "react-router";
-
+import IconIdentyBasic from "../../assets/icons/authentication/IconIdentyBasic";
 
 interface ApiResponse {
   user: UserData;
@@ -38,8 +38,7 @@ async function getUserInfo(): Promise<UserData> {
   const user = response.user;
 
   const level = user.level_account || 0;
-  const fullName =
-    user.name_display || `${user.name} ${user.family || ""}`.trim();
+  const fullName = user.name_display || `${user.name} ${user.family || ""}`.trim();
 
   return {
     id: user.id,
@@ -51,6 +50,7 @@ async function getUserInfo(): Promise<UserData> {
     profile_img: user.profile_img,
     family: user.family,
     level_kyc: user.level_kyc || "none",
+    name_display: user.name_display,
   };
 }
 
@@ -73,10 +73,7 @@ function formatPersianDate(dateStr: string): string {
   };
   const monthNum = persianMonths[month];
   if (!monthNum) return dateStr;
-  return `${year}/${monthNum.toString().padStart(2, "0")}/${day.padStart(
-    2,
-    "0"
-  )}`;
+  return `${year}/${monthNum.toString().padStart(2, "0")}/${day.padStart(2, "0")}`;
 }
 
 export default function UserAccount() {
@@ -103,20 +100,24 @@ export default function UserAccount() {
   const userName = userData?.name || "احراز هویت نشده";
   const userMobile = userData?.mobile || "---";
   const userEmail = userData?.email || "---";
-  const userJoinDate = userData?.join_date
-    ? formatPersianDate(userData.join_date)
-    : "---";
+  const userJoinDate = userData?.join_date ? formatPersianDate(userData.join_date) : "---";
   const userKycLevel = userData?.level_kyc || "none";
-
   const getInitials = () => {
-    const nameInitial = userData?.name?.charAt(0).toUpperCase() || "";
-    const familyInitial = userData?.family?.charAt(0).toUpperCase() || "";
-    return nameInitial && familyInitial
-      ? `${nameInitial} ${familyInitial}`
-      : nameInitial || "N/A";
+    const displayName = userData?.name_display || "";
+    const parts = displayName.trim().split(/\s+/);
+
+    let initials = "";
+    if (parts.length >= 1) {
+      initials += parts[0].charAt(0).toUpperCase();
+    }
+
+    if (parts.length >= 2) {
+      initials += " " + parts[1].charAt(0).toUpperCase();
+    }
+
+    return initials.trim() || "N/A";
   };
 
-  // تصمیم‌گیری برای نمایش فرم
   let kycContent;
   if (userKycLevel === "none") {
     // سطح ۱ : احراز پایه
@@ -149,9 +150,7 @@ export default function UserAccount() {
           </ul>
         </div>
         <Link to={"/kyc-basic"} className="w-full">
-          <button className="bg-blue2 flex items-center justify-center w-full mt-5 h-[48px] rounded-lg text-white2 font-bold">
-            احراز هویت
-          </button>
+          <button className="bg-blue2 flex items-center justify-center w-full mt-5 h-[48px] rounded-lg text-white2 font-bold">احراز هویت</button>
         </Link>
       </form>
     );
@@ -159,9 +158,7 @@ export default function UserAccount() {
     // سطح ۲ : احراز پیشرفته
     kycContent = (
       <form className="lg:w-[498px] text-gray15 w-full items-end mb-5 border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 justify-center sm:justify-end">
-        <h1 className="text-right text-blue2 font-medium">
-          سطح ۲ : احراز هویت پیشرفته
-        </h1>
+        <h1 className="text-right text-blue2 font-medium">سطح ۲ : احراز هویت پیشرفته</h1>
         <div className="flex flex-row items-center justify-end mt-5">
           <span className="mr-2 text-black1">ثبت مدرک شناسایی</span>
           <span className="icon-wrapper w-7 h-7 text-blue2">
@@ -183,17 +180,33 @@ export default function UserAccount() {
           </ul>
         </div>
         <Link to={"/kyc-advanced"} className="w-full">
-          <button className="bg-blue2 w-full mt-5 h-[48px] rounded-lg text-white2 font-bold">
-            احراز هویت
-          </button>
+          <button className="bg-blue2 w-full mt-5 h-[48px] rounded-lg text-white2 font-bold">احراز هویت</button>
         </Link>
       </form>
     );
   } else if (userKycLevel === "advanced") {
     kycContent = (
-      <button className="bg-blue2 lg:w-[498px] w-full py-3 font-bold text-white2 mt-5 rounded-md">
-        احراز هویت شما تکمیل است
-      </button>
+      <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-gray50 px-5 py-4 rounded-lg">
+        <div className="flex justify-between w-full items-center">
+          <div>
+            <span className="text-base font-medium text-blue2">سطح شما :پیشرفته</span>
+          </div>
+          <div className="bg-green9 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-lg items-center justify-center">
+            <span className="lg:text-sm text-xs font-medium">احزار شده</span>
+            <span className="icon-wrapper w-6 h-6 text-green2">
+              <IconIdentyBasic />
+            </span>
+          </div>
+        </div>
+        <div>
+          <p className="mt-5 text-right text-black1">دسترسی‌ها :</p>
+          <ul className="flex flex-col gap-1 list-inside list-disc text-gray5 lg:text-base text-sm">
+            <li className="text-right">۵ میلیون تومان برداشت ریالی روزانه</li>
+            <li className="text-right">۵ میلیون تومان برداشت ارزی روزانه</li>
+            <li className="text-right">دسترسی به ارز Utopia USD</li>
+          </ul>
+        </div>
+      </div>
     );
   }
 
@@ -201,68 +214,38 @@ export default function UserAccount() {
     <HeaderLayout>
       <div className="container-style w-full pt-7 flex gap-10 flex-col">
         <BreadcrumbNavigation />
-        <div className="bg-gray25 w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl lg:pb-10">
+        <div className="lg:bg-gray25 w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl lg:pb-10">
           <div className="flex items-center justify-center flex-col">
             {/* آواتار */}
             <div className="mb-6 lg:mt-14 mt-8">
               {loading ? (
-                <div className="w-32 h-32 rounded-full bg-blue13 animate-pulse" />
+                <div className="lg:w-[104px] lg:h-[104px] w-18 h-18 rounded-full bg-blue13 animate-pulse" />
               ) : userData?.profile_img ? (
-                <img
-                  className="w-32 h-32 rounded-full object-cover"
-                  src={userData.profile_img}
-                  alt="ProfilePicture"
-                />
+                <img className="lg:w-[104px] lg:h-[104px] w-18 h-18 rounded-full object-cover" src={userData.profile_img} alt="ProfilePicture" />
               ) : (
-                <div className="w-32 h-32 rounded-full bg-blue13 flex items-center justify-center text-[#1D4ED8] text-2xl font-bold">
+                <div className="lg:w-[104px] lg:h-[104px] w-[72px] h-[72px] rounded-full bg-blue13 flex items-center justify-center text-[#1D4ED8] lg:text-[28px] text-lg font-bold">
                   {getInitials()}
                 </div>
               )}
             </div>
-
             {/* اطلاعات کاربر */}
             <div className="flex justify-between items-start flex-row-reverse lg:text-lg font-normal text-sm lg:w-[498px] w-full mb-8">
               <div className="flex flex-col text-end gap-4 text-gray5 w-[140px]">
-                <span>سطح کاربری</span>
-                {showEmailAndName && <span>نام و نام خانوادگی</span>}
-                <span>شماره موبایل</span>
-                {showEmailAndName && <span>ایمیل</span>}
+               <span>سطح کاربری</span>
+                 <span>نام نمایشی</span>
+                 <span>شماره موبایل</span> 
+                {showEmailAndName && userEmail !== "---" && <span>ایمیل</span>}
                 <span>تاریخ عضویت</span>
               </div>
+              {/* ستون مقادیر (Values) */}
               <div className="flex flex-col gap-4 text-black1 flex-1 min-w-0">
-
-              {loading? <span className="skeleton-bg w-28 h-5 rounded-sm"></span>:  
-              
-              
-                <span>
-                  {verificationLevel === null
-                    ? "احراز هویت نشده"
-                    : `سطح ${verificationLevel}`}
-                </span>
-              }
-
-                {loading ? (
-                  <span className="skeleton-bg w-28 h-5 rounded-sm"></span>
-                ) : (
-                  showEmailAndName && <span>{userName}</span>
-                )}
-
-              {loading ? (
-                  <span className="skeleton-bg w-28 h-5 rounded-sm  "></span>
-                ) : (
-                  <span>{userMobile}</span>
-                )}
-                {loading ? (
-                  <span className="skeleton-bg w-28 h-5 rounded-sm"></span>
-                ) : (
-                  showEmailAndName && <span>{userEmail}</span>
-                )}
-
-                {loading ? (
-                  <span className="skeleton-bg w-28 h-5 rounded-sm  "></span>
-                ) : (
-                  <span>{userJoinDate}</span>
-                )}
+                {/* سطح کاربری (همیشه نمایش داده می‌شود) */}
+                {loading ? <span className="skeleton-bg w-12 h-5 rounded-sm"></span> : <span> {verificationLevel === null ? "احراز هویت نشده" : `سطح ${verificationLevel}`} </span>}
+                {/* نام و نام خانوادگی */}
+                {loading ? <span className="skeleton-bg w-24 h-5 rounded-sm"></span> : showEmailAndName && userName !== "احراز هویت نشده" && <span>{userName}</span>}
+                {/* شماره موبایل */} {loading ? <span className="skeleton-bg w-28 h-5 rounded-sm  "></span> : userMobile !== "---" && <span>{userMobile}</span>}
+                {loading ? <span className="skeleton-bg w-32 h-5 rounded-sm"></span> : showEmailAndName && userEmail !== "---" && <span>{userEmail}</span>}
+                {/* تاریخ عضویت */} {loading ? <span className="skeleton-bg w-36 h-5 rounded-sm  "></span> : userJoinDate !== "---" && <span>{userJoinDate}</span>}
               </div>
             </div>
 

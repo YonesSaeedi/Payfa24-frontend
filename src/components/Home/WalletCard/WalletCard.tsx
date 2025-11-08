@@ -79,7 +79,7 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
 
   return (
     <div>
-      <div className="border border-gray21 rounded-xl p-4 lg:pt-6 lg:pb-4 lg:px-8 shadow lg:w-full h-full flex flex-col gap-[22px] select-none">
+      <div className="border border-gray21 rounded-xl p-4 lg:pt-6 lg:pb-4 lg:px-8 shadow lg:w-full h-full flex flex-col gap-[32px] select-none">
         {/* بالا */}
         <div className="flex items-center justify-between mb-7">
           <CurrencyToggle onChange={(v) => setSelectedCurrency(v)} />
@@ -102,7 +102,7 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
         </div>
 
         {/* دکمه‌ها */}
-        <div className="flex gap-1.5 lg:gap-3 m-2 justify-center">
+        <div className="flex gap-1.5 lg:gap-3 justify-center">
           {actionButtons.map((btn, idx) =>
             btn.route ? (
               <Link
