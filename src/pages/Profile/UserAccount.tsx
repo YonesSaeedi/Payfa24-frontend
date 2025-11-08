@@ -96,11 +96,11 @@ export default function UserAccount() {
   }, []);
 
   const verificationLevel = userData?.verification_level || 0;
-  const showEmailAndName = verificationLevel >= 1;
-  const userName = userData?.name || "احراز هویت نشده";
-  const userMobile = userData?.mobile || "---";
-  const userEmail = userData?.email || "---";
-  const userJoinDate = userData?.join_date ? formatPersianDate(userData.join_date) : "---";
+  // const showEmailAndName = verificationLevel >= 1;
+  // const userName = userData?.name || "احراز هویت نشده";
+  // const userMobile = userData?.mobile || "---";
+  // const userEmail = userData?.email || "---";
+  // const userJoinDate = userData?.join_date ? formatPersianDate(userData.join_date) : "---";
   const userKycLevel = userData?.level_kyc || "none";
   const getInitials = () => {
     const displayName = userData?.name_display || "";

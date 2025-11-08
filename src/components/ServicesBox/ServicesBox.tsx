@@ -19,6 +19,8 @@ import IconTicket from "../../assets/icons/services/IconTicket";
 import IconNotification from "../../assets/icons/services/IconNotification";
 import IconUserPlus from "../../assets/icons/services/IconUserPlus";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "../../utils/apiClient";
 
 
 
@@ -26,6 +28,7 @@ interface ServiceItem {
   label: string;
   icon: ReactNode;
   route?: string;
+   onClick?: () => void;
 }
 
 interface ServicesBoxProps {
@@ -57,6 +60,15 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   }, 300);
 };
 
+const { data: kycInfo, isLoading: kycLoading } = useQuery({
+  queryKey: ["kyc-info"],
+  queryFn: () =>
+    apiRequest<{ kyc: { basic?: { cardbank?: boolean } } }>({
+      url: "/kyc/get-info",
+    }),
+  staleTime: 1000 * 60,
+  retry: 1,
+});
   const financeItems: ServiceItem[] = [
     { label: "خرید", icon: <ReceivedIcon />, route: ROUTES.TRADE.BUY },
     { label: "فروش", icon: <SendIcon />, route: ROUTES.TRADE.SELL },
@@ -103,11 +115,19 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   ];
 
   const supportItems: ServiceItem[] = [
-    {
-      label: "احراز هویت",
-      icon: <IconPersonalCard />,
-      route: ROUTES.AUTHENTICATION_BASIC,
+     {
+    label: "احراز هویت",
+    icon: <IconPersonalCard />,
+    onClick: () => {
+      if (kycLoading) return; // در حال لود شدن، کاری نکن
+      if (kycInfo?.kyc?.basic?.cardbank) {
+        navigate("/kyc-advanced"); // اگر KYC کامل شده
+      } else {
+        navigate("/kyc-basic"); // اگر هنوز کامل نشده
+      }
+      onClose(); // بستن مودال
     },
+  },
     {
       label: "امنیت",
       icon: <IconSecurity />,
@@ -136,7 +156,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   {items.map((item, i) => (
     <div key={i} className="p-1">
       <div
-        onClick={() => handleItemClick(item)}
+         onClick={() => item.onClick ? item.onClick() : handleItemClick(item)}
         className="flex flex-col items-center w-[100px] justify-center h-[79px] rounded-lg hover:border-blue2 cursor-pointer transition border border-gray21 bg-gray33"
       >
         <span className="w-6 h-6 text-blue2">{item.icon}</span>

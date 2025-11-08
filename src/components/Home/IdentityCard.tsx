@@ -15,11 +15,7 @@ interface IdentityCardProps {
   onClick: () => void;
 }
 
-const IdentityCard: React.FC<IdentityCardProps> = ({
-  title,
-  items,
-  accesses,
-}) => {
+const IdentityCard: React.FC<IdentityCardProps> = ({ title, items, accesses }) => {
   const navigate = useNavigate();
 
   // فراخوانی API برای چک کردن وضعیت KYC

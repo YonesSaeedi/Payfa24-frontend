@@ -50,12 +50,12 @@ export function formatPersianCardNumber(input: string | number): string {
 }
 
 export default function DepositWithIdentifier({ cards = [], identifierData = null, onCreateIdentifier, isCreating = false }: DepositWithIdentifierProps) {
-  const { control, watch, setValue } = useForm<{ bank?: string }>();
+  const { control, watch } = useForm<{ bank?: string }>();
   const selectedCardId = Number(watch("bank"));
 
-  const handleCardChange = (val: string) => {
-    setValue("bank", val);
-  };
+  // const handleCardChange = (val: string) => {
+  //   setValue("bank", val);
+  // };
 
   const handleCreate = async () => {
     if (!selectedCardId) {
@@ -206,7 +206,7 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
       <div className={`${isShown ? "mt-6" : "mt-24"}`}>
         <button
           onClick={handleCreate}
-          disabled={isCreating || !selectedCardId || isShown} // ⬅️ شرط غیرفعال بودن
+          disabled={isCreating || !selectedCardId || isShown} 
           className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
           ${isCreating || !selectedCardId || isShown ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-blue1"}`}
         >
