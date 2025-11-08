@@ -34,8 +34,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import useAuth from "../hooks/useAuth";
 import BankCardsRoute from "../pages/BankCards/BankCardsRoute";
 import TicketsRoute from "../pages/Ticket/TicketsRoute";
-
-
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRouter() {
   const { isAuthenticated } = useAuth()
@@ -43,58 +42,51 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* recaptcha provider */}
+        {/* =================== Public Routes =================== */}
         <Route element={<RecaptchaWrapper />}>
-          {/* auth pages ======================================================================================================== */}
-          <Route path={ROUTES.CHANGE_PASSWORD} element={<ChangePassword />} />
-          <Route path={ROUTES.MULTI_FACTOR} element={<MultiFactor />} />
-          <Route path={ROUTES.GOOGLE_AUTH_FLOW} element={<GoogleAuthFlow />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
           <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
           <Route path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD} element={<ForgotPasswordPageSetPasswordPage />} />
+          <Route path={ROUTES.CHANGE_PASSWORD} element={<ChangePassword />} />
+          <Route path={ROUTES.GOOGLE_AUTH_FLOW} element={<GoogleAuthFlow />} />
         </Route>
-        {/* header only pages ==================================================================================================== */}
-        <Route path={ROUTES.USER_ACCOUNT} element={<UserAccount />} />
-        <Route path={ROUTES.AUTHENTICATION_BASIC} element={<AuthenticationBasic />} />
-        <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<AuthenticationAdvance />} />
-        <Route path={ROUTES.DEPOSIT} element={<DepositPage />} />
-        <Route path={ROUTES.ADD_FRIEND} element={<AddFriend />} />
-        <Route path={ROUTES.NOTIFICATIONS} element={<NotificationsPage />} />
-        <Route path={ROUTES.WALLET} element={<Wallet />} />
-        <Route path={ROUTES.WITHDRAWAL_FIAT} element={<WithdrawPage />} />
-        <Route path={ROUTES.WITHDRAWAL_CRYPTO} element={<WithdrawPage />} />
-        <Route path={ROUTES.TRADE.ROOT} element={<TradeLayout />}>
+        {/* =================== Protected Routes =================== */}
+        <Route path={ROUTES.HOME} element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path={ROUTES.MARKET} element={<ProtectedRoute><MarketPage /></ProtectedRoute>} />
+        <Route path={ROUTES.USER_ACCOUNT} element={<ProtectedRoute><UserAccount /></ProtectedRoute>} />
+        <Route path={ROUTES.MULTI_FACTOR} element={<ProtectedRoute><MultiFactor /></ProtectedRoute>} />
+        <Route path={ROUTES.AUTHENTICATION_BASIC} element={<ProtectedRoute><AuthenticationBasic /></ProtectedRoute>} />
+        <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<ProtectedRoute><AuthenticationAdvance /></ProtectedRoute>} />
+        <Route path={ROUTES.ADD_FRIEND} element={<ProtectedRoute><AddFriend /></ProtectedRoute>} />
+        <Route path={ROUTES.NOTIFICATIONS} element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+        <Route path={ROUTES.WALLET} element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
+        <Route path={ROUTES.WITHDRAWAL_FIAT} element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
+        <Route path={ROUTES.WITHDRAWAL_CRYPTO} element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
+        <Route path={ROUTES.DEPOSIT} element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
+        <Route path={ROUTES.DEPOSIT_GATEWAY} element={<ProtectedRoute><DepositForm minDeposit={1000} maxDeposit={100000000} /></ProtectedRoute>} />
+        <Route path={ROUTES.CONNECTED_DEVICES} element={<ProtectedRoute><ConnectedDevicesLayout /></ProtectedRoute>} />
+        <Route path={ROUTES.BANK_CARDS} element={<ProtectedRoute><BankCardsRoute /></ProtectedRoute>} />
+        <Route path={ROUTES.TICKET.ROOT} element={<ProtectedRoute><TicketsRoute /></ProtectedRoute>} />
+        <Route path={ROUTES.TICKET.CREATE} element={<ProtectedRoute><CreateTicketPage /></ProtectedRoute>} />
+        <Route path={ROUTES.TRADE.ROOT} element={<ProtectedRoute><TradeLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to={ROUTES.TRADE.BUY} replace />} />
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
           <Route path={ROUTES.TRADE.SELL} element={<Sell />} />
         </Route>
-        <Route path={ROUTES.TICKET.ROOT} element={<TicketsRoute />} />
-        <Route path={ROUTES.TICKET.CREATE} element={<CreateTicketPage />} />
-        <Route path={ROUTES.TRANSACTION.ROOT} element={<TransactionLayout />}>
-          <Route index element={<CryptoPage />} />                                     {/* /history */}
-          <Route path={ROUTES.TRANSACTION.CRYPTO_HISTORY} element={<CryptoPage />} />  {/* /history/Crypto */}
-          <Route path={ROUTES.TRANSACTION.TOMAN_HISTORY} element={<TomanPage />} />    {/* /history/toman */}
-          <Route path={ROUTES.TRANSACTION.ORDER_HISTORY} element={<OrderPage />} />    {/* /history/order */}
+        <Route path={ROUTES.TRANSACTION.ROOT} element={<ProtectedRoute><TransactionLayout /></ProtectedRoute>}>
+          <Route index element={<CryptoPage />} />
+          <Route path={ROUTES.TRANSACTION.CRYPTO_HISTORY} element={<CryptoPage />} />
+          <Route path={ROUTES.TRANSACTION.TOMAN_HISTORY} element={<TomanPage />} />
+          <Route path={ROUTES.TRANSACTION.ORDER_HISTORY} element={<OrderPage />} />
         </Route>
-        <Route path={ROUTES.FAQ} element={<FaqLayout />} />
-        <Route path={ROUTES.CONNECTED_DEVICES} element={<ConnectedDevicesLayout />} />
-        <Route path={ROUTES.BANK_CARDS} element={<BankCardsRoute />} />
-
-        <Route path={ROUTES.DEPOSIT_GATEWAY} element={<DepositForm minDeposit={1000} maxDeposit={100000000} />} />
-        <Route path={ROUTES.DEPOSIT_IDENTIFIER} element={<DepositPage selected="identifier" />} />
-        <Route path={ROUTES.DEPOSIT_CARD} element={<DepositPage selected="card" />} />
-        <Route path={ROUTES.DEPOSIT_RECEIPT} element={<DepositPage selected="receipt" />} />
-        <Route path={ROUTES.DEPOSIT_WALLET} element={<DepositPage selected="wallet" />} />
-        <Route path={ROUTES.DEPOSIT_TXID} element={<DepositPage selected="txid" />} />
-        <Route path={ROUTES.MARKET_VIEW} element={<MarketViewPage />} />
-        {/* header + Footer pages ==================================================================================================== */}
-        <Route path={ROUTES.HOME} element={<HomePage />} />
-        <Route path={ROUTES.MARKET} element={<MarketPage />} />
-        {/* protected pages ========================================================================================================== */}
+        {/* FAQ + MarketView (also protected if needed) */}
+        <Route path={ROUTES.FAQ} element={<ProtectedRoute><FaqLayout /></ProtectedRoute>} />
+        <Route path={ROUTES.MARKET_VIEW} element={<ProtectedRoute><MarketViewPage /></ProtectedRoute>} />
+        {/* =================== Not Found Page =================== */}
         <Route path="*" element={isAuthenticated ? <NotFoundPage /> : <Navigate to={ROUTES.LOGIN} replace />} />
-      </Routes >
-    </BrowserRouter >
+      </Routes>
+    </BrowserRouter>
   );
 }
 
