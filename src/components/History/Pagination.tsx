@@ -1,4 +1,6 @@
 import React from "react";
+import { formatPersianDigits } from "../../utils/formatPersianDigits";
+
 
 interface PaginationProps {
   current: number;
@@ -76,7 +78,8 @@ const Pagination: React.FC<PaginationProps> = ({
                 : "text-gray-600 hover:bg-gray-100"
             }`}
           >
-            {num}
+           {formatPersianDigits(num)}
+
           </button>
         )
       )}

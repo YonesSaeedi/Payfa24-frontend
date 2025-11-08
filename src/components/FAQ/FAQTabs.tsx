@@ -15,12 +15,12 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-   <div className="flex gap-6 pb-3 mb-6 text-sm font-medium overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing">
+   <div className="flex mb-4 text-sm font-medium  scrollbar-hide active:cursor-grabbing">
   {tabs.map((tab) => (
     <button
       key={tab.id}
       onClick={() => setActiveTab(tab.id)}
-      className={`pb-1 shrink-0 whitespace-nowrap ${
+      className={`shrink-0 whitespace-nowrap px-4 py-2 ${
         activeTab === tab.id
           ? "text-blue-600 border-b-2 border-blue-600"
           : "text-gray-500 hover:text-blue-600"
@@ -30,6 +30,7 @@ const FAQTabs: React.FC<FAQTabsProps> = ({ activeTab, setActiveTab }) => {
     </button>
   ))}
 </div>
+
 
   );
 };

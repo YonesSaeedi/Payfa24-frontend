@@ -5,7 +5,7 @@ import bgChat from "../../../assets/images/Ticket/bgchat.jpg";
 import supportAvatar from "../../../assets/images/Ticket/avator.jpg";
 import IconSendMessage from "../../../assets/icons/ticket/IconSendMessage";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
-import { apiRequest } from "../../../utils/apiClient";
+import  { apiRequest } from "../../../utils/apiClient";
 import { ticketStatusMap } from "../../../utils/statusMap";
 import StatusBadge from "../../UI/Button/StatusBadge";
 import axios from "axios";
@@ -103,6 +103,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
       }));
 
       setTicketInfo(res);
+      console.log("📦 پیام‌های تیکت:", res.ticket_message);
+
       setMessages(formattedMessages);
     } catch (err) {
       console.error("ticket/get-info:", err);
@@ -129,6 +131,32 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
       return null;
     }
   };
+//   const fetchFileAsDataUrl = async (fileToken: string) => {
+//   if (!fileToken) return null;
+
+//   const filePath = `/image/${fileToken}`;
+//   const timestamp = Math.floor(Date.now() / 1000).toString();
+
+//   console.log("📡 در حال درخواست فایل:", filePath);
+
+//   try {
+//     const response = await apiClient.get(filePath, {
+//       responseType: "blob",
+//       headers: {
+//         "x-timestamp": timestamp,
+//       },
+//     });
+
+//     const blob = response.data;
+//     const objectUrl = URL.createObjectURL(blob);
+//     console.log("✅ فایل لود شد:", objectUrl);
+//     return objectUrl;
+//   } catch (err) {
+//     console.error("🚫 خطا در دریافت فایل:", err);
+//     return null;
+//   }
+// };
+
 
   useEffect(() => {
     fetchData();
@@ -155,8 +183,29 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
     loadFiles();
   }, [ticketInfo]);
 
+  
+
+
   const handleSend = async (e?: React.MouseEvent<HTMLButtonElement>) => {
   if (e) e.preventDefault();
+
+  console.log("✅ handleSend اجرا شد", {
+  newMessage,
+  selectedFile,
+  ticket,
+  isSending,
+});
+
+if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) {
+  console.warn("🚫 شرط جلوی ارسال را گرفت!", {
+    newMessage,
+    selectedFile,
+    ticket,
+    isSending,
+  });
+  return;
+}
+
   if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) return;
 
   setIsSending(true);
@@ -233,12 +282,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
         key={msg.id}
         className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}
       >
-        <div
-          dir="rtl"
-          className={`shadow rounded-xl px-3 w-[379px] relative flex-col ${
-            msg.isUser ? "bg-black4 text-black1" : "bg-gray40 text-black1"
-          }`}
-        >
+   <div
+  dir="rtl"
+  className={`shadow px-3 w-[379px] relative flex-col ${
+    msg.isUser
+      ? "bg-black4 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-bl-[8px]" 
+      : "bg-gray40 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px]" 
+  }`}
+>
+
+
           {!msg.isUser && (
             <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
               <img
@@ -254,11 +307,26 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
 
           {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
 
-          {msg.file && (
+          {/* {msg.file && (
             <div className="rounded-2xl w-fit p-2 mt-2">
               <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
             </div>
-          )}
+          )} */}
+          {msg.file && (
+  <div className="rounded-2xl w-fit p-2 mt-2">
+    {imageCache[msg.id] ? (
+      <img
+        src={imageCache[msg.id]}
+        alt="attachment"
+        className="rounded-lg border border-gray21 w-[200px] h-[150px] object-cover cursor-pointer"
+        onClick={() => setFullscreenImage(imageCache[msg.id])}
+      />
+    ) : (
+      <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
+    )}
+  </div>
+)}
+
 
           <span
             dir="rtl"
@@ -293,7 +361,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
             className="flex-1 px-3 py-2 focus:outline-none bg-white8 text-black0"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+           onKeyDown={(e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    console.log("🔹 Enter pressed! مقدار فعلی پیام:", newMessage);
+    setTimeout(() => handleSend(), 0);
+  }
+}}
+
           />
 
           <input

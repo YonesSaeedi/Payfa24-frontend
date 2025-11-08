@@ -1,6 +1,5 @@
 import React, { useEffect, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-
 import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
 import WalletAddIcon from "../../assets/icons/Home/WalletCardIcon/WalletAddIcon";

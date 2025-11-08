@@ -98,7 +98,7 @@ function MarketPage() {
           </div>
 
           {/* 📈 جدول بازار */}
-          <div className="pb-[87px]">
+          <div >
             <CryptoMarketTable
               data={mergedData}
               active={activeTab}

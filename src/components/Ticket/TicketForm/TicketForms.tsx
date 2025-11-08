@@ -1,3 +1,219 @@
+// import { useRef, useState, useEffect } from "react";
+// import { useForm, Controller } from "react-hook-form";
+// import { toast } from "react-toastify";
+// import { apiRequest } from "../../../utils/apiClient";
+// import { TicketFormInputs, TicketNewResponse } from "../../../types/Ticket";
+// import type { AxiosProgressEvent } from "axios";
+// import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
+// import OrderSelector from "./OrderSelector";
+// import axios from "axios";
+// import FloatingInput from "../../FloatingInput/FloatingInput";
+
+// interface Order {
+//   id: string;
+//   coin: string;
+//   type: "خرید" | "فروش" | "برداشت" | "واریز";
+//   amount: string;
+//   date: string;
+//   icon: React.ReactNode;
+// }
+
+// export default function TicketForm() {
+//   const [uploadProgress, setUploadProgress] = useState(0);
+//   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+//   const [isFileFocused, setIsFileFocused] = useState(false);
+
+//   const {
+//     register,
+//     handleSubmit,
+//     control,
+//     setValue,
+//     watch,
+//     formState: { errors, isSubmitting },
+//   } = useForm<TicketFormInputs>({
+//     mode: "onChange",
+//   });
+
+//   const watchedFields = watch(["title", "description"]);
+//   const fileInputRef = useRef<HTMLInputElement | null>(null);
+//   const onSubmit = async (data: TicketFormInputs) => {
+//     try {
+//       const formData = new FormData();
+//       formData.append("subject", data.title.trim());
+//       formData.append("message", data.description.trim());
+//       if (selectedOrder?.id) formData.append("order", selectedOrder.id);
+//       if (data.file && data.file.length > 0) {
+//         formData.append("file", data.file[0]);
+//       }
+
+//       const response = await apiRequest<TicketNewResponse, FormData>({
+//         url: "/ticket/new",
+//         method: "POST",
+//         data: formData,
+//         isFormData: true,
+//         onUploadProgress: (e?: AxiosProgressEvent) => {
+//           if (e?.total) {
+//             const percent = Math.round((e.loaded * 100) / e.total);
+//             setUploadProgress(percent);
+//           }
+//         },
+//       });
+
+//       if (response?.status) {
+//         toast.success("تیکت با موفقیت ایجاد شد!");
+//         setValue("file", undefined);
+//         setUploadProgress(0);
+//       } else {
+//         toast.error(response.msg || "خطا در ثبت تیکت");
+//       }
+//     } catch (err) {
+//       console.error("Upload error:", err);
+//       if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
+//         toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");
+//         return;
+//       }
+//       toast.error("شما دو تیکت باز دارید و بیشتر از این نمی‌توانید تیکتی ایجاد کنید!");
+//     }
+//   };
+
+//  const isFormComplete = watchedFields[0]?.trim() || watchedFields[1]?.trim() || selectedOrder;
+//   const fileDivRef = useRef<HTMLDivElement | null>(null);
+// useEffect(() => {
+//   function handleClickOutside(event: MouseEvent) {
+//     if (fileDivRef.current && !fileDivRef.current.contains(event.target as Node)) {
+//       setIsFileFocused(false);
+//     }
+//   }
+//   document.addEventListener("mousedown", handleClickOutside);
+//   return () => {
+//     document.removeEventListener("mousedown", handleClickOutside);
+//   };
+// }, []);
+
+//   return (
+//     <form onSubmit={handleSubmit(onSubmit)} dir="rtl" className="h-full w-[543px] flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl px-6">
+//       <div className="flex flex-col gap-6">
+//         <h2 className="text-2xl font-medium text-center text-black1 mt-10 mb-12">ایجاد تیکت جدید</h2>
+//         <div className="flex flex-col gap-1">
+//   <Controller
+//     name="title"
+//     control={control}
+//     rules={{ required: "عنوان تیکت الزامی است" }}
+//     render={({ field }) => (
+//       <FloatingInput
+//         label="عنوان تیکت"
+//         value={field.value || ""}
+//         onChange={field.onChange}
+//         type="text"
+//         placeholder=""
+//         placeholderColor="gray9"
+//         className="flex flex-row h-[56px] rounded-lg border border-gray12 font-normal text-[14px]"
+//       />
+//     )}
+//   />
+//   {errors.title && (
+//     <p className="text-red-500 text-xs mt-[2px]">{errors.title.message}</p>
+//   )}
+// </div>
+
+//         <OrderSelector selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} register={register} setValue={setValue} />
+
+//         <div className="relative w-full lg:bg-gray37">
+//           <Controller
+//             name="description"
+//             control={control}
+//             rules={{ required: "توضیحات الزامی است" }}
+//             render={({ field }) => (
+//               <div className="relative w-full">
+//                 <label className="absolute right-3 top-[-8px] text-xs text-gray12 lg:bg-gray43 bg-white1 px-1 z-10">توضیحات</label>
+//                 <textarea
+//                   {...field}
+//                   placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."
+//                   className="w-full h-[160px] px-3 pt-6  border border-gray12 rounded-lg lg:bg-gray43 bg-white1 text-black0 text-[14px] resize-none focus:outline-none focus:border-blue2"
+//                 />
+//                 {errors.description && <p className="text-red-500 text-xs ">{errors.description.message}</p>}
+//               </div>
+//             )}
+//           />
+//         </div>
+      
+
+//         <div className="relative w-full">
+//           <label
+//             className={`absolute right-3 text-xs -top-2 px-1 z-40 bg-gray38 lg:bg-gray43 transition-colors duration-200 
+//       ${isFileFocused ? "text-blue2" : "text-gray12"}`}
+//           >
+//             فایل پیوست
+//           </label>
+
+//           <Controller
+//             name="file"
+//             control={control}
+//             render={({ field }) => {
+//               return (
+//                 <div
+//                  ref={fileDivRef}
+//                  onClick={() => {
+//     fileInputRef.current?.click();
+//     setIsFileFocused(true); 
+//   }}
+//                   className={`w-full border rounded-lg px-3 py-2 flex justify-between items-center  border-gray12 cursor-pointer transition-colors duration-200 
+//           ${isFileFocused ? "border-blue2" : "border-gray12"}`}
+//                 >
+//                   <div className="flex items-center gap-2 h-[36px] rounded-[10px]">
+//                     <span className={`w-5 h-5 transition-colors duration-200 ${isFileFocused ? "text-blue2" : "text-gray12"}`}>
+//                       <IconAttachFile />
+//                     </span>
+
+//                     <span className={`text-sm transition-colors duration-200 text-gray12`}>
+//                       {field.value && field.value.length > 0 ? field.value[0].name :
+//                       "هنوز فایلی انتخاب نکرده اید (اختیاری)"}
+//                     </span>
+//                   </div>
+
+//                   <input
+//                     ref={fileInputRef}
+//                     type="file"
+//                     className="hidden"
+//                     onFocus={() => setIsFileFocused(true)}
+//                     onBlur={() => setIsFileFocused(false)}
+//                     onChange={(e) => {
+//     field.onChange(e.target.files);
+//     setIsFileFocused(false); 
+//   }}
+//                   />
+//                 </div>
+//               );
+//             }}
+//           />
+
+//           {uploadProgress > 0 && (
+//             <div className="mt-2">
+//               <div className="flex justify-between mb-1 text-xs text-gray-300">
+//                 <span>در حال آپلود فایل...</span>
+//                 <span>{uploadProgress}%</span>
+//               </div>
+//               <div className="w-full bg-gray-400 h-2 rounded overflow-hidden">
+//                 <div className="bg-primary h-2 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+
+//       <button
+//         type="submit"
+//         disabled={!isFormComplete || isSubmitting}
+//         className={`w-full mb-10 py-3 px-4 rounded-lg  transition mt-[113px] ${
+//           !isFormComplete || isSubmitting ? "bg-gray12 cursor-not-allowed text-white text-base font-bold" : "bg-blue2 hover:bg-blue-700 text-white text-base font-bold"
+//         }`}
+//       >
+//         {isSubmitting ? "در حال ارسال تیکت..." : "ارسال تیکت"}
+//       </button>
+//     </form>
+//   );
+// }
 import { useRef, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -21,7 +237,6 @@ interface Order {
 export default function TicketForm() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-
   const [isFileFocused, setIsFileFocused] = useState(false);
 
   const {
@@ -31,12 +246,24 @@ export default function TicketForm() {
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<TicketFormInputs>({
-    mode: "onChange",
-  });
+  } = useForm<TicketFormInputs>({ mode: "onChange" });
 
-  const watchedFields = watch(["title", "description"]);
+  const watchedFields = watch(["title", "description", "file"]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileDivRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (fileDivRef.current && !fileDivRef.current.contains(event.target as Node)) {
+        setIsFileFocused(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const onSubmit = async (data: TicketFormInputs) => {
     try {
       const formData = new FormData();
@@ -77,135 +304,140 @@ export default function TicketForm() {
     }
   };
 
-  const isFormComplete = watchedFields[0]?.trim() && watchedFields[1]?.trim() && selectedOrder;
-  const fileDivRef = useRef<HTMLDivElement | null>(null);
-useEffect(() => {
-  function handleClickOutside(event: MouseEvent) {
-    if (fileDivRef.current && !fileDivRef.current.contains(event.target as Node)) {
-      setIsFileFocused(false);
-    }
-  }
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
+  const isFormComplete = watchedFields[0]?.trim() || watchedFields[1]?.trim() || selectedOrder;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} dir="rtl" className="h-full w-[543px] flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl px-6">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-6">
         <h2 className="text-2xl font-medium text-center text-black1 mt-10 mb-12">ایجاد تیکت جدید</h2>
-        <Controller
-          name="title"
-          control={control}
-          rules={{ required: "عنوان تیکت الزامی است" }}
-          render={({ field }) => (
-            <FloatingInput
-              label="عنوان تیکت"
-              value={field.value || ""}
-              onChange={field.onChange}
-              type="text"
-              placeholder=""
-              placeholderColor="gray9"
-              className="flex flex-row mb-6 h-[56px] rounded-lg border  border-gray12 font-normal text-[14px]"
-            />
-          )}
-        />
-        {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+
+        {/* عنوان */}
+        <div className="flex flex-col gap-1">
+          <Controller
+            name="title"
+            control={control}
+            rules={{ required: "عنوان تیکت الزامی است" }}
+            render={({ field }) => (
+              <FloatingInput
+                label="عنوان تیکت"
+                value={field.value || ""}
+                onChange={field.onChange}
+                type="text"
+                className="flex flex-row  rounded-lg border border-gray12 font-normal text-[14px]"
+              />
+            )}
+          />
+          {errors.title && <p className="text-red-500 text-xs mt-[2px]">{errors.title.message}</p>}
+        </div>
 
         <OrderSelector selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} register={register} setValue={setValue} />
 
+        {/* توضیحات */}
         <div className="relative w-full lg:bg-gray37">
           <Controller
             name="description"
             control={control}
             rules={{ required: "توضیحات الزامی است" }}
             render={({ field }) => (
-              <div className="relative w-full mt-4">
+              <div className="relative w-full">
                 <label className="absolute right-3 top-[-8px] text-xs text-gray12 lg:bg-gray43 bg-white1 px-1 z-10">توضیحات</label>
                 <textarea
                   {...field}
                   placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."
-                  className="w-full h-[160px] px-3 pt-6 pb-3 border border-gray12 rounded-lg lg:bg-gray43 bg-white1 text-black0 text-[14px] resize-none focus:outline-none focus:border-blue2"
+                  className="w-full h-[160px] px-3 pt-6 border border-gray12 rounded-lg lg:bg-gray43 bg-white1 text-black0 text-[14px] resize-none focus:outline-none focus:border-blue2"
                 />
-                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+                {errors.description && <p className="text-red-500 text-xs">{errors.description.message}</p>}
               </div>
             )}
           />
         </div>
-      
 
-        <div className="relative w-full mt-5">
-          <label
-            className={`absolute right-3 text-xs -top-2 px-1 z-40 bg-gray38 lg:bg-gray43 transition-colors duration-200 
-      ${isFileFocused ? "text-blue2" : "text-gray12"}`}
-          >
+        {/* فایل پیوست */}
+        <div className="relative w-full">
+          <label className={`absolute right-3 text-xs -top-2 px-1 z-40 bg-gray38 lg:bg-gray43 transition-colors duration-200 ${isFileFocused ? "text-blue2" : "text-gray12"}`}>
             فایل پیوست
           </label>
 
           <Controller
             name="file"
             control={control}
-            render={({ field }) => {
-              return (
-                <div
-                 ref={fileDivRef}
-                 onClick={() => {
-    fileInputRef.current?.click();
-    setIsFileFocused(true); 
-  }}
-                  className={`w-full border rounded-md px-3 py-4 flex justify-between items-center cursor-pointer transition-colors duration-200 
-          ${isFileFocused ? "border-blue2" : "border-gray12"}`}
-                >
-                  <div className="flex items-center gap-2 h-[36px] rounded-[10px]">
-                    <span className={`w-5 h-5 transition-colors duration-200 ${isFileFocused ? "text-blue2" : "text-gray12"}`}>
-                      <IconAttachFile />
-                    </span>
-
-                    <span className={`text-sm transition-colors duration-200 text-gray12`}>
-                      {field.value && field.value.length > 0 ? field.value[0].name :
-                      "هنوز فایلی انتخاب نکرده اید (اختیاری)"}
-                    </span>
-                  </div>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    className="hidden"
-                    onFocus={() => setIsFileFocused(true)}
-                    onBlur={() => setIsFileFocused(false)}
-                    onChange={(e) => {
-    field.onChange(e.target.files);
-    setIsFileFocused(false); 
-  }}
-                  />
+            render={({ field }) => (
+              <div ref={fileDivRef}
+                   onClick={() => { fileInputRef.current?.click(); setIsFileFocused(true); }}
+                   className={`w-full border rounded-lg px-3 py-2 flex justify-between items-center cursor-pointer transition-colors duration-200 ${isFileFocused ? "border-blue2" : "border-gray12"}`}>
+                <div className="flex items-center gap-2 h-[36px] rounded-[10px]">
+                  <span className={`w-5 h-5 ${isFileFocused ? "text-blue2" : "text-gray12"}`}><IconAttachFile /></span>
+                  <span className="text-sm text-gray12">
+                    {field.value && field.value.length > 0 ? field.value[0].name : "هنوز فایلی انتخاب نکرده اید (اختیاری)"}
+                  </span>
                 </div>
-              );
-            }}
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+
+                    const isValidType = file.type.startsWith("image/") || file.type.startsWith("video/");
+                    if (!isValidType) {
+                      toast.error("فقط مجاز به آپلود تصویر یا ویدیو هستید.");
+                      return;
+                    }
+
+                    if (file.size > 20 * 1024 * 1024) {
+                      toast.error("حجم فایل نباید بیشتر از 20 مگابایت باشد.");
+                      return;
+                    }
+
+                    field.onChange(e.target.files);
+                    setIsFileFocused(false);
+                  }}
+                />
+              </div>
+            )}
           />
 
-          {uploadProgress > 0 && (
-            <div className="mt-2">
-              <div className="flex justify-between mb-1 text-xs text-gray-300">
-                <span>در حال آپلود فایل...</span>
-                <span>{uploadProgress}%</span>
-              </div>
-              <div className="w-full bg-gray-400 h-2 rounded overflow-hidden">
-                <div className="bg-primary h-2 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
-              </div>
+          {/* نمایش جزئیات فایل */}
+          {watchedFields[2] && watchedFields[2].length > 0 && (
+            <div className="flex items-center justify-between mt-2 text-sm text-gray12 bg-gray38 p-2 rounded">
+              <span>
+                {watchedFields[2][0].name} ({(watchedFields[2][0].size / (1024 * 1024)).toFixed(1)} MB)
+              </span>
+              <button
+                type="button"
+                onClick={() => setValue("file", undefined)}
+                className="text-red-500 hover:text-red-700 text-lg font-bold"
+              >
+                ×
+              </button>
             </div>
           )}
         </div>
       </div>
 
+      {/* دکمه ارسال */}
       <button
         type="submit"
         disabled={!isFormComplete || isSubmitting}
-        className={`w-full mb-10 py-3 px-4 rounded-lg  transition mt-[113px] ${
-          !isFormComplete || isSubmitting ? "bg-gray12 cursor-not-allowed text-white text-base font-bold" : "bg-blue2 hover:bg-blue-700 text-white text-base font-bold"
+        className={`relative w-full mb-10 py-3 px-4 rounded-lg transition mt-[113px] overflow-hidden ${
+          !isFormComplete || isSubmitting
+            ? "bg-gray12 cursor-not-allowed text-white"
+            : "bg-blue2 hover:bg-blue-700 text-white"
         }`}
       >
-        {isSubmitting ? "در حال ارسال تیکت..." : "ارسال تیکت"}
+        {isSubmitting && uploadProgress > 0 ? (
+          <>
+            <span className="absolute left-0 top-0 bottom-0 bg-green-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+            <span className="relative z-10">در حال آپلود {uploadProgress}%</span>
+          </>
+        ) : isSubmitting ? (
+          <span>در حال ارسال تیکت...</span>
+        ) : (
+          <span>ارسال تیکت</span>
+        )}
       </button>
     </form>
   );

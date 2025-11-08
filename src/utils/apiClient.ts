@@ -82,6 +82,7 @@ apiClient.interceptors.request.use(async (config) => {
     return config;
   }
   let token = localStorage.getItem("accessToken");
+  if (!token) token = await refreshAccessToken() // try to refresh token if there isn't one
   if (isTokenExpiringSoon()) token = await refreshAccessToken();
   // ensure headers object exists and has the right type
   if (!config.headers) config.headers = {} as AxiosRequestHeaders;

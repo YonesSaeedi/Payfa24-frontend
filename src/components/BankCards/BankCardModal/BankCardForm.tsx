@@ -106,7 +106,8 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
       </div>
 
       <div
-        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6 max-w-[600px]"
+        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6 w-full
+    lg:max-w-[600px]"
         style={{
           backgroundImage: `url(${
             isDark ? BackgroundCardDark : BackgroundCard
@@ -120,7 +121,7 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
         </div>
 
         <div className="relative w-full mb-2">
-          <input
+          <input dir="rtl"
             id="cardNumber"
             type="text"
             value={cardNumber}
@@ -150,7 +151,8 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
     placeholder:text-gray-400
     placeholder:text-2xl
      placeholder:tracking-[0.1em]
-    placeholder:text-center
+    [&::placeholder]:text-center
+
     focus:outline-none
     focus:ring-2 focus:ring-blue-400
     focus:border-none

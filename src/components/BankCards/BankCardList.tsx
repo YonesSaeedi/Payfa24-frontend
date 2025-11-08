@@ -6,6 +6,8 @@ import IconInProgress from "../../assets/icons/BankCards/IconInProgress";
 import IconDelete from "../../assets/icons/BankCards/IconDelete";
 import useGetUser from "../../hooks/useGetUser"; 
 
+
+
 type Card = {
   id: number;
   number: string;
@@ -102,19 +104,19 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
     switch (status) {
       case "confirm":
         return (
-          <span className="w-4 h-4">
+          <span className="w-5 h-5">
             <IconAccept />
           </span>
         );
       case "pending":
         return (
-          <span className="w-4 h-4">
+          <span className="w-5 h-5">
             <IconInProgress />
           </span>
         );
       case "rejected":
         return (
-          <span className="w-4 h-4">
+          <span className="w-5 h-5">
             <IconDelete />
           </span>
         );
@@ -122,6 +124,12 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
         return null;
     }
   };
+ const formatPersianCardNumber = (input: string | number): string => {
+  if (input === null || input === undefined || input === "") return "";
+  const persianMap = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+  const persianNumber = String(input).replace(/[0-9]/g, (d) => persianMap[+d]);
+  return persianNumber.replace(/(.{4})(?=.)/g, "$1 ");
+};
 
   return (
     <div dir="rtl ">
@@ -158,7 +166,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
 
               <div dir="rtl" className="relative z-10 flex justify-end flex-col pt-6">
                 <p className="text-sm pb-1 text-black1">شماره کارت</p>
-                <div className="text-lg mb-2 text-black1 font-medium">{card.number}</div>
+                <div dir="ltr" className="text-lg mb-2 text-black1 font-medium text-right"> {formatPersianCardNumber(card.number)}</div>
               </div>
 
               <div className="relative z-10 flex justify-between flex-row-reverse pt-2 items-center">
