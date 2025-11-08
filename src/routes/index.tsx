@@ -37,6 +37,7 @@ import TicketsRoute from "../pages/Ticket/TicketsRoute";
 
 
 
+
 export default function AppRouter() {
   const { isAuthenticated } = useAuth()
 

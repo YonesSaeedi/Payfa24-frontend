@@ -47,7 +47,7 @@ const TicketPanel: React.FC = () => {
 
     <div className="p-6">
       <div className={`${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} transition`}>
-        <div className="bg-white1">
+        <div>
           <div className="flex flex-col lg:flex-row gap-[40px] lg:gap-[85px] justify-center items-stretch">
 
            

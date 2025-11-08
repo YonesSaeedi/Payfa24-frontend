@@ -133,16 +133,17 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       {title}
     </h3>
 
-    {/* ✅ تغییرات اینجاست */}
-    <div className="px-9 grid grid-cols-4 gap-4">
+
+    <div className="lg:px-9 grid grid-cols-4 lg:gap-x-4 lg:gap-y-[12px] gap-x-2 gap-y-3">
       {items.map((item, i) => (
-        <div key={i} className="p-1">
-          <div
-            onClick={() => handleItemClick(item)}
-            className="flex flex-col items-center w-[84px] h-[72px] justify-center rounded-lg hover:border-blue2 cursor-pointer transition border border-gray21 bg-gray33"
-          >
-            <span className="w-6 h-6 text-blue2">{item.icon}</span>
-            <span className="text-sm text-gray-700 dark:text-gray-200 text-center mt-2 whitespace-nowrap">
+        <div key={i} >
+         <div
+  onClick={() => handleItemClick(item)}
+  className="flex flex-col items-center  justify-center rounded-lg hover:border-blue2 cursor-pointer transition border border-gray21 bg-gray33"
+>
+
+            <span className="w-6 h-6 text-blue2 mt-[9px] mx-[29px]">{item.icon}</span>
+            <span className=" text-gray-700 dark:text-gray-200 text-center mt-1 text-[14px] font-normal whitespace-nowrap pb-[9px] px-2">
               {item.label}
             </span>
           </div>
@@ -160,7 +161,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   onClick={handleClose}
 >
   <div
-    className={`bg-white8 rounded-xl shadow-lg p-6 px-[22px] w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${
+    className={`bg-white8 rounded-xl shadow-lg p-4 lg:px-[22px] w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${
       isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
     } relative`}
     onClick={(e) => e.stopPropagation()}
@@ -179,8 +180,8 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       <IconCloseButtun />
     </button>
 
-    {/* فقط این بخش اسکرول بخورد */}
-    <div className="overflow-auto flex-1">
+   
+    <div className="overflow-auto flex-1 pl-2 mt-1">
       {renderSection("مالی و تراکنش", financeItems)}
       {renderSection("بازار و اطلاعات", marketItems)}
       {renderSection("تاریخچه", historyItems)}

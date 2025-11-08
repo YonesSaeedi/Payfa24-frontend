@@ -224,6 +224,7 @@ import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
 import OrderSelector from "./OrderSelector";
 import axios from "axios";
 import FloatingInput from "../../FloatingInput/FloatingInput";
+import IconClose from "../../../assets/icons/Login/IconClose";
 
 interface Order {
   id: string;
@@ -238,6 +239,8 @@ export default function TicketForm() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isFileFocused, setIsFileFocused] = useState(false);
+  const [, setSelectedFile] = useState<File | null>(null);
+
 
   const {
     register,
@@ -378,43 +381,50 @@ export default function TicketForm() {
                   className="hidden"
                   accept="image/*,video/*"
                   onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-                    const isValidType = file.type.startsWith("image/") || file.type.startsWith("video/");
-                    if (!isValidType) {
-                      toast.error("فقط مجاز به آپلود تصویر یا ویدیو هستید.");
-                      return;
-                    }
+  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "video/mp4", "video/mpeg"];
 
-                    if (file.size > 20 * 1024 * 1024) {
-                      toast.error("حجم فایل نباید بیشتر از 20 مگابایت باشد.");
-                      return;
-                    }
+  if (!allowedTypes.includes(file.type)) {
+    toast.error("فقط فرمت‌های jpg, jpeg, png و mp4 مجاز هستند.");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    return;
+  }
 
-                    field.onChange(e.target.files);
-                    setIsFileFocused(false);
-                  }}
+  if (file.size > MAX_FILE_SIZE) {
+    toast.error("حجم فایل نباید بیشتر از 20 مگابایت باشد.");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    return;
+  }
+
+  field.onChange(e.target.files);
+  setSelectedFile(file); 
+  setIsFileFocused(false);
+}}
+
                 />
               </div>
             )}
           />
 
           {/* نمایش جزئیات فایل */}
-          {watchedFields[2] && watchedFields[2].length > 0 && (
-            <div className="flex items-center justify-between mt-2 text-sm text-gray12 bg-gray38 p-2 rounded">
-              <span>
-                {watchedFields[2][0].name} ({(watchedFields[2][0].size / (1024 * 1024)).toFixed(1)} MB)
-              </span>
-              <button
-                type="button"
-                onClick={() => setValue("file", undefined)}
-                className="text-red-500 hover:text-red-700 text-lg font-bold"
-              >
-                ×
-              </button>
-            </div>
-          )}
+        {watchedFields[2] && watchedFields[2].length > 0 && (
+  <div className="flex items-center justify-between mt-2 text-sm text-gray12 bg-gray38 p-2 rounded-lg py-4">
+    <span>
+      {watchedFields[2][0].name} ({(watchedFields[2][0].size / (1024 * 1024)).toFixed(1)} MB)
+    </span>
+    <button
+      type="button"
+      onClick={() => setValue("file", undefined)}
+      className=" hover:text-red-700 text-lg font-bold w-6 h-6 icon-wrapper"
+    >
+      <IconClose/>
+    </button>
+  </div>
+)}
+
         </div>
       </div>
 
