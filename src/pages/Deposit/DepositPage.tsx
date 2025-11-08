@@ -326,10 +326,10 @@ export default function DepositPage({
               onClick={() => setSelectedOption(option.id)}
             >
               <div
-                className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${
+                className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200  ${
                   selectedOption === option.id
-                    ? "border-blue2"
-                    : "border-gray50"
+                    ? "border border-blue2"
+                    : "border border-gray2"
                 }`}
               >
                 <div>
@@ -373,8 +373,8 @@ export default function DepositPage({
               <div
                 className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${
                   selectedOption === option.id
-                    ? "border-blue2"
-                    : "border-gray50"
+                   ? "border border-blue2"
+                    : "border border-gray2"
                 }`}
               >
                 <div>

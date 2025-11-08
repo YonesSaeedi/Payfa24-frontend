@@ -186,7 +186,7 @@ export default function UserAccount() {
     );
   } else if (userKycLevel === "advanced") {
     kycContent = (
-      <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-gray50 px-5 py-4 rounded-lg">
+      <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-red1 px-5 py-4 rounded-lg">
         <div className="flex justify-between w-full items-center">
           <div>
             <span className="text-base font-medium text-blue2">سطح شما :پیشرفته</span>

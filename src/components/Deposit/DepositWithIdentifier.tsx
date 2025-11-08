@@ -53,9 +53,6 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
   const { control, watch } = useForm<{ bank?: string }>();
   const selectedCardId = Number(watch("bank"));
 
-  // const handleCardChange = (val: string) => {
-  //   setValue("bank", val);
-  // };
 
   const handleCreate = async () => {
     if (!selectedCardId) {
@@ -64,52 +61,7 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
     }
 
     await onCreateIdentifier(selectedCardId);
-    // =======
 
-    //     setIsLoading(true);
-    //     try {
-    //       // پاسخ ممکنه: { deposit_id: { ... } } یا خودِ آبجکت برگرده
-    //       const response = await apiRequest<
-    //         { deposit_id?: DepositIdentifierResponse } | DepositIdentifierResponse
-    //       >({
-    //         url: "/wallets/fiat/deposit/gateway-id",
-    //         method: "POST",
-    //         // data: { id: selectedCard } as Record<string, number>,
-    //       });
-
-    //       const depositData: DepositIdentifierResponse | null =
-    //         "deposit_id" in response &&
-    //         response.deposit_id &&
-    //         typeof response.deposit_id === "object"
-    //           ? response.deposit_id
-    //           : null;
-    //       if (
-    //         depositData &&
-    //         typeof depositData === "object" &&
-    //         "deposit_id" in depositData
-    //       ) {
-    //         setApiResponseData(depositData);
-    //         setIsShown(true);
-    //         // افزودن به لیست depositIds محلی (برای هر نیاز آینده)
-    //         // setDepositIds((prev) => [
-    //         //   ...prev,
-    //         //   { deposit_id: depositData.deposit_id, id_card: selectedCard },
-    //         // ]);
-    //         toast.success("شناسه واریز با موفقیت ساخته شد ");
-    //       } else {
-    //         toast.success("شناسه واریز با موفقیت ساخته شد ");
-    //       }
-
-    //       // بعد از نمایش شناسه، دکمه غیرفعال خواهد شد (به علت isShown=true)
-    //     } catch (error: unknown) {
-    //       console.error("API Error:", error);
-    //       {
-    //         toast.error("قبلا برای این شبا شناسه واریز ایجاد شده است");
-    //       }
-    //     } finally {
-    //       setIsLoading(false);
-    //     }
-    // >>>>>>> 1232b6ddee25d123b9fdb16f8e7da7d008dfedea
   };
 
   const isShown = !!identifierData;

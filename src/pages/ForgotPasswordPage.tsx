@@ -184,11 +184,10 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthLayout image={theme === "dark" ? imageForgetDark : imageForgetLight}>
-      <div className="flex items-center justify-center pb-8 w-full" dir="rtl">
-        <div>
+      <div className="flex items-center justify-center pb-8 w-full " dir="rtl">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full flex items-center flex-col "
+            className="w-full flex items-center flex-col lg:max-w-md lg:px-0 px-4  "
           >
             <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
               فراموشی رمز عبور
@@ -223,7 +222,6 @@ export default function ForgotPasswordPage() {
                 : "ادامه"}
             </button>
           </form>
-        </div>
       </div>
 
       {isOpen && (
@@ -234,7 +232,7 @@ export default function ForgotPasswordPage() {
             onClick={() => setIsOpen(false)}
           >
             <div
-              className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
+              className="lg:max-w-md max-w-sm  rounded-lg lg:p-6 p-4 relative bg-white8"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center flex-row-reverse justify-between">
@@ -250,7 +248,7 @@ export default function ForgotPasswordPage() {
                 لطفا کد ارسالی به {contactMethod === "phone" ? `شماره ${getValues("email")}` : `ایمیل ${getValues("email")}`} را وارد کنید.
               </p>
 
-              <div className="mt-[32px] mb-[48px]">
+              <div className="mt-[32px] mb-[48px] ">
                 <OTPModal length={6} onChange={(val: string) => setOtpCode(val)} />
               </div>
 

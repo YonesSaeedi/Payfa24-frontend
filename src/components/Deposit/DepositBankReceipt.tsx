@@ -314,7 +314,7 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
         </button>
 
         <div className="mt-4" dir="ltr">
-          <Accordion title="راهنمای فیش بانکی">
+          <Accordion title="راهنمای واریز با فیش بانکی">
             <ul className="list-disc pr-5 space-y-2 text-black1">
               <li>مطمئن شوید فیش بانکی واضح و خوانا باشد.</li>
               <li>مبلغ، تاریخ و شماره پیگیری را بررسی کنید.</li>
