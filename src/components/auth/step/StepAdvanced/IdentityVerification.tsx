@@ -91,7 +91,7 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
           <button
             type="button"
             className="text-blue2 lg:text-lg text-base font-bold rounded-lg border border-blue2 lg:h-[56px] h-[40px]"
-            onClick={() => setIsOpenAccordion(!isOpenAccordion)}
+            // onClick={() => setIsOpenAccordion(!isOpenAccordion)}
           >
             متن تعهد نامه
           </button>

@@ -12,7 +12,19 @@ import { apiRequest } from "../../../../utils/apiClient";
 
 type Props = {
   onNext: () => void;
+  userInfo: {
+    kyc?: {
+      basic?: {
+        name?: string;
+        family?: string;
+        father?: string;
+        national_code?: string;
+        date_birth?: string;
+      };
+    };
+  };
 };
+
 
 type FormData = {
   name: string;
@@ -27,13 +39,13 @@ type ApiResponse = {
   msg?: string;
 };
 
-export default function StepPersonal({ onNext }: Props) {
+export default function StepPersonal({ onNext, userInfo }: Props) {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { control, handleSubmit, setValue } = useForm<FormData>({
+  const { control, handleSubmit, setValue ,setError } = useForm<FormData>({
     defaultValues: {
       name: "",
       family: "",
@@ -44,35 +56,26 @@ export default function StepPersonal({ onNext }: Props) {
   });
 
   // دریافت اطلاعات کاربر برای پر کردن فرم
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
+useEffect(() => {
+  if (!userInfo?.kyc?.basic) return;
 
-        const response = await apiRequest<any>({
-          url: "/kyc/get-info",
+  const basic = userInfo.kyc.basic;
+  const isCompleted =
+    basic.name &&
+    basic.family &&
+    basic.father &&
+    basic.national_code &&
+    basic.date_birth;
 
-        });
-        const basic = response.kyc?.basic;
-        if (basic) {
-          const isCompleted =
-            basic.name &&
-            basic.family &&
-            basic.father &&
-            basic.national_code &&
-            basic.date_birth;
-          if (isCompleted) return onNext();
-          setValue("name", basic.name || "");
-          setValue("family", basic.family || "");
-          setValue("father", basic.father || "");
-          setValue("nationalCode", basic.national_code || "");
-          setValue("dateBirth", basic.date_birth || "");
-        }
-      } catch {
-        toast.error("خطا در دریافت اطلاعات کاربر.");
-      }
-    };
-    fetchUserData();
-  }, [setValue, onNext]);
+  if (isCompleted) return onNext(); // مرحله بعد اگر قبلاً کامل شده
+
+  setValue("name", basic.name || "");
+  setValue("family", basic.family || "");
+  setValue("father", basic.father || "");
+  setValue("nationalCode", basic.national_code || "");
+  setValue("dateBirth", basic.date_birth || "");
+}, [userInfo, setValue, onNext]);
+
 
   // ثبت اطلاعات
   const submitMutation = useMutation<
@@ -103,21 +106,28 @@ export default function StepPersonal({ onNext }: Props) {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    // سن کمتر از 18 سال
-    const parts = data.dateBirth
-      .split("/")
-      .map((x) =>
-        parseInt(x.replace(/[۰-۹]/g, (d) => String("0123456789".indexOf(d))))
-      );
-    const age = new Date().getFullYear() - 621 - parts[0];
-    if (age < 18) {
-      toast.error("حداقل سن مجاز ۱۸ سال است.");
-      return;
-    }
+ const onSubmit = (data: FormData) => {
+  // بررسی تاریخ
+  const dateRegex = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
+  if (!dateRegex.test(data.dateBirth)) {
+    setError("dateBirth", { message: "فرمت تاریخ تولد نادرست است (مثلاً 1375/05/20)" });
+    return;
+  }
 
-    submitMutation.mutate(data);
-  };
+  // محاسبه سن از تاریخ تولد شمسی (فرض بر اینکه سال شمسی وارد می‌شود)
+  const [year] = data.dateBirth.split("/").map(Number);
+  const currentYear = new Date().getFullYear() - 621; // تبدیل تقریبی به شمسی
+  const age = currentYear - year;
+
+  if (age < 18) {
+    setError("dateBirth", { message: "حداقل سن مجاز ۱۸ سال است." });
+    return;
+  }
+
+  // اگر همه چیز اوکی بود
+  submitMutation.mutate(data);
+};
+
 
   const formFields = [
     { name: "family", label: "نام خانوادگی" },
@@ -249,3 +259,7 @@ export default function StepPersonal({ onNext }: Props) {
     </div>
   );
 }
+
+
+
+

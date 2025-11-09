@@ -17,10 +17,7 @@ import { toPersianDigits } from "./CardToCardTransfer";
 const schema = yup.object().shape({
   bank: yup.string().required("حساب مبدا الزامی است"),
   destinationBank: yup.string().required("حساب مقصد الزامی است"),
-  amount: yup
-    .number()
-    .min(1_000_000, "حداقل ۱ میلیون تومان")
-    .required("مقدار واریزی الزامی است"),
+  amount: yup.number().min(1_000_000, "حداقل ۱ میلیون تومان").required("مقدار واریزی الزامی است"),
 });
 
 // ---------- props ----------
@@ -56,34 +53,27 @@ export function formatPersianCardNumber(input: string | number): string {
 
   return persianGrouped;
 }
-export default function DepositBankReceipt({
-  bankCards,
-  receiptAccounts,
-  onNext,
-  onFileChange,
-  initialPreviewUrl,
-}: DepositBankReceiptProps) {
+export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext, onFileChange, initialPreviewUrl }: DepositBankReceiptProps) {
   const amounts = [5, 10, 20, 50];
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewURL, setPreviewURL] = useState<string | null>(
-    initialPreviewUrl
-  );
+  const [previewURL, setPreviewURL] = useState<string | null>(initialPreviewUrl);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm({
-  resolver: yupResolver(schema),
-  defaultValues: { amount: undefined, bank: "", destinationBank: "" },
-});
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: { amount: undefined, bank: "", destinationBank: "" },
+  });
 
-const watchAll = watch();
-const isFormComplete =
-  !!watchAll.bank &&
-  !!watchAll.destinationBank &&
-  !!watchAll.amount &&
-  !!selectedFile;
-
+  const watchAll = watch();
+  const isFormComplete = !!watchAll.bank && !!watchAll.destinationBank && !!watchAll.amount && !!selectedFile;
 
   // ---------- upload ----------
   const uploadFile = useCallback(async (formData: FormData) => {
@@ -131,8 +121,7 @@ const isFormComplete =
 
   const handleClick = () => fileInputRef.current?.click();
 
-  const handleAmountClick = (m: number) =>
-    setValue("amount", m * 1_000_000, { shouldValidate: true });
+  const handleAmountClick = (m: number) => setValue("amount", m * 1_000_000, { shouldValidate: true });
 
   // ---------- submit ----------
   const onSubmit = async (data: any) => {
@@ -176,55 +165,35 @@ const isFormComplete =
         <Controller
           name="bank"
           control={control}
-          render={({ field }) => (
-            <FloatingSelect
-              placeholder="حساب مبدا را انتخاب کنید"
-              label="حساب مبدا"
-              value={field.value}
-              onChange={field.onChange}
-              options={
-                bankCards.length === 0
-                  ? [
-                      {
-                        value: "",
+          render={({ field }) => {
+            const hasCards = bankCards.length > 0;
+
+            return (
+              <FloatingSelect
+                placeholder={hasCards ? "حساب مبدا را انتخاب کنید" : "هیچ کارت ثبت‌ شده‌ای ندارید"}
+                label="حساب مبدا"
+                value={hasCards ? field.value : ""}
+                onChange={field.onChange}
+                disabled={!hasCards} // ⬅️ این خط مهمه (غیرفعال کن وقتی کارت نیست)
+                options={
+                  hasCards
+                    ? bankCards.map((c) => ({
+                        value: c.bank,
                         label: (
-                          <div className="text-center w-full py-2 text-gray-500">
-                            هیچ کارت ثبت شده‌ای ندارید
+                          <div className="flex items-center justify-between w-full py-1 border-red-500">
+                            <span className="lg:text-sm text-xs text-black0">{c.bank}</span>
+                            <span className="lg:text-sm text-xs text-black0">{formatPersianCardNumber(c.card)}</span>
                           </div>
-                        ) as any,
-                        disabled: true, 
-                        icon: null,
-                        hideIndicator: true, 
-                      },
-                    ]
-                  : bankCards.map((c) => ({
-                      value: c.bank,
-                      label: (
-                        <div className="flex items-center justify-between w-full py-1">
-                          <span className="lg:text-sm text-xs text-black0">
-                            {c.bank}
-                          </span>
-                          <span className="lg:text-sm text-xs text-black0">
-                            {formatPersianCardNumber(c.card)}
-                          </span>
-                        </div>
-                      ),
-                      icon: (
-                        <img
-                          src={
-                            getBankLogo(c.bank) || "/bank-logos/bank-sayer.png"
-                          }
-                          alt={c.bank}
-                          className="w-6 h-6 object-contain"
-                        />
-                      ),
-                    }))
-              }
-            />
-          )}
-          />
+                        ),
+                        icon: <img src={getBankLogo(c.bank) || "/bank-logos/bank-sayer.png"} alt={c.bank} className="w-6 h-6 object-contain" />,
+                      }))
+                    : [] 
+                }
+              />
+            );
+          }}
+        />
       </div>
-       
 
       {/* کارت مقصد */}
       <div className="mb-3">
@@ -233,11 +202,7 @@ const isFormComplete =
           control={control}
           render={({ field }) => (
             <FloatingSelect
-              placeholder={
-                receiptAccounts.length
-                  ? "حساب مقصد را انتخاب کنید"
-                  : "حساب مقصد یافت نشد"
-              }
+              placeholder={receiptAccounts.length ? "حساب مقصد را انتخاب کنید" : "حساب مقصد یافت نشد"}
               label="حساب مقصد"
               value={field.value}
               onChange={field.onChange}
@@ -245,37 +210,19 @@ const isFormComplete =
                 value: a.iban_number,
                 label: (
                   <div className="flex items-center justify-between w-full py-1 rounded-md">
-                    <span className="lg:text-sm text-xs text-black0">
-                      {a.account_name}
-                    </span>
-                    <span className="lg:text-sm text-xs text-black0">
-                      {toPersianDigits(a.account_number || a.iban_number)}
-                    </span>
+                    <span className="lg:text-sm text-xs text-black0">{a.account_name}</span>
+                    <span className="lg:text-sm text-xs text-black0">{toPersianDigits(a.account_number || a.iban_number)}</span>
                   </div>
                 ),
-                icon: (
-                  <img
-                    src={
-                      getBankLogo(a.name_bank) || "/bank-logos/bank-sayer.png"
-                    }
-                    alt={a.name_bank}
-                    className="w-6 h-6 object-contain"
-                  />
-                ),
+                icon: <img src={getBankLogo(a.name_bank) || "/bank-logos/bank-sayer.png"} alt={a.name_bank} className="w-6 h-6 object-contain" />,
               }))}
             />
           )}
         />
-        {errors.destinationBank && (
-          <p className="text-red1 text-xs pt-2">
-            {errors.destinationBank.message}
-          </p>
-        )}
+        {errors.destinationBank && <p className="text-red1 text-xs pt-2">{errors.destinationBank.message}</p>}
       </div>
 
-      <p className="text-gray5 text-sm">
-        حداقل واریز با فیش بانکی، ۱,۰۰۰,۰۰۰ تومان می‌باشد.
-      </p>
+      <p className="text-gray5 text-sm">حداقل واریز با فیش بانکی، ۱,۰۰۰,۰۰۰ تومان می‌باشد.</p>
 
       {/* مقدار واریزی */}
       <div className="mb-1.5 mt-8">
@@ -289,9 +236,7 @@ const isFormComplete =
               type="text"
               onChange={(e) => {
                 const rawValue = e.target.value;
-                const englishValue = rawValue
-                  .replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString())
-                  .replace(/[^0-9]/g, "");
+                const englishValue = rawValue.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString()).replace(/[^0-9]/g, "");
                 field.onChange(englishValue ? Number(englishValue) : undefined);
               }}
               placeholder="۰ تومان"
@@ -299,43 +244,29 @@ const isFormComplete =
             />
           )}
         />
-        {errors.amount && (
-          <p className="text-red1 text-xs py-3 pt-2">
-            مبلغ عددی صحیح وارد کنید
-          </p>
-        )}
+        {errors.amount && <p className="text-red1 text-xs py-3 pt-2">مبلغ عددی صحیح وارد کنید</p>}
       </div>
 
       {/* دکمه‌های مبلغ پیشنهادی */}
-      <div className="flex gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
         {amounts.map((a, index) => (
           <button
             key={index}
             type="button"
             onClick={() => handleAmountClick(a)}
-            className="border border-gray12 rounded-lg px-7 py-2 text-gray12 text-sm hover:bg-gray12/20 transition-colors"
+            className="border rounded-lg w-full py-2 lg:text-sm text-xs transition-all border-gray12 text-gray12 hover:border-blue2 hover:text-blue2"
           >
-          {toPersianDigits(a)} میلیون
-
+            {toPersianDigits(a)} میلیون
           </button>
         ))}
       </div>
 
       {/* آپلود فایل */}
       <p className="font-medium mb-3 text-gray5">تصویر رسید</p>
-      <input
-        ref={fileInputRef}
-        disabled={isUploading}
-        type="file"
-        accept="image/*,application/pdf"
-        className="hidden"
-        onChange={handleFileChange}
-      />
+      <input ref={fileInputRef} disabled={isUploading} type="file" accept="image/*,application/pdf" className="hidden" onChange={handleFileChange} />
       <div
         className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all ${
-          previewURL
-            ? "border-blue2 bg-blue2/5"
-            : "border-gray31 hover:border-gray12"
+          previewURL ? "border-blue2 bg-blue2/5" : "border-gray31 hover:border-gray12"
         }`}
         onClick={handleClick}
       >
@@ -346,9 +277,7 @@ const isFormComplete =
               <span className="icon-wrapper lg:w-14 lg:h-14 w-8 h-8 text-gray15 mb-2">
                 <UploadImage />
               </span>
-              <p className="text-gray15 lg:text-lg text-sm font-normal">
-                بارگذاری تصویر فیش بانکی
-              </p>
+              <p className="text-gray15 lg:text-lg text-sm font-normal">بارگذاری تصویر فیش بانکی</p>
               <p className="text-xs text-gray5 mt-1">(JPG, PNG, PDF)</p>
             </>
           )}
@@ -356,14 +285,8 @@ const isFormComplete =
           {/* پیش‌نمایش */}
           {previewURL && !isUploading && (
             <>
-              <img
-                src={previewURL}
-                alt="پیش‌نمایش"
-                className="max-h-32 max-w-full rounded-lg object-contain mb-2"
-              />
-              <p className="text-xs text-blue2 font-medium truncate max-w-[200px] px-2 py-1 bg-white rounded-full shadow-sm">
-                {selectedFile?.name || "فایل انتخاب شد"}
-              </p>
+              <img src={previewURL} alt="پیش‌نمایش" className="max-h-32 max-w-full rounded-lg object-contain mb-2" />
+              <p className="text-xs text-blue2 font-medium truncate max-w-[200px] px-2 py-1 bg-white rounded-full shadow-sm">{selectedFile?.name || "فایل انتخاب شد"}</p>
             </>
           )}
 
@@ -371,14 +294,9 @@ const isFormComplete =
           {isUploading && (
             <div className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center p-4">
               <div className="w-full max-w-xs bg-gray-200 h-3 rounded-full overflow-hidden mb-2">
-                <div
-                  className="bg-gradient-to-r from-blue2 via-blue1 to-green-500 h-3 rounded-full transition-all"
-                  style={{ width: `${uploadProgress}%` }}
-                />
+                <div className="bg-gradient-to-r from-blue2 via-blue1 to-green-500 h-3 rounded-full transition-all" style={{ width: `${uploadProgress}%` }} />
               </div>
-              <span className="text-sm font-medium text-blue2">
-                {uploadProgress}%
-              </span>
+              <span className="text-sm font-medium text-blue2">{uploadProgress}%</span>
             </div>
           )}
         </div>
@@ -390,17 +308,13 @@ const isFormComplete =
           onClick={handleSubmit(onSubmit)}
           disabled={!isFormComplete || loading}
           className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
-                ${
-                  !isFormComplete
-                    ? "opacity-60 cursor-not-allowed"
-                    : "opacity-100 hover:bg-blue1"
-                }`}
+                ${!isFormComplete ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-blue1"}`}
         >
           {isUploading ? "در حال ثبت درخواست..." : "درخواست کارت به کارت"}
         </button>
 
         <div className="mt-4" dir="ltr">
-          <Accordion title="راهنمای فیش بانکی">
+          <Accordion title="راهنمای واریز با فیش بانکی">
             <ul className="list-disc pr-5 space-y-2 text-black1">
               <li>مطمئن شوید فیش بانکی واضح و خوانا باشد.</li>
               <li>مبلغ، تاریخ و شماره پیگیری را بررسی کنید.</li>
