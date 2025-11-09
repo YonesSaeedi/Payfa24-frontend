@@ -127,31 +127,35 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND },
   ];
 
- const renderSection = (title: string, items: ServiceItem[]) => (
+const renderSection = (title: string, items: ServiceItem[]) => (
   <div dir="rtl" className="mb-6">
     <h3 dir="rtl" className="text-right text-black1 font-medium mb-3 mt-7">
       {title}
     </h3>
 
-
-    <div className="lg:px-9 grid grid-cols-4 lg:gap-x-4 lg:gap-y-[12px] gap-x-2 gap-y-3">
-      {items.map((item, i) => (
-        <div key={i} >
-         <div
-  onClick={() => handleItemClick(item)}
-  className="flex flex-col items-center  justify-center rounded-lg hover:border-blue2 cursor-pointer transition border border-gray21 bg-gray33"
->
-
-            <span className="w-6 h-6 text-blue2 mt-[9px] mx-[29px]">{item.icon}</span>
-            <span className=" text-gray-700 dark:text-gray-200 text-center mt-1 text-[14px] font-normal whitespace-nowrap pb-[9px] px-2">
-              {item.label}
-            </span>
-          </div>
-        </div>
-      ))}
+  <div className="lg:px-6 flex flex-wrap lg:gap-x-4 lg:gap-y-3 gap-x-2 gap-y-3">
+  {items.map((item) => (
+    <div
+      onClick={() => handleItemClick(item)}
+      className="flex flex-col items-center justify-center 
+                 w-[calc(25%-12px)]  // 25% منهای gap بینشان
+                 h-[60px] lg:h-[72px] 
+                 rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition"
+    >
+      <span className="w-6 h-6 text-blue2 mt-2">{item.icon}</span>
+      <span className="text-gray-700 dark:text-gray-200 text-center mt-1 text-[14px] font-normal whitespace-nowrap pb-2 px-2">
+        {item.label}
+      </span>
     </div>
+  ))}
+</div>
+
+
+
+
   </div>
 );
+
 
 
   return (
