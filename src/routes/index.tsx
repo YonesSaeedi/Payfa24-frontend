@@ -36,6 +36,7 @@ import BankCardsRoute from "../pages/BankCards/BankCardsRoute";
 import TicketsRoute from "../pages/Ticket/TicketsRoute";
 import ProtectedRoute from "./ProtectedRoute";
 
+
 export default function AppRouter() {
   const { isAuthenticated } = useAuth()
 

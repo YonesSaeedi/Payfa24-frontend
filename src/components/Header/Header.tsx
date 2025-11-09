@@ -82,8 +82,8 @@ export default function Header() {
   };
 
   return (
-   <header
-  className={`bg-white dark:bg-gray29 dark:text-white fixed top-0 left-0 w-full z-[50] transition-all duration-300 ${
+<header
+  className={`bg-white dark:bg-gray29 dark:text-white fixed top-0 left-0 w-full z-[50] transition-shadow duration-300 ${
     isScrolled ? "shadow-md border-b border-gray-200 dark:border-gray-700" : ""
   }`}
 >
@@ -173,8 +173,8 @@ export default function Header() {
                 className={`hover:text-blue-600 transition flex items-center ${
                   currentPath === "/wallet"
                     ? themeContext.theme === "dark"
-                      ? "text-primary"
-                      : "text-blue-600 font-semibold"
+                      ? "text-blue2"
+                      : "text-blue2 font-semibold"
                     : "text-header-items"
                 }`}
               >
@@ -192,7 +192,7 @@ export default function Header() {
                 className={`hover:text-blue2 transition flex items-center ${
                   currentPath === "/market"
                     ? themeContext.theme === "dark"
-                      ? "text-primary"
+                      ? "text-blue2"
                       : "text-blue2 font-semibold"
                     : "text-header-items"
                 }`}
@@ -214,7 +214,7 @@ export default function Header() {
                 className={`hover:text-blue2 transition flex items-center ${
                   currentPath.startsWith("/trade")
                     ? themeContext.theme === "dark"
-                      ? "text-primary"
+                      ? "text-blue2"
                       : "text-blue2 font-semibold"
                     : "text-header-items"
                 }`}
@@ -233,7 +233,7 @@ export default function Header() {
                 className={`hover:text-blue2 transition flex items-center ${
                   currentPath === "/"
                     ? themeContext.theme === "dark"
-                      ? "text-primary"
+                      ? "text-blue2"
                       : "text-blue2 font-semibold"
                     : "text-header-items"
                 }`}

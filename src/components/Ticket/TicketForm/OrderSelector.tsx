@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { TicketFormInputs, Order } from "../../../types/Ticket";
 import IconOrderSelection from "../../../assets/icons/ticket/IconOrderSelection";
 import OrderModal from "./OrderModal";
-import { apiRequest } from "../../../utils/apiClient";
+
 import type { UseFormSetValue, UseFormRegister } from "react-hook-form";
 import IconClose from "../../../assets/icons/Login/IconClose";
 import ReceivedIcon from "../../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
@@ -14,30 +14,16 @@ interface OrderSelectorProps {
   setSelectedOrder: (order: Order | null) => void;
   register: UseFormRegister<TicketFormInputs>;
   setValue: UseFormSetValue<TicketFormInputs>;
+  orders: Order[];      // اضافه کردن این
+  isLoading: boolean;   // اضافه کردن این
 }
 
-interface TicketInfoResponse {
-  tickets: {
-    id: number;
-    title: string;
-    status: string;
-    created: string;
-    updated: string;
-  }[];
-  last_orders: {
-    id: number;
-    type: "buy" | "sell";
-    amount: number;
-    date: string;
-    name: string;
-  }[];
-}
 
-export default function OrderSelector({ selectedOrder, setSelectedOrder, register, setValue }: OrderSelectorProps) {
+
+export default function OrderSelector({ selectedOrder, setSelectedOrder, register, setValue, orders, isLoading }: OrderSelectorProps) {
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [apiOrders, setApiOrders] = useState<Order[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
+ 
   const mapOrderType = (type: string): { text: Order["type"]; icon: React.ReactNode } => {
     switch (type) {
       case "buy":
@@ -55,41 +41,7 @@ export default function OrderSelector({ selectedOrder, setSelectedOrder, registe
     }
   };
 
-  useEffect(() => {
-    if (!isModalOpen) return;
-
-    const fetchOrders = async () => {
-      setIsLoading(true);
-      try {
-        const response = await apiRequest<TicketInfoResponse>({
-          url: "/ticket/get-info",
-          method: "GET",
-        });
-
-        if (response?.last_orders) {
-          const mappedOrders: Order[] = response.last_orders.map((o) => {
-            const mapped = mapOrderType(o.type);
-            return {
-              id: String(o.id),
-              coin: o.name,
-              type: mapped.text,
-              amount: String(o.amount),
-              date: o.date || "-",
-              icon: mapped.icon,
-            };
-          });
-
-          setApiOrders(mappedOrders);
-        }
-      } catch (error) {
-        console.error("خطا در گرفتن سفارش‌ها:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, [isModalOpen]);
+  
 
   const handleSelectOrder = (order: Order) => {
     setSelectedOrder(order);
@@ -165,10 +117,18 @@ const orderDivRef = useRef<HTMLButtonElement | null>(null);
           </div>
         </div>
       )}
+{isModalOpen &&
+  typeof document !== "undefined" &&
+  createPortal(
+    <OrderModal
+      orders={orders}       // استفاده از prop
+      isLoading={isLoading} // استفاده از prop
+      onSelectOrder={handleSelectOrder}
+      onClose={() => setIsModalOpen(false)}
+    />,
+    document.body
+  )}
 
-      {isModalOpen &&
-        typeof document !== "undefined" &&
-        createPortal(<OrderModal orders={apiOrders} isLoading={isLoading} onSelectOrder={handleSelectOrder} onClose={() => setIsModalOpen(false)} />, document.body)}
     </div>
   );
 }

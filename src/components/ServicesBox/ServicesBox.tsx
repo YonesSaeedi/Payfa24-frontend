@@ -127,30 +127,35 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND },
   ];
 
- const renderSection = (title: string, items: ServiceItem[]) => (
+const renderSection = (title: string, items: ServiceItem[]) => (
   <div dir="rtl" className="mb-6">
     <h3 dir="rtl" className="text-right text-black1 font-medium mb-3 mt-7">
       {title}
     </h3>
 
-    {/* ✅ تغییرات اینجاست */}
-    <div className="px-9 grid grid-cols-4 gap-4">
-      {items.map((item, i) => (
-        <div key={i} className="p-1">
-          <div
-            onClick={() => handleItemClick(item)}
-            className="flex flex-col items-center w-[84px] h-[72px] justify-center rounded-lg hover:border-blue2 cursor-pointer transition border border-gray21 bg-gray33"
-          >
-            <span className="w-6 h-6 text-blue2">{item.icon}</span>
-            <span className="text-sm text-gray-700 dark:text-gray-200 text-center mt-2 whitespace-nowrap">
-              {item.label}
-            </span>
-          </div>
-        </div>
-      ))}
+  <div className="lg:px-6 flex flex-wrap lg:gap-x-4 lg:gap-y-3 gap-x-2 gap-y-3">
+  {items.map((item) => (
+    <div
+      onClick={() => handleItemClick(item)}
+      className="flex flex-col items-center justify-center 
+                 w-[calc(25%-12px)]  // 25% منهای gap بینشان
+                 h-[60px] lg:h-[72px] 
+                 rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition"
+    >
+      <span className="w-6 h-6 text-blue2 mt-2">{item.icon}</span>
+      <span className="text-gray-700 dark:text-gray-200 text-center mt-1 text-[14px] font-normal whitespace-nowrap pb-2 px-2">
+        {item.label}
+      </span>
     </div>
+  ))}
+</div>
+
+
+
+
   </div>
 );
+
 
 
   return (
@@ -160,7 +165,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   onClick={handleClose}
 >
   <div
-    className={`bg-white8 rounded-xl shadow-lg p-6 px-[22px] w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${
+    className={`bg-white8 rounded-xl shadow-lg p-4 lg:px-[22px] w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${
       isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
     } relative`}
     onClick={(e) => e.stopPropagation()}
@@ -179,8 +184,8 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       <IconCloseButtun />
     </button>
 
-    {/* فقط این بخش اسکرول بخورد */}
-    <div className="overflow-auto flex-1">
+   
+    <div className="overflow-auto flex-1 pl-2 mt-1">
       {renderSection("مالی و تراکنش", financeItems)}
       {renderSection("بازار و اطلاعات", marketItems)}
       {renderSection("تاریخچه", historyItems)}

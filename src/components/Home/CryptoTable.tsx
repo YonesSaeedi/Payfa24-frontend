@@ -90,7 +90,7 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
             // real data mapping =========================================================================================================================
             sortedList.slice(0, 10).map(item => (
               <tr key={item?.id} className="border-b border-gray21 last:border-b-0 hover:bg-background text-right">
-                <td className="py-3 px-4 flex items-start lg:gap-2 gap-1 justify-start">
+                <td className="py-3 px-4 flex items-center lg:gap-2 gap-1 justify-start ">
                   <div className="w-7 h-7 lg:w-10 lg:h-10 rounded-full">
                     {item?.isFont ?
                       <i className={`cf cf-${item?.symbol.toLowerCase()} text-[28px] lg:text-[40px]`} style={{ color: item.color }}></i>

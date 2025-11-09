@@ -41,7 +41,7 @@ const TicketList: React.FC<TicketListProps> = ({ tickets, activeTicket, onSelect
       </span>
       ایجاد تیکت جدید
     </button>
-    <button  onClick={onSupportCall}  className="w-full border py-2 rounded-xl hover:bg-gray-50 text-blue2 border-blue2 font-bold text-base">
+    <button  onClick={onSupportCall}  className="w-full border py-2 rounded-xl hover:bg-gray27 text-blue2 border-blue2 font-bold text-base">
       <span className="w-8 h-8 icon-wrapper pl-1">
         <IconCall/>
       </span>
