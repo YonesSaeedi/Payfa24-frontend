@@ -106,7 +106,7 @@ export interface KycGetInfo {
       cardbank?: number;
     };
     advanced?: {
-      status: "pending" | "success" | "reject";
+      status: "pending" | "confirm" | "reject";
       reason_reject: string | null;
     };
   };
