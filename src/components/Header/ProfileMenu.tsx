@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -63,7 +64,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       window.location.replace("/login");
     }
   };
-
+ const navigate = useNavigate();
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -134,11 +135,11 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
             onClick={() => {
               if (kycLoading) return; // اگر هنوز لود نشده، کاری نکن
-              if (kycInfo?.kyc?.basic?.cardbank) {
-                navigate(ROUTES.AUTHENTICATION_ADVANCED);
-              } else {
-                navigate(ROUTES.AUTHENTICATION_BASIC);
-              }
+             if (kycInfo?.kyc?.basic?.cardbank) {
+  navigate(ROUTES.AUTHENTICATION_ADVANCED);
+ } else {
+   navigate(ROUTES.AUTHENTICATION_BASIC);
+ }
               setOpen(false); // بستن منو
             }}
           >
