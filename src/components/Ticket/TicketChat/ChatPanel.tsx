@@ -1,16 +1,16 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Ticket } from "./types";
 import bgChat from "../../../assets/images/Ticket/bgchat.jpg";
 import supportAvatar from "../../../assets/images/Ticket/avator.jpg";
 import IconSendMessage from "../../../assets/icons/ticket/IconSendMessage";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
-import  { apiRequest } from "../../../utils/apiClient";
+import { apiRequest } from "../../../utils/apiClient";
 import { ticketStatusMap } from "../../../utils/statusMap";
 import StatusBadge from "../../UI/Button/StatusBadge";
 import axios from "axios";
 import { toast } from "react-toastify";
 import type { AxiosProgressEvent } from "axios";
+import IconCloseButtun from "../../../assets/icons/services/IconCloseButtun";
 
 interface ChatPanelProps {
   ticket: Ticket | null;
@@ -60,9 +60,7 @@ const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
       <div className="flex items-center justify-between flex-row-reverse">
         <div dir="rtl" className="flex flex-col">
           <span className="text-gray5 text-sm">شماره تیکت: #{ticket.id}</span>
-          <span className="font-medium text-black1 mt-2 text-base">
-            {ticket.title}
-          </span>
+          <span className="font-medium text-black1 mt-2 text-base">{ticket.title}</span>
         </div>
         <div>
           <StatusBadge text={statusText} />
@@ -77,41 +75,39 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [, setUploadProgress] = useState<number | null>(null);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [imageCache, setImageCache] = useState<Record<number, string>>({});
   const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
- const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
 
+  const fetchData = async () => {
+    if (!ticket?.id) return;
+    setLoading(true);
+    try {
+      const res = await apiRequest<TicketInfoResponse>({
+        url: `/ticket/${ticket.id}/get-info`,
+        method: "GET",
+      });
 
-const fetchData = async () => {
-  if (!ticket?.id) return;
-  setLoading(true);
-  try {
-    const res = await apiRequest<TicketInfoResponse>({
-      url: `/ticket/${ticket.id}/get-info`,
-      method: "GET",
-    });
+      const formattedMessages: Message[] = res.ticket_message.map((m) => ({
+        id: m.id,
+        text: m.message,
+        isUser: m.author === "user",
+        timestamp: m.time,
+        file: m.file,
+      }));
 
-    const formattedMessages: Message[] = res.ticket_message.map((m) => ({
-      id: m.id,
-      text: m.message,
-      isUser: m.author === "user",
-      timestamp: m.time,
-      file: m.file,
-    }));
-
-    setTicketInfo(res);
-    setMessages(formattedMessages);
-  } catch (err) {
-    console.error("ticket/get-info:", err);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      setTicketInfo(res);
+      setMessages(formattedMessages);
+    } catch (err) {
+      console.error("ticket/get-info:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchFileAsDataUrl = async (fileToken: string) => {
     const filePath = `/image/${fileToken}`;
@@ -131,32 +127,6 @@ const fetchData = async () => {
       return null;
     }
   };
-//   const fetchFileAsDataUrl = async (fileToken: string) => {
-//   if (!fileToken) return null;
-
-//   const filePath = `/image/${fileToken}`;
-//   const timestamp = Math.floor(Date.now() / 1000).toString();
-
-//   console.log("📡 در حال درخواست فایل:", filePath);
-
-//   try {
-//     const response = await apiClient.get(filePath, {
-//       responseType: "blob",
-//       headers: {
-//         "x-timestamp": timestamp,
-//       },
-//     });
-
-//     const blob = response.data;
-//     const objectUrl = URL.createObjectURL(blob);
-//     console.log("✅ فایل لود شد:", objectUrl);
-//     return objectUrl;
-//   } catch (err) {
-//     console.error("🚫 خطا در دریافت فایل:", err);
-//     return null;
-//   }
-// };
-
 
   useEffect(() => {
     fetchData();
@@ -183,67 +153,83 @@ const fetchData = async () => {
     loadFiles();
   }, [ticketInfo]);
 
-  
-
-
   const handleSend = async (e?: React.MouseEvent<HTMLButtonElement>) => {
-  if (e) e.preventDefault();
+    if (e) e.preventDefault();
 
-  console.log("✅ handleSend اجرا شد", {
-  newMessage,
-  selectedFile,
-  ticket,
-  isSending,
-});
+    if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) return;
 
-if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) {
-  console.warn("🚫 شرط جلوی ارسال را گرفت!", {
-    newMessage,
-    selectedFile,
-    ticket,
-    isSending,
-  });
-  return;
-}
+    setIsSending(true);
+    setUploadProgress(0);
 
-  if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) return;
+    try {
+      const formData = new FormData();
+      formData.append("message", newMessage.trim() || "فایل پیوست شد");
+      if (selectedFile) formData.append("file", selectedFile);
 
-  setIsSending(true);
-  setUploadProgress(0);
+      await apiRequest({
+        url: `/ticket/${ticket.id}/new`,
+        method: "POST",
+        data: formData,
+        isFormData: true,
+        onUploadProgress: (event?: AxiosProgressEvent) => {
+          if (event?.loaded && event?.total) {
+            const percent = Math.round((event.loaded * 100) / event.total);
+            setUploadProgress(percent);
+          }
+        },
+      });
 
-  try {
-    const formData = new FormData();
-    formData.append("message", newMessage.trim() || "فایل پیوست شد");
-    if (selectedFile) formData.append("file", selectedFile);
+      const tempMsgId = Date.now();
+      const tempUrl = selectedFile ? URL.createObjectURL(selectedFile) : undefined;
 
-    await apiRequest({
-      url: `/ticket/${ticket.id}/new`,
-      method: "POST",
-      data: formData,
-      isFormData: true,
-      onUploadProgress: (event?: AxiosProgressEvent) => { 
-        if (event?.loaded && event?.total) {
-          const percent = Math.round((event.loaded * 100) / event.total);
-          setUploadProgress(percent);
+      const newMsg: Message = {
+        id: tempMsgId,
+        text: newMessage.trim(),
+        isUser: true,
+        timestamp: new Date().toLocaleString("fa-IR"),
+        file: tempUrl,
+      };
+
+      setMessages((prev) => [...prev, newMsg]);
+
+      setNewMessage("");
+      setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
+      if (selectedFile) {
+        try {
+          setTimeout(async () => {
+            const updated = await apiRequest<TicketInfoResponse>({
+              url: `/ticket/${ticket.id}/get-info`,
+              method: "GET",
+            });
+
+const lastMsg = updated.ticket_message[updated.ticket_message.length - 1];
+
+            if (lastMsg?.file) {
+              const fileUrl = await fetchFileAsDataUrl(lastMsg.file);
+              if (fileUrl) {
+                setImageCache((prev) => ({
+                  ...prev,
+                  [tempMsgId]: fileUrl,
+                }));
+              }
+            }
+          }, 1000);
+        } catch (err) {
+          console.error("خطا در بارگذاری فایل از سرور:", err);
         }
-      },
-    });
-
-    setNewMessage("");
-    setSelectedFile(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-
-    await fetchData();
-  } catch (err) {
-    if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
-      toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
+        toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");
+      }
+      console.error("خطا در ارسال پیام:", err);
+    } finally {
+      setIsSending(false);
+      setUploadProgress(null);
     }
-    console.error("خطا در ارسال پیام:", err);
-  } finally {
-    setIsSending(false);
-    setUploadProgress(null);
-  }
-};
+  };
 
   const handleAttachClick = () => fileInputRef.current?.click();
 
@@ -260,92 +246,110 @@ if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) {
     }
   };
 
-
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const convertDigitsToPersian = (str: string) => {
+    return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
+  };
+
   return (
     <div className="flex-1 w-full h-full">
-      <div className="border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
+      <div className=" relative border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
         {ticket && <ChatHeader ticket={ticket} />}
 
-        <div
-          className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center"
-          style={{ backgroundImage: `url(${bgChat})` }}
-        >
-     
+        <div className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center" style={{ backgroundImage: `url(${bgChat})` }}>
           <div className="relative z-10 flex flex-col gap-4">
-{loading ? (
-  <>
-    {[1, 2, 3].map((i) => (
-      <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
-        <div
-          dir="rtl"
-          className="shadow rounded-xl px-3 w-[360px] h-[110px] relative flex-col bg-gray40 text-black1 animate-pulse"
-        >
-          <div className="h-4 w-32 skeleton-bg rounded mt-4 mb-2"></div>
-          <div className="h-4 w-64 skeleton-bg rounded mb-4"></div>
-        </div>
-      </div>
-    ))}
-  </>
-) : (
-  messages.map((msg) => (
-    <div key={msg.id} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
-      <div
-        dir="rtl"
-        className={`shadow px-3 w-[379px] relative flex-col ${
-          msg.isUser
-            ? "bg-black4 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-bl-[8px]"
-            : "bg-gray40 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px]"
-        }`}
-      >
-        {!msg.isUser && (
-          <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
-            <img
-              src={supportAvatar}
-              alt="پشتیبانی"
-              className="w-6 h-6 rounded-full"
-            />
-            <span className="text-xs text-black1">
-              {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
-            </span>
-          </div>
-        )}
-
-        {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
-
-        {msg.file && (
-          <div className="rounded-2xl w-fit p-2 mt-2">
-            {imageCache[msg.id] ? (
-              <img
-                src={imageCache[msg.id]}
-                alt="attachment"
-                className="rounded-lg border border-gray21 w-[200px] h-[150px] object-cover cursor-pointer"
-                onClick={() => setFullscreenImage(imageCache[msg.id])}
-              />
+            {loading ? (
+              <>
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+                    <div dir="rtl" className="shadow rounded-xl px-3 w-[360px] h-[110px] relative flex-col bg-gray40 text-black1 animate-pulse">
+                      <div className="h-4 w-32 skeleton-bg rounded mt-4 mb-2"></div>
+                      <div className="h-4 w-64 skeleton-bg rounded mb-4"></div>
+                    </div>
+                  </div>
+                ))}
+              </>
             ) : (
-              <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
+              messages.map((msg) => (
+                <div key={msg.id} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
+                  <div
+                    dir="rtl"
+                    className={`shadow px-3 w-[379px] relative flex-col ${
+                      msg.isUser
+                        ? "bg-black4 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-bl-[8px]"
+                        : "bg-gray40 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px]"
+                    }`}
+                  >
+                    {!msg.isUser && (
+                      <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
+                        <img src={supportAvatar} alt="پشتیبانی" className="w-6 h-6 rounded-full" />
+                        <span className="text-xs text-black1">
+                          {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
+                        </span>
+                      </div>
+                    )}
+
+                    {msg.text && (
+                      <p dir="rtl" className="mt-4">
+                        {msg.text}
+                      </p>
+                    )}
+
+                    {msg.file && (
+                      <div className="rounded-2xl w-fit p-2 mt-2">
+                        {imageCache[msg.id] ? (
+                          <img
+                            src={imageCache[msg.id]}
+                            alt="attachment"
+                            className="rounded-lg border border-gray21 w-[200px] h-[150px] object-cover cursor-pointer"
+                            onClick={() => setFullscreenImage(imageCache[msg.id])}
+                          />
+                        ) : (
+                          <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
+                        )}
+                      </div>
+                    )}
+
+                    <span dir="rtl" className=" text-gray-400 block mt-4 text-right mb-4 font-normal  text-[12px]">
+                      {convertDigitsToPersian(msg.timestamp)}
+                    </span>
+                  </div>
+                </div>
+              ))
             )}
           </div>
+           {selectedFile && (
+          <div dir="rtl" className="mt-4 mb-2 mx-3">
+            <div className="flex flex-col rounded-2xl w-64 shadow bg-blue-100 p-3 gap-2">
+              <div className="flex relative gap-2 items-center">
+                <div className="w-full text-sm break-all">{selectedFile.name}</div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }}
+                  className="flex text-xs bg-red-500 text-white rounded-full w-5 h-5 items-center justify-center hover:bg-red-600"
+                  title="حذف فایل"
+                >
+                  <span className="w-4 h-4 icon-wrapper">
+                    <IconCloseButtun />
+                  </span>
+                </button>
+              </div>
+              {isSending && uploadProgress !== null && (
+                <div className="w-full h-1 bg-gray-300 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                </div>
+              )}
+            </div>
+          </div>
         )}
-
-        <span
-          dir="rtl"
-          className="text-[10px] text-gray-400 block mt-4 text-right mb-4"
-        >
-          {msg.timestamp}
-        </span>
-      </div>
-    </div>
-  ))
-)}
-
-</div>
-
         </div>
-
+       
         <div dir="rtl" className="p-3 flex gap-2 bg-white8">
           <input
             type="text"
@@ -353,39 +357,26 @@ if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) {
             className="flex-1 px-3 py-2 focus:outline-none bg-white8 text-black0"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-           onKeyDown={(e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    console.log("🔹 Enter pressed! مقدار فعلی پیام:", newMessage);
-    setTimeout(() => handleSend(), 0);
-  }
-}}
-
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                setTimeout(() => handleSend(), 0);
+              }
+            }}
           />
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept=".jpg,.jpeg,.png"
-            className="hidden"
-            onChange={handleFileChange}
-          />
+          <input type="file" ref={fileInputRef} accept=".jpg,.jpeg,.png" className="hidden" onChange={handleFileChange} />
 
           <button className="text-gray39 pl-3" onClick={handleAttachClick}>
-            <span className="icon-wrapper w-[22px] text-blue2 h-[22px]">
+            <span className="icon-wrapper w-[22px] hover:text-blue2 h-[22px]">
               <IconAttachFile />
             </span>
           </button>
 
-          <button
-            className="bg-blue15 text-white rounded-xl shadow w-[45px] h-[45px]"
-            onClick={handleSend}
-            disabled={isSending}
-          >
+          <button className="bg-blue15 text-white rounded-xl shadow w-[45px] h-[45px] hover:border-blue2 hover:border  hover:text-blue2" onClick={handleSend} disabled={isSending}>
             {isSending ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
             ) : (
-              <span className="icon-wrapper w-[22px] text-blue2 h-[22px]">
+              <span className="icon-wrapper w-[22px] h-[22px]">
                 <IconSendMessage />
               </span>
             )}
@@ -394,15 +385,8 @@ if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) {
       </div>
 
       {fullscreenImage && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
-          onClick={() => setFullscreenImage(null)}
-        >
-          <img
-            src={fullscreenImage}
-            alt="fullscreen"
-            className="max-h-full max-w-full rounded-lg"
-          />
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onClick={() => setFullscreenImage(null)}>
+          <img src={fullscreenImage} alt="fullscreen" className="max-h-full max-w-full rounded-lg" />
         </div>
       )}
     </div>

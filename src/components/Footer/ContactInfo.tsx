@@ -1,3 +1,4 @@
+
 import TelephoneIcon from "../../assets/icons/Footer/TelephoneIcon";
 import EmailIcon from "../../assets/icons/Footer/EmailIcon";
 import LocationIcon from "../../assets/icons/Footer/LocationIcon";
@@ -16,12 +17,12 @@ export default function ContactInfo(): React.JSX.Element {
           </div>
           <a
             href="tel:021123456789"
-            className="transition-colors duration-300 hover:text-blue10"
+            className="transition-colors duration-300  hover:underline"
           >
-          
-            <span className="text-base font-normal">۰۲۱-۱۲۳۴۵۶۷۸۹</span>
+            <span className="text-base font-normal">04433721037</span>
           </a>
         </div>
+
         <div className="flex flex-col items-end sm:items-center lg:items-end gap-4">
           <div className="flex items-end sm:items-center lg:justify-end">
             <span className="mr-2 text-lg font-bold">ایمیل</span>
@@ -31,19 +32,10 @@ export default function ContactInfo(): React.JSX.Element {
           </div>
           <div className="flex">
             <a
-              href="mailto:support@payfa24.com"
-              className="transition-colors duration-300 hover:text-blue10"
-            >
-             
-              <span className="text-base font-normal">support@payfa24.com</span>
-            </a>
-            <div className="w-px h-[20px] bg-gray-400 mx-4"></div>
-            <a
               href="mailto:info@payfa24.com"
-              className="transition-colors duration-300 hover:text-blue10"
+              className="transition-colors duration-300  hover:underline"
             >
-              
-              <span className="text-base font-normal">info@payfa24.com</span>
+              <span className="text-base font-normal">pishdad24co@gmail.com</span>
             </a>
           </div>
         </div>

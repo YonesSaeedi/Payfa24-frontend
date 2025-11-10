@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import HomeIcon from "../../assets/icons/header/HomeIcon";
@@ -7,7 +7,6 @@ import WalletIcon from "../../assets/icons/header/WalletIcon";
 import ChartIcon from "../../assets/icons/header/ChartIcon";
 import BitcoinIcon from "../../assets/icons/header/BitcoinIcon";
 import IconUser from "../../assets/icons/ProfileMenue/IconUser";
-import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconProfileMenu from "../../assets/icons/Login/IconProfileMenu";
 import { apiRequest } from "../../utils/apiClient";
@@ -49,7 +48,7 @@ export default function MobileMenu({
       window.location.replace("/login");
     }
   };
-  const navigate = useNavigate();
+
 
   return (
     <>
@@ -87,15 +86,7 @@ export default function MobileMenu({
               </p>
             </div>
           </div>
-          <button
-            onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)}
-            className="text-xs bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition w-full mt-4  shadow-md  hover:shadow-gray12"
-          >
-            ارتقا سطح
-            <span className="w-5 h-5 icon-wrapper mr-1">
-              <IconArrowLeft />
-            </span>
-          </button>
+        
         </div>
 
         <nav className="flex flex-col gap-6 p-4 space-y-3 text-right">

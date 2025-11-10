@@ -62,10 +62,7 @@ export default function Advance() {
     const formData = new FormData()
     formData.append('file1', imageFiles.idCardImageFile)
     formData.append('file2', imageFiles.identityVerifyImageFile)
-    // DEBUG: log entries to confirm files are in the FormData
-    for (const [key, value] of formData.entries()) {
-      console.log('FormData entry ->', key, value);
-    }
+    
     try {
       await apiRequest({
         url: '/kyc/advanced/level1',

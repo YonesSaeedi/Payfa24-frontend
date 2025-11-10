@@ -1,12 +1,12 @@
 
 import { useEffect, useState } from "react";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import BreadcrumbNavigation from "../BreadcrumbNavigation";
-import EmptyCards from "./EmptyCards";
-import AddBankCardModal from "./BankCardModal/AddBankCardModal";
+import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
+import EmptyCards from "../../components/BankCards/EmptyCards";
+import AddBankCardModal from "../../components/BankCards/BankCardModal/AddBankCardModal";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
-import { AddCardApi } from "./AddCardApi";
+import { AddCardApi } from "../../components/BankCards/AddCardApi";
 import { apiRequest } from "../../utils/apiClient";
 
 const BankCardsPage = () => {

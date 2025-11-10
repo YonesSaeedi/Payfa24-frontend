@@ -15,4 +15,4 @@ const useGetGeneralInfo = () => {
 
 }
 
-export default useGetGeneralInfo
+export default useGetGeneralInfo 

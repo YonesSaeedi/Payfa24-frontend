@@ -32,9 +32,10 @@ import UserAccount from "../pages/Profile/UserAccount";
 import CreateTicketPage from "../pages/Ticket/CreateTicketPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import useAuth from "../hooks/useAuth";
-import BankCardsRoute from "../pages/BankCards/BankCardsRoute";
+import BankCardManager from "../pages/BankCards/BankCardsManager";
 import TicketsRoute from "../pages/Ticket/TicketsRoute";
 import ProtectedRoute from "./ProtectedRoute";
+import BankCardsPage from "../pages/BankCards/BankcardsPage";
 
 
 export default function AppRouter() {
@@ -67,7 +68,7 @@ export default function AppRouter() {
         <Route path={ROUTES.DEPOSIT} element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
         <Route path={ROUTES.DEPOSIT_GATEWAY} element={<ProtectedRoute><DepositForm minDeposit={1000} maxDeposit={100000000} /></ProtectedRoute>} />
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ProtectedRoute><ConnectedDevicesLayout /></ProtectedRoute>} />
-        <Route path={ROUTES.BANK_CARDS} element={<ProtectedRoute><BankCardsRoute /></ProtectedRoute>} />
+        <Route path={ROUTES.BANK_CARDS} element={<ProtectedRoute><BankCardManager /></ProtectedRoute>} />
         <Route path={ROUTES.TICKET.ROOT} element={<ProtectedRoute><TicketsRoute /></ProtectedRoute>} />
         <Route path={ROUTES.TICKET.CREATE} element={<ProtectedRoute><CreateTicketPage /></ProtectedRoute>} />
         <Route path={ROUTES.TRADE.ROOT} element={<ProtectedRoute><TradeLayout /></ProtectedRoute>}>
@@ -75,6 +76,7 @@ export default function AppRouter() {
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
           <Route path={ROUTES.TRADE.SELL} element={<Sell />} />
         </Route>
+        <Route path={ROUTES.BANK_CARDS_EMPTY} element={<ProtectedRoute><BankCardsPage /></ProtectedRoute>} />
         <Route path={ROUTES.TRANSACTION.ROOT} element={<ProtectedRoute><TransactionLayout /></ProtectedRoute>}>
           <Route index element={<CryptoPage />} />
           <Route path={ROUTES.TRANSACTION.CRYPTO_HISTORY} element={<CryptoPage />} />

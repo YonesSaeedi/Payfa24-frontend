@@ -28,7 +28,7 @@ const ContactBox: React.FC = () => {
         href="mailto:info@payfa.com"
         className="text-sm font-medium text-blue-600 "
       >
-        info@payfa.com
+        pishdad24co@gmail.com
       </a>
             </span>
           </div>
