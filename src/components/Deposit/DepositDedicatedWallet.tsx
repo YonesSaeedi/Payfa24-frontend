@@ -150,8 +150,7 @@ export default function DepositDedicatedWallet() {
         });
       }
 
-      console.log("Merged data:", merged);
-      console.log("Networks:", allNetworks);
+ 
     } catch (err) {
       console.error("خطا در دریافت ارزها:", err);
     } finally {

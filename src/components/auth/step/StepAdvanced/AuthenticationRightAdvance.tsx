@@ -2,7 +2,6 @@ import IconCardIdenty from "../../../../assets/icons/authentication/IconCardIden
 import IconCheckmark from "../../../../assets/icons/authentication/IconCheckmark";
 import IconIdentyBasic from "../../../../assets/icons/authentication/IconIdentyBasic";
 import IdentyIcon from "../../../../assets/icons/authentication/IdentyIcon";
-import { toPersianDigits } from "../../../Deposit/CardToCardTransfer";
 
 interface Props {
   step: number;

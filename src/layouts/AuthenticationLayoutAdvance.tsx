@@ -1,4 +1,3 @@
-// src/layouts/AuthenticationLayoutAdvance.tsx
 import React from "react";
 import AuthenticationLeft from "../components/authenticationLeft";
 import BreadcrumbNavigation from "../components/BreadcrumbNavigation";

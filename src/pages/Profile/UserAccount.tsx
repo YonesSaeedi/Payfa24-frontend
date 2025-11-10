@@ -186,7 +186,7 @@ export default function UserAccount() {
     );
   } else if (userKycLevel === "advanced") {
     kycContent = (
-      <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-red1 px-5 py-4 rounded-lg">
+      <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-gray19 px-5 py-4 rounded-lg">
         <div className="flex justify-between w-full items-center">
           <div>
             <span className="text-base font-medium text-blue2">سطح شما :پیشرفته</span>
@@ -229,72 +229,62 @@ export default function UserAccount() {
               )}
             </div>
             {/* اطلاعات کاربر */}
-          {/* اطلاعات کاربر */}
-<div className="flex justify-between items-start flex-row-reverse lg:text-lg font-normal text-sm lg:w-[498px] w-full mb-8">
-  <div className="flex flex-col text-end gap-4 text-gray5 w-[140px]">
-    {userData && (
-      <>
-        <span>سطح کاربری</span>
+            {/* اطلاعات کاربر */}
+            <div className="flex justify-between items-start flex-row-reverse lg:text-lg font-normal text-sm lg:w-[498px] w-full mb-8">
+              <div className="flex flex-col text-end gap-4 text-gray5 w-[140px]">
+                {userData && (
+                  <>
+                    <span>سطح کاربری</span>
 
-        {userData.name && userData.name !== "احراز هویت نشده" && (
-          <span>نام نمایشی</span>
-        )}
+                    {userData.name_display && userData.name_display !== "احراز هویت نشده" && <span>نام نمایشی</span>}
 
-        {userData.mobile && userData.mobile !== "---" && (
-          <span>شماره موبایل</span>
-        )}
+                    {userData.name && userData.name !== "احراز هویت نشده" && <span>نام </span>}
+                    {userData.family && userData.family !== "احراز هویت نشده" && <span>نام خانوادگی </span>}
 
-        {userData.email && userData.email !== "---" && <span>ایمیل</span>}
+                    {userData.mobile && userData.mobile !== "---" && <span>شماره موبایل</span>}
 
-        {userData.join_date && userData.join_date !== "---" && (
-          <span>تاریخ عضویت</span>
-        )}
-      </>
-    )}
-  </div>
+                    {userData.email && userData.email !== "---" && <span>ایمیل</span>}
 
-  <div className="flex flex-col gap-4 text-black1 flex-1 min-w-0">
-    {loading ? (
-      <>
-        <span className="skeleton-bg w-12 h-5 rounded-sm"></span>
-        <span className="skeleton-bg w-24 h-5 rounded-sm"></span>
-        <span className="skeleton-bg w-28 h-5 rounded-sm"></span>
-        <span className="skeleton-bg w-32 h-5 rounded-sm"></span>
-        <span className="skeleton-bg w-36 h-5 rounded-sm"></span>
-      </>
-    ) : (
-      <>
-        {/* سطح کاربری */}
-        <span>
-          {verificationLevel === null || verificationLevel === 0
-            ? "احراز هویت نشده"
-            : `سطح ${verificationLevel}`}
-        </span>
+                    {userData.join_date && userData.join_date !== "---" && <span>تاریخ عضویت</span>}
+                  </>
+                )}
+              </div>
 
-        {/* نام نمایشی */}
-        {userData?.name && userData.name !== "احراز هویت نشده" && (
-          <span>{userData.name}</span>
-        )}
+              <div className="flex flex-col gap-4 text-black1 flex-1 min-w-0">
+                {loading ? (
+                  <>
+                    <span className="skeleton-bg w-12 h-5 rounded-sm"></span>
+                    <span className="skeleton-bg w-24 h-5 rounded-sm"></span>
+                    <span className="skeleton-bg w-28 h-5 rounded-sm"></span>
+                    <span className="skeleton-bg w-32 h-5 rounded-sm"></span>
+                    <span className="skeleton-bg w-36 h-5 rounded-sm"></span>
+                  </>
+                ) : (
+                  <>
+                    {/* سطح کاربری */}
+                    <span>{verificationLevel === null || verificationLevel === 0 ? "احراز هویت نشده" : `سطح ${verificationLevel}`}</span>
 
-        {/* شماره موبایل */}
-        {userData?.mobile && userData.mobile !== "---" && (
-          <span>{userData.mobile}</span>
-        )}
+                    {/* نام نمایشی */}
+                    {userData?.name_display && userData.name_display !== "احراز هویت نشده" && <span>{userData.name_display}</span>}
+                    {/* نام */}
+                    {userData?.name && userData.name !== "احراز هویت نشده" && <span>{userData.name}</span>}
+                    {/* نام خانوادگی */}
+                    {userData?.family && userData.family !== "احراز هویت نشده" && <span>{userData.family}</span>}
 
-        {/* ایمیل */}
-        {userData?.email && userData.email !== "---" && (
-          <span>{userData.email}</span>
-        )}
+                    {/* شماره موبایل */}
+                    {userData?.mobile && userData.mobile !== "---" && <span>{userData.mobile}</span>}
+                    {/* کد ملی */}
+                    {/* {userData?.mobile && userData.mobile !== "---" && <span>{userData.}</span>} */}
 
-        {/* تاریخ عضویت */}
-        {userData?.join_date && userData.join_date !== "---" && (
-          <span>{formatPersianDate(userData.join_date)}</span>
-        )}
-      </>
-    )}
-  </div>
-</div>
+                    {/* ایمیل */}
+                    {userData?.email && userData.email !== "---" && <span>{userData.email}</span>}
 
+                    {/* تاریخ عضویت */}
+                    {userData?.join_date && userData.join_date !== "---" && <span>{formatPersianDate(userData.join_date)}</span>}
+                  </>
+                )}
+              </div>
+            </div>
 
             {/* بخش احراز هویت پایین */}
             {kycContent}

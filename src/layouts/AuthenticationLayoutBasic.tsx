@@ -22,11 +22,11 @@ export default function AuthenticationLayoutBasic({
         <BreadcrumbNavigation />
       </div>
 
-      <div className="w-full lg:container-style flex flex-col pb-14 lg:mt-9 md:flex-row px-0 lg:px-8 items-center">
+      <div className="w-full  lg:container-style flex flex-col pb-14 lg:mt-9 md:flex-row px-0 lg:px-8 items-center">
         {/* سمت چپ */}
         <div
-          className={`w-full h-full p-4 flex items-center justify-center ${
-            !started ? "lg:lg:w-5/6 lg:flex hidden lg:px-12 mb-20" : "lg:w-full flex"
+          className={`w-full h-full flex items-center justify-center  ${
+            !started ? " lg:flex hidden lg:px-5 mb-20" : "lg:w-full flex"
           }`}
         > 
           {!started ? (

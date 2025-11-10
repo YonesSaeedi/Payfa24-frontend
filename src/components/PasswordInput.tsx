@@ -59,7 +59,6 @@ export default function StepPassword() {
     finally {
       setIsLoading(false)
     }
-    console.log("Submitted Data:", data);
   };
 
   return (
