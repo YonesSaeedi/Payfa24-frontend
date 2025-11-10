@@ -176,7 +176,7 @@ const OrderPage: React.FC = () => {
             <div className="px-10">ارز</div>
             <div className="text-center">مقدار</div>
             <div className="text-center">نوع</div>
-            <div className="text-center">مقدار </div>
+            <div className="text-center">قیمت</div>
             <div className="text-center">وضعیت</div>
             <div className="text-center">تاریخ و زمان</div>
             <div className="text-center">جزئیات</div>

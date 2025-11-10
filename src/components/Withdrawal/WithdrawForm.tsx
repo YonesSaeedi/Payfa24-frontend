@@ -57,9 +57,8 @@ export default function WithdrawForm() {
   const [isResending, setIsResending] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number>(0);
   const [, setSelectedCard] = useState<number | null>(null);
-  const [pendingWithdrawData, setPendingWithdrawData] =
-    useState<PendingWithdrawData | null>(null);
-
+  const [pendingWithdrawData, setPendingWithdrawData] =useState<PendingWithdrawData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { data: userData } = useGetUser();
   const userMobile = userData?.user?.mobile || "شماره شما";
 
@@ -72,20 +71,23 @@ export default function WithdrawForm() {
     !!watchBank && !!watchAmount && Number(watchAmount) > 0;
 
   useEffect(() => {
-    const fetchCards = async () => {
-      try {
-        const response = await apiRequest<WalletResponse>({
-          url: "/wallets/fiat?withdraw=true",
-          method: "GET",
-        });
-        setListCards(response.list_cards || []);
-        setWalletBalance(Number(response.wallet.balance_available) || 0);
-      } catch (err) {
-        console.error("Failed to fetch cards", err);
-      }
-    };
-    fetchCards();
-  }, []);
+  const fetchCards = async () => {
+    try {
+      const response = await apiRequest<WalletResponse>({
+        url: "/wallets/fiat?withdraw=true",
+        method: "GET",
+      });
+      setListCards(response.list_cards || []);
+      setWalletBalance(Number(response.wallet.balance_available) || 0);
+    } catch (err) {
+      console.error("Failed to fetch cards", err);
+    } finally {
+      setIsLoading(false); // این خط اضافه شود
+    }
+  };
+  fetchCards();
+}, []);
+
 
   // تایمر ارسال مجدد کد
   useEffect(() => {
@@ -131,7 +133,7 @@ export default function WithdrawForm() {
         data: requestData,
       });
 
-      console.log("=== API RESPONSE ===", response);
+     
       const transactionId = response.transaction_id;
 
       setPendingWithdrawData({
@@ -145,12 +147,10 @@ export default function WithdrawForm() {
       setResendCodeTimeLeft(120);
       setIsResending(false);
     } catch (err: unknown) {
-      console.log("=== API ERROR ===");
+      
       if (err instanceof AxiosError) {
         toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ارسال درخواست برداشت مشکلی پیش امده است')
-      } else {
-        console.log("Error:", err);
-      }
+      } 
 
       let message = "خطا در برداشت!";
       if (err instanceof AxiosError && err.response?.data?.msg) {
@@ -180,7 +180,7 @@ export default function WithdrawForm() {
         },
       });
 
-      toast.success("درخواست برداشت ثبت شد ✅");
+      toast.success("درخواست برداشت ثبت شد");
       setIsOtpModalOpen(false);
       setOtpCode("");
       setIsTradeSuccessModalOpen(true);
@@ -269,15 +269,20 @@ export default function WithdrawForm() {
                 />
               )}
             />
-            <div
-              dir="rtl"
-              className="flex items-center justify-between mb-4 mt-3"
-            >
-              <span className="text-gray5 text-md">موجودی قابل برداشت</span>
-              <span className="font-medium text-blue-400 text-md">
-                {walletBalance.toLocaleString()} تومان
-              </span>
-            </div>
+       <div
+  dir="rtl"
+  className="flex items-center justify-between mb-4 mt-3"
+>
+  <span className="text-gray5 text-md">موجودی قابل برداشت</span>
+  {isLoading ? (
+    <div className="h-5 w-20 bg-gray-300 rounded animate-pulse"></div> // اسکلتون
+  ) : (
+    <span className="font-medium text-blue-400 text-md">
+      {walletBalance.toLocaleString()} تومان
+    </span>
+  )}
+</div>
+
           </div>
 
           <div className="mb-6">
@@ -293,7 +298,7 @@ export default function WithdrawForm() {
                     onChange={(val) => {
                       const selected =
                         listCards.find((c) => c.id === Number(val)) || null;
-                      field.onChange(selected); // ⚡ اینجا کل شیء کارت را می‌دهیم
+                      field.onChange(selected); 
                       setSelectedCard(selected ? selected.id : null);
                     }}
                     options={listCards.map((card) => ({

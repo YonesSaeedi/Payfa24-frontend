@@ -97,7 +97,7 @@ function MarketPage() {
             />
           </div>
 
-          {/* 📈 جدول بازار */}
+         
           <div >
             <CryptoMarketTable
               data={mergedData}

@@ -181,7 +181,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
                 value={field.value || ""}
                 onChange={field.onChange}
                 type="text"
-                className="flex flex-row  rounded-lg border border-gray12 font-normal text-[14px]"
+                className="flex flex-row  rounded-lg border border-gray12 font-normal !text-[14px]"
               />
             )}
           />
@@ -206,7 +206,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
             rules={{ required: "توضیحات الزامی است" }}
             render={({ field }) => (
               <div className="relative w-full">
-                <label className="absolute right-3 top-[-8px] text-xs text-gray12 lg:bg-gray43 bg-white1 px-1 z-10">توضیحات</label>
+                <label className="absolute right-3 top-[-8px] text-xs text-gray12 lg:bg-gray43 bg-white1 px-1 z-10 font-normal text-[14px]">توضیحات</label>
                 <textarea
                   {...field}
                   placeholder="توضیحات دقیق درمورد موضوع تیکت خود را وارد کنید."

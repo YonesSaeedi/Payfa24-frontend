@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
@@ -15,25 +15,25 @@ import { Link } from "react-router-dom";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import Pagination from "../History/Pagination";
 import EmptyWallet from './../../assets/EmptyWallet.png';
+import useGetGeneralInfo from '../../hooks/useGetGeneralInfo';
 
-interface GeneralCryptoItem {
-  symbol: string;
-  name?: string;
-  title_fa?: string;
-  color?: string;
-  icon?: string;
-  isFont?: boolean;
-  percent?: number;
-  locale?: {
-    fa?: {
-      name?: string;
-    };
-  };
-}
 
-interface GeneralInfoResponse {
-  cryptocurrency: GeneralCryptoItem[];
-}
+// interface GeneralCryptoItem {
+//   symbol: string;
+//   name?: string;
+//   title_fa?: string;
+//   color?: string;
+//   icon?: string;
+//   isFont?: boolean;
+//   percent?: number;
+//   locale?: {
+//     fa?: {
+//       name?: string;
+//     };
+//   };
+// }
+
+
 
 interface Wallet {
   name: string;
@@ -75,6 +75,7 @@ const WalletAssets: React.FC = () => {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [expectedCount, setExpectedCount] = useState(10);
 
   // 📌 هندل ریسایز
   useEffect(() => {
@@ -95,33 +96,33 @@ const WalletAssets: React.FC = () => {
   }, []);
 
   // 📌 تابع fetchData
-  const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNum: number) => {
-    setIsLoading(true);
-    try {
-      const response = await apiRequest<WalletsResponse>({
-        url: "/wallets/crypto",
-        method: "GET",
-        params: {
-          limit: 10,
-          page: pageNum,
-          search: searchTerm,
-          sort: sortKey,
-          justBalance: true,
-        },
-      });
+const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNum: number) => {
+  setIsLoading(true);
+  try {
+    const limit = 10; // یا هر مقداری که به API می‌فرستی
+    const response = await apiRequest<WalletsResponse>({
+      url: "/wallets/crypto",
+      method: "GET",
+      params: {
+        limit,
+        page: pageNum,
+        search: searchTerm,
+        sort: sortKey,
+        justBalance: true,
+      },
+    });
 
-      setWalletsData(response.wallets || []);
-
-      if (response.crypto_count) {
-        setTotalPages(Math.ceil(response.crypto_count / 10));
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
+    setWalletsData(response.wallets || []);
+    setExpectedCount(response.wallets?.length || limit); // مهم: همون تعداد که API فرستاده
+    if (response.crypto_count) {
+      setTotalPages(Math.ceil(response.crypto_count / limit));
     }
-  }, []);
-
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setIsLoading(false);
+  }
+}, []);
   useEffect(() => {
     fetchData(search, selectedSortKey, page);
   }, [search, selectedSortKey, page, fetchData]);
@@ -132,17 +133,9 @@ const WalletAssets: React.FC = () => {
     setOpenDropdown(false);
   };
 
-  // 📌 گرفتن اطلاعات عمومی
-  const { data: generalData } = useQuery<GeneralInfoResponse>({
-    queryKey: ["general-info"],
-    queryFn: async () => {
-      const data = await apiRequest<GeneralInfoResponse>({
-        url: "/get-general-info",
-        method: "GET",
-      });
-      return data;
-    },
-  });
+  
+  const { data: generalData } = useGetGeneralInfo();
+
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -157,15 +150,12 @@ const WalletAssets: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 📌 ترکیب داده‌ها: merge walletsData + generalData
-  // 📌 ترکیب داده‌ها: merge walletsData + generalData
-  console.log("generalData:", generalData); // 👈 اینجا بذار
+ 
 
   const cryptoData = walletsData.map((wallet) => {
     const generalItem = generalData?.cryptocurrency?.find((item: any) => item.symbol?.toLowerCase() === wallet.symbol?.toLowerCase());
 
-    console.log("🔹 wallet:", wallet);
-    console.log("🔹 generalItem:", generalItem);
+
 
     const renderIcon = generalItem?.isFont ? (
       <i className={`cf cf-${wallet.symbol.toLowerCase()}`} style={{ color: generalItem?.color || "#000", fontSize: "24px" }}></i>
@@ -175,7 +165,7 @@ const WalletAssets: React.FC = () => {
 
     return {
       ...wallet,
-      name: generalItem?.locale?.fa?.name || generalItem?.title_fa || generalItem?.name || wallet.name || wallet.symbol,
+      name: generalItem?.locale?.fa?.name  || generalItem?.name || wallet.name || wallet.symbol,
       color: generalItem?.color,
       icon: renderIcon,
       percent: generalItem?.percent ?? wallet.percent,
@@ -184,6 +174,11 @@ const WalletAssets: React.FC = () => {
 
   const formatNumber = (num: number, decimals = 8) => {
   return formatPersianDigits(Number(num.toFixed(decimals)).toString());
+};
+const formatSmallNumber = (num: number, decimals = 8) => {
+  // اگر عدد کوچیکه، حتما با decimals مشخص رشته بساز
+  const str = num < 0.0001 ? num.toFixed(decimals) : num.toString();
+  return formatPersianDigits(str);
 };
 
 
@@ -244,7 +239,7 @@ const WalletAssets: React.FC = () => {
           </div>
           <div>
             {isLoading ? (
-              [...Array(2)].map((_, index) => (
+              [...Array(expectedCount)].map((_, index) => (
                 <div
                   key={index}
                   className="border-b grid grid-cols-2 lg:grid-cols-5 border border-gray21 rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 last:border-b-0 mb-2 lg:m-0 animate-pulse"
@@ -296,7 +291,7 @@ const WalletAssets: React.FC = () => {
                     </div>
                   </div>
                   <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
-                    {formatPersianDigits(item.price.toLocaleString())} USDT
+                    {formatSmallNumber(item.price, 8)}  USDT
                   </span>
                   <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
                     {formatPersianDigits(item.fee_toman.toLocaleString())}
@@ -354,15 +349,16 @@ const WalletAssets: React.FC = () => {
                           </span>
                           <span className="text-blue1">واریز</span>
                         </Link>
-                        <Link
-                          to={`${ROUTES.WITHDRAWAL_FIAT}?coin=${item.symbol}`}
-                          className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
-                        >
-                          <span className="text-blue1 w-5 h-5 flex items-center justify-center">
-                            <WalletMinesIcon />
-                          </span>
-                          <span className="text-blue1">برداشت</span>
-                        </Link>
+                     <Link
+  to={`/withdraw/crypto?coin=${item.symbol}`}
+  className="px-3 py-2 text-sm text-black1 hover:bg-gray-100 flex items-center gap-2"
+>
+  <span className="text-blue1 w-5 h-5 flex items-center justify-center">
+    <WalletMinesIcon />
+  </span>
+  <span className="text-blue1">برداشت</span>
+</Link>
+
                       </div>
                     )}
                     {isMobile && (

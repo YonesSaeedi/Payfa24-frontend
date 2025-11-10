@@ -51,7 +51,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div
       dir="rtl"
-      className="flex justify-center items-center gap-2 mt-4 text-sm pb-6"
+      className="flex justify-center items-center gap-1 mt-4 text-sm pb-6"
     >
       <button
         onClick={() => current > 1 && onPageChange(current - 1)}

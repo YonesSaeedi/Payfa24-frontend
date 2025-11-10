@@ -101,7 +101,7 @@ const WithdrawPage: React.FC = () => {
 <div className="hidden lg:flex flex-col gap-10">
   {/* پرداخت در لحظه */}
   <div>
-    <span className="flex justify-end mb-4">برداشت تومان</span>
+    <span className="flex justify-end mb-4 text-black1">برداشت تومان</span>
 
     <div
       className={`flex items-center justify-between rounded-xl p-4 mb-1 cursor-pointer border transition-all duration-300 ${
@@ -158,7 +158,7 @@ const WithdrawPage: React.FC = () => {
 
   {/* پرداخت در ۲۰ دقیقه */}
   <div>
-    <span className="flex justify-end mb-4">برداشت ارز</span>
+    <span className="flex justify-end mb-4 text-black1">برداشت ارز</span>
 
     <div
       className={`flex items-center justify-between rounded-xl p-4 cursor-pointer border transition-all duration-300 ${
