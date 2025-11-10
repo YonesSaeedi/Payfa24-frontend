@@ -201,9 +201,9 @@ export default function UserAccount() {
         <div>
           <p className="mt-5 text-right text-black1">دسترسی‌ها :</p>
           <ul className="flex flex-col gap-1 list-inside list-disc text-gray5 lg:text-base text-sm">
-            <li className="text-right">۵ میلیون تومان برداشت ریالی روزانه</li>
-            <li className="text-right">۵ میلیون تومان برداشت ارزی روزانه</li>
-            <li className="text-right">دسترسی به ارز Utopia USD</li>
+            <li className="text-right">واریز با کارت به کارت </li>
+            <li className="text-right">دسترسی به ارز های دلاری</li>
+            <li className="text-right">برداشت رمز ارز</li>
           </ul>
         </div>
       </div>

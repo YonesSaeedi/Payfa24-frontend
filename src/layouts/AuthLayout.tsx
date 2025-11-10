@@ -58,7 +58,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
       </div>
 
       {/* Form Section */}
-      <div className="w-full  lg:pt-8 py-10 flex flex-col items-center justify-center ">
+      <div className="w-full h-screen lg:pt-8 py-10 flex flex-col items-center justify-center ">
        {children}
       </div>
     </div>

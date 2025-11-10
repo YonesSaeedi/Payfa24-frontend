@@ -69,9 +69,9 @@ export default function AuthenticationRightAdvance({ step, onStart }: Props) {
         <div dir="rtl">
           <p className="mt-5 text-right text-black1"> دسترسی ها : </p>
           <ul className="flex flex-col gap-1 list-inside list-disc text-gray5 lg:text-base text-sm">
-            <li className="text-right">10 میلیون تومان برداشت ریالی روزانه</li>
-            <li className="text-right">10 میلیون تومان برداشت ارزی روزانه</li>
-            <li className="text-right">دسترسی به ارز Utopia USD</li>
+            <li className="text-right">واریز با کارت به کارت</li>
+            <li className="text-right">دسترسی به ارز های دلاری</li>
+            <li className="text-right">برداشت رمز ارز</li>
           </ul>
         </div>
         <button className="bg-blue2 w-full mt-5 h-[48px] rounded-lg text-white2 font-bold" onClick={onStart}>

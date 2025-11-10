@@ -20,6 +20,7 @@ interface TextFieldProps {
   placeholder?: string;
   showError?: boolean; // باید بولی باشه
   [key: string]: any;
+  alwaysLabelOnTop?: boolean;
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
@@ -39,6 +40,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       inputBgClass,
       placeholder,
       showError = false, // پیش‌فرض false
+      alwaysLabelOnTop = false,
     },
     ref
   ) => {
@@ -54,8 +56,8 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     const borderColorClass = hasError ? "border-red1" : isFocused ? "border-blue2" : value ? "border-blue2" : "border-gray5";
 
     const labelStyleClass =
-      isFocused || value || hasError
-        ? `top-[-12px] right-[13px] lg:text-sm text-xs ${hasError ? "text-red1" : "text-blue2 "} ${labelBgClass || ""}`
+      alwaysLabelOnTop || isFocused || value || hasError
+        ? `top-[-12px] right-[13px] lg:text-sm text-xs ${hasError ? "text-red1" : isFocused ? "text-blue2" : "text-gray5"} ${labelBgClass || ""}`
         : "top-1/2 -translate-y-1/2 text-xs text-gray5 bg-transparent";
 
     return (

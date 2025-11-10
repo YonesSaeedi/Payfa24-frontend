@@ -9,6 +9,7 @@ import FloatingInput from "../FloatingInput/FloatingInput";
 import IconVideo from "../../assets/icons/Deposit/IconVideo";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import { toPersianDigits } from "./CardToCardTransfer";
 
 type PaymentGatewayRequestData = Record<string, string | number>;
 
@@ -38,8 +39,8 @@ export default function DepositForm({ minDeposit, maxDeposit }: DepositFormProps
       amount: yup
         .number()
         .typeError("وارد کردن مبلغ الزامی است")
-        .min(min, `حداقل مبلغ واریز ${min.toLocaleString()} تومان است`)
-        .max(max, `حداکثر مبلغ واریز ${max.toLocaleString()} تومان است`)
+        .min(min, `حداقل مبلغ واریز ${toPersianDigits(min.toLocaleString())} تومان است`)
+        .max(max, `حداکثر مبلغ واریز ${toPersianDigits(max.toLocaleString())} تومان است`)
         .required("وارد کردن مبلغ الزامی است"),
       bank: yup.string().nullable(),
     });

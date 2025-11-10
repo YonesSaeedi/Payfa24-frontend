@@ -56,17 +56,17 @@ interface CardToCardTransferProps {
 
 export function formatPersianCardNumber(input: string | number): string {
   if (input === null || input === undefined || input === "") return "";
-
+  
   const persianMap = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-  let digitsOnly = String(input).replace(/\D/g, "");
-  if (/^\d+$/.test(digitsOnly) && digitsOnly.length < 16) {
-    digitsOnly = digitsOnly.padStart(16, "0");
-  }
+  const digitsOnly = String(input).replace(/[^\d۰-۹]/g, "")
+    .replace(/[۰-۹]/g, (d) => "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]); // فارسی → انگلیسی
+
   const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, "$1-");
   const persianGrouped = grouped.replace(/[0-9]/g, (d) => persianMap[+d]);
 
   return persianGrouped;
 }
+
 
 export function toPersianDigits(input: string | number): string {
   if (input === null || input === undefined) return "";
