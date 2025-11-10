@@ -12,6 +12,7 @@ import { KycGetInfo } from "../../types/apiResponses";
 import KycSuccessModal from "../../components/auth/step/StepAdvanced/KycSuccessModal";
 import KycPendingModal from "../../components/auth/step/StepAdvanced/KycPendingModal";
 import KycRejectModal from "../../components/auth/step/StepAdvanced/KycRejectModal";
+import useGetKYCInfo from "../../hooks/useGetKYCInfo";
 
 export default function Advance() {
   const [step, setStep] = useState<0 | 1 | 2>(0)
@@ -25,6 +26,7 @@ export default function Advance() {
     setImageFiles(prev => ({ ...prev, [key]: imageFile }))
   }
   const navigate = useNavigate()
+  const { refetch } = useGetKYCInfo()
   // fetches advanced kyc status and reason_reject to display related modals =============================================================
   useEffect(() => {
     const fetchAdvancedKYC = async () => {
@@ -35,7 +37,7 @@ export default function Advance() {
           navigate(ROUTES.AUTHENTICATION_BASIC)
         } else if (response?.level_kyc === 'advanced') setIsSuccessModalOpen(true)
         const advancedInfo = response?.kyc?.advanced;
-        if (advancedInfo?.status === 'success') {
+        if (advancedInfo?.status === 'confirm') {
           setIsSuccessModalOpen(true)
         }
         else if (advancedInfo?.status === 'reject') {
@@ -77,6 +79,7 @@ export default function Advance() {
           }
         }
       })
+      refetch()
       toast.success('تصاویر با موفقیت ارسال شدند.')
       setIsPendingModalOpen(true)
     } catch (err) {

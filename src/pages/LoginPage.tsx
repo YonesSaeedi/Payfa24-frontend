@@ -33,9 +33,11 @@ export default function LoginPage() {
   const { theme } = context;
   // ==============================================================================================================================================
   const [showPassword, setShowPassword] = useState(false);
+  const [twofaMsg, setTwofaMsg] = useState<string>('کد ورود دو مرحله‌ای را وارد کنید')
+  const [twofaType, setTwofaType] = useState<null | 'sms' | 'email' | 'google'>(null)
   const [isOpen, setIsOpen] = useState(false);
-  const [contactMethod, setContactMethod] = useState<"email" | "phone" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [is2FASubmitting, setIs2FASubmitting] = useState<boolean>(false)
   const [resendCodeIsSubmitting, setResendCodeIsSubmitting] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [idUser, setIdUser] = useState<number | null>(null);
@@ -67,8 +69,13 @@ export default function LoginPage() {
       const isPhone = /^\d+$/.test(data.email);
       if (isPhone) payload.mobile = data.email;
       else payload.email = data.email;
-      setContactMethod(isPhone ? "phone" : "email");
       const response = await apiRequest<LoginResponse, Record<string, string>>({ url: "/auth/login", method: "POST", data: payload });
+      if (response?.twofaType) setTwofaType(response?.twofaType);
+      setTwofaMsg(prev => response?.twofaType === 'email' ? 'لطفا کد ارسالی به ایمیل خود را واد کنید.'
+        : response?.twofaType === 'google' ? 'لطفا کد ورود دو مرحله‌ای گوگل را وارد کنید.'
+          : response?.twofaType === 'sms' ? 'لطفا کد ارسال شده به پیامک خود را وارد کنید.'
+            : prev
+      )
       // no otp needed =============================================================================
       if (response?.access_token) {
         localStorage.setItem("accessToken", response?.access_token);
@@ -95,6 +102,7 @@ export default function LoginPage() {
   const handleConfirm = async () => {
     if (!idUser || !token2fa || otpCode.length < 5) return;
     try {
+      setIs2FASubmitting(true)
       const res = await apiRequest<LoginResponse, { code: string; id_user: number; token2fa: string }>({
         url: "/auth/login/login-2fa",
         method: "POST",
@@ -112,7 +120,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "خطا در تأیید کد.");
-    }
+    } finally { setIs2FASubmitting(false) }
   };
   // resend otp code ======================================================================================================================================================
   const handleResend = async () => {
@@ -195,9 +203,7 @@ export default function LoginPage() {
         </button>
         <p className="text-sm font-normal text-gray12 mt-3 lg:mb-10 mb-8 text-start">
           هنوز ثبت نام نکرده‌اید؟
-          <Link className="text-blue2 text-sm px-1 font-normal" to={"/register"}>
-            ساخت حساب کاربری
-          </Link>
+          <Link className="text-blue2 text-sm px-1 font-normal" to={ROUTES.REGISTER}>ساخت حساب کاربری</Link>
         </p>
         <div className="flex items-center justify-center mb-4">
           <div className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}></div>
@@ -211,98 +217,17 @@ export default function LoginPage() {
       {isOpen && (
         <OTPInputModal
           titleText="تایید ورود"
-          mainText={
-            contactMethod === "email"
-              ? "کد ارسال شده به ایمیل خود را وارد کنید"
-              : contactMethod === "phone"
-              ? "کد ارسال شده به پیامک خود را وارد کنید."
-              : "کد ارسال شده را وارد کنید."
-          }
+          mainText={twofaMsg}
           closeModal={() => setIsOpen(false)}
           OTPLength={6}
           onSubmit={handleConfirm}
-          handleResendCode={handleResend}
-          resendCodeIsSubmitting={resendCodeIsSubmitting}
-          resendCodeTimeLeft={resendTimer}
+          isSubmitting={is2FASubmitting}
+          handleResendCode={twofaType !== 'google' ? handleResend : undefined}
+          resendCodeIsSubmitting={twofaType !== 'google' ? resendCodeIsSubmitting : undefined}
+          resendCodeTimeLeft={twofaType !== 'google' ? resendTimer : undefined}
           onChange={(value: string) => setOtpCode(value)}
         />
       )}
-      {/* {isOpen && (
-        <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
-          <div
-            className="fixed inset-0 flex items-center justify-center z-50"
-            onClick={() => {
-              setIsOpen(false);
-            }}
-          >
-            <div
-              className="lg:w-[448px] w-[328px] rounded-lg lg:p-8 p-4 relative bg-white8"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center flex-row-reverse justify-between">
-                <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black0">
-                  {contactMethod === "phone" ? "تایید شماره همراه" : "تایید ایمیل"}
-                </h2>
-                <span
-                  className="icon-wrapper h-6 w-6 cursor-pointer"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <IconClose />
-                </span>
-              </div>
-
-              <p
-                className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24"
-                dir="rtl"
-              >
-                لطفا کد ارسالی به
-                {contactMethod === "phone"
-                  ? `شماره ${getValues("email")}`
-                  : `ایمیل ${getValues("email")}`}
-                را وارد کنید.
-              </p>
-
-              <div className="mt-[32px] mb-[48px]">
-                <OTPModal length={6} onChange={(code) => setOtpCode(code)} />
-              </div>
-
-              <div className="flex justify-between flex-row-reverse mb-4">
-                <div
-                  className={`flex gap-2 items-center ${canResend ? "cursor-pointer" : "opacity-50 cursor-not-allowed"}`}
-                  onClick={canResend ? handleModalResend : undefined}
-                >
-                  <span className="text-gray12">ارسال مجدد</span>
-                  <span className="icon-wrapper h-5 w-5">
-                    <IconAgain />
-                  </span>
-                </div>
-                <p className="text-gray12">
-                  ارسال مجدد کد تا {Math.floor(resendTimer / 60)}:
-                  {String(resendTimer % 60).padStart(2, "0")}
-                </p>
-              </div>
-
-              <div className="flex gap-2 mb-8">
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="mt-4 w-[180px] h-[48px] border border-blue2 rounded-lg text-blue2 text-sm lg:text-medium"
-                >
-                  {contactMethod === "phone" ? "ویرایش شماره همراه" : "ویرایش ایمیل"}
-                </button>
-                <Link to={""}>
-                  <button
-                    onClick={handleModalConfirm}
-                    className="mt-4 w-[200px] h-[48px] font-bold bg-blue2 text-white1 rounded-lg"
-                  >
-                    تایید
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </>
-      )} */}
     </AuthLayout>
   );
 }

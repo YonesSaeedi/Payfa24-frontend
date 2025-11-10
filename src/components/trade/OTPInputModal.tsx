@@ -42,7 +42,7 @@ const OTPInputModal = ({
   const isOtpComplete = otpValue.length === OTPLength
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center" onClick={closeModal}>
+    <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-3 lg:p-6" onClick={closeModal}>
       <div dir="rtl" className="rounded-lg lg:p-8 p-4 bg-white8" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <h2 className="lg:text-lg text-sm lg:font-bold font-medium text-black0">{titleText}</h2>

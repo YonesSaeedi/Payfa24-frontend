@@ -412,7 +412,7 @@ export default function DepositDedicatedWallet() {
           </button>
 
           <div className="mt-4" dir="ltr">
-            <Accordion title="TxID راهنمای واریز رمز ارز با ">
+            <Accordion title="راهنمای واریز رمز ارز">
               <ul className="list-disc pr-5 space-y-2 text-black1">
                 <li>
                   از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی

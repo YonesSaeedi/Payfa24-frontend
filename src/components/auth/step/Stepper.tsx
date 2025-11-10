@@ -45,7 +45,7 @@ const StepperComponent: React.FC<StepperProps> = ({
 
             {/* عنوان مرحله */}
             <span
-              className={`lg:text-lg text-xs ${
+              className={`lg:text-lg text-xs text-center ${
                 index === currentStep
                   ? "text-blue2"
                   : index < currentStep
@@ -59,7 +59,7 @@ const StepperComponent: React.FC<StepperProps> = ({
 
           {index < steps.length - 1 && (
             <div
-              className="flex-none lg:w-24 w-12 h-0"
+              className="flex-none lg:w-20 w-12 h-0"
               style={{
                 border: `2px dashed ${
                   index < currentStep ? "#0B60FF" : "#8792AF"

@@ -13,15 +13,15 @@ export default function DownloadAppPage({ onNext }: DownloadAppPageProps) {
         از طریق لینک زیر دانلود کنید.
       </p>
       <div className="w-full flex flex-col gap-4 mb-0 lg:mt-8 mt-48 lg:px-8">
-        <button className="w-full py-3 font-bold text-lg text-blue2 rounded-lg border border-blue2">
-          دانلود برنامه
-        </button>
-        <button
-          onClick={onNext}
-          className="w-full py-3 font-bold text-lg bg-blue2 rounded-lg text-white2"
+        <a
+          href='https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2'
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full py-3 font-bold text-lg text-blue2 rounded-lg border border-blue2"
         >
-          ادامه
-        </button>
+          دانلود برنامه
+        </a>
+        <button onClick={onNext} className="w-full py-3 font-bold text-lg bg-blue2 rounded-lg text-white2">ادامه</button>
       </div>
     </div>
   );

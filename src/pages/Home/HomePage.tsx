@@ -135,32 +135,28 @@ function HomePage() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-white1">
       <HeaderFooterLayout>
-        <div className="bg-white1 text-text">
-          <div className="container-style" >
-            <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4">
-              <div className="w-full lg:w-1/2 h-full"><WalletCard isLoading={isLoadingDashboard} walletData={dashboardData?.wallets} /></div>
-              <IdentityCard
-                title="احراز هویت سطح 1"
-                items={["مشخصات فردی", "تصویر مدرک شناسایی"]}
-                accesses={["مشاهده قیمت‌ها", "خرید و فروش رمز ارزها"]}
-                onClick={() => console.log("start identity")}
-              />
-            </div>
-            <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
-              <PosterSlider isLoading={isLoadingDashboard} bannersData={dashboardData?.banner?.banner} />
-              <InvitationCard />
-            </div>
-            <div id="SyncSlider" className="pt-12 pb-12">
-              <SyncSlider boxes={cryptoBoxes} isLoading={isLoading} />
-            </div>
-            <div className="w-full pt-7">
-              <CryptoTable data={Object.values(mergedCryptosData)} isLoading={isLoading} />
-            </div>
-            <div id="qustionBox" className="pt-12">
-              <QuestionBox />
-            </div>
+        <div className="container-style">
+          <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4">
+            <div className="w-full lg:w-1/2 h-full"><WalletCard isLoading={isLoadingDashboard} walletData={dashboardData?.wallets} /></div>
+            <IdentityCard
+              items={["مشخصات فردی", "تصویر مدرک شناسایی"]}
+              accesses={["مشاهده قیمت‌ها", "خرید و فروش رمز ارزها"]}
+            />
+          </div>
+          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
+            <PosterSlider isLoading={isLoadingDashboard} bannersData={dashboardData?.banner?.banner} />
+            <InvitationCard />
+          </div>
+          <div id="SyncSlider" className="pt-12 pb-12">
+            <SyncSlider boxes={cryptoBoxes} isLoading={isLoading} />
+          </div>
+          <div className="w-full pt-7">
+            <CryptoTable data={Object.values(mergedCryptosData)} isLoading={isLoading} />
+          </div>
+          <div id="qustionBox" className="pt-12">
+            <QuestionBox />
           </div>
         </div>
       </HeaderFooterLayout>

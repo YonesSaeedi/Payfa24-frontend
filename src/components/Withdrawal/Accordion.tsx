@@ -12,7 +12,7 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div className="border border-gray-300 rounded-lg bg-gry44">
+    <div className="border border-gray12 rounded-lg lg:text-sm text-xs bg-gry44">
       {/* Header */}
       <button
         type="button"
@@ -22,12 +22,12 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
         
         {isOpen ? (
           <div  className="w-4 h-4 text-gray5">
-             <IconChervDown />
+            <IconChervUp />
           </div>
          
         ) : (
-           <div  className="w-4 h-4 text-gray5">
-             <IconChervUp />
+          <div  className="w-4 h-4 text-gray5">
+             <IconChervDown />
           </div>
         )}
         <span className="font-medium text-black1">{title}</span>

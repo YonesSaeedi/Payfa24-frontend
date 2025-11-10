@@ -10,6 +10,7 @@ import { AxiosError } from "axios";
 
 
 export default function EnterCodePage() {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const { data, refetch } = UseTwoStepVerification();
 
   const type = data?.twofa?.type; // مقدار type برای URL
@@ -19,6 +20,7 @@ export default function EnterCodePage() {
     if (!code || !type) return; // اعتبارسنجی اولیه
 
     try {
+      setIsSubmitting(true)
       const res: any = await apiRequest({
         url: `/account/2fa/verify/google`,
         method: "POST",
@@ -33,7 +35,7 @@ export default function EnterCodePage() {
       const error = err as AxiosError<{ msg?: string }>;
       const errorMsg = error.response?.data?.msg || `خطا در تأیید کد.`;
       toast.error(errorMsg);
-    }
+    } finally { setIsSubmitting(false) }
   };
 
   return (
@@ -41,15 +43,14 @@ export default function EnterCodePage() {
       <p className="lg:text-lg mt-8 text-sm font-normal text-gray5 text-center">
         لطفا کد ارسال شده به Google Authenticator را وارد کنید.
       </p>
-      <div>
-        <OTPModal length={6} onChange={setCode} />
-      </div>
+      <div><OTPModal length={6} onChange={setCode} /></div>
       <div className="w-full flex gap-4 mt-8">
         <button
+          disabled={isSubmitting}
           onClick={onClick}
-          className="w-full py-3 font-bold text-lg bg-blue2 rounded-lg text-white2"
+          className={`w-full py-3 font-bold text-lg rounded-lg text-white2 transition duration-300 ease-in ${isSubmitting || !code ? 'bg-blue-300' : 'bg-blue2'}`}
         >
-          تأیید کد
+          {isSubmitting ? 'در حال ارسال ...' : 'تأیید کد'}
         </button>
       </div>
     </div>

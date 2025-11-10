@@ -151,8 +151,8 @@ export default function DepositPage({
   const handleStart = () => setStarted(true);
 
   const depositFormMessages = [
-    "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید...",
-    "جهت واریز وجه، حتما باید از کارت‌های بانکی به نام خودتان استفاده نمایید.",
+    "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید، چراکه درصورت بروز هرگونه مشکل احتمالی، مسئولیت قضایی ناشی از این امر به عهده کاربر است و ارز هشت مسئولیتی در این زمینه ندارد.",
+    "جهت واریز وجه، حتما باید از کارت‌های بانکی به نام خودتان که در بخش کاربری ثبت و تایید شده است، استفاده نمایید.",
   ];
 
   const DepositWithIdentifierMessages = [
@@ -326,10 +326,10 @@ export default function DepositPage({
               onClick={() => setSelectedOption(option.id)}
             >
               <div
-                className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${
+                className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200  ${
                   selectedOption === option.id
-                    ? "border-blue2"
-                    : "border-gray50"
+                    ? "border border-blue2"
+                    : "border border-gray2"
                 }`}
               >
                 <div>
@@ -373,8 +373,8 @@ export default function DepositPage({
               <div
                 className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${
                   selectedOption === option.id
-                    ? "border-blue2"
-                    : "border-gray50"
+                   ? "border border-blue2"
+                    : "border border-gray2"
                 }`}
               >
                 <div>

@@ -96,11 +96,11 @@ export default function UserAccount() {
   }, []);
 
   const verificationLevel = userData?.verification_level || 0;
-  const showEmailAndName = verificationLevel >= 1;
-  const userName = userData?.name || "احراز هویت نشده";
-  const userMobile = userData?.mobile || "---";
-  const userEmail = userData?.email || "---";
-  const userJoinDate = userData?.join_date ? formatPersianDate(userData.join_date) : "---";
+  // const showEmailAndName = verificationLevel >= 1;
+  // const userName = userData?.name || "احراز هویت نشده";
+  // const userMobile = userData?.mobile || "---";
+  // const userEmail = userData?.email || "---";
+  // const userJoinDate = userData?.join_date ? formatPersianDate(userData.join_date) : "---";
   const userKycLevel = userData?.level_kyc || "none";
   const getInitials = () => {
     const displayName = userData?.name_display || "";
@@ -186,7 +186,7 @@ export default function UserAccount() {
     );
   } else if (userKycLevel === "advanced") {
     kycContent = (
-      <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-gray50 px-5 py-4 rounded-lg">
+      <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-red1 px-5 py-4 rounded-lg">
         <div className="flex justify-between w-full items-center">
           <div>
             <span className="text-base font-medium text-blue2">سطح شما :پیشرفته</span>
@@ -229,25 +229,72 @@ export default function UserAccount() {
               )}
             </div>
             {/* اطلاعات کاربر */}
-            <div className="flex justify-between items-start flex-row-reverse lg:text-lg font-normal text-sm lg:w-[498px] w-full mb-8">
-              <div className="flex flex-col text-end gap-4 text-gray5 w-[140px]">
-               <span>سطح کاربری</span>
-                 <span>نام نمایشی</span>
-                 <span>شماره موبایل</span> 
-                {showEmailAndName && userEmail !== "---" && <span>ایمیل</span>}
-                <span>تاریخ عضویت</span>
-              </div>
-              {/* ستون مقادیر (Values) */}
-              <div className="flex flex-col gap-4 text-black1 flex-1 min-w-0">
-                {/* سطح کاربری (همیشه نمایش داده می‌شود) */}
-                {loading ? <span className="skeleton-bg w-12 h-5 rounded-sm"></span> : <span> {verificationLevel === null ? "احراز هویت نشده" : `سطح ${verificationLevel}`} </span>}
-                {/* نام و نام خانوادگی */}
-                {loading ? <span className="skeleton-bg w-24 h-5 rounded-sm"></span> : showEmailAndName && userName !== "احراز هویت نشده" && <span>{userName}</span>}
-                {/* شماره موبایل */} {loading ? <span className="skeleton-bg w-28 h-5 rounded-sm  "></span> : userMobile !== "---" && <span>{userMobile}</span>}
-                {loading ? <span className="skeleton-bg w-32 h-5 rounded-sm"></span> : showEmailAndName && userEmail !== "---" && <span>{userEmail}</span>}
-                {/* تاریخ عضویت */} {loading ? <span className="skeleton-bg w-36 h-5 rounded-sm  "></span> : userJoinDate !== "---" && <span>{userJoinDate}</span>}
-              </div>
-            </div>
+          {/* اطلاعات کاربر */}
+<div className="flex justify-between items-start flex-row-reverse lg:text-lg font-normal text-sm lg:w-[498px] w-full mb-8">
+  <div className="flex flex-col text-end gap-4 text-gray5 w-[140px]">
+    {userData && (
+      <>
+        <span>سطح کاربری</span>
+
+        {userData.name && userData.name !== "احراز هویت نشده" && (
+          <span>نام نمایشی</span>
+        )}
+
+        {userData.mobile && userData.mobile !== "---" && (
+          <span>شماره موبایل</span>
+        )}
+
+        {userData.email && userData.email !== "---" && <span>ایمیل</span>}
+
+        {userData.join_date && userData.join_date !== "---" && (
+          <span>تاریخ عضویت</span>
+        )}
+      </>
+    )}
+  </div>
+
+  <div className="flex flex-col gap-4 text-black1 flex-1 min-w-0">
+    {loading ? (
+      <>
+        <span className="skeleton-bg w-12 h-5 rounded-sm"></span>
+        <span className="skeleton-bg w-24 h-5 rounded-sm"></span>
+        <span className="skeleton-bg w-28 h-5 rounded-sm"></span>
+        <span className="skeleton-bg w-32 h-5 rounded-sm"></span>
+        <span className="skeleton-bg w-36 h-5 rounded-sm"></span>
+      </>
+    ) : (
+      <>
+        {/* سطح کاربری */}
+        <span>
+          {verificationLevel === null || verificationLevel === 0
+            ? "احراز هویت نشده"
+            : `سطح ${verificationLevel}`}
+        </span>
+
+        {/* نام نمایشی */}
+        {userData?.name && userData.name !== "احراز هویت نشده" && (
+          <span>{userData.name}</span>
+        )}
+
+        {/* شماره موبایل */}
+        {userData?.mobile && userData.mobile !== "---" && (
+          <span>{userData.mobile}</span>
+        )}
+
+        {/* ایمیل */}
+        {userData?.email && userData.email !== "---" && (
+          <span>{userData.email}</span>
+        )}
+
+        {/* تاریخ عضویت */}
+        {userData?.join_date && userData.join_date !== "---" && (
+          <span>{formatPersianDate(userData.join_date)}</span>
+        )}
+      </>
+    )}
+  </div>
+</div>
+
 
             {/* بخش احراز هویت پایین */}
             {kycContent}

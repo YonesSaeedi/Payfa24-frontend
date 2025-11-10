@@ -13,21 +13,18 @@ import { AxiosError } from "axios";
 
 type Props = {
   onNext: () => void;
+  userInfo?: {
+    kyc?: {
+      basic?: {
+        cardbank?: boolean;
+      };
+    };
+  };
 };
 
 type FormValues = {
   CardNumber: string;
 };
-
-interface KycCheckResponse {
-  status: boolean;
-  msg?: string;
-  kyc?: {
-    basic?: {
-      cardbank?: boolean;
-    };
-  };
-}
 
 const schema = yup.object().shape({
   CardNumber: yup
@@ -39,51 +36,37 @@ const schema = yup.object().shape({
 });
 
 const formatCardNumber = (digits: string): string => {
-  if (!digits) return "____-____-____-____";
+  if (!digits) return "____ ____ ____ ____";
   const parts = digits.match(/.{1,4}/g) || [];
   // while (parts.length < 4) parts.push("____");
   return parts.join("-");
 };
 
-export default function StepCard({ onNext }: Props) {
+export default function StepCard({ onNext, userInfo }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { CardNumber: "" },
-    mode: "onChange",
+    mode: "onBlur",
     resolver: yupResolver(schema),
   });
-
+  const watchCardNumber = watch("CardNumber");
+  const watchCardComplete = (watchCardNumber || "").replace(/\D/g, "").length === 16;
   useEffect(() => {
-    const checkCardStatus = async () => {
-      try {
-        const response = await apiRequest<KycCheckResponse>({
-          url: "/kyc/get-info",
-        });
-
-        if (response.kyc?.basic?.cardbank) {
-          console.log("Card already verified. Showing success modal.");
-          setIsModalOpen(true);
-        }
-      } catch (error) {
-        console.error("Error checking card status:", error);
-      }
-    };
-
-    checkCardStatus();
-  }, []);
+    if (userInfo?.kyc?.basic?.cardbank) {
+      setIsModalOpen(true);
+    }
+  }, [userInfo]);
 
   const submitCardMutation = useMutation({
     mutationFn: (data: FormValues) => {
       const payload = { CardNumber: data.CardNumber };
-      return apiRequest<
-        { status: boolean; msg?: string },
-        { CardNumber: string }
-      >({
+      return apiRequest<{ status: boolean; msg?: string }, { CardNumber: string }>({
         url: "/account/credit-card",
         method: "POST",
         data: payload,
@@ -116,15 +99,10 @@ export default function StepCard({ onNext }: Props) {
   return (
     <>
       <div className="w-full">
-        <form
-          className="lg:px-8 px-2 lg:border border-gray26 lg:bg-gray9 lg:rounded-2xl"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className="lg:px-8 px-2 lg:border border-gray26 lg:bg-gray9 lg:rounded-2xl" onSubmit={handleSubmit(onSubmit)}>
           <StepperComponent currentStep={2} />
 
-          <p className="lg:text-lg text-xs lg:mt-14 mt-10 lg:mb-8 mb-5 text-end text-black0">
-            شماره کارت خود را وارد کنید
-          </p>
+          <p className="lg:text-xl text-sm font-medium  mt-10 lg:mb-8 mb-5 text-end text-black0">. شماره کارت خود را وارد کنید</p>
 
           <Controller
             name="CardNumber"
@@ -141,10 +119,7 @@ export default function StepCard({ onNext }: Props) {
                 <TextField
                   label="شماره کارت"
                   type="text"
-                  error={
-                    errors.CardNumber?.message ||
-                    (submitCardMutation.error as any)?.response?.data?.msg
-                  }
+                  error={errors.CardNumber?.message || (submitCardMutation.error as any)?.response?.data?.msg}
                   inputRef={inputRef}
                   value={formatCardNumber(field.value || "")}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,16 +142,14 @@ export default function StepCard({ onNext }: Props) {
                   }}
                   onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
                     e.preventDefault();
-                    const pasted = (e.clipboardData.getData("text") || "")
-                      .replace(/\D/g, "")
-                      .slice(0, 16);
+                    const pasted = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 16);
                     field.onChange(pasted);
                     const input = e.target as HTMLInputElement;
                     input.value = formatCardNumber(pasted);
                   }}
                   placeholder="____-____-____-____"
                   inputMode="numeric"
-                  autoComplete="off"
+                  // autoComplete="off"
                   className="input-card text-center font-mono tracking-widest"
                   labelBgClass="lg:bg-gray9 bg-gray38"
                 />
@@ -188,14 +161,15 @@ export default function StepCard({ onNext }: Props) {
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="lg:w-1/2 w-full h-[40px] lg:h-[56px] border border-blue2 rounded-lg text-black0"
+              className="lg:w-1/2 w-full h-[40px] lg:h-[56px] border border-blue2  lg:text-xl text-base font-medium transition-all rounded-lg text-gray5 hover:bg-blue2 hover:text-white2"
             >
               بعدا انجام میدهم
             </button>
             <button
               type="submit"
-              className="lg:w-1/2 w-full h-[40px] lg:h-[56px] bg-blue1 font-bold text-white2 rounded-lg"
-              disabled={submitCardMutation.isPending}
+              disabled={submitCardMutation.isPending || !watchCardComplete}
+              className={`lg:w-1/2 w-full h-[40px] lg:h-[56px] bg-blue2 lg:text-xl text-base font-bold text-white2 rounded-lg transition-all
+    ${submitCardMutation.isPending || !watchCardComplete ? "opacity-65 cursor-not-allowed" : "opacity-100 hover:bg-blue1"}`}
             >
               {submitCardMutation.isPending ? "در حال تایید..." : "تایید"}
             </button>
@@ -207,34 +181,23 @@ export default function StepCard({ onNext }: Props) {
             <div className="fixed inset-0 bg-black bg-opacity-50 z-45"></div>
             <div
               className="fixed inset-0 flex items-center justify-center z-50"
-              onClick={() => setIsModalOpen(false)}
+              // onClick={() => setIsModalOpen(false)}
             >
-              <div
-                className="rounded-lg lg:p-10 p-4 relative bg-white8"
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className="rounded-lg lg:p-10 p-4 relative bg-white8" onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center flex-col gap-4 justify-between">
                   <div className="w-16 h-16">
                     <img src={verify} alt="verify" />
                   </div>
-                  <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black1">
-                    ! احراز هویت شما باموفقیت انجام شد
-                  </h2>
+                  <h2 className="lg:text-lg text-sm lg:font-bold font-normal text-black1">! احراز هویت شما باموفقیت انجام شد</h2>
                 </div>
                 <div className="w-full mt-14">
                   <Link to={"/kyc-advanced"}>
-                    <button
-                      onClick={handleCloseModal}
-                      className="w-full h-[48px] font-bold bg-blue2 text-white2 rounded-lg"
-                    >
+                    <button onClick={handleCloseModal} className="w-full h-[48px] font-bold bg-blue2 text-white2 rounded-lg">
                       تکمیل فرآیند احراز هویت
                     </button>
                   </Link>
                   <Link to={"/"}>
-                    <button
-                      onClick={handleCloseModal}
-                      className="mt-4 w-full h-[48px] font-bold border border-blue2 text-blue2 rounded-lg"
-                    >
+                    <button onClick={handleCloseModal} className="mt-4 w-full h-[48px] font-bold border border-blue2 text-blue2 rounded-lg">
                       بازگشت به صفحه اصلی
                     </button>
                   </Link>

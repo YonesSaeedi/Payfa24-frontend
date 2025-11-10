@@ -11,7 +11,6 @@ export const ROUTES = {
   USER_ACCOUNT: "/user-account",
   WALLET: "/wallet",
   CHANGE_PASSWORD: "/change-password",
-  VERIFY_GOOGLE: "/verify/google",
   MULTI_FACTOR: "/multi-factor",
   GOOGLE_AUTH_FLOW: "/google-auth-flow",
   CONNECTED_DEVICES: "/connected-devices",

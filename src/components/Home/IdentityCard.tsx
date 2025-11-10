@@ -171,12 +171,9 @@ const IdentityCard: React.FC<IdentityCardProps> = () => {
             </li>
           ))}
         </ul>
-
         <span className="mt-2 font-medium text-gray5">: دسترسی‌ ها </span>
         <ul dir="rtl" className="list-disc list-inside pr-4 text-black1">
-          {accesses.map((a, index) => (
-            <li key={index}>{a}</li>
-          ))}
+          {accesses.map((a, index) => <li key={index}>{a}</li>)}
         </ul>
 
         {showButton && (
