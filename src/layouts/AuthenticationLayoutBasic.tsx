@@ -26,9 +26,9 @@ export default function AuthenticationLayoutBasic({
         {/* سمت چپ */}
         <div
           className={`w-full h-full p-4 flex items-center justify-center ${
-            !started ? "lg:w-1/2 lg:flex hidden" : "lg:w-full flex"
+            !started ? "lg:w-3/4 lg:flex hidden lg:px-12 mb-20" : "lg:w-full flex"
           }`}
-        >
+        > 
           {!started ? (
             <AuthenticationLeft
               step={step}
@@ -44,7 +44,7 @@ export default function AuthenticationLayoutBasic({
         {/* سمت راست */}
         <div
           className={`w-full lg:p-0 p-4 flex items-center justify-center ${
-            !started ? "lg:w-1/2 flex" : "lg:flex hidden"
+            !started ? "lg:w-6/12 flex" : "lg:flex hidden"
           }`}
         >
           <AuthenticationRight step={step} onStart={onStart} />

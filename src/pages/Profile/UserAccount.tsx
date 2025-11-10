@@ -160,7 +160,7 @@ export default function UserAccount() {
       <form className="lg:w-[498px] text-gray15 w-full items-end mb-5 border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 justify-center sm:justify-end">
         <h1 className="text-right text-blue2 font-medium">سطح ۲ : احراز هویت پیشرفته</h1>
         <div className="flex flex-row items-center justify-end mt-5">
-          <span className="mr-2 text-black1">ثبت مدرک شناسایی</span>
+          <span className="mr-2 text-black1 ">ثبت مدرک شناسایی</span>
           <span className="icon-wrapper w-7 h-7 text-blue2">
             <IconCardIdenty />
           </span>
