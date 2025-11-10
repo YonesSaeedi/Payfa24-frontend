@@ -4,7 +4,7 @@ import { apiRequest } from "../utils/apiClient";
 
 interface TwofaType {
   status: boolean;
-  type: string;
+  type: 'sms' | 'email' | 'google';
 }
 interface GoogleType {
   secret: string;

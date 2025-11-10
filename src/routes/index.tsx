@@ -36,6 +36,7 @@ import BankCardsRoute from "../pages/BankCards/BankCardsRoute";
 import TicketsRoute from "../pages/Ticket/TicketsRoute";
 import ProtectedRoute from "./ProtectedRoute";
 
+
 export default function AppRouter() {
   const { isAuthenticated } = useAuth()
 
@@ -49,13 +50,13 @@ export default function AppRouter() {
           <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
           <Route path={ROUTES.FORGOT_PASSWORD_SET_PASSWORD} element={<ForgotPasswordPageSetPasswordPage />} />
           <Route path={ROUTES.CHANGE_PASSWORD} element={<ChangePassword />} />
-          <Route path={ROUTES.GOOGLE_AUTH_FLOW} element={<GoogleAuthFlow />} />
         </Route>
         {/* =================== Protected Routes =================== */}
         <Route path={ROUTES.HOME} element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path={ROUTES.MARKET} element={<ProtectedRoute><MarketPage /></ProtectedRoute>} />
         <Route path={ROUTES.USER_ACCOUNT} element={<ProtectedRoute><UserAccount /></ProtectedRoute>} />
         <Route path={ROUTES.MULTI_FACTOR} element={<ProtectedRoute><MultiFactor /></ProtectedRoute>} />
+        <Route path={ROUTES.GOOGLE_AUTH_FLOW} element={<ProtectedRoute><GoogleAuthFlow /></ProtectedRoute>} />
         <Route path={ROUTES.AUTHENTICATION_BASIC} element={<ProtectedRoute><AuthenticationBasic /></ProtectedRoute>} />
         <Route path={ROUTES.AUTHENTICATION_ADVANCED} element={<ProtectedRoute><AuthenticationAdvance /></ProtectedRoute>} />
         <Route path={ROUTES.ADD_FRIEND} element={<ProtectedRoute><AddFriend /></ProtectedRoute>} />

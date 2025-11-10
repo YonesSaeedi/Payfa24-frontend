@@ -20,7 +20,7 @@ const CreateTicketPage: React.FC = () => {
             <BreadcrumbNavigation />
     <div>
       <div className={`${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} transition`}>
-        <div className="bg-white1">
+        <div>
          <div className="flex flex-col lg:flex-row justify-center items-stretch gap-[40px] lg:gap-[85px] pb-4">
   <div className="order-2 lg:order-2 w-full lg:w-[652px] flex flex-col pb-14">
     <h3 className="text-lg font-semibold text-right  text-black0 pb-12 pt-2">

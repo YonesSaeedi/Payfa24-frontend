@@ -80,7 +80,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="tel"
                 placeholder=""
                 placeholderColor="text-black0"
-                className="!bg-white8 border-gray21 rounded-lg font-normal text-[14px]"
+                className="!bg-white8  hover:border-blue2 rounded-lg font-normal text-[14px]"
                  labelClassName="!bg-white8 !font-normal !text-[14px]"
               
               />
@@ -113,7 +113,7 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
                 type="text"
                 placeholder="درخواست تماس با پشتیبانی درباره..."
                 placeholderColor="text-black0"
-                className="border-gray21  !bg-white8 !rounded-lg !h-[186px]"
+                className=" !bg-white8 !rounded-lg !h-[186px]"
                 labelClassName="!bg-white8 !font-normal !text-[14px]"
               />
             )}

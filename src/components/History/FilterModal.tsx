@@ -6,29 +6,40 @@ interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+interface OptionType {
+  id: number;
+  name: string;
+  value: string;
+}
+
 
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const [openDropdown, setOpenDropdown] = useState<string>("");
-  const [selectedFilters, setSelectedFilters] = useState({
-    status: "",
-    type: "",
-    sort: "",
-  });
+ const [selectedFilters, setSelectedFilters] = useState<{
+  status: OptionType | null;
+  type: OptionType | null;
+  sort: OptionType | null;
+}>({
+  status: null,
+  type: null,
+  sort: null,
+});
+
 
   if (!isOpen) return null;
 
 
-  const handleSelect = (id: string, value: string) => {
-    setSelectedFilters((prev) => ({ ...prev, [id]: value }));
-    setOpenDropdown("");
-  };
+const handleSelect = (id: string, option: OptionType) => {
+  setSelectedFilters((prev) => ({ ...prev, [id]: option }));
+  setOpenDropdown("");
+};
 
-  
-  const handleClearFilters = () => {
-    setSelectedFilters({ status: "", type: "", sort: "" });
-    setOpenDropdown("");
-    onClose();
-  };
+
+const handleClearFilters = () => {
+  setSelectedFilters({ status: null, type: null, sort: null });
+  setOpenDropdown("");
+  onClose();
+};
 
   const handleApplyFilters = () => {
    
@@ -51,37 +62,50 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
           <FilterDropdown
             id="status"
             label="وضعیت"
-            options={["همه", "فعال", "غیرفعال"]}
+         options={[
+    { id: 1, name: "همه", value: "all" },
+    { id: 2, name: "فعال", value: "active" },
+    { id: 3, name: "غیرفعال", value: "inactive" },
+  ]}
             selected={selectedFilters.status}
             isOpen={openDropdown === "status"}
             onToggle={(id) => setOpenDropdown(openDropdown === id ? "" : id)}
             onSelect={handleSelect}
             className="w-full"
-            absolute={false}
+          
           />
 
-          <FilterDropdown
-            id="type"
-            label="نوع تراکنش"
-            options={["همه", "دریافتی", "پرداختی"]}
-            selected={selectedFilters.type}
-            isOpen={openDropdown === "type"}
-            onToggle={(id) => setOpenDropdown(openDropdown === id ? "" : id)}
-            onSelect={handleSelect}
-            className="w-full"
-            absolute={false}
-          />
+         <FilterDropdown
+  id="type"
+  label="نوع تراکنش"
+  options={[
+    { id: 1, name: "همه", value: "all" },
+    { id: 2, name: "دریافتی", value: "received" },
+    { id: 3, name: "پرداختی", value: "paid" },
+  ]}
+  selected={selectedFilters.type}
+  isOpen={openDropdown === "type"}
+  onToggle={(id) => setOpenDropdown(openDropdown === id ? "" : id)}
+  onSelect={handleSelect}
+/>
+
 
           <FilterDropdown
             id="sort"
             label="مرتب سازی بر اساس"
-            options={["جدیدترین", "قدیمی‌ترین", "بیشترین تراکنش", "کمترین تراکنش"]}
+        options={[
+  { id: 1, name: "جدیدترین", value: "newest" },
+  { id: 2, name: "قدیمی‌ترین", value: "oldest" },
+  { id: 3, name: "بیشترین تراکنش", value: "most" },
+  { id: 4, name: "کمترین تراکنش", value: "least" },
+]}
+
             selected={selectedFilters.sort}
             isOpen={openDropdown === "sort"}
             onToggle={(id) => setOpenDropdown(openDropdown === id ? "" : id)}
             onSelect={handleSelect}
             className="w-full"
-            absolute={false}
+     
           />
         </div>
         <div className="flex  gap-2 mt-6">

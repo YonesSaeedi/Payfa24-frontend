@@ -83,35 +83,35 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const [, setLoading] = useState(true);
+ const [loading, setLoading] = useState(true);
 
 
-  const fetchData = async () => {
-    if (!ticket?.id) return;
-    try {
-      const res = await apiRequest<TicketInfoResponse>({
-        url: `/ticket/${ticket.id}/get-info`,
-        method: "GET",
-      });
+const fetchData = async () => {
+  if (!ticket?.id) return;
+  setLoading(true);
+  try {
+    const res = await apiRequest<TicketInfoResponse>({
+      url: `/ticket/${ticket.id}/get-info`,
+      method: "GET",
+    });
 
-      const formattedMessages: Message[] = res.ticket_message.map((m) => ({
-        id: m.id,
-        text: m.message,
-        isUser: m.author === "user",
-        timestamp: m.time,
-        file: m.file,
-      }));
+    const formattedMessages: Message[] = res.ticket_message.map((m) => ({
+      id: m.id,
+      text: m.message,
+      isUser: m.author === "user",
+      timestamp: m.time,
+      file: m.file,
+    }));
 
-      setTicketInfo(res);
-      console.log("📦 پیام‌های تیکت:", res.ticket_message);
+    setTicketInfo(res);
+    setMessages(formattedMessages);
+  } catch (err) {
+    console.error("ticket/get-info:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      setMessages(formattedMessages);
-    } catch (err) {
-      console.error("ticket/get-info:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchFileAsDataUrl = async (fileToken: string) => {
     const filePath = `/image/${fileToken}`;
@@ -276,80 +276,72 @@ if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) {
         >
      
           <div className="relative z-10 flex flex-col gap-4">
-  {ticket ? (
-    messages.map((msg) => (
-      <div
-        key={msg.id}
-        className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}
-      >
-   <div
-  dir="rtl"
-  className={`shadow px-3 w-[379px] relative flex-col ${
-    msg.isUser
-      ? "bg-black4 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-bl-[8px]" 
-      : "bg-gray40 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px]" 
-  }`}
->
-
-
-          {!msg.isUser && (
-            <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
-              <img
-                src={supportAvatar}
-                alt="پشتیبانی"
-                className="w-6 h-6 rounded-full"
-              />
-              <span className="text-xs text-black1">
-                {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
-              </span>
-            </div>
-          )}
-
-          {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
-
-          {/* {msg.file && (
-            <div className="rounded-2xl w-fit p-2 mt-2">
-              <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
-            </div>
-          )} */}
-          {msg.file && (
-  <div className="rounded-2xl w-fit p-2 mt-2">
-    {imageCache[msg.id] ? (
-      <img
-        src={imageCache[msg.id]}
-        alt="attachment"
-        className="rounded-lg border border-gray21 w-[200px] h-[150px] object-cover cursor-pointer"
-        onClick={() => setFullscreenImage(imageCache[msg.id])}
-      />
-    ) : (
-      <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
-    )}
-  </div>
-)}
-
-
-          <span
-            dir="rtl"
-            className="text-[10px] text-gray-400 block mt-4 text-right mb-4"
-          >
-            {msg.timestamp}
-          </span>
+{loading ? (
+  <>
+    {[1, 2, 3].map((i) => (
+      <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+        <div
+          dir="rtl"
+          className="shadow rounded-xl px-3 w-[360px] h-[110px] relative flex-col bg-gray40 text-black1 animate-pulse"
+        >
+          <div className="h-4 w-32 skeleton-bg rounded mt-4 mb-2"></div>
+          <div className="h-4 w-64 skeleton-bg rounded mb-4"></div>
         </div>
       </div>
-    ))
-  ) : (
-   
-    <>
-      {[1, 2].map((i) => (
-        <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
-          <div dir="rtl" className="shadow rounded-xl px-3 w-[360px] h-[110px] relative flex-col bg-gray40 text-black1 animate-pulse">
-            <div className="h-4 w-32 skeleton-bg rounded mt-4 mb-2"></div>
-            <div className="h-4 w-64 skeleton-bg rounded mb-4"></div>
+    ))}
+  </>
+) : (
+  messages.map((msg) => (
+    <div key={msg.id} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
+      <div
+        dir="rtl"
+        className={`shadow px-3 w-[379px] relative flex-col ${
+          msg.isUser
+            ? "bg-black4 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-bl-[8px]"
+            : "bg-gray40 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px]"
+        }`}
+      >
+        {!msg.isUser && (
+          <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
+            <img
+              src={supportAvatar}
+              alt="پشتیبانی"
+              className="w-6 h-6 rounded-full"
+            />
+            <span className="text-xs text-black1">
+              {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
+            </span>
           </div>
-        </div>
-      ))}
-    </>
-  )}
+        )}
+
+        {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
+
+        {msg.file && (
+          <div className="rounded-2xl w-fit p-2 mt-2">
+            {imageCache[msg.id] ? (
+              <img
+                src={imageCache[msg.id]}
+                alt="attachment"
+                className="rounded-lg border border-gray21 w-[200px] h-[150px] object-cover cursor-pointer"
+                onClick={() => setFullscreenImage(imageCache[msg.id])}
+              />
+            ) : (
+              <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
+            )}
+          </div>
+        )}
+
+        <span
+          dir="rtl"
+          className="text-[10px] text-gray-400 block mt-4 text-right mb-4"
+        >
+          {msg.timestamp}
+        </span>
+      </div>
+    </div>
+  ))
+)}
+
 </div>
 
         </div>
