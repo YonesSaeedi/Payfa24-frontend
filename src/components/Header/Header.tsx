@@ -140,7 +140,7 @@ export default function Header() {
             </button>
 
             {showNotifications && (
-              <div className="absolute left-0 top-[calc(100%+0.5rem)] z-50">
+              <div className="absolute -left-8 lg:-left-44 top-[calc(100%+0.7rem)] z-50">
                 <NotificationsDropdown />
               </div>
             )}

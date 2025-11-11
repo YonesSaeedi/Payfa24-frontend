@@ -17,7 +17,7 @@ export default function AuthenticationRightAdvance({ step, onStart }: Props) {
           <h1 className="text-right text-blue2 font-medium">سطح 1 : احراز هویت پایه</h1>
           <div className="bg-green9 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center">
             <span className="lg:text-sm text-xs font-medium">احزار شده</span>
-            <span className="icon-wrapper w-6 h-6 text-green2">
+            <span className="icon-wrapper w-6 h-6 text-green2">  
               <IconIdentyBasic />
             </span>
           </div>
