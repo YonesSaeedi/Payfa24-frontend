@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -9,7 +10,6 @@ import IconConnecteddevices from "../../assets/icons/ProfileMenue/IconConnectedd
 import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransactionhistory";
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconUser from "../../assets/icons/ProfileMenue/IconUser";
-import IconArrowLeft from "../../assets/icons/ProfileMenue/IconArrowLeft";
 import { ROUTES } from "../../routes/routes";
 import { apiRequest } from "../../utils/apiClient";
 import useGetUser from "../../hooks/useGetUser";
@@ -31,7 +31,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
   const { data: userData, isLoading } = useGetUser();
   const [openSecurity, setOpenSecurity] = useState(false);
 
-  const navigate = useNavigate();
+ 
 
   const { data: kycInfo, isLoading: kycLoading } = useQuery({
     queryKey: ["kyc-info"],
@@ -64,7 +64,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       window.location.replace("/login");
     }
   };
-
+ const navigate = useNavigate();
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -92,15 +92,6 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
               <p className="text-xs text-gray-500 pt-1">{isLoading ? "" : `سطح کاربری ${userData?.user.level_account || "—"}`}</p>
             </div>
           </div>
-          <button
-            onClick={() => navigate(ROUTES.AUTHENTICATION_ADVANCED)}
-            className="bg-blue13 text-blue1 px-3 py-2 rounded-lg  transition shadow-md  hover:border-blue2 hover:border font-medium text-sm"
-          >
-            ارتقا سطح
-            <span className="w-5 h-5 icon-wrapper mr-1">
-              <IconArrowLeft />
-            </span>
-          </button>
         </div>
 
         <ul dir="rtl" className="p-4 space-y-3 font-medium">
@@ -144,11 +135,11 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
             onClick={() => {
               if (kycLoading) return; // اگر هنوز لود نشده، کاری نکن
-              if (kycInfo?.kyc?.basic?.cardbank) {
-                navigate(ROUTES.AUTHENTICATION_ADVANCED);
-              } else {
-                navigate(ROUTES.AUTHENTICATION_BASIC);
-              }
+             if (kycInfo?.kyc?.basic?.cardbank) {
+  navigate(ROUTES.AUTHENTICATION_ADVANCED);
+ } else {
+   navigate(ROUTES.AUTHENTICATION_BASIC);
+ }
               setOpen(false); // بستن منو
             }}
           >
@@ -207,7 +198,6 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             className="fixed inset-0 flex items-center justify-center z-50"
             onClick={() => {
               setIsModal(false);
-              console.log("Clicked outside, closing modal");
             }}
           >
             <div className="lg:w-3/12 w-11/12 rounded-lg lg:p-10 p-4 relative bg-white8" onClick={(e) => e.stopPropagation()}>

@@ -1,7 +1,8 @@
+
+import AparatIcon from "../../assets/icons/Footer/aparatIcon";
 import InstagramIcon from "../../assets/icons/Footer/InstagramIcon";
-import LinkdinIcon from "../../assets/icons/Footer/LinkdinIcon";
 import TelegramIcon from "../../assets/icons/Footer/TelegramIcon";
-import YoutubeIcon from "../../assets/icons/Footer/YoutubeIcon";
+
 
 interface SocialLink {
   icon: React.JSX.Element;
@@ -22,23 +23,15 @@ export default function SocialLinks({
           <InstagramIcon />
         </span>
       ),
-      href: "https://www.instagram.com/yourusername",
-    },
-    {
-      icon: (
-        <span className="w-[18px] h-[18px]">
-          <LinkdinIcon />
-        </span>
-      ),
-      href: "https://www.linkedin.com/in/yourusername",
+      href: "https://www.instagram.com/payfa24",
     },
     {
       icon: (
         <span className="w-[22px] h-[22px]">
-          <YoutubeIcon />
+          <AparatIcon />
         </span>
       ),
-      href: "https://www.youtube.com/channel/yourchannel",
+      href: "https://www.aparat.com/PAYFA24",
     },
     {
       icon: (
@@ -46,21 +39,22 @@ export default function SocialLinks({
           <TelegramIcon />
         </span>
       ),
-      href:"https://t.me/yourusername",
+      href: "https://t.me/payfa24",
     },
   ];
 
   return (
     <div className="flex gap-4">
       {socialLinks.map(({ icon, href }, i) => (
-      <a
-  key={i}
-  href={href}
-  className={`w-10 h-10 flex items-center justify-center rounded-full border ${borderColor} transition transform hover:shadow-lg hover:scale-110`}
->
-  {icon}
-</a>
-
+        <a
+          key={i}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`w-10 h-10 flex items-center justify-center rounded-full border ${borderColor} transition transform hover:shadow-lg hover:scale-110`}
+        >
+          {icon}
+        </a>
       ))}
     </div>
   );

@@ -97,12 +97,12 @@ export default function Header() {
             />
           </div>
 
-          <button
+          <div
             className="hidden hover:text-blue2 transition lg:flex items-center justify-center w-8 h-8"
             aria-label="Profile"
           >
             <VectorIcon />
-          </button>
+          </div>
 
           <button
             className="hover:text-blue2 transition hidden lg:flex items-center justify-center w-7 h-7"

@@ -16,6 +16,7 @@ export const ROUTES = {
   CONNECTED_DEVICES: "/connected-devices",
   FAQ: "/faq",
   BANK_CARDS: "/bank-cards",
+  BANK_CARDS_EMPTY: "/bank-cards/empty",
   WITHDRAWAL_FIAT: "/withdraw/fiat",
   WITHDRAWAL_CRYPTO: "/withdraw/crypto",
   MARKET_VIEW: '/market-view',

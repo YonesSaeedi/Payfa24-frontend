@@ -27,23 +27,28 @@ interface CryptoTransaction {
   code?: string;
 }
 
+
 const CryptoPage: React.FC = () => {
   const [responseData, setResponseData] = useState<TypeCryptoHistory[]>([]);
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
   const [selectedFilterFor, setSelectedFilterFor] = useState(filterForOptions[0]);
   const [selectedFilterType, setSelectedFilterType] = useState(typeOptions[0]);
+
+// // آرایه فیلدها برای مودال
+// const filterFields = [
+//   { id: "type", label: "نوع تراکنش", options: typeOptions },
+//   { id: "status", label: "وضعیت", options: statusOptions },
+//   { id: "filterFor", label: "محدوده", options: filterForOptions },
+// ];
+
   const [searchText, setSearchText] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [selectedTx, setSelectedTx] = useState<TransactionDetail | null>(null);
-
   const [totalPages, setTotalPages] = useState<number>(1);
-
   const { data: generalData } = useGetGeneralInfo();
-
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
   const mappedGeneralData: CryptoDataMap = useMemo(() => {
     return (
       generalData?.cryptocurrency?.reduce((acc, item) => {
@@ -114,25 +119,49 @@ const CryptoPage: React.FC = () => {
     );
   }, [mergedTransactions, searchText]);
 
-  const handleOpenModal = (tx: MergedCryptoHistory) => {
-    const coinData = mappedGeneralData[tx.coin.symbol];
+  // const handleOpenModal = (tx: MergedCryptoHistory) => {
+  //   const coinData = mappedGeneralData[tx.coin.symbol];
 
-    const cryptoTx: CryptoDetail = {
-      id: tx.id.toString(),
-      source: "crypto",
-      date: tx.DateTime,
-      amount: tx.amount.toString(),
-      symbol: tx.coin.symbol,
-      description: tx.description,
-      status: tx.status,
-      type: tx.type,
-      fee: tx.fee,
-      faName: coinData?.locale?.fa?.name || tx.coin.name,
-      image: coinData?.icon ? `https://api.payfa24.org/images/currency/${coinData.icon}` : "/images/fallback-coin.png",
-    };
+  //   const cryptoTx: CryptoDetail = {
+  //     id: tx.id.toString(),
+  //     source: "crypto",
+  //     date: tx.DateTime,
+  //     amount: tx.amount.toString(),
+  //     symbol: tx.coin.symbol,
+  //     description: tx.description,
+  //     status: tx.status,
+  //     type: tx.type,
+  //     fee: tx.fee,
+  //     faName: coinData?.locale?.fa?.name || tx.coin.name,
+  //     image: coinData?.icon ? `https://api.payfa24.org/images/currency/${coinData.icon}` : "/images/fallback-coin.png",
+  //   };
 
-    setSelectedTx(cryptoTx);
+  //   setSelectedTx(cryptoTx);
+  // };
+ const handleOpenModal = (tx: MergedCryptoHistory) => {
+  const coinData = mappedGeneralData[tx.coin.symbol]; // داده عمومی ارز
+
+  const cryptoTx: CryptoDetail = {
+    id: tx.id.toString(),
+    source: "crypto",
+    date: tx.DateTime,
+    amount: tx.amount?.toString() ?? "0",
+    symbol: tx.coin.symbol,
+    description: tx.description,
+    status: tx.status,
+    type: tx.type,
+    fee: tx.fee,
+    faName: coinData?.locale?.fa?.name ?? tx.coin.symbol, // نام فارسی یا fallback
+    image: coinData?.icon
+      ? `https://api.payfa24.org/images/currency/${coinData.icon}` // آدرس درست
+      : "/images/fallback-coin.png", // fallback
   };
+
+  setSelectedTx(cryptoTx);
+};
+
+
+
   const convertDigitsToPersian = (str: string) => {
     return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
   };
@@ -214,13 +243,12 @@ const CryptoPage: React.FC = () => {
                         <i className={`cf cf-${tx.coin.symbol?.toLowerCase()}  w-10 h-10 size-10 text-[35px]`} style={{ color: tx.color ?? "" }} />
                       ) : (
                         <img
-                          src={`https://api.payfa24.org/images/currency/${tx.icon}`}
-                          className="w-full h-full"
-                          alt={tx.coin.symbol}
-                          onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = "/images/fallback-coin.png";
-                          }}
-                        />
+  src={mappedGeneralData[tx.coin.symbol]?.icon
+    ? `https://api.payfa24.org/images/currency/${mappedGeneralData[tx.coin.symbol].icon}`
+    : "/images/fallback-coin.png"}
+  alt={tx.coin.symbol}
+/>
+
                       )}
                     </span>
                     <div className="flex flex-col gap-1 text-right">
