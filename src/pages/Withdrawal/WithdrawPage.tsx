@@ -39,9 +39,9 @@ const WithdrawPage: React.FC = () => {
           <div className="container-style flex flex-col gap-8 lg:gap-12 pt-6">
             <BreadcrumbNavigation />
 
-            <div className="bg-white1 rounded-[16px] lg:shadow-[0_0_12px_0_#00000029] p-6 flex flex-col flex-col-reverse lg:flex-row pt-8 mb-9">
+            <div className="bg-white1 rounded-[16px] lg:shadow-[0_0_12px_0_#00000029] lg:p-6 flex flex-col flex-col-reverse lg:flex-row lg:pt-8 mb-9">
               {/* فرم اصلی */}
-              <div className="flex-1 lg:p-8 pt-8 ">
+              <div className="flex-1 lg:p-8 lg:pt-8 ">
                 {withdrawType === "fiat" ? (
                   <div>
                     <WithdrawForm />
@@ -94,7 +94,7 @@ const WithdrawPage: React.FC = () => {
               </div>
 
               {/* بخش سمت راست */}
-              <div className="lg:flex-1 flex flex-col gap-6  p-8 ">
+              <div className="lg:flex-1 flex flex-col gap-6   p-8 ">
        
                 {/* انتخاب نوع برداشت */}
              {/* انتخاب نوع برداشت */}

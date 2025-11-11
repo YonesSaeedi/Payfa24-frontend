@@ -144,14 +144,11 @@ const WalletAssets: React.FC = () => {
   const formatNumber = (num: number, decimals = 8) => {
     return formatPersianDigits(Number(num.toFixed(decimals)).toString());
   };
-  const formatSmallNumber = (num: number, decimals = 8) => {
-    const str = num < 0.0001 ? num.toFixed(decimals) : num.toString();
-    return formatPersianDigits(str);
-  };
+  
 
   return (
     <div className="flex flex-col gap-6">
-      <div dir="rtl" className="p-4 bg-white1 rounded-xl border border-gray21 w-full overflow-visible">
+      <div dir="rtl" className="p-4 bg-white1 rounded-xl lg:border border-gray21 w-full overflow-visible">
         <div className="flex items-center justify-between mb-3">
           <div className="relative w-1/2">
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
@@ -242,7 +239,7 @@ const WalletAssets: React.FC = () => {
                 cryptoData.map((item, index) => (
                   <div
                     key={index}
-                    className="border-b grid grid-cols-2 lg:grid-cols-5 border border-gray21 rounded-lg lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 lg:last:border-b-0 mb-2 lg:m-0"
+                    className="border-b grid grid-cols-2 lg:grid-cols-5 border border-gray21 rounded-md lg:rounded-none lg:border-t-0 lg:border-x-0 lg:border-b-gray21 hover:bg-gray41 lg:last:border-b-0 mb-2 lg:m-0"
                   >
                     <div className="px-4 py-3 flex items-center gap-2 whitespace-nowrap min-w-0">
                       {item.icon}
@@ -255,7 +252,15 @@ const WalletAssets: React.FC = () => {
                       </div>
                     </div>
 
-                    <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">{formatSmallNumber(item.price, 6)} USDT</span>
+              <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
+  {
+    item.price < 0.0001
+      ? parseFloat(item.price.toFixed(5))
+      : parseFloat(item.price.toFixed(2))
+  }  USDT
+</span>
+
+
                     <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
                       {formatPersianDigits(item.fee_toman.toLocaleString())}
                     </span>
