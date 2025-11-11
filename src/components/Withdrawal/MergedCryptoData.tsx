@@ -1,32 +1,16 @@
-// 📁 hooks/useMergedCryptoList.ts
-import { useQuery } from "@tanstack/react-query"
-import { apiRequest } from "../../utils/apiClient"
+
 import { CryptoItem } from "../../types/crypto"
 import useGetCryptoData from "../../hooks/useGetCryptoData"
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo"
+import useGetCryptoWithdraw from "../../hooks/useGetCryptoWithdraw"
 
-interface WithdrawResponse {
-  coins?: {
-    id: number
-    symbol: string
-    balance: string
-    balance_available: string
-    network: { id: number; withdraw_min: string }[]
-  }[]
-}
+
 
 const useMergedCryptoList = () => {
   const generalInfo = useGetGeneralInfo()
   const cryptoData = useGetCryptoData()
-
-  const withdrawQuery = useQuery<WithdrawResponse, Error>({
-    queryKey: ["wallets-withdraw"],
-    queryFn: () => apiRequest({ url: "/wallets/crypto/withdraw" }),
-    staleTime: 60_000,
-    gcTime: 5 * 60_000,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  })
+   const withdrawQuery = useGetCryptoWithdraw()
+  
 
   const isLoading =
     generalInfo.isLoading || cryptoData.isLoading || withdrawQuery.isLoading

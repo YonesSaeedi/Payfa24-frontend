@@ -15,7 +15,8 @@ import { apiRequest } from "../../utils/apiClient";
 import useGetUser from "../../hooks/useGetUser";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import FrameActiveIcon from "../../assets/icons/header/FrameActiveIcon";
-import { useQuery } from "@tanstack/react-query";
+import useGetKYCInfo from "../../hooks/useGetKYCInfo";
+
 
 interface ProfileMenuProps {
   themeContext: {
@@ -31,17 +32,10 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
   const { data: userData, isLoading } = useGetUser();
   const [openSecurity, setOpenSecurity] = useState(false);
 
- 
+  const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
 
-  const { data: kycInfo, isLoading: kycLoading } = useQuery({
-    queryKey: ["kyc-info"],
-    queryFn: () =>
-      apiRequest<{ kyc: { basic?: { cardbank?: boolean } } }>({
-        url: "/kyc/get-info",
-      }),
-    staleTime: 1000 * 60,
-    retry: 1,
-  });
+
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -112,7 +106,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
                 تنظیمات امنیت
               </div>
 
-              {/* 🔽 آیکن فلش (خودت import کن) */}
+              
 
               <span className={`w-5 h-5 transition-transform duration-300 ${openSecurity ? "rotate-180" : "rotate-0"}`}>
                 <IconChervDown />
@@ -134,13 +128,13 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
           <li
             className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
             onClick={() => {
-              if (kycLoading) return; // اگر هنوز لود نشده، کاری نکن
+              if (kycLoading) return; 
              if (kycInfo?.kyc?.basic?.cardbank) {
-  navigate(ROUTES.AUTHENTICATION_ADVANCED);
- } else {
-   navigate(ROUTES.AUTHENTICATION_BASIC);
- }
-              setOpen(false); // بستن منو
+             navigate(ROUTES.AUTHENTICATION_ADVANCED);
+                } else {
+            navigate(ROUTES.AUTHENTICATION_BASIC);
+                }
+              setOpen(false);
             }}
           >
             <span className="w-6 h-6">

@@ -6,13 +6,14 @@ import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon
 import { useNavigate } from "react-router";
 import IdentyfyCardIcon from "../../assets/icons/Home/IdentyfyCardIcon/identyfyCardIcon";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
+import IconIdentyBasic from "../../assets/icons/authentication/IconIdentyBasic";
 
 
 
 const IdentityCard: React.FC = () => {
   const navigate = useNavigate();
 
-  // ✅ استفاده از هوک سفارشی
+
   const { data: kycInfo, isLoading } = useGetKYCInfo();
 
   if (isLoading) {
@@ -62,10 +63,24 @@ const IdentityCard: React.FC = () => {
 
   return (
     <div className="border rounded-xl p-6 flex flex-col lg:flex-row items-right lg:justify-between border-gray21 shadow">
-      <div className="hidden rounded-lg lg:flex items-center justify-center ">
-        <img src={ValidationlightIcon} className="block dark:hidden" />
-        <img src={ValidationDarkIcon} className="hidden dark:block" />
-      </div>
+      
+  <div className="hidden rounded-lg lg:flex flex-col items-start justify-center">
+  {/* 🔹 باکس وضعیت احراز هویت کامل بالا سمت چپ */}
+  {level === "advanced" && (
+    <div className="bg-green9 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center mb-2">
+      <span className="lg:text-sm text-xs font-medium">احراز شده</span>
+      <span className="icon-wrapper w-6 h-6 text-green2">  
+         <IconIdentyBasic /> 
+      </span>
+    </div>
+  )}
+
+  {/* تصویر */}
+  <img src={ValidationlightIcon} className="block dark:hidden" />
+  <img src={ValidationDarkIcon} className="hidden dark:block" />
+</div>
+
+
 
       <div className="lg:w-1/2 flex flex-col gap-2 text-right">
         <h2 className="text-xl font-semibold text-blue2 pb-4">{title}</h2>

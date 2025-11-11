@@ -18,8 +18,8 @@ import IconTicket from "../../assets/icons/services/IconTicket";
 import IconNotification from "../../assets/icons/services/IconNotification";
 import IconUserPlus from "../../assets/icons/services/IconUserPlus";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
-import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "../../utils/apiClient";
+import useGetKYCInfo from "../../hooks/useGetKYCInfo";
+
 
 
 
@@ -37,6 +37,7 @@ interface ServicesBoxProps {
 const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+ const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
 
   useEffect(() => {
     setIsVisible(true);
@@ -52,22 +53,14 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   const handleItemClick = (item: ServiceItem) => {
     setIsVisible(false);
     setTimeout(() => {
-      onClose(); // بستن مودال
+      onClose(); 
       if (item.route && item.route !== location.pathname) {
-        navigate(item.route); // تغییر مسیر فقط اگر متفاوت بود
+        navigate(item.route); 
       }
     }, 300);
   };
 
-  const { data: kycInfo, isLoading: kycLoading } = useQuery({
-    queryKey: ["kyc-info"],
-    queryFn: () =>
-      apiRequest<{ kyc: { basic?: { cardbank?: boolean } } }>({
-        url: "/kyc/get-info",
-      }),
-    staleTime: 1000 * 60,
-    retry: 1,
-  });
+ 
   const financeItems: ServiceItem[] = [
     { label: "خرید", icon: <ReceivedIcon />, route: ROUTES.TRADE.BUY },
     { label: "فروش", icon: <SendIcon />, route: ROUTES.TRADE.SELL },
@@ -118,13 +111,13 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
       label: "احراز هویت",
       icon: <IconPersonalCard />,
       onClick: () => {
-        if (kycLoading) return; // در حال لود شدن، کاری نکن
+        if (kycLoading) return; 
         if (kycInfo?.kyc?.basic?.cardbank) {
-          navigate("/kyc-advanced"); // اگر KYC کامل شده
+          navigate("/kyc-advanced"); 
         } else {
-          navigate("/kyc-basic"); // اگر هنوز کامل نشده
+          navigate("/kyc-basic"); 
         }
-        onClose(); // بستن مودال
+        onClose(); 
       },
     },
     {

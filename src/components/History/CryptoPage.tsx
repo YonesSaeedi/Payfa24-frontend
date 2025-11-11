@@ -119,27 +119,9 @@ const CryptoPage: React.FC = () => {
     );
   }, [mergedTransactions, searchText]);
 
-  // const handleOpenModal = (tx: MergedCryptoHistory) => {
-  //   const coinData = mappedGeneralData[tx.coin.symbol];
 
-  //   const cryptoTx: CryptoDetail = {
-  //     id: tx.id.toString(),
-  //     source: "crypto",
-  //     date: tx.DateTime,
-  //     amount: tx.amount.toString(),
-  //     symbol: tx.coin.symbol,
-  //     description: tx.description,
-  //     status: tx.status,
-  //     type: tx.type,
-  //     fee: tx.fee,
-  //     faName: coinData?.locale?.fa?.name || tx.coin.name,
-  //     image: coinData?.icon ? `https://api.payfa24.org/images/currency/${coinData.icon}` : "/images/fallback-coin.png",
-  //   };
-
-  //   setSelectedTx(cryptoTx);
-  // };
- const handleOpenModal = (tx: MergedCryptoHistory) => {
-  const coinData = mappedGeneralData[tx.coin.symbol]; // داده عمومی ارز
+const handleOpenModal = (tx: MergedCryptoHistory) => {
+  const coinData = mappedGeneralData[tx.coin.symbol];
 
   const cryptoTx: CryptoDetail = {
     id: tx.id.toString(),
@@ -151,10 +133,10 @@ const CryptoPage: React.FC = () => {
     status: tx.status,
     type: tx.type,
     fee: tx.fee,
-    faName: coinData?.locale?.fa?.name ?? tx.coin.symbol, // نام فارسی یا fallback
-    image: coinData?.icon
-      ? `https://api.payfa24.org/images/currency/${coinData.icon}` // آدرس درست
-      : "/images/fallback-coin.png", // fallback
+    faName: coinData?.locale?.fa?.name ?? tx.coin.symbol,
+    image: tx.icon
+      ? `https://api.payfa24.org/images/currency/${tx.icon}`
+      : "/images/fallback-coin.png",
   };
 
   setSelectedTx(cryptoTx);

@@ -59,12 +59,12 @@ export default function MobileMenu({
         />
       )}
 
-      <div
-        className={`fixed top-0 right-0 h-full z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
-        dir="rtl"
-      >
+    <div
+  className={`fixed top-0 right-0 h-full  ${
+    open ? "translate-x-0" : "translate-x-full" } max-h-screen z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 overflow-y-auto`}
+  dir="rtl"
+>
+
         <div
           dir="rtl"
           className=" py-4 px-3 flex-col items-center justify-between border shadow-md m-4 rounded-[20px] mt-8"

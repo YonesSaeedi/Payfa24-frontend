@@ -35,7 +35,7 @@ import useAuth from "../hooks/useAuth";
 import BankCardManager from "../pages/BankCards/BankCardsManager";
 import TicketsRoute from "../pages/Ticket/TicketsRoute";
 import ProtectedRoute from "./ProtectedRoute";
-import BankCardsPage from "../pages/BankCards/BankcardsPage";
+
 
 
 export default function AppRouter() {
@@ -76,7 +76,6 @@ export default function AppRouter() {
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
           <Route path={ROUTES.TRADE.SELL} element={<Sell />} />
         </Route>
-        <Route path={ROUTES.BANK_CARDS_EMPTY} element={<ProtectedRoute><BankCardsPage /></ProtectedRoute>} />
         <Route path={ROUTES.TRANSACTION.ROOT} element={<ProtectedRoute><TransactionLayout /></ProtectedRoute>}>
           <Route index element={<CryptoPage />} />
           <Route path={ROUTES.TRANSACTION.CRYPTO_HISTORY} element={<CryptoPage />} />
