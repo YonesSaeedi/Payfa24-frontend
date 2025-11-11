@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import StatusBadge from "../UI/Button/StatusBadge";
-
 import Pagination from "./Pagination";
 import TransactionModal, { TransactionDetail } from "./TransactionModal";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
@@ -121,17 +120,19 @@ const OrderPage: React.FC = () => {
 
   // باز کردن مودال جزئیات
   const handleOpenModal = (tx: MergedOrderHistory) => {
-    setSelectedTx({
-      ...selectedTx,
-      id: tx.id.toString(),
-      source: "order",
-      faName: tx.locale?.fa?.name || tx.name,
-      image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : undefined,
-      date: tx.dateTime || tx.dateTime, 
-      amount: tx.amount.toString(),
-      amountCoin: tx.amount_coin.toString(),
-      fee: tx.fee.toString(),
-    });
+   setSelectedTx({
+  ...selectedTx,
+  id: tx.id.toString(),
+  source: "order",
+  faName: tx.locale?.fa?.name || tx.name,
+  image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : undefined,
+  date: tx.dateTime || tx.dateTime,
+  amount: tx.amount.toString(),
+  amountCoin: tx.amount_coin.toString(),
+  fee: tx.fee.toString(),
+  symbol: tx.symbol ?? undefined, 
+});
+
   };
   const convertDigitsToPersian = (str: string) => {
     return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);

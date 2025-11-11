@@ -253,7 +253,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
             </div>
           </td>
 
-          <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{item.fee ? `${formatPersianDigits(item.fee)} USDT` : "۰ تومان"}</td>
+          <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">USDT {item?.fee}</td>
           <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianDigits(priceBuy)} تومان</td>
           <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianDigits(priceSell)} تومان</td>
           <td className="py-3 px-4 hidden lg:table-cell text-center font-normal text-base">
@@ -306,9 +306,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
                             src={`https://api.payfa24.org/images/currency/${item.icon}`}
                             className="w-8 h-8 rounded-full"
                             alt={symbol}
-                            onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src = "/images/fallback-coin.png";
-                            }}
+                           
                           />
                         )}
                       </span>

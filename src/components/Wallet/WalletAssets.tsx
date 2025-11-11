@@ -144,10 +144,7 @@ const WalletAssets: React.FC = () => {
   const formatNumber = (num: number, decimals = 8) => {
     return formatPersianDigits(Number(num.toFixed(decimals)).toString());
   };
-  const formatSmallNumber = (num: number, decimals = 8) => {
-    const str = num < 0.0001 ? num.toFixed(decimals) : num.toString();
-    return formatPersianDigits(str);
-  };
+  
 
   return (
     <div className="flex flex-col gap-6">
@@ -255,7 +252,15 @@ const WalletAssets: React.FC = () => {
                       </div>
                     </div>
 
-                    <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">{formatSmallNumber(item.price, 6)} USDT</span>
+              <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
+  {
+    item.price < 0.0001
+      ? parseFloat(item.price.toFixed(5))
+      : parseFloat(item.price.toFixed(2))
+  }  USDT
+</span>
+
+
                     <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
                       {formatPersianDigits(item.fee_toman.toLocaleString())}
                     </span>

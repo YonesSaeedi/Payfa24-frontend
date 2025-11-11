@@ -133,6 +133,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
     status: tx.status,
     type: tx.type,
     fee: tx.fee,
+  
     faName: coinData?.locale?.fa?.name ?? tx.coin.symbol,
     image: tx.icon
       ? `https://api.payfa24.org/images/currency/${tx.icon}`
