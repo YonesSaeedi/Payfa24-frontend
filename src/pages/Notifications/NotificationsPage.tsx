@@ -1,4 +1,4 @@
-import  { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import IconRingNotif from "../../assets/icons/Notifications/IconRingNotif";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import { apiRequest } from "../../utils/apiClient";
@@ -32,7 +32,6 @@ export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
     return date.toLocaleString("fa-IR", {
@@ -63,16 +62,9 @@ export default function NotificationsPage() {
   const handleNotificationClick = async (item: NotificationItem) => {
     try {
       if (item.seen === "unseen") {
-        await apiRequest({
-          url: `/notifications/seen/${item.id}`,
-          method: "PUT",
-        });
-
-        setNotifications((prev) =>
-          prev.map((n) => (n.id === item.id ? { ...n, seen: "seen" } : n))
-        );
+        await apiRequest({ url: `/notifications/seen/${item.id}`, method: "PUT", });
+        setNotifications((prev) => prev.map((n) => (n.id === item.id ? { ...n, seen: "seen" } : n)));
       }
-
       // navigation based on keyword
       switch (item.keyword) {
         case "user-level": navigate("/authentication"); break;
@@ -117,62 +109,53 @@ export default function NotificationsPage() {
       <HeaderLayout>
         <div className="w-full container-style">
           <div className="flex justify-between h-16 items-center px-6">
-            <div className="text-blue2 flex items-center cursor-pointer" onClick={handleSeenAll}>
-              <span className="w-5 h-5 mr-1"><IconRingNotif /></span>
-              خواندن همه
-            </div>
-            <p className="text-black1 text-base font-medium">اعلانات</p>
+            <div className="text-blue2 flex items-center cursor-pointer" onClick={handleSeenAll}><span className="w-5 h-5 mr-1"><IconRingNotif /></span>خواندن همه</div>
+            <h4 className="text-black1 text-base font-medium">اعلانات</h4>
           </div>
-
           <div className="flex text-sm justify-end pr-6">
             <div className="flex gap-6">
-              {["all", "news", "activities"].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={`py-3 text-center ${tab === t ? "border-b-2 border-blue2 font-medium text-blue2" : "text-gray-500"}`}
-                >
+              {["all", "news", "activities"].map((t) =>
+                <button key={t} onClick={() => setTab(t)} className={`py-3 text-center ${tab === t ? "border-b-2 border-blue2 font-medium text-blue2" : "text-gray-500"}`}>
                   {t === "all" ? "همه" : t === "news" ? "اعلانات و اخبار" : "فعالیت‌ها"}
                 </button>
-              ))}
+              )}
             </div>
           </div>
-
           {/* Notifications */}
           <div className="divide-y">
-            {loading ? (
+            {loading ?
               // Skeleton هنگام لود
               <div className="space-y-3 px-6 py-4">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="skeleton-bg h-6 w-full"></div>
+                  <div key={i} className="skeleton-bg h-6 w-full rounded"></div>
                 ))}
               </div>
-            ) : filteredNotifications.length > 0 ? (
-              filteredNotifications.map((item) => (
-                <div
-                  key={item.id}
-                  className="px-6 py-4 text-right text-sm border-b border-b-gray19 cursor-pointer"
-                  onClick={() => handleNotificationClick(item)}
-                >
-                  <div className="flex justify-between">
-                    <div className="flex items-center justify-end gap-2 text-gray-400 text-xs mb-1">
-                      <span>{formatTime(item.time)}</span>
+              : filteredNotifications.length > 0 ? (
+                filteredNotifications.map((item) => (
+                  <div
+                    key={item.id}
+                    className="px-6 py-4 text-right text-sm border-b border-b-gray19 cursor-pointer"
+                    onClick={() => handleNotificationClick(item)}
+                  >
+                    <div className="flex justify-between">
+                      <div className="flex items-center justify-end gap-2 text-gray-400 text-xs mb-1">
+                        <span>{formatTime(item.time)}</span>
+                      </div>
+                      <div className="flex font-medium text-black1 mb-1 justify-start items-center gap-2">
+                        <span>{item.title}</span>
+                        {item.seen === "unseen" && <div className="w-[6px] h-[6px] bg-blue2 rounded-full"></div>}
+                      </div>
                     </div>
-                    <div className="flex font-medium text-black1 mb-1 justify-start items-center gap-2">
-                      <span>{item.title}</span>
-                      {item.seen === "unseen" && <div className="w-[6px] h-[6px] bg-blue2 rounded-full"></div>}
-                    </div>
+                    {item.message && (
+                      <div className="text-gray24 font-sm text-xs leading-relaxed pt-2">{item.message.fa}</div>
+                    )}
                   </div>
-                  {item.message && (
-                    <div className="text-gray24 font-sm text-xs leading-relaxed pt-2">{item.message.fa}</div>
-                  )}
+                ))
+              ) : (
+                <div className="text-center text-gray-400 py-4 text-sm">
+                  اعلانی وجود ندارد
                 </div>
-              ))
-            ) : (
-              <div className="text-center text-gray-400 py-4 text-sm">
-                اعلانی وجود ندارد
-              </div>
-            )}
+              )}
           </div>
         </div>
       </HeaderLayout>

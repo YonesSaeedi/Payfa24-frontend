@@ -1,11 +1,10 @@
-import  { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import IconCircle from "../../assets/icons/Notifications/IconCircle";
 import { apiRequest } from "../../utils/apiClient";
 import { useNavigate } from "react-router";
 import IconRead from "../../assets/icons/Notifications/IconRead";
-
-
-
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 interface NotificationItem {
   id: number;
@@ -35,7 +34,6 @@ export default function NotificationsDropdown() {
   const [tab, setTab] = useState("all");
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
-
   // فرمت زمان هنگام fetch
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -47,7 +45,6 @@ export default function NotificationsDropdown() {
       minute: "2-digit",
     });
   };
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -60,25 +57,15 @@ export default function NotificationsDropdown() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  useEffect(() => { fetchData(); }, []);
   const handleNotificationClick = async (item: NotificationItem) => {
     try {
       if (item.seen === "unseen") {
-        await apiRequest({
-          url: `/notifications/seen/${item.id}`,
-          method: "PUT",
-        });
+        await apiRequest({ url: `/notifications/seen/${item.id}`, method: "PUT", });
         setNotifications((prev) => prev.filter((n) => n.id !== item.id));
       }
-    } catch (error) {
-      console.error("Error marking notification as seen:", error);
-    }
+    } catch (error) { toast.error((error as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت اعلان به عنوان "خوانده شده" مشکلی پیش آمد.') }
   };
-
   const filteredNotifications = useMemo(() => {
     if (!notifications.length) return [];
     return notifications.filter((item) => {
@@ -93,66 +80,52 @@ export default function NotificationsDropdown() {
     <div className="w-[500px] rounded-2xl shadow-lg bg-white8">
       {/* Header */}
       <div className="flex justify-between bg-gray33 h-14 items-center p-6">
-        <div className="text-blue2 flex items-center cursor-pointer">
-          <span className="w-6 h-6 icon-wrapper mr-1">
-            <IconRead/>
-          </span>
-          خواندن همه
-        </div>
-        <p className="text-black1 text-[18px] font-medium">اعلانات</p>
+        <div className="text-blue2 flex items-center cursor-pointer"><span className="w-6 h-6 icon-wrapper mr-1"><IconRead /></span>خواندن همه</div>
+        <h4 className="text-black1 text-[18px] font-medium">اعلانات</h4>
       </div>
-
       {/* Tabs */}
       <div className="flex text-sm">
-        {["all", "news", "activities"].map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`flex-1 py-2 text-center text-sm font-normal ${tab === t ? "border-b-2 border-blue2 font-medium text-blue2" : "text-gray-500"}`}
-          >
+        {["all", "news", "activities"].map((t) =>
+          <button key={t} onClick={() => setTab(t)} className={`flex-1 py-2 text-sm font-normal ${tab === t ? "border-b-2 border-blue2 font-medium text-blue2" : "text-gray-500"}`}>
             {t === "all" ? "همه" : t === "news" ? "اعلانات و اخبار" : "فعالیت‌ها"}
           </button>
-        ))}
+        )}
       </div>
-
       {/* Notifications */}
       <div className="divide-y px-4 py-3">
-        {loading ? (
-          <div className="space-y-3">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="skeleton-bg h-6 w-full"></div>
-            ))}
+        {loading ?
+          // loadings ==============================================================
+          <div className="space-y-3" dir="rtl">
+            <div className="skeleton-bg h-6 w-10/12 rounded" />
+            <div className="skeleton-bg h-6 w-1/2 rounded" />
+            <div className="skeleton-bg h-6 w-2/3 rounded" />
           </div>
-        ) : filteredNotifications.length > 0 ? (
-          filteredNotifications.map((item) => (
-            <div
-              key={item.id}
-              className="py-3 text-right text-sm cursor-pointer"
-              onClick={() => handleNotificationClick(item)}
-            >
-              <div className="flex justify-between">
-                <div className="flex items-center justify-start text-gray-400 text-xs mb-1">
-                  <span>{item.formattedTime}</span>
+          : filteredNotifications.length > 0 ?
+            filteredNotifications.map((item) =>
+              <div key={item.id} className="py-3 text-right text-sm cursor-pointer" onClick={() => handleNotificationClick(item)}>
+                <div className="flex justify-between">
+                  <div className="flex items-center justify-start text-gray-400 text-xs mb-1">
+                    <span>{item.formattedTime}</span>
+                  </div>
+                  <div className="font-medium text-black1 mb-1 flex items-center mr-1 gap-2">
+                    {item.title}
+                    <span className="w-2 h-2 flex items-center justify-center">
+                      <IconCircle />
+                    </span>
+                  </div>
                 </div>
-                <div className="font-medium text-black1 mb-1 flex items-center mr-1 gap-2">
-                  {item.title}
-                  <span className="w-2 h-2 flex items-center justify-center">
-                    <IconCircle />
-                  </span>
-                </div>
+                {item.message?.fa && (
+                  <div className="text-gray17 text-xs leading-relaxed mt-1">
+                    {item.message.fa}
+                  </div>
+                )}
               </div>
-              {item.message?.fa && (
-                <div className="text-gray17 text-xs leading-relaxed mt-1">
-                  {item.message.fa}
-                </div>
-              )}
-            </div>
-          ))
-        ) : (
-          <div className="text-center text-gray-400 py-4 text-sm">
-            اعلانی وجود ندارد
-          </div>
-        )}
+            )
+            : (
+              <div className="text-center text-gray-400 py-4 text-sm">
+                اعلانی وجود ندارد
+              </div>
+            )}
       </div>
 
       <div

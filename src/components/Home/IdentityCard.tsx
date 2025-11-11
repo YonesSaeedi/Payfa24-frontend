@@ -1,3 +1,4 @@
+
 import React from "react";
 import ValidationlightIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2 (1).png";
 import ValidationDarkIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2.png";
@@ -20,25 +21,25 @@ const IdentityCard: React.FC = () => {
     );
   }
 
-const level = kycInfo?.level_kyc;
+  const level = kycInfo?.level_kyc;
 
 
   let title = "";
   let items: string[] = [];
   let accesses: string[] = [];
   let showButton = true;
-  let buttonHandler = () => {};
+  let buttonHandler = () => { };
   let buttonText = "احراز هویت";
 
- 
-if (!level) {
-  title = "احراز هویت پایه";
-  items = ["ایمیل", "مشخصات فردی", "کارت بانکی"];
-  accesses = ["مشاهده قیمت‌ها", "خرید و فروش رمز ارزها"];
-  buttonHandler = () => navigate("/kyc-basic");
-  buttonText = "شروع احراز هویت";
-}
-else if (level === "basic") {
+
+  if (!level) {
+    title = "احراز هویت پایه";
+    items = ["ایمیل", "مشخصات فردی", "کارت بانکی"];
+    accesses = ["مشاهده قیمت‌ها", "خرید و فروش رمز ارزها"];
+    buttonHandler = () => navigate("/kyc-basic");
+    buttonText = "شروع احراز هویت";
+  }
+  else if (level === "basic") {
     title = "احراز هویت سطح پیشرفته";
     items = ["ثبت مدرک شناسایی", "تایید هویت"];
     accesses = [

@@ -140,7 +140,7 @@ function HomePage() {
         <div className="container-style">
           <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4 items-stretch">
             <div className="w-full lg:w-1/2 h-full"><WalletCard isLoading={isLoadingDashboard} walletData={dashboardData?.wallets} /></div>
-           <IdentityCard />
+            <IdentityCard />
           </div>
           <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
             <PosterSlider isLoading={isLoadingDashboard} bannersData={dashboardData?.banner?.banner} />
