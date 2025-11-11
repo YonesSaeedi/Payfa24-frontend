@@ -11,7 +11,7 @@ import useGetKYCInfo from "../../hooks/useGetKYCInfo";
 const IdentityCard: React.FC = () => {
   const navigate = useNavigate();
 
-  // ✅ استفاده از هوک سفارشی
+
   const { data: kycInfo, isLoading } = useGetKYCInfo();
 
   if (isLoading) {
