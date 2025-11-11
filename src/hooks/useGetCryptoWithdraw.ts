@@ -1,4 +1,4 @@
-// hooks/useGetCryptoWithdraw.ts
+
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "../utils/apiClient";
 import { CryptoWithdrawResponse, Coin } from "../types/cryptoWithdraw";
@@ -17,7 +17,6 @@ const useGetCryptoWithdraw = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     select: (data) =>
-      // آرایه coins را به یک object با key = symbol تبدیل می‌کنیم
       data.coins.reduce((acc, coin) => {
         acc[coin.symbol] = coin;
         return acc;

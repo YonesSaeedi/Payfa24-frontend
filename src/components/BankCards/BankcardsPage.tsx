@@ -1,12 +1,12 @@
 
 import { useEffect, useState } from "react";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
-import EmptyCards from "../../components/BankCards/EmptyCards";
-import AddBankCardModal from "../../components/BankCards/BankCardModal/AddBankCardModal";
+import BreadcrumbNavigation from "../BreadcrumbNavigation";
+import EmptyCards from "./EmptyCards";
+import AddBankCardModal from "./BankCardModal/AddBankCardModal";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
-import { AddCardApi } from "../../components/BankCards/AddCardApi";
+import { AddCardApi } from "./AddCardApi";
 import { apiRequest } from "../../utils/apiClient";
 
 const BankCardsPage = () => {
@@ -40,11 +40,11 @@ const BankCardsPage = () => {
     const result = await AddCardApi(cardNumber);
     if (result) {
       setIsModalOpen(false);
-      navigate(ROUTES.BANK_CARDS);
+    
     }
   };
 
-  
+
 
   return (
     <HeaderLayout>
