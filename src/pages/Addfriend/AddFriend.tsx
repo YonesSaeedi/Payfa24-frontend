@@ -17,14 +17,9 @@ import { ThemeContext } from "../../context/ThemeContext";
 import IconGiftBox from "../../assets/icons/AddFriend/IconGiftBox";
 import IconClose from "../../assets/icons/Login/IconClose";
 import ReferralPercentBar from "../../components/ReferralPercentBar";
-import {
-  getReferralReport,
-  getReferralTransactions,
-  InvitedUserReportItem,
-  ReferralReportResponse,
-  setReferralCommission,
-  TransactionItem,
-} from "../../utils/api/referralApi";
+import { getReferralReport, getReferralTransactions, InvitedUserReportItem, ReferralReportResponse, setReferralCommission, TransactionItem } from "../../utils/api/referralApi";
+import { toPersianDigits } from "../../components/Deposit/CardToCardTransfer.tsx";
+import { formatPersianDate } from "../Profile/UserAccount.tsx";
 
 interface InvitedUserItem extends InvitedUserReportItem {}
 interface TransactionItemExt extends TransactionItem {}
@@ -44,11 +39,8 @@ export default function AddFriend() {
   const [transactions, setTransactions] = useState<TransactionItemExt[]>([]);
   const [invitedUsers, setInvitedUsers] = useState<InvitedUserItem[]>([]);
   const [currentPage, _setCurrentPage] = useState<number>(1);
-  const [_totalTransactionPages, setTotalTransactionPages] =
-    useState<number>(1);
-  const [referralReport, setReferralReport] = useState<ReferralReport | null>(
-    null
-  );
+  const [_totalTransactionPages, setTotalTransactionPages] = useState<number>(1);
+  const [referralReport, setReferralReport] = useState<ReferralReport | null>(null);
 
   const maxPercent = 30;
   const currentCallerPercent = referralReport?.referralPercent ?? 0;
@@ -130,7 +122,6 @@ export default function AddFriend() {
     if (activeTab === "transactions") {
       fetchTransactionsData();
     }
-    // invited نیازی به لود نداره - از report میاد
   }, []);
 
   const LinkInvite = [
@@ -150,9 +141,7 @@ export default function AddFriend() {
     {
       Icon: <IconGiftBox />,
       Text: "مجموع درآمد شما",
-      count:
-        (referralReport?.referral_transaction_amount?.toLocaleString() || "0") +
-        " تومان",
+      count: (referralReport?.referral_transaction_amount?.toLocaleString() || "0") + " تومان",
     },
     {
       Icon: <IconUserAdd />,
@@ -169,15 +158,13 @@ export default function AddFriend() {
     },
     {
       img: person,
-      title: "ثبت نام در پی فا 24",
-      description:
-        " دوستان شما زمانی که با کد دعوت اختصاصی شما ثبت نام کنند و احراز هویت خود را تکمیل و شروع به معامله کنند.",
+      title: `ثبت نام در پی فا ${toPersianDigits(24)}`,
+      description: " دوستان شما زمانی که با کد دعوت اختصاصی شما ثبت نام کنند و احراز هویت خود را تکمیل و شروع به معامله کنند.",
     },
     {
       img: gitImg,
       title: "دریافت پاداش",
-      description:
-        "دوستان شما زمانی که با کد دعوت اختصاصی شما ثبت نام کنند واحراز هویت خودر را تکمیل و شروع به معامله کنند.",
+      description: "دوستان شما زمانی که با کد دعوت اختصاصی شما ثبت نام کنند واحراز هویت خودر را تکمیل و شروع به معامله کنند.",
     },
   ];
 
@@ -203,16 +190,11 @@ export default function AddFriend() {
             {/* Section1 */}
             <div className="w-full bg-gray41 rounded-2xl my-8 py-10 flex flex-row-reverse justify-evenly items-center overflow-x-hidden">
               <div className="hidden lg:block">
-                <img
-                  src={theme === "dark" ? addFriendDark : addFriendLight}
-                  alt="theme-based image"
-                  className="w-full max-w-[480px] h-auto lg:h-[305px]"
-                />
+                <img src={theme === "dark" ? addFriendDark : addFriendLight} alt="theme-based image" className="w-full max-w-[480px] h-auto lg:h-[305px]" />
               </div>
               <div className="space-y-5 lg:w-[580px] w-full px-4" dir="rtl">
                 <h3 className="lg:text-xl text-sm font-medium text-black1">
-                  با دعوت از دوستانتان از 25 تا 30 درصد در کارمزد تراکنش‌های
-                  آن‌ها پاداش بگیرید .
+                  با دعوت از دوستانتان از {toPersianDigits(25)} تا {toPersianDigits(30)} درصد در کارمزد تراکنش‌های آن‌ها پاداش بگیرید .
                 </h3>
 
                 {LinkInvite.map((e, index) => (
@@ -220,19 +202,13 @@ export default function AddFriend() {
                     <h3 className="font-medium text-black1">{e.Title}</h3>
                     <div
                       onClick={() => {
-                        if (
-                          !isLoading &&
-                          e.Link &&
-                          e.Link !== "درحال بارگذاری..."
-                        ) {
+                        if (!isLoading && e.Link && e.Link !== "درحال بارگذاری...") {
                           navigator.clipboard.writeText(e.Link);
                           toast.info(`${e.Title} کپی شد.`);
                         }
                       }}
                       className={`items-center gap-1 inline-block text-gray5 lg:text-lg text-sm font-normal ${
-                        !isLoading && e.Link !== "درحال بارگذاری..."
-                          ? "cursor-pointer"
-                          : ""
+                        !isLoading && e.Link !== "درحال بارگذاری..." ? "cursor-pointer" : ""
                       }`}
                     >
                       {isLoading ? (
@@ -242,10 +218,8 @@ export default function AddFriend() {
                       ) : (
                         <>
                           <div className="hover:text-blue2">
-                            <span>{e.Link}</span>
-                            <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4">
-                              {e.Icon}
-                            </span>
+                            <span>{toPersianDigits(e.Link)}</span>
+                            <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4">{e.Icon}</span>
                           </div>
                         </>
                       )}
@@ -259,16 +233,12 @@ export default function AddFriend() {
                       key={index}
                       className="lg:w-2/4 lg:h-[142px] w-full h-[107px] border border-gray12 rounded-xl flex gap-1 items-center flex-col justify-center text-black1 font-medium"
                     >
-                      <span className="icon-wrapper lg:w-9 lg:h-9 w-7 h-7 text-blue2">
-                        {item.Icon}
-                      </span>
+                      <span className="icon-wrapper lg:w-9 lg:h-9 w-7 h-7 text-blue2">{item.Icon}</span>
                       <p className="lg:text-base text-xs">{item.Text}</p>
                       {isLoading ? (
                         <span className="skeleton-bg w-16 h-4 rounded-sm"></span>
                       ) : (
-                        <span className="lg:text-base text-xs font-medium">
-                          {item.count}
-                        </span>
+                        <span className="lg:text-base text-xs font-medium">{toPersianDigits(item.count)}</span>
                       )}
                     </div>
                   ))}
@@ -276,23 +246,13 @@ export default function AddFriend() {
 
                 <div className="flex flex-row justify-between w-full py-6 border border-gray12 rounded-xl text-black0">
                   <div className="flex flex-col items-center gap-2 w-1/2 ">
-                    <div className="font-medium text-sm">
-                      سهم دریافتی دوستتان
-                    </div>
-                    {isLoading ? (
-                      <span className="skeleton-bg w-12 h-4 rounded-sm"></span>
-                    ) : (
-                      <p>{currentCallerPercent}%</p>
-                    )}
+                    <div className="font-medium text-sm">سهم دریافتی دوستتان</div>
+                    {isLoading ? <span className="skeleton-bg w-12 h-4 rounded-sm"></span> : <p>{toPersianDigits(currentCallerPercent)}%</p>}
                   </div>
                   <div className="border-l border-gray12 h-14"></div>
                   <div className="flex flex-col items-center gap-2 w-1/2">
                     <div className="font-medium text-sm">سهم دریافتی شما</div>
-                    {isLoading ? (
-                      <span className="skeleton-bg w-14 h-4 rounded-sm"></span>
-                    ) : (
-                      <p>{currentFriendPercent}%</p>
-                    )}
+                    {isLoading ? <span className="skeleton-bg w-14 h-4 rounded-sm"></span> : <p>{toPersianDigits(currentFriendPercent)}%</p>}
                   </div>
                 </div>
 
@@ -311,54 +271,28 @@ export default function AddFriend() {
 
             {/* Section 2 */}
             <div className="flex w-full justify-center lg:gap-5 gap-3 items-center lg:flex-nowrap flex-wrap">
-              <img
-                src={inviteLeftImg}
-                alt="inviteLeftImg"
-                className="lg:w-1/2 w-full"
-              />
-              <img
-                src={inviteRightImg}
-                alt="inviteRightImg"
-                className="lg:w-1/2 w-full"
-              />
+              <img src={inviteLeftImg} alt="inviteLeftImg" className="lg:w-1/2 w-full" />
+              <img src={inviteRightImg} alt="inviteRightImg" className="lg:w-1/2 w-full" />
             </div>
 
             {/* Section 3 */}
-            <div
-              className="flex flex-col w-full space-y-8 items-start mt-14"
-              dir="rtl"
-            >
-              <h3 className="text-black1 font-medium lg:text-2xl text-base">
-                چطور پاداش دریافت کنیم؟
-              </h3>
+            <div className="flex flex-col w-full space-y-8 items-start mt-14" dir="rtl">
+              <h3 className="text-black1 font-medium lg:text-2xl text-base">چطور پاداش دریافت کنیم؟</h3>
               <div className="relative w-full gap-4 flex">
                 <div className="flex lg:flex-row flex-col justify-between items-center lg:items-start lg:gap-0 gap-8">
                   {QuestionBox.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex lg:flex-col h-full w-full lg:gap-0 gap-3 flex-row lg:items-center items-center lg:text-center text-start flex-1"
-                    >
-                      <img
-                        src={item.img}
-                        alt={item.title}
-                        className="lg:w-[70px] w-[50px] object-cover p-1"
-                      />
+                    <div key={index} className="flex lg:flex-col h-full w-full lg:gap-0 gap-3 flex-row lg:items-center items-center lg:text-center text-start flex-1">
+                      <img src={item.img} alt={item.title} className="lg:w-[70px] w-[50px] object-cover p-1" />
                       <div className="space-y-[6px]">
-                        <span className="text-black1 lg:text-lg text-sm font-medium text-start">
-                          {item.title}
-                        </span>
-                        <p className="lg:text-sm text-xs font-normal text-gray5 lg:mx-10">
-                          {item.description}
-                        </p>
+                        <span className="text-black1 lg:text-lg text-sm font-medium text-start">{item.title}</span>
+                        <p className="lg:text-sm text-xs font-normal text-gray5 lg:mx-10">{item.description}</p>
                       </div>
 
                       {index < QuestionBox.length - 1 && (
                         <div
                           className="lg:block hidden  absolute w-[27%] h-[2px] bg-gradient-to-r from-transparent via-blue2 to-transparent opacity-70"
                           style={{
-                            left: `${
-                              ((index + 1) * 100) / QuestionBox.length
-                            }%`,
+                            left: `${((index + 1) * 100) / QuestionBox.length}%`,
                             top: 35,
                             transform: "translateX(-50%)",
                           }}
@@ -371,20 +305,13 @@ export default function AddFriend() {
             </div>
 
             {/* Section 4 - تب‌ها */}
-            <div
-              className="w-full lg:border rounded-xl border-gray21 lg:p-6 shadow-sm mt-20 "
-              dir="rtl"
-            >
+            <div className="w-full lg:border rounded-xl border-gray21 lg:p-6 shadow-sm mt-20 " dir="rtl">
               <div className="flex flex-row-reverse lg:items-end items-center justify-center lg:justify-end  pb-2">
                 <button
                   onClick={() => {
                     setActiveTab("transactions");
                   }}
-                  className={`pb-2 lg:text-lg text-sm w-full lg:w-[164px] ${
-                    activeTab === "transactions"
-                      ? "text-blue2 border-b-2 border-blue2 font-normal"
-                      : "text-gray5"
-                  }`}
+                  className={`pb-2 lg:text-lg text-sm w-full lg:w-[164px] ${activeTab === "transactions" ? "text-blue2 border-b-2 border-blue2 font-normal" : "text-gray5"}`}
                 >
                   تراکنش‌های کاربران
                 </button>
@@ -392,11 +319,7 @@ export default function AddFriend() {
                   onClick={() => {
                     setActiveTab("invited");
                   }}
-                  className={`pb-2 lg:text-lg text-sm w-full lg:w-[164px] ${
-                    activeTab === "invited"
-                      ? "text-blue2 border-b-2 border-blue2 font-medium"
-                      : "text-gray5"
-                  }`}
+                  className={`pb-2 lg:text-lg text-sm w-full lg:w-[164px] ${activeTab === "invited" ? "text-blue2 border-b-2 border-blue2 font-medium" : "text-gray5"}`}
                 >
                   کاربران دعوت شده
                 </button>
@@ -406,14 +329,20 @@ export default function AddFriend() {
                 {/* ✅ تب تراکنش‌ها */}
                 {activeTab === "transactions" && (
                   <div className="w-full overflow-hidden">
+                    {/* هدر دسکتاپ برای تب تراکنش‌ها */}
+                    <div className="hidden lg:grid lg:grid-cols-6 bg-gray41 border border-t-0 border-x-0 rounded-t-lg border-b-0 border-gray21 p-3 text-base text-black0 font-medium items-center text-center">
+                      <span>شناسه</span>
+                      <span>تاریخ و زمان</span>
+                      <span>نام کاربر</span>
+                      <span>کل کارمزد</span>
+                      <span>پورسانت شما</span>
+                      <span>پورسانت دوستان</span>
+                    </div>
                     {/* حالت 1: در حال لود */}
                     {isLoading ? (
                       <>
                         {[...Array(6)].map((_, i) => (
-                          <div
-                            key={i}
-                            className="mt-3 lg:mt-0 lg:p-3 p-4 gap-4 lg:gap-0 rounded-2xl lg:rounded-none border border-gray21 animate-pulse"
-                          >
+                          <div key={i} className="mt-3 lg:mt-0 lg:p-3 p-4 gap-4 lg:gap-0 rounded-2xl lg:rounded-none border border-gray21 animate-pulse">
                             {/* دسکتاپ */}
                             <div className="hidden lg:grid lg:grid-cols-6 items-center text-center gap-4">
                               <div className="skeleton-bg h-5 w-10 mx-auto rounded-md"></div>
@@ -425,7 +354,7 @@ export default function AddFriend() {
                             </div>
 
                             {/* موبایل */}
-                            <div className="lg:hidden flex flex-col gap-3">
+                            <div className="lg:hidden flex flex-col gap-3 ">
                               <div className="flex flex-row justify-between items-center border-b pb-3 border-gray21">
                                 <span className="skeleton-bg w-20 h-4 rounded-md"></span>
                                 <span className="skeleton-bg w-28 h-4 rounded-md"></span>
@@ -457,75 +386,49 @@ export default function AddFriend() {
                         }}
                         className="bg-center bg-no-repeat flex flex-col items-center justify-center gap-3 mt-6 py-20 rounded-lg"
                       >
-                        <h1 className="lg:text-2xl text-lg font-medium text-black1">
-                          هنوز تراکنشی ثبت نشده است!
-                        </h1>
-                        <p className="lg:text-lg text-md text-gray5 text-center">
-                          با دعوت از دوستانتان از تراکنش‌های آن‌ها پاداش دریافت
-                          کنید.
-                        </p>
+                        <h1 className="lg:text-2xl text-lg font-medium text-black1">هنوز تراکنشی ثبت نشده است!</h1>
+                        <p className="lg:text-lg text-md text-gray5 text-center">با دعوت از دوستانتان از تراکنش‌های آن‌ها پاداش دریافت کنید.</p>
                       </div>
                     ) : (
                       // حالت 3: داده وجود دارد → جدول واقعی
                       transactions.map((item) => (
                         <div
                           key={item.id}
-                          className="lg:grid lg:grid-cols-6 mt-3 lg:mt-0 lg:p-3 p-4 gap-4 lg:gap-0 rounded-2xl lg:rounded-none lg:space-y-0 space-y-4 text-sm text-black0 items-center text-center border lg:border-b-0 border-gray21"
+                          className="lg:grid lg:grid-cols-6 mt-3 lg:mt-0 lg:p-3 p-4 gap-4 lg:gap-0 rounded-2xl lg:rounded-none lg:space-y-0 space-y-4 text-sm text-black0 items-center text-center border  lg:border-b-0  lg:border-x-0 border-gray21"
                         >
-                          <div className="flex flex-col space-y-2 lg:hidden border-b pb-3 border-gray21">
+                          <div className="flex flex-col space-y-2 lg:hidden border-b-0  pb-3 border-gray21">
                             <div className="flex flex-row justify-between items-center">
-                              <span className="font-medium text-gray5 text-xs">
-                                تاریخ و زمان
-                              </span>
-                              <span>{item.date}</span>
+                              <span className="font-medium text-gray5 text-xs">تاریخ و زمان</span>
+                              <span>{toPersianDigits(formatPersianDate(item.date))}</span>
                             </div>
                             <div className="flex flex-row justify-between items-center">
-                              <span className="font-medium text-gray5">
-                                نام کاربر
-                              </span>
-                              <span>{item.name}</span>
+                              <span className="font-medium text-gray5">نام کاربر</span>
+                              <span>{toPersianDigits(item.name)}</span>
                             </div>
                             <div className="flex flex-row justify-between items-center">
-                              <span className="font-medium text-gray5">
-                                کل کارمزد
-                              </span>
-                              <span>
-                                {item.total_wage_amount?.toLocaleString() ||
-                                  "0"}{" "}
-                                تومان
-                              </span>
+                              <span className="font-medium text-gray5">کل کارمزد</span>
+                              <span>{toPersianDigits(item.total_wage_amount?.toLocaleString() || "0")} تومان</span>
                             </div>
                           </div>
-                          <div className="lg:hidden flex flex-row items-center justify-between w-full pt-3">
+                          <div className="lg:hidden flex flex-row items-center justify-between w-full pt-3 border-t">
                             <div className="flex items-center flex-col gap-2 w-1/2">
-                              <span className="font-medium text-gray5">
-                                پورسانت شما
-                              </span>
-                              <span>{item.percent_caller}%</span>
+                              <span className="font-medium text-gray5">پورسانت شما</span>
+                              <span>{toPersianDigits(item.percent_caller)}%</span>
                             </div>
                             <div className="border-l border-gray21 h-10 mx-2"></div>
                             <div className="flex items-center flex-col gap-2 w-1/2">
-                              <span className="font-medium text-gray5">
-                                پورسانت دوستان
-                              </span>
-                              <span>{item.percent_referral}%</span>
+                              <span className="font-medium text-gray5">پورسانت دوستان</span>
+                              <span>{toPersianDigits(item.percent_referral)}%</span>
                             </div>
                           </div>
 
                           {/* دسکتاپ */}
-                          <span className="hidden lg:block">{item.id}</span>
-                          <span className="hidden lg:block">{item.date}</span>
-                          <span className="hidden lg:block">{item.name}</span>
-                          <span className="hidden lg:block">
-                            {item.total_wage_amount?.toLocaleString() || "0"}{" "}
-                            تومان
-                          </span>
-                          <span className="hidden lg:block">
-                            {item.percent_caller}%
-                          </span>
-                          <span className="hidden lg:block">
-                            {item.percent_referral}%
-                          </span>
+                          <span className="hidden lg:block">{toPersianDigits(item.id)}</span>
+                          <span className="hidden lg:block">{toPersianDigits(formatPersianDate(item.date))}</span>
+                          <span className="hidden lg:block">{toPersianDigits(item.name)}</span>
+                          <span className="hidden lg:block">{toPersianDigits(item.total_wage_amount?.toLocaleString() || "0")} تومان</span>
+                          <span className="hidden lg:block">{toPersianDigits(item.percent_caller)}%</span>
+                          <span className="hidden lg:block">{toPersianDigits(item.percent_referral)}%</span>
                         </div>
                       ))
                     )}
@@ -541,7 +444,7 @@ export default function AddFriend() {
                     </div>
                   ) : invitedUsers.length > 0 ? (
                     <div className="w-full overflow-hidden">
-                      <div className="hidden lg:grid lg:grid-cols-4 bg-gray41 border border-gray21 p-3 text-base text-black0 font-medium items-center text-center">
+                      <div className="hidden lg:grid lg:grid-cols-4 bg-gray41 border border-gray21 p-3 text-base text-black0 font-medium items-center text-center border-t-0 border-x-0 rounded-t-lg border-b-0">
                         <span>نام کاربر</span>
                         <span>تاریخ و زمان</span>
                         <span>پورسانت شما</span>
@@ -550,64 +453,37 @@ export default function AddFriend() {
                       {invitedUsers.map((item) => (
                         <div
                           key={item.id}
-                          className="p-4 lg:p-3 flex flex-col lg:grid lg:grid-cols-4 lg:border-b-0 mt-3 lg:mt-0 rounded-xl lg:rounded-none border border-gray21"
+                          className="p-4 lg:p-3 flex flex-col lg:grid lg:grid-cols-4 lg:border-b-0 mt-3  lg:mt-0 rounded-xl lg:rounded-none border border-gray21 lg:border-x-0"
                         >
-                          <div className="flex flex-col space-y-2 lg:hidden">
+                          <div className="flex flex-col space-y-4 lg:hidden">
                             <div className="flex items-center gap-2">
-                              <img
-                                className="w-10 h-10"
-                                src={UserImg}
-                                alt="User"
-                              />
+                              <img className="w-10 h-10" src={UserImg} alt="User" />
                               <div className="flex justify-between w-full items-center">
-                                <div className="font-medium text-black0 text-sm">
-                                  {item.Name}
-                                </div>
-                                <div className="text-black0 text-xs">
-                                  {item.Date}
-                                </div>
+                                <div className="font-medium text-black0 text-sm">{toPersianDigits(item.Name)}</div>
+                                <div className="text-black0 text-xs">{toPersianDigits(formatPersianDate(item.Date))}</div>
                               </div>
                             </div>
-                            <div className="flex flex-row justify-between w-full pt-3 border-t border-gray21">
+                            <div className="flex flex-row justify-between w-full pt-3 border-t  border-gray21">
                               <div className="flex flex-col items-center gap-2 w-1/2">
-                                <div className="font-medium text-gray5 text-sm">
-                                  پورسانت شما
-                                </div>
-                                <div className="text-gray5 text-lg">
-                                  {item.percent_caller}%
-                                </div>
+                                <div className="font-medium text-gray5 text-sm">پورسانت شما</div>
+                                <div className="text-gray5 lg:text-base text-sm">{toPersianDigits(item.percent_caller)}%</div>
                               </div>
                               <div className="border-l border-gray21 h-10 mx-2"></div>
                               <div className="flex flex-col items-center gap-2 w-1/2">
-                                <div className="font-medium text-black0 text-sm">
-                                  پورسانت دوستان
-                                </div>
-                                <div className="text-black0 text-lg">
-                                  {item.percent_referral}%
-                                </div>
+                                <div className="font-medium text-black0 text-sm">پورسانت دوستان</div>
+                                <div className="text-black0 lg:text-base text-sm">{toPersianDigits(item.percent_referral)}%</div>
                               </div>
                             </div>
                           </div>
-                          <span className="hidden lg:block text-center text-black0">
-                            {item.Name}
-                          </span>
-                          <span className="hidden lg:block text-center text-black0">
-                            {item.Date}
-                          </span>
-                          <span className="hidden lg:block text-center text-black0">
-                            {item.percent_caller}%
-                          </span>
-                          <span className="hidden lg:block text-center text-black0">
-                            {item.percent_referral}%
-                          </span>
+                          <span className="hidden lg:block text-center text-black0 lg:text-base">{toPersianDigits(item.Name)}</span>
+                          <span className="hidden lg:block text-center text-black0 lg:text-base">{toPersianDigits(formatPersianDate(item.Date))}</span>
+                          <span className="hidden lg:block text-center text-black0 lg:text-base">{toPersianDigits(item.percent_caller)}%</span>
+                          <span className="hidden lg:block text-center text-black0 lg:text-base">{toPersianDigits(item.percent_referral)}%</span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    EmptyState(
-                      "هنوز کاربری دعوت نکرده‌اید!",
-                      "با اشتراک‌گذاری لینک دعوتتان با دوستان، از تراکنش‌های آن‌ها پاداش دریافت کنید."
-                    )
+                    EmptyState("هنوز کاربری دعوت نکرده‌اید!", "با اشتراک‌گذاری لینک دعوتتان با دوستان، از تراکنش‌های آن‌ها پاداش دریافت کنید.")
                   ))}
               </div>
             </div>
@@ -618,59 +494,30 @@ export default function AddFriend() {
         {IsOpenModal && (
           <>
             <div className="fixed inset-0 bg-black/25 z-30 cursor-pointer"></div>
-            <div
-              onClick={() => setIsOpenModal(false)}
-              className="fixed inset-0 flex items-center justify-center z-50"
-            >
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className="bg-white8 w-full max-w-md rounded-xl shadow-lg overflow-hidden lg:py-6 py-4 px-7 mx-2"
-              >
+            <div onClick={() => setIsOpenModal(false)} className="fixed inset-0 flex items-center justify-center z-50">
+              <div onClick={(e) => e.stopPropagation()} className="bg-white8 w-full max-w-md rounded-xl shadow-lg overflow-hidden lg:py-6 py-4 px-7 mx-2">
                 <div className="flex justify-between items-center border-b border-gray21 pb-4">
-                  <span
-                    className="icon-wrapper w-6 h-6 cursor-pointer text-gray12 hover:text-blue2"
-                    onClick={() => setIsOpenModal(false)}
-                  >
+                  <span className="icon-wrapper w-6 h-6 cursor-pointer text-gray12 hover:text-blue2" onClick={() => setIsOpenModal(false)}>
                     <IconClose />
                   </span>
-                  <span className="text-black0 font-medium text-base">
-                    تنظیم درصد سود
-                  </span>
+                  <span className="text-black0 font-medium text-base">تنظیم درصد سود</span>
                 </div>
-                <p className="text-black0 text-xs lg:text-sm text-end mt-6">
-                  . میزان سود خود و دوستتان را از کارمزد معاملات مشخص کنید
-                </p>
+                <p className="text-black0 text-xs lg:text-sm text-end mt-6">. میزان سود خود و دوستتان را از کارمزد معاملات مشخص کنید</p>
                 <div className="mt-14">
-                  <ReferralPercentBar
-                    selectedPercent={selectedPercent}
-                    setSelectedPercent={setSelectedPercent}
-                    lastChangedRef={lastChangedRef}
-                  />
+                  <ReferralPercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
                 </div>
                 <div className="flex flex-col items-center mt-14 mb-14">
                   <div className="grid grid-cols-2 w-full text-center gap-y-2">
-                    <span className="text-gray5 lg:text-sm text-xs font-medium">
-                      پورسانت شما
-                    </span>
-                    <span className="text-gray5 lg:text-sm text-xs font-medium">
-                      پورسانت دوستان
-                    </span>
-                    <span className="text-black0 text-lg font-bold">
-                      {maxPercent - selectedPercent}%
-                    </span>
+                    <span className="text-gray5 lg:text-sm text-xs font-medium">پورسانت شما</span>
+                    <span className="text-gray5 lg:text-sm text-xs font-medium">پورسانت دوستان</span>
+                    <span className="text-black0 lg:text-base text-sm font-bold">{toPersianDigits(maxPercent - selectedPercent)}%</span>
                     <div className="relative">
-                      <span className="text-black0 text-lg font-bold">
-                        {selectedPercent}%
-                      </span>
+                      <span className="text-black0 lg:text-base text-sm font-bold">{toPersianDigits(selectedPercent)}%</span>
                       <div className="absolute left-[-10px] top-1/4 w-px h-10 bg-gray2 transform -translate-y-1/2"></div>
                     </div>
                   </div>
                 </div>
-                <button
-                  onClick={handleSaveCommissionSplit}
-                  disabled={isLoading}
-                  className="w-full font-bold text-sm text-white2 bg-blue2 lg:py-3 py-2 rounded-lg"
-                >
+                <button onClick={handleSaveCommissionSplit} disabled={isLoading} className="w-full font-bold text-sm text-white2 bg-blue2 lg:py-3 py-2 rounded-lg">
                   {isLoading ? "درحال ذخیره..." : "تایید"}
                 </button>
               </div>

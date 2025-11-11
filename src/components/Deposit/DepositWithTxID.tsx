@@ -11,7 +11,7 @@ import { CryptoItem } from "../../types/crypto";
 import CryptoListModal from "../trade/CryptoListModal";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { toast } from "react-toastify";
-
+import { useSearchParams } from "react-router-dom";
 interface TxidPostResponse {
   status: number;
   data?: { wallets_txid?: WalletTxid[] };
@@ -59,12 +59,11 @@ const formatPersianDigits = (num: number | string) => {
 };
 
 export default function DepositWithTxID() {
+  const [searchParams] = useSearchParams();
+  const urlCoin = searchParams.get("coin")?.toUpperCase();
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
-  const [selectedCurrency, setSelectedCurrency] =
-    useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>(
-      INITIAL_CURRENCY
-    );
+  const [selectedCurrency, setSelectedCurrency] = useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>(INITIAL_CURRENCY);
 
   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -72,34 +71,27 @@ export default function DepositWithTxID() {
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false); // state برای باز و بسته شدن لیست
   const [walletAddress, setWalletAddress] = useState<string | null>(null); // state برای آدرس ولت
   const { control, watch, setValue } = useForm();
-  const { data: generalInfo, isLoading: isGeneralInfoLoading } =
-    useGetGeneralInfo();
+  const { data: generalInfo, isLoading: isGeneralInfoLoading } = useGetGeneralInfo();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const selectedNetwork = watch("network");
   const txidValue = watch("txid");
-  const isButtonActive =
-    !!selectedCurrency.symbol && !!selectedNetwork && !!txidValue;
+  const isButtonActive = !!selectedCurrency.symbol && !!selectedNetwork && !!txidValue;
   const networkOptions = useMemo(() => {
     return (
       selectedCurrency.network?.map((net) => {
         const networkInfo = networks.find((n) => n.id === net.id);
-        const networkName =
-          networkInfo?.locale?.fa?.name ||
-          networkInfo?.name ||
-          net.id.toString();
-        const networkSymbol = networkInfo?.name || ""; 
+        const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || net.id.toString();
+        const networkSymbol = networkInfo?.name || "";
         return {
           value: net.id.toString(),
-          label: `${networkName} (${networkSymbol})`, 
+          label: `${networkName} (${networkSymbol})`,
         };
       }) || []
     );
   }, [selectedCurrency.network, networks]);
 
   const selectedNetworkLabel = useMemo(() => {
-    const selectedOption = networkOptions.find(
-      (opt) => opt.value === selectedNetwork
-    );
+    const selectedOption = networkOptions.find((opt) => opt.value === selectedNetwork);
     return selectedOption ? selectedOption.label : "شبکه خود را انتخاب کنید";
   }, [selectedNetwork, networkOptions]);
 
@@ -128,9 +120,7 @@ export default function DepositWithTxID() {
       setNetworks(allNetworks);
 
       const merged: CryptoItem[] = depositCoins.map((coin: any) => {
-        const info = infoCoins.find(
-          (i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase()
-        );
+        const info = infoCoins.find((i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase());
         return {
           ...info,
           id: coin.id, // اضافه کردن id به CryptoItem
@@ -162,9 +152,6 @@ export default function DepositWithTxID() {
           network: (first as any).network || [],
         });
       }
-
-      console.log("Merged data:", merged);
-      console.log("Networks:", allNetworks);
     } catch (err) {
       console.error("خطا در دریافت ارزها:", err);
     } finally {
@@ -177,19 +164,11 @@ export default function DepositWithTxID() {
     if (generalInfo && !isDepositCoinsLoading && cryptoListData.length === 0) {
       fetchAndMergeCryptoData();
     }
-  }, [
-    generalInfo,
-    isDepositCoinsLoading,
-    cryptoListData.length,
-    fetchAndMergeCryptoData,
-  ]);
+  }, [generalInfo, isDepositCoinsLoading, cryptoListData.length, fetchAndMergeCryptoData]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsNetworkDropdownOpen(false);
       }
     };
@@ -202,12 +181,19 @@ export default function DepositWithTxID() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isNetworkDropdownOpen]);
+
+  useEffect(() => {
+    if (!urlCoin || cryptoListData.length === 0) return;
+    const matched = cryptoListData.find((c) => c.symbol?.toUpperCase() === urlCoin);
+    if (matched) {
+      handleCurrencySelect(matched);
+      setValue("currency", matched.symbol); // مهم!
+    }
+  }, [urlCoin, cryptoListData, setValue]);
   // تولید آدرس ولت بعد از انتخاب ارز و شبکه
   const fetchWalletAddress = async () => {
     if (selectedCurrency.id && selectedNetwork) {
-      const selectedCoin = cryptoListData.find(
-        (coin) => coin.id === selectedCurrency.id
-      );
+      const selectedCoin = cryptoListData.find((coin) => coin.id === selectedCurrency.id);
       if (selectedCoin) {
         const depositRes = await apiRequest<{
           coins?: Array<{
@@ -223,11 +209,7 @@ export default function DepositWithTxID() {
           url: "/wallets/crypto/deposit",
           method: "GET",
         });
-        const walletEntry = depositRes.wallets_txid?.find(
-          (wallet: WalletTxid) =>
-            wallet.id_coin === selectedCoin.id &&
-            wallet.id_net === parseInt(selectedNetwork)
-        );
+        const walletEntry = depositRes.wallets_txid?.find((wallet: WalletTxid) => wallet.id_coin === selectedCoin.id && wallet.id_net === parseInt(selectedNetwork));
         return walletEntry?.address || null;
       }
     }
@@ -249,9 +231,7 @@ export default function DepositWithTxID() {
     setIsCryptoListModalOpen(true);
   };
 
-  const handleCurrencySelect = (
-    crypto: CryptoItem & { network?: CoinNetwork[] }
-  ) => {
+  const handleCurrencySelect = (crypto: CryptoItem & { network?: CoinNetwork[] }) => {
     setSelectedCurrency({
       id: crypto.id, // اضافه کردن id به selectedCurrency
       name: crypto.locale?.fa?.name || crypto.symbol || "نام ناشناس",
@@ -273,8 +253,7 @@ export default function DepositWithTxID() {
     }
 
     try {
-
-      const depositRes = await apiRequest<TxidPostResponse, { txid: string, network_id: number }>({
+      const depositRes = await apiRequest<TxidPostResponse, { txid: string; network_id: number }>({
         url: `/wallets/crypto/deposit/txid/${selectedCurrency.symbol}`,
         method: "POST",
         data: {
@@ -284,11 +263,7 @@ export default function DepositWithTxID() {
       });
 
       if (depositRes.status === 200) {
-        const matchingWallet = depositRes.data?.wallets_txid?.find(
-          (wallet: WalletTxid) =>
-            wallet.id_coin === selectedCurrency.id &&
-            wallet.id_net === parseInt(selectedNetwork)
-        );
+        const matchingWallet = depositRes.data?.wallets_txid?.find((wallet: WalletTxid) => wallet.id_coin === selectedCurrency.id && wallet.id_net === parseInt(selectedNetwork));
 
         if (matchingWallet?.address) {
           setWalletAddress(matchingWallet.address);
@@ -319,59 +294,51 @@ export default function DepositWithTxID() {
       </div>
 
       {/* انتخاب ارز */}
-      <div className="mb-2">
-        <Controller
-          name="currency"
-          control={control}
-          rules={{ required: "لطفا یک ارز انتخاب کنید" }}
-          render={({ field }) => (
-            <FloatingSelect
-              placeholder={selectedCurrency.name || ""}
-              label="انتخاب رمز ارز"
-              options={cryptoListData.map((crypto) => ({
-                value: crypto.symbol,
-                label: crypto.name || crypto.symbol,
-              }))}
-              value={field.value}
-              onChange={(value) => {
-                const selected = cryptoListData.find(
-                  (crypto) => crypto.symbol === value
-                );
-                if (selected) handleCurrencySelect(selected);
-                field.onChange(value);
-              }}
-              onOpen={openCryptoListModal}
-              placeholderIcon={
-                selectedCurrency.icon || selectedCurrency.isFont ? (
-                  selectedCurrency.isFont ? (
-                    <i
-                      className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
-                      style={{
-                        color: selectedCurrency.color,
-                        fontSize: "28px",
-                      }}
-                    ></i>
-                  ) : (
-                    <img
-                      src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
-                      alt={selectedCurrency.symbol}
-                      className="w-7 h-7 rounded-full object-contain"
-                    />
-                  )
-                ) : (
-                  <div className="w-7 h-7 skeleton-bg rounded-full" />
-                )
-              }
-              placeholderClasses="text-black0"
-            />
+      {/* انتخاب ارز */}
+      <div className="relative w-full mb-2">
+        <button
+          type="button"
+          onClick={openCryptoListModal}
+          className="flex items-center justify-between w-full px-3 py-4 border rounded-md border-gray12 lg:bg-gray43 bg-gray38 focus:outline-none focus:ring-1 focus:ring-blue2"
+        >
+          {selectedCurrency.symbol ? (
+            <span className="flex items-center gap-2">
+              {selectedCurrency.isFont ? (
+                <i
+                  className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
+                  style={{
+                    color: selectedCurrency.color || "#000",
+                    fontSize: "24px",
+                  }}
+                />
+              ) : (
+                <img
+                  src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
+                  alt={selectedCurrency.symbol}
+                  className="w-6 h-6 object-contain rounded-full"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+              <span className="text-black1 font-medium">{selectedCurrency.name || selectedCurrency.symbol}</span>
+            </span>
+          ) : (
+            <span className="text-gray12">انتخاب رمز ارز</span>
           )}
-        />
+
+          <svg className="w-4 h-4 text-gray12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">انتخاب رمز ارز</label>
       </div>
 
       {/* موجودی - همیشه نمایش بده */}
       <div className="mb-10">
         <div className="flex justify-between ">
-          <span className="text-sm text-gray5">موجودی</span>
+          <span className="text-sm text-gray5">موجودی {selectedCurrency.name || selectedCurrency.symbol}</span>
           <span className="text-sm text-black0">
             {formatPersianDigits(selectedCurrency.balance || 0)}
             {selectedCurrency.symbol || ""}
@@ -397,9 +364,7 @@ export default function DepositWithTxID() {
                   label: (
                     <div className="flex items-center justify-between w-full py-1 rounded-md">
                       <div className="flex items-center gap-2">
-                        <span className="lg:text-sm text-xs text-black0">
-                          {option.label}
-                        </span>
+                        <span className="lg:text-sm text-xs text-black0">{option.label}</span>
                       </div>
                     </div>
                   ),
@@ -443,9 +408,7 @@ export default function DepositWithTxID() {
           <span className="text-sm text-gray5">حداقل واریز</span>
           <span className="text-sm text-black0">
             {selectedCurrency.network && selectedCurrency.network.length > 0
-              ? `${formatPersianDigits(
-                  selectedCurrency.network[0].deposit_min
-                )} ${selectedCurrency.symbol}`
+              ? `${formatPersianDigits(selectedCurrency.network[0].deposit_min)} ${selectedCurrency.symbol}`
               : "۰ " + (selectedCurrency.symbol || "")}
           </span>
         </div>
@@ -474,17 +437,17 @@ export default function DepositWithTxID() {
             <QRCode value={walletAddress} size={128} />
             <div className="flex justify-between w-full">
               <span className="text-gray5 text-xs lg:text-sm">آدرس ولت</span>
-                <div
-                  onClick={() => {
-                    if (walletAddress) {
-                      navigator.clipboard.writeText(walletAddress);
-                      toast.info(" کپی شد");
-                    }
-                  }}
-                  className="flex items-center gap-1 justify-between cursor-pointer"
-                >
+              <div
+                onClick={() => {
+                  if (walletAddress) {
+                    navigator.clipboard.writeText(walletAddress);
+                    toast.info(" کپی شد");
+                  }
+                }}
+                className="flex items-center gap-1 justify-between cursor-pointer"
+              >
                 <span className="text-black0 lg:text-sm text-xs  max-w-sm">
-                  {walletAddress}
+                  {walletAddress.length > 30 ? `${walletAddress.slice(0, 15)}...${walletAddress.slice(-10)}` : walletAddress}
                 </span>
                 <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
                   <IconCopy />
@@ -501,9 +464,7 @@ export default function DepositWithTxID() {
           onClick={handleSubmit}
           disabled={!isButtonActive}
           className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all ${
-            !isButtonActive
-              ? "opacity-60 cursor-not-allowed"
-              : "opacity-100 hover:bg-blue1"
+            !isButtonActive ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-blue1"
           }`}
         >
           ثبت اطلاعات
@@ -511,13 +472,8 @@ export default function DepositWithTxID() {
         <div className="mt-4" dir="ltr">
           <Accordion title="TxID راهنمای واریز رمز ارز با ">
             <ul className="list-disc pr-5 space-y-2 text-black1">
-              <li>
-                از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی
-                شاپرک مطمئن شوید.
-              </li>
-              <li>
-                مطمئن شوید مبلغ نمایش‌داده‌شده در صفحه‌ی پرداخت درست باشد.
-              </li>
+              <li>از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی شاپرک مطمئن شوید.</li>
+              <li>مطمئن شوید مبلغ نمایش‌داده‌شده در صفحه‌ی پرداخت درست باشد.</li>
             </ul>
           </Accordion>
         </div>
