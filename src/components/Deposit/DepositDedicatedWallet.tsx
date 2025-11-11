@@ -11,7 +11,6 @@ import CryptoListModal from "../trade/CryptoListModal";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
-import IconChervUp from "../../assets/icons/Withdrawal/IconChervUp";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 interface DepositApiResponse {
   coins?: Array<{

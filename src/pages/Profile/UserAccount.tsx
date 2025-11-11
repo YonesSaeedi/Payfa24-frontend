@@ -41,6 +41,7 @@ interface ApiResponse {
     level_account?: number;
     level_kyc?: "none" | "basic" | "advanced";
     national_code?: string;
+    
   };
 }
 
@@ -56,7 +57,7 @@ interface UserData {
   name_display?: string;
   level_kyc: "none" | "basic" | "advanced";
   national_code?: string;
-  
+  [key: string]: string | number | null | undefined | "none" | "basic" | "advanced";
 }
 
 async function getUserInfo(): Promise<UserData> {
@@ -80,7 +81,7 @@ async function getUserInfo(): Promise<UserData> {
     family: user.family,
     level_kyc: user.level_kyc || "none",
     name_display: user.name_display,
-    national_code: user.national_code || null,
+    national_code: user.national_code ?? undefined,
   };
 }
 
@@ -158,7 +159,7 @@ export default function UserAccount() {
         return userData.national_code ? toPersianDigits(userData.national_code) : null;
       default: {
         const val = userData[key];
-        return val && val !== "---" && val !== "احراز هویت نشده" ? val : null;
+        return val && val !== "---" && val !== "احراز هویت نشده" ? String(val) : null;
       }
     }
   };
