@@ -320,14 +320,14 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
                   </div>
 
                   <div className="text-sm space-y-1 mb-3 gap-3 flex flex-col">
-                    <p className="flex justify-between">قیمت خرید: <span>{formatPersianDigits(priceBuy)}</span></p>
-                    <p className="flex justify-between">قیمت فروش: <span>{formatPersianDigits(priceSell)}</span></p>
-                    <p className="flex justify-between">تغییرات ۲۴h: <span className={`${change24h >= 0 ? "text-green-500" : "text-red-500"}`}>{formatPersianDigits(change24h)}%</span></p>
+                    <p className="flex justify-between text-black1">قیمت خرید: <span>{formatPersianDigits(priceBuy)}</span></p>
+                    <p className="flex justify-between text-black1">قیمت فروش: <span>{formatPersianDigits(priceSell)}</span></p>
+                    <p className="flex justify-between text-black1">تغییرات ۲۴h: <span className={`${change24h >= 0 ? "text-green-500" : "text-red-500"}`}>{formatPersianDigits(change24h)}%</span></p>
                   </div>
 
                   <Link
                     to={`${ROUTES.TRADE.BUY}?coin=${symbol}`}
-                    className="bg-blue2 text-white rounded-lg px-4 py-2 text-sm border border-transparent hover:bg-transparent hover:border-blue2 hover:text-blue2 transition duration-200 ease-in block text-center"
+                    className=" text-blue2 rounded-lg px-4 py-2 text-sm border border-blue2 hover:bg-blue2 hover:text-white1 transition duration-200 ease-in block text-center"
                   >
                     خرید/فروش
                   </Link>
