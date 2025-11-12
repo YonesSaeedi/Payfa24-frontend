@@ -10,7 +10,8 @@ import { CryptoItem } from "../../types/crypto";
 import CryptoListModal from "../trade/CryptoListModal";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { toast } from "react-toastify";
-
+import { useSearchParams } from "react-router-dom";
+import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 interface DepositApiResponse {
   coins?: Array<{
     id: number;
@@ -62,28 +63,23 @@ const formatPersianDigits = (num: number | string) => {
 export default function DepositDedicatedWallet() {
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
-  const [selectedCurrency, setSelectedCurrency] = useState<
-    Partial<CryptoItem & { network?: CoinNetwork[] }>
-  >({});
+  const [selectedCurrency, setSelectedCurrency] = useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>({});
   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
   const [networks, setNetworks] = useState<Network[]>([]);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [showWalletInfo, setShowWalletInfo] = useState(false);
-
+  const [searchParams] = useSearchParams();
+  const urlCoin = searchParams.get("coin")?.toUpperCase();
   // state برای آدرس ولت
-  const { control, watch } = useForm();
-  const { data: generalInfo, isLoading: isGeneralInfoLoading } =
-    useGetGeneralInfo();
+  const { control, watch, setValue } = useForm();
+  const { data: generalInfo, isLoading: isGeneralInfoLoading } = useGetGeneralInfo();
   const selectedNetwork = watch("network");
   const isButtonActive = !!selectedCurrency.id && !!selectedNetwork;
   const networkOptions = useMemo(() => {
     return (
       selectedCurrency.network?.map((net) => {
         const networkInfo = networks.find((n) => n.id === net.id);
-        const networkName =
-          networkInfo?.locale?.fa?.name ||
-          networkInfo?.name ||
-          net.id.toString();
+        const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || net.id.toString();
         const networkSymbol = networkInfo?.name || ""; // استفاده از name به عنوان نماد
         return {
           value: net.id.toString(),
@@ -94,9 +90,7 @@ export default function DepositDedicatedWallet() {
   }, [selectedCurrency.network, networks]);
 
   const selectedNetworkLabel = useMemo(() => {
-    const selectedOption = networkOptions.find(
-      (opt) => opt.value === selectedNetwork
-    );
+    const selectedOption = networkOptions.find((opt) => opt.value === selectedNetwork);
     return selectedOption ? selectedOption.label : "شبکه خود را انتخاب کنید";
   }, [selectedNetwork, networkOptions]);
 
@@ -115,9 +109,7 @@ export default function DepositDedicatedWallet() {
       setNetworks(allNetworks);
 
       const merged: CryptoItem[] = depositCoins.map((coin: any) => {
-        const info = infoCoins.find(
-          (i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase()
-        );
+        const info = infoCoins.find((i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase());
         return {
           ...info,
           id: coin.id, // اضافه کردن id به CryptoItem
@@ -149,9 +141,6 @@ export default function DepositDedicatedWallet() {
           network: first.network || [],
         });
       }
-
-      console.log("Merged data:", merged);
-      console.log("Networks:", allNetworks);
     } catch (err) {
       console.error("خطا در دریافت ارزها:", err);
     } finally {
@@ -159,34 +148,30 @@ export default function DepositDedicatedWallet() {
     }
   }, [generalInfo]);
 
-  // وقتی generalInfo آماده شد، داده‌ها را واکشی کن
+  // وق
+  // تی generalInfo آماده شد، داده‌ها را واکشی کن
   useEffect(() => {
     if (generalInfo && !isDepositCoinsLoading && cryptoListData.length === 0) {
       fetchAndMergeCryptoData();
     }
-  }, [
-    generalInfo,
-    isDepositCoinsLoading,
-    cryptoListData.length,
-    fetchAndMergeCryptoData,
-  ]);
-
-  // تولید آدرس ولت بعد از انتخاب ارز و شبکه
+  }, [generalInfo, isDepositCoinsLoading, cryptoListData.length, fetchAndMergeCryptoData]);
+  useEffect(() => {
+    if (!urlCoin || cryptoListData.length === 0) return;
+    const matched = cryptoListData.find((c) => c.symbol?.toUpperCase() === urlCoin);
+    if (matched) {
+      handleCurrencySelect(matched);
+      setValue("currency", matched.symbol); // اضافه شد
+    }
+  }, [urlCoin, cryptoListData]);
   const fetchWalletAddress = async () => {
     if (selectedCurrency.id && selectedNetwork) {
-      const selectedCoin = cryptoListData.find(
-        (coin) => coin.id === selectedCurrency.id
-      );
+      const selectedCoin = cryptoListData.find((coin) => coin.id === selectedCurrency.id);
       if (selectedCoin) {
         const depositRes = await apiRequest<DepositApiResponse>({
           url: "/wallets/crypto/deposit",
           method: "GET",
         });
-        const walletEntry = depositRes.wallets_txid?.find(
-          (wallet: WalletTxid) =>
-            wallet.id_coin === selectedCoin.id &&
-            wallet.id_net === parseInt(selectedNetwork)
-        );
+        const walletEntry = depositRes.wallets_txid?.find((wallet: WalletTxid) => wallet.id_coin === selectedCoin.id && wallet.id_net === parseInt(selectedNetwork));
         return walletEntry?.address || null;
       }
     }
@@ -208,11 +193,9 @@ export default function DepositDedicatedWallet() {
     setIsCryptoListModalOpen(true);
   };
 
-  const handleCurrencySelect = (
-    crypto: CryptoItem & { network?: CoinNetwork[] }
-  ) => {
+  const handleCurrencySelect = (crypto: CryptoItem & { network?: CoinNetwork[] }) => {
     setSelectedCurrency({
-      id: crypto.id, // اضافه کردن id به selectedCurrency
+      id: crypto.id,
       name: crypto.locale?.fa?.name || crypto.symbol || "نام ناشناس",
       symbol: crypto.symbol || "UNK",
       priceBuy: crypto.priceBuy || "۰",
@@ -222,7 +205,11 @@ export default function DepositDedicatedWallet() {
       icon: crypto.icon || "",
       network: crypto.network || [],
     });
+    setValue("currency", crypto.symbol);
     setIsCryptoListModalOpen(false);
+
+    setShowWalletInfo(false);
+    setWalletAddress(null);
   };
 
   const handleSubmit = async () => {
@@ -238,11 +225,7 @@ export default function DepositDedicatedWallet() {
       });
 
       // پیدا کردن آدرس ولت بر اساس ارز و شبکه انتخاب‌شده
-      const walletEntry = depositRes.wallets_txid?.find(
-        (wallet: WalletTxid) =>
-          wallet.id_coin === selectedCurrency.id &&
-          wallet.id_net === parseInt(selectedNetwork)
-      );
+      const walletEntry = depositRes.wallets_txid?.find((wallet: WalletTxid) => wallet.id_coin === selectedCurrency.id && wallet.id_net === parseInt(selectedNetwork));
 
       if (walletEntry?.address) {
         setWalletAddress(walletEntry.address);
@@ -269,68 +252,50 @@ export default function DepositDedicatedWallet() {
       </div>
 
       {/* انتخاب ارز */}
-      <Controller
-        name="currency"
-        control={control}
-        rules={{ required: "لطفا یک ارز انتخاب کنید" }}
-        render={({ field }) => (
-          <FloatingSelect
-            placeholder={selectedCurrency.name || ""}
-            placeholderIcon={
-              !selectedCurrency.name ? (
-                <div className="w-7 h-7 skeleton-bg rounded-full" />
-              ) : selectedCurrency.icon || selectedCurrency.isFont ? (
-                selectedCurrency.isFont ? (
-                  <i
-                    className={`cf cf-${
-                      selectedCurrency.symbol?.toLowerCase() ?? "unknown"
-                    }`}
-                    style={{
-                      color: selectedCurrency.color || "#000",
-                      fontSize: "28px",
-                    }}
-                  />
-                ) : (
-                  <img
-                    src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
-                    alt={selectedCurrency.symbol || "currency"}
-                    className="w-7 h-7 rounded-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      e.currentTarget.nextElementSibling?.classList.remove(
-                        "hidden"
-                      );
-                    }}
-                  />
-                )
+      <div className="relative w-full mb-2">
+        <button
+          type="button"
+          onClick={openCryptoListModal}
+          className="flex items-center justify-between w-full px-4 py-4 border rounded-md border-gray12 lg:bg-gray43 bg-gray38 focus:outline-none focus:ring-1 focus:ring-blue2"
+        >
+          {selectedCurrency.symbol ? (
+            <span className="flex items-center gap-2">
+              {selectedCurrency.isFont ? (
+                <i
+                  className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`}
+                  style={{
+                    color: selectedCurrency.color || "#000",
+                    fontSize: "24px",
+                  }}
+                />
               ) : (
-                <div className="w-7 h-7 skeleton-bg rounded-full" />
-              )
-            }
-            label="انتخاب رمز ارز"
-            options={cryptoListData.map((crypto) => ({
-              value: crypto.symbol,
-              label: crypto.name || crypto.symbol,
-            }))}
-            value={field.value}
-            onChange={(value) => {
-              const selected = cryptoListData.find(
-                (crypto) => crypto.symbol === value
-              );
-              if (selected) handleCurrencySelect(selected);
-              field.onChange(value);
-            }}
-            onOpen={openCryptoListModal}
-            placeholderClasses="text-black0"
-          />
-        )}
-      />
+                <img
+                  src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
+                  alt={selectedCurrency.symbol}
+                  className="w-6 h-6 object-contain rounded-full"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+              <span className="text-black1 font-medium">{selectedCurrency.name || selectedCurrency.symbol}</span>
+            </span>
+          ) : (
+            <span className="text-gray12">انتخاب رمز ارز</span>
+          )}
+
+          <span className="w-5 h-5 icon-wrapper text-gray12">
+            <IconChervDown />
+          </span>
+        </button>
+
+        <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">انتخاب رمز ارز</label>
+      </div>
       {selectedCurrency && (
-        <div className="flex justify-between mt-2 mb-10">
-          <span className="text-sm text-gray5">موجودی</span>
+        <div className="flex justify-between  mb-10">
+          <span className="text-sm text-gray5 font-bold">موجودی {selectedCurrency.name || selectedCurrency.symbol}</span>
           <span className="text-sm text-black0">
-            {formatPersianDigits(selectedCurrency.balance ?? "0")}{" "}
-            {selectedCurrency.symbol}
+            {formatPersianDigits(selectedCurrency.balance ?? "0")}{selectedCurrency.symbol}
           </span>
         </div>
       )}
@@ -345,7 +310,11 @@ export default function DepositDedicatedWallet() {
             placeholder={selectedNetworkLabel || "انتخاب شبکه"}
             label="انتخاب شبکه"
             value={field.value}
-            onChange={field.onChange}
+            onChange={(val) => {
+              field.onChange(val);
+              setShowWalletInfo(false);
+              setWalletAddress(null);
+            }}
             options={networkOptions.map((option) => ({
               value: option.value,
               label: option.label,
@@ -360,8 +329,7 @@ export default function DepositDedicatedWallet() {
         <div className="flex justify-between mt-2 mb-10">
           <span className="text-sm text-gray5">حداقل واریز</span>
           <span className="text-sm text-black0">
-            {formatPersianDigits(selectedCurrency.network[0].deposit_min)}{" "}
-            {selectedCurrency.symbol}
+            {formatPersianDigits(selectedCurrency.network[0].deposit_min)} {selectedCurrency.symbol}
           </span>
         </div>
       )}
@@ -384,7 +352,7 @@ export default function DepositDedicatedWallet() {
                   className="flex items-center gap-1 justify-between"
                 >
                   <span className=" block text-black0 lg:text-sm text-xs break-all text-end max-w-sm cursor-pointer">
-                    {walletAddress}
+                    {walletAddress.length > 30 ? `${walletAddress.slice(0, 15)}...${walletAddress.slice(-10)}` : walletAddress}
                   </span>
                   <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5 cursor-pointer">
                     <IconCopy />
@@ -403,9 +371,7 @@ export default function DepositDedicatedWallet() {
             onClick={() => handleSubmit()} // استفاده از متغیر صحیح
             disabled={!isButtonActive}
             className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all ${
-              !isButtonActive 
-                ? "opacity-60 cursor-not-allowed" 
-                : "opacity-100 hover:bg-blue1"
+              !isButtonActive ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-blue1"
             }`}
           >
             ساخت آدرس
@@ -414,13 +380,8 @@ export default function DepositDedicatedWallet() {
           <div className="mt-4" dir="ltr">
             <Accordion title="راهنمای واریز رمز ارز">
               <ul className="list-disc pr-5 space-y-2 text-black1">
-                <li>
-                  از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی
-                  شاپرک مطمئن شوید.
-                </li>
-                <li>
-                  مطمئن شوید مبلغ نمایش‌داده‌شده در صفحه‌ی پرداخت درست باشد.
-                </li>
+                <li>از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی شاپرک مطمئن شوید.</li>
+                <li>مطمئن شوید مبلغ نمایش‌داده‌شده در صفحه‌ی پرداخت درست باشد.</li>
               </ul>
             </Accordion>
           </div>

@@ -9,6 +9,7 @@ import IconCalender from "../../../../assets/icons/authentication/IconCalender";
 import DatePickerModal from "../../../DatePicker";
 import { ThemeContext } from "../../../../context/ThemeContext";
 import { apiRequest } from "../../../../utils/apiClient";
+import useGetKYCInfo from "../../../../hooks/useGetKYCInfo";
 
 type Props = {
   onNext: () => void;
@@ -24,7 +25,6 @@ type Props = {
     };
   };
 };
-
 
 type FormData = {
   name: string;
@@ -42,10 +42,10 @@ type ApiResponse = {
 export default function StepPersonal({ onNext, userInfo }: Props) {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
-
+  const { refetch } = useGetKYCInfo();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { control, handleSubmit, setValue ,setError } = useForm<FormData>({
+  const { control, handleSubmit, setValue, setError } = useForm<FormData>({
     defaultValues: {
       name: "",
       family: "",
@@ -56,33 +56,23 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
   });
 
   // دریافت اطلاعات کاربر برای پر کردن فرم
-useEffect(() => {
-  if (!userInfo?.kyc?.basic) return;
+  useEffect(() => {
+    if (!userInfo?.kyc?.basic) return;
 
-  const basic = userInfo.kyc.basic;
-  const isCompleted =
-    basic.name &&
-    basic.family &&
-    basic.father &&
-    basic.national_code &&
-    basic.date_birth;
+    const basic = userInfo.kyc.basic;
+    const isCompleted = basic.name && basic.family && basic.father && basic.national_code && basic.date_birth;
 
-  if (isCompleted) return onNext(); // مرحله بعد اگر قبلاً کامل شده
+    if (isCompleted) return onNext(); // مرحله بعد اگر قبلاً کامل شده
 
-  setValue("name", basic.name || "");
-  setValue("family", basic.family || "");
-  setValue("father", basic.father || "");
-  setValue("nationalCode", basic.national_code || "");
-  setValue("dateBirth", basic.date_birth || "");
-}, [userInfo, setValue, onNext]);
-
+    setValue("name", basic.name || "");
+    setValue("family", basic.family || "");
+    setValue("father", basic.father || "");
+    setValue("nationalCode", basic.national_code || "");
+    setValue("dateBirth", basic.date_birth || "");
+  }, [userInfo, setValue, onNext]);
 
   // ثبت اطلاعات
-  const submitMutation = useMutation<
-    ApiResponse,
-    AxiosError<{ msg: string }>,
-    FormData
-  >({
+  const submitMutation = useMutation<ApiResponse, AxiosError<{ msg: string }>, FormData>({
     mutationFn: (data) =>
       apiRequest<ApiResponse, FormData>({
         url: "/kyc/basic/level2",
@@ -90,8 +80,10 @@ useEffect(() => {
         data,
       }),
     onSuccess: (data) => {
-      if (data.status) toast.success("اطلاعات با موفقیت ثبت شد.");
-      else if (data.msg?.includes("قبلا این اطلاعات را ثبت کرده‌اید")) {
+      if (data.status) {
+        toast.success("اطلاعات با موفقیت ثبت شد.");
+        refetch();
+      } else if (data.msg?.includes("قبلا این اطلاعات را ثبت کرده‌اید")) {
         toast.info("اطلاعات شما قبلا ثبت شده است.");
       } else toast.error(data.msg || "خطا در ثبت اطلاعات.");
 
@@ -99,35 +91,33 @@ useEffect(() => {
     },
     onError: (error) => {
       const msg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
-      if (msg.includes("قبلا این اطلاعات را ثبت کرده اید"))
-        toast.info("اطلاعات شما قبلا ثبت شده است.");
+      if (msg.includes("قبلا این اطلاعات را ثبت کرده اید")) toast.info("اطلاعات شما قبلا ثبت شده است.");
       else toast.error(msg);
       onNext();
     },
   });
 
- const onSubmit = (data: FormData) => {
-  // بررسی تاریخ
-  const dateRegex = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
-  if (!dateRegex.test(data.dateBirth)) {
-    setError("dateBirth", { message: "فرمت تاریخ تولد نادرست است (مثلاً 1375/05/20)" });
-    return;
-  }
+  const onSubmit = (data: FormData) => {
+    // بررسی تاریخ
+    const dateRegex = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
+    if (!dateRegex.test(data.dateBirth)) {
+      setError("dateBirth", { message: "فرمت تاریخ تولد نادرست است (مثلاً 1375/05/20)" });
+      return;
+    }
 
-  // محاسبه سن از تاریخ تولد شمسی (فرض بر اینکه سال شمسی وارد می‌شود)
-  const [year] = data.dateBirth.split("/").map(Number);
-  const currentYear = new Date().getFullYear() - 621; // تبدیل تقریبی به شمسی
-  const age = currentYear - year;
+    // محاسبه سن از تاریخ تولد شمسی (فرض بر اینکه سال شمسی وارد می‌شود)
+    const [year] = data.dateBirth.split("/").map(Number);
+    const currentYear = new Date().getFullYear() - 621; // تبدیل تقریبی به شمسی
+    const age = currentYear - year;
 
-  if (age < 18) {
-    setError("dateBirth", { message: "حداقل سن مجاز ۱۸ سال است." });
-    return;
-  }
+    if (age < 18) {
+      setError("dateBirth", { message: "حداقل سن مجاز ۱۸ سال است." });
+      return;
+    }
 
-  // اگر همه چیز اوکی بود
-  submitMutation.mutate(data);
-};
-
+    // اگر همه چیز اوکی بود
+    submitMutation.mutate(data);
+  };
 
   const formFields = [
     { name: "family", label: "نام خانوادگی" },
@@ -139,10 +129,7 @@ useEffect(() => {
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="lg:bg-gray9 lg:rounded-2xl lg:px-8 px-1"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="lg:bg-gray9 lg:rounded-2xl lg:px-8 px-1">
         <StepperComponent currentStep={1} />
 
         <div className="space-y-7 lg:space-y-8 my-14">
@@ -153,14 +140,7 @@ useEffect(() => {
                 name={field.name as "name" | "family"}
                 control={control}
                 rules={{ required: `${field.label} الزامی است` }}
-                render={({ field: f, fieldState }) => (
-                  <TextField
-                    {...f}
-                    label={field.label}
-                    error={fieldState.error?.message}
-                    labelBgClass="lg:bg-gray9 bg-gray38"
-                  />
-                )}
+                render={({ field: f, fieldState }) => <TextField {...f} label={field.label} error={fieldState.error?.message} labelBgClass="lg:bg-gray9 bg-gray38" />}
               />
             ))}
           </div>
@@ -175,14 +155,15 @@ useEffect(() => {
                   rules={{ required: "تاریخ تولد الزامی است" }}
                   render={({ field: f, fieldState }) => (
                     <TextField
-                      label={field.label}
+                      label="تاریخ تولد"
                       value={f.value || ""}
-                      onChange={f.onChange}
-                      onBlur={f.onBlur}
+                      onChange={() => {}}
+                      placeholder="تاریخ تولد خود را انتخاب کنید"
                       labelBgClass="lg:bg-gray9 bg-gray38"
+                      alwaysLabelOnTop={true}
                       error={fieldState.error?.message}
                       icon={
-                        <span className="icon-wrapper w-5 h-5 text-gray5">
+                        <span className="icon-wrapper w-5 h-5 text-gray5 cursor-pointer">
                           <IconCalender />
                         </span>
                       }
@@ -206,14 +187,7 @@ useEffect(() => {
                       message: "کد ملی باید ۱۰ رقم باشد",
                     },
                   }}
-                  render={({ field: f, fieldState }) => (
-                    <TextField
-                      {...f}
-                      label={field.label}
-                      error={fieldState.error?.message}
-                      labelBgClass="lg:bg-gray9 bg-gray38"
-                    />
-                  )}
+                  render={({ field: f, fieldState }) => <TextField {...f} label={field.label} error={fieldState.error?.message} labelBgClass="lg:bg-gray9 bg-gray38" />}
                 />
               );
             }
@@ -224,24 +198,13 @@ useEffect(() => {
                 name={field.name as "father"}
                 control={control}
                 rules={{ required: `${field.label} الزامی است` }}
-                render={({ field: f, fieldState }) => (
-                  <TextField
-                    {...f}
-                    label={field.label}
-                    error={fieldState.error?.message}
-                    labelBgClass="lg:bg-gray9 bg-gray38"
-                  />
-                )}
+                render={({ field: f, fieldState }) => <TextField {...f} label={field.label} error={fieldState.error?.message} labelBgClass="lg:bg-gray9 bg-gray38" />}
               />
             );
           })}
         </div>
 
-        <button
-          type="submit"
-          className="mt-1 text-lg font-bold mb-8 bg-blue1 w-full h-[56px] rounded-lg text-white2"
-          disabled={submitMutation.isPending}
-        >
+        <button type="submit" className="mt-1 text-lg font-bold mb-8 bg-blue1 w-full h-[56px] rounded-lg text-white2" disabled={submitMutation.isPending}>
           {submitMutation.isPending ? "در حال ثبت..." : "تأیید"}
         </button>
       </form>
@@ -259,7 +222,3 @@ useEffect(() => {
     </div>
   );
 }
-
-
-
-

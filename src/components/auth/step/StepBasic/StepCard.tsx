@@ -3,13 +3,15 @@ import StepperComponent from "../Stepper";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import TextField from "../../../InputField/TextField";
-import { useState, useEffect } from "react";
+import { useState, } from "react";
 import verify from "../../../../assets/icons/authentication/verify.svg";
 import { Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "../../../../utils/apiClient";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { toPersianDigits } from "../../../Deposit/CardToCardTransfer";
+import useGetKYCInfo from "../../../../hooks/useGetKYCInfo";
 
 type Props = {
   onNext: () => void;
@@ -42,9 +44,9 @@ const formatCardNumber = (digits: string): string => {
   return parts.join("-");
 };
 
-export default function StepCard({ onNext, userInfo }: Props) {
+export default function StepCard({ onNext,  }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { refetch } = useGetKYCInfo();
   const {
     control,
     handleSubmit,
@@ -57,11 +59,11 @@ export default function StepCard({ onNext, userInfo }: Props) {
   });
   const watchCardNumber = watch("CardNumber");
   const watchCardComplete = (watchCardNumber || "").replace(/\D/g, "").length === 16;
-  useEffect(() => {
-    if (userInfo?.kyc?.basic?.cardbank) {
-      setIsModalOpen(true);
-    }
-  }, [userInfo]);
+  // useEffect(() => {
+  //   if (userInfo?.kyc?.basic?.cardbank) {
+  //     setIsModalOpen(true);
+  //   }
+  // }, [userInfo]);
 
   const submitCardMutation = useMutation({
     mutationFn: (data: FormValues) => {
@@ -75,6 +77,7 @@ export default function StepCard({ onNext, userInfo }: Props) {
     onSuccess: (data) => {
       if (data.status) {
         toast.success("شماره کارت با موفقیت ثبت شد.");
+        refetch();
         setIsModalOpen(true);
         onNext();
       } else {
@@ -121,12 +124,13 @@ export default function StepCard({ onNext, userInfo }: Props) {
                   type="text"
                   error={errors.CardNumber?.message || (submitCardMutation.error as any)?.response?.data?.msg}
                   inputRef={inputRef}
-                  value={formatCardNumber(field.value || "")}
+                  value={toPersianDigits(formatCardNumber(field.value || ""))}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const input = e.target;
-                    const raw = input.value.replace(/\D/g, "").slice(0, 16);
-                    field.onChange(raw);
-                    input.value = formatCardNumber(raw);
+                    const raw = input.value.replace(/[^\d۰-۹]/g, "").slice(0, 16);
+                    const englishDigits = raw.replace(/[۰-۹]/g, (d) => "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]);
+                    field.onChange(englishDigits);
+                    input.value = toPersianDigits(formatCardNumber(englishDigits));
                   }}
                   onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                     if (e.key === "Backspace") {
@@ -136,7 +140,8 @@ export default function StepCard({ onNext, userInfo }: Props) {
                         const newVal = current.slice(0, -1);
                         field.onChange(newVal);
                         const input = e.target as HTMLInputElement;
-                        input.value = formatCardNumber(newVal);
+                        // input.value = formatCardNumber(newVal);
+                        input.value = toPersianDigits(formatCardNumber(newVal));
                       }
                     }
                   }}
@@ -149,8 +154,7 @@ export default function StepCard({ onNext, userInfo }: Props) {
                   }}
                   placeholder="____-____-____-____"
                   inputMode="numeric"
-                  // autoComplete="off"
-                  className="input-card text-center font-mono tracking-widest"
+                  className="input-card text-center tracking-widest "
                   labelBgClass="lg:bg-gray9 bg-gray38"
                 />
               );
@@ -169,7 +173,7 @@ export default function StepCard({ onNext, userInfo }: Props) {
               type="submit"
               disabled={submitCardMutation.isPending || !watchCardComplete}
               className={`lg:w-1/2 w-full h-[40px] lg:h-[56px] bg-blue2 lg:text-xl text-base font-bold text-white2 rounded-lg transition-all
-    ${submitCardMutation.isPending || !watchCardComplete ? "opacity-65 cursor-not-allowed" : "opacity-100 hover:bg-blue1"}`}
+               ${submitCardMutation.isPending || !watchCardComplete ? "opacity-65 cursor-not-allowed" : "opacity-100 hover:bg-blue1"}`}
             >
               {submitCardMutation.isPending ? "در حال تایید..." : "تایید"}
             </button>

@@ -26,7 +26,7 @@ const AuthenticationLeft: React.FC<AuthenticationLeftProps> = ({  text1, text2, 
       />
       <div className="flex gap-4 flex-col">
         <h3 className="text-center text-2xl text-black1 font-bold">{text1}</h3>
-        <p className="text-center text-lg text-black1 font-medium">{text2}</p>
+        <p className="text-center text-lg text-black1 font-medium w-full ">{text2}</p>
       </div>
     </div>
   );

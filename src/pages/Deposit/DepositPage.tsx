@@ -409,7 +409,7 @@ export default function DepositPage({
                 }`}
               >
                 <div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <div className="bg-blue14 p-3 rounded-lg">
                       <span className="icon-wrapper w-7 h-7 text-blue2">
                         {option.Icon}
