@@ -77,7 +77,13 @@ export interface FiatDetail {
   currencyIcon?: string;
   currencySymbol?: string;
 }
-export type TransactionDetail = OrderDetail | CryptoDetail | FiatDetail;
+export type TransactionDetail = (OrderDetail | CryptoDetail | FiatDetail) & {
+  isFont?: boolean;
+  color?: string | null;
+  icon?: string | null;
+  symbol?: string | null;
+};
+
 interface TransactionModalProps {
   tx: TransactionDetail;
   onClose: () => void;
@@ -147,6 +153,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
       />
     );
   };
+
 
 
 

@@ -26,21 +26,46 @@ const SupportCallModal: React.FC<SupportCallModalProps> = ({ isOpen, onClose }) 
 
   if (!isOpen) return null;
 
- const onFormSubmit = async (data: SupportCallFormInputs) => {
+//  const onFormSubmit = async (data: SupportCallFormInputs) => {
+//   try {
+//     setLoading(true);
+
+//   await apiRequest<{ status: boolean; msg?: string }, Record<string, FormDataValue>>({
+//       url: "/ticket/call",
+//       method: "POST",
+//       data: data as unknown as Record<string, FormDataValue>,
+//     });
+//   } catch (err: any) {
+//     toast.error(err?.response?.data?.msg || "ارتباط با سرور برقرار نشد");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+const onFormSubmit = async (data: SupportCallFormInputs) => {
   try {
     setLoading(true);
 
-  await apiRequest<{ status: boolean; msg?: string }, Record<string, FormDataValue>>({
+    const res = await apiRequest<{ status: boolean; msg?: string }, Record<string, FormDataValue>>({
       url: "/ticket/call",
       method: "POST",
       data: data as unknown as Record<string, FormDataValue>,
     });
+
+    // نمایش پیغام موفقیت اگر status=true
+    if (res.status) {
+      toast.success(res.msg || "درخواست شما با موفقیت ارسال شد");
+      reset(); // پاک کردن فرم
+      onClose(); // بستن مودال
+    } else {
+      toast.error(res.msg || "خطایی رخ داده است");
+    }
   } catch (err: any) {
     toast.error(err?.response?.data?.msg || "ارتباط با سرور برقرار نشد");
   } finally {
     setLoading(false);
   }
 };
+
 
   return (
  
