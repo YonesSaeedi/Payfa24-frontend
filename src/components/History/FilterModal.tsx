@@ -11,8 +11,6 @@ interface OptionType {
   name: string;
   value: string;
 }
-
-
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const [openDropdown, setOpenDropdown] = useState<string>("");
  const [selectedFilters, setSelectedFilters] = useState<{
@@ -24,10 +22,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   type: null,
   sort: null,
 });
-
-
-  if (!isOpen) return null;
-
+if (!isOpen) return null;
 
 const handleSelect = (id: string, option: OptionType) => {
   setSelectedFilters((prev) => ({ ...prev, [id]: option }));
@@ -62,11 +57,7 @@ const handleClearFilters = () => {
           <FilterDropdown
             id="status"
             label="وضعیت"
-         options={[
-    { id: 1, name: "همه", value: "all" },
-    { id: 2, name: "فعال", value: "active" },
-    { id: 3, name: "غیرفعال", value: "inactive" },
-  ]}
+            options={[{ id: 1, name: "همه", value: "all" },{ id: 2, name: "فعال", value: "active" },{ id: 3, name: "غیرفعال", value: "inactive" },]}
             selected={selectedFilters.status}
             isOpen={openDropdown === "status"}
             onToggle={(id) => setOpenDropdown(openDropdown === id ? "" : id)}

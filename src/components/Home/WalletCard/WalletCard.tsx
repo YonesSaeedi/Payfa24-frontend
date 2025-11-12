@@ -67,14 +67,13 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
   const displayBalance = selectedCurrency === "tether" ? balance?.crypto?.balance : balance?.toman?.balance;
 
   const shownBalance = showBalance ? formatPersianDigits(displayBalance ?? 0) : formatPersianDigits(1234567);
-
-  // 🔹 تغییر همزمان blur و مقدار
+ 
   const handleToggleBalance = () => {
     setIsAnimating(true);
     setTimeout(() => {
       setShowBalance((prev) => !prev);
       setIsAnimating(false);
-    }, 150); // تأخیر کوچیک برای همزمان شدن انیمیشن blur و تغییر عدد
+    }, 150); 
   };
 
   return (

@@ -51,6 +51,9 @@ export interface CryptoDetail {
   faName?: string;
   currencyIcon?: string;
   currencySymbol?: string;
+  color?: string | null;
+  isFont?: boolean;
+  icon?: string | null;
 }
 export interface FiatDetail {
   id: string;
@@ -109,7 +112,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
             url = `/history/fiat/${tx.id}`;
             break;
         }
-        if (tx.source === "order") {
+        if (tx.source === "order") { 
           await apiRequest<{ order: OrderDetail }>({ url, method: "GET" });
           if (tx.source === "order") {
             const res = await apiRequest<{ order: OrderDetail }>({ url, method: "GET" });
@@ -142,17 +145,33 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
 
     fetchDetails();
   }, [tx]);
-  const renderIcon = (size = "w-10 h-10") => {
-    if (!tx.image) return null;
+  const renderIcon = (size = "w-20 h-20") => {
+  if (!tx) return null;
+
+  if (tx.isFont) {
     return (
-      <img
-        src={tx.image}
-        alt={tx.faName || ""}
-        className={`${size} rounded-full object-cover`}
-        onError={(e) => ((e.currentTarget as HTMLImageElement).src = "/images/fallback-coin.png")}
+      <i
+        className={`cf cf-${tx.symbol?.toLowerCase()} ${size} text-[55px]`}
+        style={{ color: tx.color ?? "" }}
       />
     );
-  };
+  }
+
+  return (
+    <img
+      src={
+        tx.icon
+          ? `https://api.payfa24.org/images/currency/${tx.icon}`
+          : tx.image || "/images/fallback-coin.png"
+      }
+      alt={tx.symbol || ""}
+      className={`${size} rounded-full object-cover`}
+      onError={(e) => {
+        (e.currentTarget as HTMLImageElement).src = "/images/fallback-coin.png";
+      }}
+    />
+  );
+};
 
 
 
@@ -182,7 +201,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
               <div className="h-4 w-20 rounded-md skeleton-bg mx-auto" />
               <div className="grid grid-cols-1 gap-3 mt-6 w-full">
                {(() => {
-  const widths = [
+               const widths = [
     { label: "20%", value: "30%" },
     { label: "20%", value: "35%" },
     { label: "30%", value: "30%" },
@@ -192,7 +211,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
   ];
 
   return Array.from({ length: 9 }).map((_, i) => {
-    const { label, value } = widths[i % widths.length]; // چرخشی استفاده کن
+    const { label, value } = widths[i % widths.length]; 
     return (
       <div key={i} className="flex justify-between items-center pb-2">
         <div
@@ -214,10 +233,15 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
           ) : detail ? (
             <>
               <div className="flex flex-col items-center mb-10 ">
-                {renderIcon("w-20 h-20")}
-                <h3 className="font-medium text-[24px] mt-3 text-black1">{tx.faName || ("name" in detail ? detail.name : undefined) || "ارز نامشخص"}</h3>
-                {"symbol" in detail && detail.symbol && <span className="text-sm text-gray-500 dark:text-gray-400">{detail.symbol}</span>}
-              </div>
+  {renderIcon("w-20 h-20")}
+  <h3 className="font-medium text-[24px] mt-3 text-black1">
+    {tx.faName || ("name" in detail ? detail.name : undefined) || "ارز نامشخص"}
+  </h3>
+  {"symbol" in detail && detail.symbol && (
+    <span className="text-sm text-gray-500 dark:text-gray-400">{detail.symbol}</span>
+  )}
+</div>
+
               <div className="grid grid-cols-1 gap-6 text-sm">
                 {detail.status && <DetailRow label="وضعیت" value={<StatusBadge text={transactionStatusMap[detail.status] || detail.status} />} />}
                 {detail.id && <DetailRow label="شناسه تراکنش" value={convertDigitsToPersian(`${detail.id}`)} />}

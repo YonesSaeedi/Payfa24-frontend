@@ -15,15 +15,11 @@ const TransactionLayout = () => {
         <div className="bg-backgroundMain min-h-screen w-full">
           <div className="container-style flex flex-col  lg:gap-12">
            <div className="mt-7 lg:mt-4 flex flex-row-reverse items-center justify-between px-4">
-  <BreadcrumbNavigation />
-  <span
-    className="w-6 h-6 icon-wrapper text-gray12 lg:hidden cursor-pointer"
-    onClick={() => setIsFilterModalOpen(true)}
-  >
-    <IconFilterTable />
-  </span>
-</div>
-
+              <BreadcrumbNavigation />
+            <span className="w-6 h-6 icon-wrapper text-gray12 lg:hidden cursor-pointer" onClick={() => setIsFilterModalOpen(true)}>
+                <IconFilterTable />
+         </span>
+        </div>
             <Outlet />
           </div>
         </div>

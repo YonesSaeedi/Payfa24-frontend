@@ -26,7 +26,6 @@ import MarketViewPage from "../pages/market-view/MarketViewPage";
 import TomanPage from "../components/History/TomanPage";
 import OrderPage from "../components/History/OrderPage";
 import RecaptchaWrapper from "../components/RecaptchaWrapper";
-import DepositForm from "../components/Deposit/DepositForm";
 import ConnectedDevicesLayout from "../pages/ConnectedDevices/ConnectedDevicesLayout";
 import UserAccount from "../pages/Profile/UserAccount";
 import CreateTicketPage from "../pages/Ticket/CreateTicketPage";
@@ -66,7 +65,7 @@ export default function AppRouter() {
         <Route path={ROUTES.WITHDRAWAL_FIAT} element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
         <Route path={ROUTES.WITHDRAWAL_CRYPTO} element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
         <Route path={ROUTES.DEPOSIT} element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
-        <Route path={ROUTES.DEPOSIT_GATEWAY} element={<ProtectedRoute><DepositForm minDeposit={1000} maxDeposit={100000000} /></ProtectedRoute>} />
+        {/* <Route path={ROUTES.DEPOSIT_GATEWAY} element={<ProtectedRoute><DepositForm minDeposit={1000} maxDeposit={100000000} /></ProtectedRoute>} /> */}
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ProtectedRoute><ConnectedDevicesLayout /></ProtectedRoute>} />
         <Route path={ROUTES.BANK_CARDS} element={<ProtectedRoute><BankCardManager /></ProtectedRoute>} />
         <Route path={ROUTES.TICKET.ROOT} element={<ProtectedRoute><TicketsRoute /></ProtectedRoute>} />
