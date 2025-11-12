@@ -17,6 +17,7 @@ import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 // --- Interface ---
 interface WalletFiatData {
@@ -69,6 +70,7 @@ interface DepositPageProps {
 }
 
 export default function DepositPage({
+  
   selected = "gateway",
 }: DepositPageProps) {
   const [started, setStarted] = useState<boolean>(false);
@@ -89,9 +91,38 @@ export default function DepositPage({
     }
   });
 
+  /////////////////simin-navigate
+   const location = useLocation(); 
+   useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const type = params.get("type"); // gateway, identifier, card, receipt, wallet, txid
+  switch (type) {
+    case "identifier":
+      setSelectedOption("Identifier");
+      break;
+    case "card":
+      setSelectedOption("CardToCard");
+      break;
+    case "receipt":
+      setSelectedOption("Bank Receipt:");
+      break;
+    case "wallet":
+      setSelectedOption("DedicatedWallet");
+      break;
+    case "txid":
+      setSelectedOption("DepositWithTxID");
+      break;
+    case "gateway":
+      setSelectedOption("closeDeal");
+      break;
+    default:
+      break;
+  }
+}, [location.search]);
+  
+
   const [fiatData, setFiatData] = useState<WalletFiatData | null>(null);
   const [loading, setLoading] = useState(true);
-
   // --- برای شناسه واریز ---
   const [identifierData, setIdentifierData] =
     useState<DepositIdentifierResponse | null>(null);

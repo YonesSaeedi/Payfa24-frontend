@@ -39,7 +39,6 @@ const TableSkeleton = () => (
     ))}
   </div>
 );
-
 const OrderPage: React.FC = () => {
   const [responseData, setResponseData] = useState<TypeOrderHistory[]>([]);
   const [selectedStatus, setSelectedStatus] = useState(statusOrderOptions[0]);
@@ -51,8 +50,6 @@ const OrderPage: React.FC = () => {
   const { data: generalData } = useGetGeneralInfo();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const handleToggle = (id: string) => setOpenDropdown((prev) => (prev === id ? null : id));
-
- 
   const mappedGeneralData: CryptoDataMap = useMemo(() => {
     return (
       generalData?.cryptocurrency?.reduce((acc, item) => {
@@ -61,8 +58,6 @@ const OrderPage: React.FC = () => {
       }, {} as CryptoDataMap) ?? {}
     );
   }, [generalData]);
-
-  // دریافت تراکنش‌ها
   useEffect(() => {
     const fetchTransactionData = async () => {
       setIsLoading(true);
@@ -117,8 +112,6 @@ const OrderPage: React.FC = () => {
       };
     });
   }, [responseData, mappedGeneralData]);
-
-  // باز کردن مودال جزئیات
   const handleOpenModal = (tx: MergedOrderHistory) => {
    setSelectedTx({
   ...selectedTx,
@@ -298,7 +291,6 @@ const OrderPage: React.FC = () => {
       </div>
 
       {mergedTransactions.length > 0 && !isLoading && <Pagination current={page} total={Math.ceil((totalPages ?? 0) / 15)} onPageChange={setPage} />}
-
       {selectedTx && <TransactionModal key={selectedTx.id} tx={selectedTx} onClose={() => setSelectedTx(null)} />}
     </div>
   );
