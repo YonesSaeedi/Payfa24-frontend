@@ -205,8 +205,11 @@ export default function DepositDedicatedWallet() {
       icon: crypto.icon || "",
       network: crypto.network || [],
     });
-    setValue("currency", crypto.symbol); // درست
+    setValue("currency", crypto.symbol);
     setIsCryptoListModalOpen(false);
+
+    setShowWalletInfo(false);
+    setWalletAddress(null);
   };
 
   const handleSubmit = async () => {
@@ -292,7 +295,7 @@ export default function DepositDedicatedWallet() {
         <div className="flex justify-between  mb-10">
           <span className="text-sm text-gray5 font-bold">موجودی {selectedCurrency.name || selectedCurrency.symbol}</span>
           <span className="text-sm text-black0">
-            {formatPersianDigits(selectedCurrency.balance ?? "0")} {selectedCurrency.symbol}
+            {formatPersianDigits(selectedCurrency.balance ?? "0")}{selectedCurrency.symbol}
           </span>
         </div>
       )}
@@ -307,7 +310,11 @@ export default function DepositDedicatedWallet() {
             placeholder={selectedNetworkLabel || "انتخاب شبکه"}
             label="انتخاب شبکه"
             value={field.value}
-            onChange={field.onChange}
+            onChange={(val) => {
+              field.onChange(val);
+              setShowWalletInfo(false);
+              setWalletAddress(null);
+            }}
             options={networkOptions.map((option) => ({
               value: option.value,
               label: option.label,

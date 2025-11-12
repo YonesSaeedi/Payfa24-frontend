@@ -8,7 +8,7 @@ type Props = {
   text2: string;
   step: 0 | 1 | 2;
   setStep: React.Dispatch<React.SetStateAction<0 | 1 | 2>>
-  children: React.ReactNode; // ⬅️ محتوا از Advance.tsx میاد
+  children: React.ReactNode; 
 };
 
 export default function AuthenticationLayoutAdvance({ text1, text2, step, setStep, children, }: Props) {
@@ -18,7 +18,7 @@ export default function AuthenticationLayoutAdvance({ text1, text2, step, setSte
       <div className="w-full  my-7 py-2"><BreadcrumbNavigation /></div>
       <div className="w-full flex flex-col md:flex-row ">
         {/* ستون سمت چپ */}
-        <div className={`w-full h-full  flex items-center justify-center ${step === 0 ? "lg:w-1/2 lg:flex hidden" : "lg:w-full flex"}`}>
+        <div className={`w-full h-full flex items-center justify-center ${step === 0 ? "lg:w-1/2 lg:flex hidden" : "lg:w-full flex"}`}>
           {step === 0 ?
             <AuthenticationLeft step={step} text1={text1} text2={text2} />
             :

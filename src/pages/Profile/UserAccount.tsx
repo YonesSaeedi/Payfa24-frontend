@@ -10,6 +10,7 @@ import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import { Link } from "react-router";
 import IconIdentyBasic from "../../assets/icons/authentication/IconIdentyBasic";
 import { toPersianDigits } from "../../components/Deposit/CardToCardTransfer";
+import IconCheckmark from "../../assets/icons/authentication/IconCheckmark";
 
 // اینجا ارایه ای از ابجکت برای تغییر  جاهاشون ساختم
 const FIELD_ORDER = [
@@ -203,7 +204,7 @@ export default function UserAccount() {
   } else if (userKycLevel === "basic") {
     kycContent = (
       <form className="lg:w-[498px] text-gray15 w-full items-end mb-5 border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 justify-center sm:justify-end">
-        <h1 className="text-right text-blue2 font-medium">سطح ۲ : احراز هویت پیشرفته</h1>
+        <h1 className="text-right text-blue2 font-medium">سطح {toPersianDigits(2)} : احراز هویت پیشرفته</h1>
         <div className="flex flex-row items-center justify-end mt-5">
           <span className="mr-2 text-black1">ثبت مدرک شناسایی</span>
           <span className="icon-wrapper w-7 h-7 text-blue2">
@@ -234,7 +235,7 @@ export default function UserAccount() {
       <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-gray19 px-5 py-4 rounded-lg">
         <div className="flex justify-between w-full items-center">
           <div>
-            <span className="text-base font-medium text-blue2">احراز هویت تکمیل شده است </span>
+            <span className="text-base font-medium text-blue2">احراز هویت کامل انجام شد  </span>
           </div>
           <div className="bg-green9 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-lg items-center justify-center">
             <span className="lg:text-sm text-xs font-medium">احراز شده</span>
@@ -246,13 +247,13 @@ export default function UserAccount() {
         <div>
           <div className="flex flex-row items-center justify-start mt-5">
             <span className="icon-wrapper w-7 h-7 text-blue2">
-              <IconCardIdenty />
+              <IconCheckmark />
             </span>
             <span className="mr-2 text-black1">ثبت مدرک شناسایی</span>
           </div>
           <div className="flex flex-row items-center justify-start">
             <span className="icon-wrapper w-7 h-7 text-blue2">
-              <IdentyIcon />
+              <IconCheckmark />
             </span>
             <span className="mr-2 text-black1">تایید هویت</span>
           </div>
