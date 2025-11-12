@@ -132,7 +132,6 @@ const TomanPage: React.FC = () => {
             onSelect={(_, option) => setSelectedFilterFor(option)}
           />
         </div>
-
         <div className="hidden lg:block">
           <div className="grid grid-cols-7 bg-gray41 text-black1 text-right py-4 px-3 font-medium rounded-lg">
             <div className="px-10">ارز</div>
@@ -143,7 +142,6 @@ const TomanPage: React.FC = () => {
             <div className="text-center">تاریخ و زمان</div>
             <div className="text-center">جزئیات</div>
           </div>
-
           {isLoading ? (
             <SkeletonTable />
           ) : responseData.length > 0 ? (
@@ -166,7 +164,6 @@ const TomanPage: React.FC = () => {
                     <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                   </div>
                   <div className="text-center">{tx.DateTime ? convertDigitsToPersian(tx.DateTime) : "-"}</div>
-
                   <div className="text-blue-600 cursor-pointer text-center font-normal text-[16px]" onClick={() => handleOpenModal(tx)}>
                     جزئیات
                   </div>
