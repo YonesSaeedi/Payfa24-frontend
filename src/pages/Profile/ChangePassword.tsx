@@ -101,8 +101,11 @@ export default function ChangePassword() {
   return (
     <>
       <HeaderLayout>
-        <div className="lg:container-style w-full pt-7 flex gap-10  lg:px-0 flex-col">
+        <div className="lg:container-style w-full   pt-7 flex gap-10 lg:px-0  flex-col">
+          <div className=" lg:px-0 px-4 w-full">
           <BreadcrumbNavigation />
+
+          </div>
           <div className="lg:dark:bg-gray9  w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl pb-10">
             <div className="flex items-center justify-center w-full" dir="rtl">
               <div className="w-full max-w-lg lg:px-8">
