@@ -165,9 +165,9 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
 }, []);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} dir="rtl" className="h-full w-[543px] flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl px-6">
-      <div className="flex flex-col gap-6">
-        <h2 className="text-2xl font-medium text-center text-black1 mt-10 mb-12">ایجاد تیکت جدید</h2>
+    <form onSubmit={handleSubmit(onSubmit)} dir="rtl" className="h-full lg:w-[543px] w-full flex flex-col justify-between lg:bg-gray43 lg:shadow-md rounded-2xl lg:px-6">
+      <div className="flex flex-col gap-5">
+        <h2 className="text-2xl font-medium lg:text-center text-right text-black1 mt-10 lg:mb-12 ">ایجاد تیکت جدید</h2>
 
         {/* عنوان */}
         <div className="flex flex-col gap-1">
@@ -295,7 +295,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
       <button
         type="submit"
         disabled={!isFormComplete || isSubmitting}
-        className={`relative w-full mb-10 py-3 px-4 rounded-lg transition mt-[113px] overflow-hidden ${
+        className={`relative w-full mb-10 py-3 px-4 rounded-lg transition lg:mt-[113px] mt-[48px] overflow-hidden ${
           !isFormComplete || isSubmitting
             ? "bg-gray12 cursor-not-allowed text-white"
             : "bg-blue2 hover:bg-blue-700 text-white"

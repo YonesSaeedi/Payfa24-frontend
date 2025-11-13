@@ -21,9 +21,9 @@ const CreateTicketPage: React.FC = () => {
     <div>
       <div className={`${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} transition`}>
         <div>
-         <div className="flex flex-col lg:flex-row justify-center items-stretch gap-[40px] lg:gap-[85px] pb-4">
+         <div className="flex flex-col lg:flex-row justify-center items-stretch  lg:gap-[85px] pb-4 ">
   <div className="order-2 lg:order-2 w-full lg:w-[652px] flex flex-col pb-14">
-    <h3 className="text-lg font-semibold text-right  text-black0 pb-12 pt-2">
+    <h3 className="text-lg font-semibold text-right  text-black0 pb-3 pt-2">
       سوالات متداول پیگیری سفارش
     </h3>
     <div dir="rtl" className="flex-1">
@@ -32,7 +32,7 @@ const CreateTicketPage: React.FC = () => {
   </div>
 
   <div className="order-1 lg:order-1 w-full lg:w-[543px] flex flex-col">
-    <div className="flex lg:hidden w-full justify-center">
+    <div className="flex lg:hidden w-full ">
       <TicketForm />
     </div>
     <div className="hidden lg:flex w-full  bg-transparent">

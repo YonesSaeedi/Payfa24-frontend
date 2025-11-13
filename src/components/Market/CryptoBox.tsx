@@ -71,7 +71,7 @@ const skeletonArray: number[] = Array.from({ length: 5 }, (_, i) => i);
           <div className="w-full flex justify-end">
             <span
               className={`rounded-md text-xs font-bold w-[68px] h-[30px] mt-2 flex items-center justify-center px-2 ${
-                item.isPositive ? "bg-green9 text-green-600" : "bg-red7 text-red-600"
+                item.isPositive ? "bg-green10 text-green9" : "bg-red7 text-red6"
               }`}
             >
               {formatPersianDigits(Math.abs(item.change).toFixed(2))}%{item.isPositive ? "+" : "-"}

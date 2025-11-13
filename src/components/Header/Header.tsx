@@ -153,7 +153,7 @@ export default function Header() {
             {themeContext.theme === "dark" ? <IconSun /> : <MoonIcon />}
           </button>
         </div>
-        <div className="flex items-center gap-4 lg:gap-6">
+        <div className="flex items-center gap-4 lg:gap-5">
           <ul className="hidden lg:flex space-x-6 xl:space-x-8 text-gray1">
             <li className="relative pr-4">
               <button
@@ -245,7 +245,7 @@ export default function Header() {
               </Link>
             </li>
           </ul>
-          <div className="text-blue-600 font-bold flex items-center gap-2 md:gap-3">
+          <div className="text-blue2 font-bold flex items-center gap-2 md:gap-3">
             <Link to="/" className="flex items-center">
               <img src={pfIcon} alt="Logo" className="w-6 h-6 md:w-7 md:h-7" />
               <img
@@ -256,7 +256,7 @@ export default function Header() {
             </Link>
           </div>
           <button
-            className="lg:hidden flex items-center justify-center w-8 h-8"
+            className="lg:hidden flex items-center justify-center w-6 h-6"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle Menu"
           >

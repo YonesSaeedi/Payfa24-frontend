@@ -121,6 +121,8 @@ const CryptoWithdrawForm: FC = () => {
   const { data: userData } = useGetUser();
   const [isDataLoading, setIsDataLoading] = useState(true);
   const userMobile = userData?.user?.mobile || "شماره شما";
+  console.log("🔹 mergedCryptosData:", mergedCryptosData);
+console.log("🔹 isCryptoListLoading:", isCryptoListLoading);
   const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
     setCrypto(currency.symbol);
     setCurrentCryptoCurrency(currency);
@@ -429,13 +431,10 @@ setWithdrawData({
     }
   };
 
-  // useEffect(() => {
-  //   if (!crypto && mergedCryptosData?.length > 0) {
-  //     const firstCoin = mergedCryptosData[0];
-  //     setCrypto(firstCoin.symbol);
-  //     setCurrentCryptoCurrency(firstCoin);
-  //   }
-  // }, [mergedCryptosData, crypto]);
+ const toPersianDigits = (num: string | number) => {
+  return num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
+};
+
 
   return (
     <>
@@ -444,7 +443,7 @@ setWithdrawData({
         className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray44 flex flex-col justify-between  overflow-y-auto lg:border lg:border-gray26"
       >
         <div>
-          {/* 🔹 بخش ویدیو آموزشی */}
+         
           <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex items-center gap-2  justify-between">
             <div className="flex flex-row">
               <span className="w-6 h-6 icon-wrapper text-blue17">
@@ -458,9 +457,9 @@ setWithdrawData({
             </span>
           </div>
 
-          {/* 🔹 تب‌ها */}
+       
           <div dir="rtl" className="flex mb-6 ">
-            {/*تب "برداشت از کیف پول"*/}
+      
             <button
               type="button"
               onClick={() => setActiveTab("withdraw")}
@@ -470,7 +469,7 @@ setWithdrawData({
               برداشت از کیف پول
             </button>
 
-            {/*تب "انتقال به کاربر پی فا"*/}
+          
             <button
               type="button"
               onClick={() => setActiveTab("transfer")}
@@ -481,10 +480,10 @@ setWithdrawData({
             </button>
           </div>
 
-          {/* 🔹 محتوای تب برداشت از کیف پول */}
+     
           {activeTab === "withdraw" && (
             <div dir="rtl" className="mb-6 relative">
-              {/* انتخاب رمز ارز*/}
+             
               <div className="relative w-full mb-6">
                 <button
                   type="button"
@@ -540,27 +539,29 @@ setWithdrawData({
               ) : (
                 <div className="w-full border rounded-lg p-3 text-center text-gray-500 border-gray12 mb-6">ابتدا رمز ارز مورد نظر را انتخاب کنید</div>
               )}
-
-              {/* مقدار برداشت */}
               {selectedNetworkId && (
                 <div className="mt-4 relative z-10 flex flex-col gap-6">
                   <div>
                     <FloatingInput label="مقدار" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" className="border border-gray12 mb-6" />
-                    {/* 🔹 توضیحات زیر input */}
+                    
                   <div className="text-md text-gray5 mt-3 space-y-2">
-  {/* 🔹 ردیف اول: موجودی قابل برداشت */}
+ 
   <div className="flex items-center justify-between mb-4">
     <span>موجودی قابل برداشت</span>
     {isDataLoading ? (
       <span className="skeleton-bg h-5 w-24 lg:w-32 rounded"></span>
     ) : (
       <span className="font-medium text-black0">
-        {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toFixed(8)} {crypto}
-      </span>
+  {toPersianDigits(
+    parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toFixed(8)
+  )}
+  {crypto}
+</span>
+
     )}
   </div>
 
-  {/* 🔹 ردیف دوم: مقدار برداشت روزانه */}
+
   <div className="flex items-center justify-between">
     <span>مقدار برداشت روزانه معادل</span>
     {isDataLoading ? (
@@ -572,7 +573,7 @@ setWithdrawData({
     )}
   </div>
 
-  {/* 🔹 ردیف سوم: حداقل مجاز برداشت */}
+
   <div className="flex items-center justify-between mb-2">
     <span>حداقل مجاز برداشت</span>
     {isDataLoading ? (
@@ -586,7 +587,7 @@ setWithdrawData({
 </div>
 
                   </div>
-                  {/* آدرس مقصد */}
+               
                   <div className="pt-2">
                     <FloatingInput
                       label="آدرس کیف پول مقصد"
@@ -598,7 +599,6 @@ setWithdrawData({
                     <p className="text-xs text-gray5 mt-2">با درج کردن آدرس اشتباه ممکن است باعث از دست رفتن دارایی شما شود.</p>
                   </div>
 
-                  {/* فقط اگر شبکه نیاز به Tag/Memo دارد */}
                   {selectedNetwork?.tag === 1 && (
                     <div>
                       <FloatingInput label="آدرس ممو" value={tag} onChange={(e) => setTag(e.target.value)} type="text" />
@@ -608,10 +608,10 @@ setWithdrawData({
               )}
             </div>
           )}
-          {/* 🔹 محتوای تب انتقال به کاربر پی‌فا */}
+          
           {activeTab === "transfer" && (
             <div dir="rtl" className="mb-6 relative">
-              {/* انتخاب رمز ارز 1-*/}
+          
               <div className="relative w-full mb-6">
                 <button
                   type="button"
@@ -650,12 +650,12 @@ setWithdrawData({
                   انتخاب ارز
                 </label>
               </div>
-              {/* مقدار برداشت */}
+             
 
               <div className="mt-4 relative z-10 flex flex-col gap-6">
                 <div>
                   <FloatingInput label="مقدار" value={amount} onChange={(e) => setAmount(e.target.value)} type="number" className="border border-gray12 mb-6" />
-                  {/* 🔹 توضیحات زیر input */}
+               
                   <div className="text-md text-gray5 mt-3 space-y-2">
                     <div className="flex items-center justify-between mb-4">
                       <span>موجودی قابل برداشت</span>
@@ -669,7 +669,7 @@ setWithdrawData({
                     </div>
                   </div>
                 </div>
-                {/* موبایل یا ایمیل دریافت کننده */}
+               
                 <div className="pt-4">
                   <FloatingInput
                     label="موبایل یا ایمیل دریافت کننده"
@@ -685,7 +685,7 @@ setWithdrawData({
           )}
         </div>
         <div>
-          {/* 🔹 دکمه تایید */}
+         
           {(activeTab === "withdraw" || activeTab === "transfer") && (
             <div>
               <button
@@ -700,7 +700,7 @@ setWithdrawData({
               </button>
             </div>
           )}
-          {/* 🔹راهنمای برداشت رمز ارز*/}
+        
           <div className="mt-2" dir="ltr">
             <Accordion title="راهنمای برداشت رمز ارز">
               <ul className="list-disc pr-5 space-y-2 text-black1">

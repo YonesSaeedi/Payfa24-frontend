@@ -67,7 +67,7 @@ const IdentityCard: React.FC = () => {
   <div className="hidden rounded-lg lg:flex flex-col items-start justify-center">
   {/* 🔹 باکس وضعیت احراز هویت کامل بالا سمت چپ */}
   {level === "advanced" && (
-    <div className="bg-green9 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center mb-2">
+    <div className="bg-green10 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center mb-2">
       <span className="lg:text-sm text-xs font-medium">احراز شده</span>
       <span className="icon-wrapper w-6 h-6 text-green2">  
          <IconIdentyBasic /> 

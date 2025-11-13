@@ -26,10 +26,16 @@ const TransactionLayout = () => {
       </HeaderLayout>
       {/* مودال فیلتر */}
       <div dir="rtl">
-         <FilterModal
-        isOpen={isFilterModalOpen}
-        onClose={() => setIsFilterModalOpen(false)}
-      />
+       <FilterModal
+  isOpen={isFilterModalOpen}
+  onClose={() => setIsFilterModalOpen(false)}
+  onApplyFilters={(filters) => {
+    console.log("فیلترهای اعمال شده:", filters);
+    // اینجا می‌تونی منطق فیلتر کردن تراکنش‌ها رو بنویسی
+  }}
+  page="transactions"
+/>
+
       </div>
      
     </div>

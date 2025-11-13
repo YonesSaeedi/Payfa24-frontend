@@ -48,16 +48,17 @@ const useMergedCryptoList = () => {
         priceChangePercent: market?.priceChangePercent,
         quoteVolume: market?.quoteVolume,
         type: "crypto",
-        balance_available: coin.balance_available, // ✅ اضافه شد
+        balance_available: coin.balance_available, 
         balance: coin.balance,
       } as CryptoItem
     })
 
-    // 🔹 مرحله ۲: فیلتر فقط ارزهایی با موجودی قابل برداشت
-    merged = merged.filter(
-      (item) => Number(item.balance_available) > 0
-    )
+  console.log("🔹 merged before filtering balance:", merged) // ← اینجا لاگ کن
 
+  // فقط ارزهایی که موجودی دارند
+  merged = merged.filter((item) => Number(item.balance_available) > 0)
+
+  console.log("🔹 merged after filtering balance:", merged) // ← اینجا لاگ کن
    
   }
 
