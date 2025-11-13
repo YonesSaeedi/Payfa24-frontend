@@ -89,7 +89,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           </span>
         )}
 
-        <label htmlFor={inputId} className={`absolute right-3 transition-all duration-200 pointer-events-none px-1 ${labelStyleClass}`}>
+        <label htmlFor={inputId} className={`absolute right-3 transition-all  duration-200 pointer-events-none px-1 ${labelStyleClass}`}>
           {label}
         </label>
 

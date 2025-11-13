@@ -101,16 +101,16 @@ export default function ChangePassword() {
   return (
     <>
       <HeaderLayout>
-        <div className="lg:container-style w-full pt-7 flex gap-10 px-4 lg:px-0 flex-col">
+        <div className="lg:container-style w-full pt-7 flex gap-10  lg:px-0 flex-col">
           <BreadcrumbNavigation />
-          <div className="dark:bg-gray9  w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl pb-10">
+          <div className="lg:dark:bg-gray9  w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl pb-10">
             <div className="flex items-center justify-center w-full" dir="rtl">
               <div className="w-full max-w-lg lg:px-8">
                 <form className="py-8 px-4" onSubmit={handleSubmit(onSubmit)}>
                   <h1 className="text-black1 text-center lg:pt-20 lg:text-xl text-sm font-medium">
                     تغییر رمز عبور
                   </h1>
-                  <p className="font-normal lg:mb-12 mb-8 pt-3 lg:text-base text-sm text-center text-gray5">
+                  <p className="font-normal lg:mb-12 mb-8 lg:pt-3 pt-2 lg:text-base text-sm text-center text-gray5">
                     در این بخش رمزعبور حساب کاربری خود را تغییر دهید.
                   </p>
 
@@ -135,7 +135,7 @@ export default function ChangePassword() {
                           }
                           {...field}
                           disabled={isSubmitting}
-                          labelBgClass="bg-gray9 "
+                          labelBgClass="bg-white3"
                         />
                       )}
                     />
@@ -160,7 +160,7 @@ export default function ChangePassword() {
                           }
                           {...field}
                           disabled={isSubmitting}
-                          labelBgClass="bg-gray9"
+                          labelBgClass="bg-white3"
                         />
                       )}
                     />
@@ -185,13 +185,13 @@ export default function ChangePassword() {
                           }
                           {...field}
                           disabled={isSubmitting}
-                          labelBgClass="bg-gray9"
+                          labelBgClass="bg-white3"
                         />
                       )}
                     />
                   </div>
 
-                  <div className="mt-3 space-y-1 text-xs font-normal text-gray12">
+                  <div className="mt-2 space-y-1 text-xs font-normal text-gray12">
                     <PasswordConditionItem
                       ok={hasMinLength}
                       text="حداقل دارای ۸ کاراکتر"
@@ -213,7 +213,7 @@ export default function ChangePassword() {
                     type="submit"
                     disabled={isSubmitting || !isValid}
                     className={`
-                      w-full h-[48px] rounded-xl lg:mt-14 mt-12  font-bold text-lg 
+                      w-full h-[48px] rounded-lg lg:mt-14 mt-32  font-bold lg:text-lg text-sm
                       transition-all duration-200 ease-in-out text-white2
                    ${isSubmitting || !isValid ? "bg-gray24 " : "bg-blue2"}
                   `}

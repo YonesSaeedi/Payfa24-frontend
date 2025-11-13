@@ -8,6 +8,7 @@ import IconClose from "../../../../assets/icons/Login/IconClose";
 import previewURLImage2 from "../../../../assets/previewURLImage (2).png";
 import { toast } from "react-toastify";
 import { toPersianDigits } from "../../../Deposit/CardToCardTransfer";
+import ArrowLeftIcon from "../../../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 
 type IdentityVerificationProps = {
   handleUploadImageFiles: (key: "idCardImageFile" | "identityVerifyImageFile", imageFile: File | undefined) => void;
@@ -52,6 +53,12 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
     <div className="w-full">
       <form className="lg:bg-gray9 lg:rounded-2xl lg:px-8 w-full">
         <div className="flex flex-col text-right">
+          <div className="relative flex items-center w-full justify-center sm:hidden mb-7 mt-5 text-black0">
+            <span className="text-base font-medium text-center">احراز هویت پیشرفته</span>
+            <span className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 rotate-180 ">
+              <ArrowLeftIcon />
+            </span>
+          </div>
           <StepperComponent currentStep={1} isAdvance={true} />
           <p className="lg:text-xl text-sm font-medium text-black1  lg:flex self-end mb-5">لطفا مدرک شناسایی خود را بارگذاری کنید</p>
           <div className="bg-orange4 flex flex-col pr-6 pl-2 py-4 gap-2 lg:mb-6 mb-4 rounded-lg">
@@ -76,21 +83,13 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
             <div className="flex flex-col items-center justify-center h-48">
               {!previewImage ? (
                 <>
-                  <span className="icon-wrapper lg:w-14 lg:h-14 w-8 h-8 text-gray15">
+                  <span className="icon-wrapper lg:w-14 lg:h-14 w-8 h-8 text-gray15 mb-2">
                     <UploadImage />
                   </span>
                   <p className="text-gray15 lg:text-lg text-sm mt-1 font-normal">بارگذاری تصویر مدرک شناسایی</p>
                 </>
               ) : (
-                <div className="flex justify-center items-center w-full h-full">
-                  <img src={previewImage} alt=" بارگذاری تصویر مدرک شناسایی" className="max-h-48 max-w-full rounded-lg absolute" />
-                  <div>
-                    <span className="icon-wrapper lg:w-14 lg:h-14 w-8 h-8 text-gray15">
-                      <UploadImage />
-                    </span>
-                    <p className="text-gray15 lg:text-lg text-sm mt-1 font-normal">بارگذاری تصویر مدرک شناسایی</p>
-                  </div>
-                </div>
+                <img src={previewImage} alt="بارگذاری تصویر مدرک شناسایی" className="max-h-48 max-w-full rounded-lg object-contain" />
               )}
             </div>
             <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} accept="image/*" disabled={uploadProgress !== null} />

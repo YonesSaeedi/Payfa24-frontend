@@ -218,7 +218,7 @@ export default function UserAccount() {
           </span>
         </div>
         <div dir="rtl">
-          <p className="mt-5 text-right text-black1">دسترسی‌ها :</p>
+          <p className="mt-5 text-right text-black1 mb-1">دسترسی‌ها :</p>
           <ul className="flex flex-col gap-1 list-inside list-disc text-gray5 lg:text-base text-sm">
             <li className="text-right">واریز با کارت به کارت</li>
             <li className="text-right">دسترسی به ارز های دلاری</li>
@@ -245,7 +245,7 @@ export default function UserAccount() {
           </div>
         </div>
         <div>
-          <div className="flex flex-row items-center justify-start mt-5">
+          <div className="flex flex-row items-center justify-start mt-5 mb-1">
             <span className="icon-wrapper w-7 h-7 text-blue2">
               <IconCheckmark />
             </span>

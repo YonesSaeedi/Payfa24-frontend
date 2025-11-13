@@ -129,8 +129,8 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
 
   return (
     <div className="w-full">
-      <form onSubmit={handleSubmit(onSubmit)} className="lg:bg-gray9 lg:rounded-2xl lg:px-8 px-1">
-        <StepperComponent currentStep={1} />
+      <form onSubmit={handleSubmit(onSubmit)} className="lg:bg-gray9 lg:rounded-2xl lg:px-8 px-4">
+        <StepperComponent currentStep={1}  />
 
         <div className="space-y-7 lg:space-y-8 my-14">
           <div className="flex space-x-4">

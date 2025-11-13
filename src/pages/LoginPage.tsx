@@ -205,7 +205,7 @@ export default function LoginPage() {
           هنوز ثبت نام نکرده‌اید؟
           <Link className="text-blue2 text-sm px-1 font-normal" to={ROUTES.REGISTER}>ساخت حساب کاربری</Link>
         </p>
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-center">
           <div className={`flex-grow h-[1px] ${theme === "dark" ? "bg-gray19" : "bg-gray19"}`}></div>
           <p className="flex-none px-2 text-xs text-gray12">ورود با</p>
           <div className="flex-grow h-[1px] bg-gray19"></div>

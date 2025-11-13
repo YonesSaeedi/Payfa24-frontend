@@ -315,7 +315,7 @@ export default function DepositWithTxID() {
                 <img
                   src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
                   alt={selectedCurrency.symbol}
-                  className="w-6 h-6 object-contain rounded-full"
+                  className="w-6 h-6  object-contain rounded-full"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
@@ -327,7 +327,7 @@ export default function DepositWithTxID() {
             <span className="text-gray12">انتخاب رمز ارز</span>
           )}
 
-          <svg className="w-4 h-4 text-gray12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 text-gray12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </button>

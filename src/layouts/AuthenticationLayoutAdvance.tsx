@@ -15,7 +15,7 @@ export default function AuthenticationLayoutAdvance({ text1, text2, step, setSte
 
   return (
     <div className="w-full bg-white1 container-style">
-      <div className="w-full  my-7 py-2"><BreadcrumbNavigation /></div>
+      <div className="w-full  my-7 py-2 lg:block hidden"><BreadcrumbNavigation /></div>
       <div className="w-full flex flex-col md:flex-row ">
         {/* ستون سمت چپ */}
         <div className={`w-full h-full flex items-center justify-center ${step === 0 ? "lg:w-1/2 lg:flex hidden" : "lg:w-full flex"}`}>

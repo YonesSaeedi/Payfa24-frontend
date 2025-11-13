@@ -229,7 +229,7 @@ export default function DepositDedicatedWallet() {
 
       if (walletEntry?.address) {
         setWalletAddress(walletEntry.address);
-        setShowWalletInfo(true); // ✅ QR و آدرس رو نشون بده
+        setShowWalletInfo(true); 
       } else {
         toast.error("آدرس ولت برای این شبکه یافت نشد.");
         setWalletAddress(null);
@@ -292,7 +292,7 @@ export default function DepositDedicatedWallet() {
         <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">انتخاب رمز ارز</label>
       </div>
       {selectedCurrency && (
-        <div className="flex justify-between  mb-10">
+        <div className="flex justify-between  mb-8">
           <span className="text-sm text-gray5 font-bold">موجودی {selectedCurrency.name || selectedCurrency.symbol}</span>
           <span className="text-sm text-black0">
             {formatPersianDigits(selectedCurrency.balance ?? "0")}{selectedCurrency.symbol}

@@ -156,7 +156,7 @@ export default function StepEmail({ onNext, userInfo }: Props) {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmitContact)} className="w-full lg:bg-gray9 lg:mt-0 mt-6 pb-32 lg:rounded-2xl lg:border border-gray26">
-        <div className="w-full flex justify-center items-center flex-col lg:px-8">
+        <div className="w-full flex justify-center items-center flex-col lg:px-8 px-4">
           <StepperComponent currentStep={0} />
           <p className="lg:text-xl font-medium text-sm lg:mt-14 mt-10 lg:mb-8 mb-5 self-end text-black0">
             {contactType === "email" ? ". ایمیل خود را وارد کنید" : ". شماره موبایل خود را وارد کنید"}

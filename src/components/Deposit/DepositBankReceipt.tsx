@@ -187,7 +187,7 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
                         ),
                         icon: <img src={getBankLogo(c.bank) || "/bank-logos/bank-sayer.png"} alt={c.bank} className="w-6 h-6 object-contain" />,
                       }))
-                    : [] 
+                    : []
                 }
               />
             );
@@ -265,14 +265,14 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
       <p className="font-medium mb-3 text-gray5">تصویر رسید</p>
       <input ref={fileInputRef} disabled={isUploading} type="file" accept="image/*,application/pdf" className="hidden" onChange={handleFileChange} />
       <div
-        className={`relative w-full cursor-pointer mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all ${
-          previewURL ? "border-blue2 bg-blue2/5" : "border-gray31 hover:border-gray12"
-        }`}
-        onClick={handleClick}
+        className={`relative w-full mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all ${
+          previewURL ? "border-blue2 " : "border-gray31 hover:border-gray12"
+        } ${isUploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
+        onClick={!isUploading ? handleClick : undefined} 
       >
         <div className="flex flex-col items-center justify-center h-48 relative">
           {/* حالت عادی */}
-          {!previewURL && !isUploading && (
+          {!previewURL && (
             <>
               <span className="icon-wrapper lg:w-14 lg:h-14 w-8 h-8 text-gray15 mb-2">
                 <UploadImage />
@@ -283,21 +283,11 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
           )}
 
           {/* پیش‌نمایش */}
-          {previewURL && !isUploading && (
+          {previewURL && (
             <>
               <img src={previewURL} alt="پیش‌نمایش" className="max-h-32 max-w-full rounded-lg object-contain mb-2" />
               <p className="text-xs text-blue2 font-medium truncate max-w-[200px] px-2 py-1 bg-white rounded-full shadow-sm">{selectedFile?.name || "فایل انتخاب شد"}</p>
             </>
-          )}
-
-          {/* progress */}
-          {isUploading && (
-            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center p-4">
-              <div className="w-full max-w-xs bg-gray-200 h-3 rounded-full overflow-hidden mb-2">
-                <div className="bg-gradient-to-r from-blue2 via-blue1 to-green-500 h-3 rounded-full transition-all" style={{ width: `${uploadProgress}%` }} />
-              </div>
-              <span className="text-sm font-medium text-blue2">{uploadProgress}%</span>
-            </div>
           )}
         </div>
       </div>
@@ -306,11 +296,17 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
       <div className="mt-14">
         <button
           onClick={handleSubmit(onSubmit)}
-          disabled={!isFormComplete || loading}
-          className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
-                ${!isFormComplete ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-blue1"}`}
+          disabled={!isFormComplete || loading || isUploading}
+          type="button"
+          className={`relative text-white2 font-bold text-lg w-full py-3 rounded-lg overflow-hidden transition-all
+      ${!isFormComplete ? "bg-blue2 opacity-60 cursor-not-allowed" : "bg-blue2 opacity-100 hover:bg-blue1"}
+    `}
         >
-          {isUploading ? "در حال ثبت درخواست..." : "درخواست کارت به کارت"}
+          {/* Progress background */}
+          {isUploading && <span className="absolute left-0 top-0 bottom-0 bg-green-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />}
+
+          {/* Button text */}
+          <span className="relative z-10">{isUploading ? `در حال ارسال ${uploadProgress}%` : "درخواست کارت به کارت"}</span>
         </button>
 
         <div className="mt-4" dir="ltr">
