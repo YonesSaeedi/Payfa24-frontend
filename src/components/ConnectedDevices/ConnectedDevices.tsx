@@ -98,17 +98,23 @@ export default function DeviceList() {
     }
     return "unknown";
   }
+ function toPersianDigits(str: any) {
+  if (str == null) return "";
+  return str.toString().replace(/\d/g, (d: string) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
+}
+
+
 
   return (
     <div className="base-style gap-5" dir="rtl">
-      <div className="bg-secondary w-full h-full rounded-2xl gap-5 py-7 px-5 flex flex-col">
-        <div dir="rtl" className="flex justify-between items-center mb-6">
+      <div className="bg-secondary w-full h-full rounded-2xl  gap-3 lg:gap-4 flex flex-col">
+        <div dir="rtl" className="flex justify-between items-center">
           <h2 className=" text-black1 hidden lg:flex text-2xl font-medium">
             دستگاه‌های متصل
           </h2>
           <button
             onClick={() => setShowModal(true)}
-            className="w-full text-center justify-center lg:w-[197px] h-[40px] px-3 py-1 rounded-md  transition bg-red6 text-red1 flex items-center gap-1 font-medium text-base"
+            className="w-full text-center justify-center lg:w-[197px] h-[40px] px-3 py-1 rounded-lg  transition bg-red6 text-red1 flex items-center gap-1 font-medium text-base"
           >
             <span className="w-5 h-5 icon-wrapper mr-2 ml-1">
               <IconCloseMonitor />
@@ -117,7 +123,7 @@ export default function DeviceList() {
           </button>
         </div>
         <div className="hidden lg:flex flex-col w-full self-center">
-          <div className="w-full py-2 grid grid-cols-5 bg-gray41 text-sm rounded-[10px] text-black1">
+          <div className="w-full py-2 grid grid-cols-5 bg-gray41 text-sm rounded-lg text-black1">
             <span className="  text-center text-base font-medium">
               نوع دستگاه
             </span>
@@ -161,10 +167,10 @@ export default function DeviceList() {
                           : ""}
                       </span>
                       <span className="text-base font-normal text-center">
-                        {items?.last_used_at}
+                        {toPersianDigits(items?.last_used_at)}
                       </span>
                       <span className="text-base font-normal text-center">
-                        {items?.last_ip}
+                        {toPersianDigits(items?.last_ip)}
                       </span>
                       <span
                         className={`text-base font-medium text-center p-2 rounded-md transition duration-300 ${
@@ -230,14 +236,14 @@ export default function DeviceList() {
             : activeSessions.map((items) => (
                 <div
                   key={items.id}
-                  className="w-full flex flex-col p-4 rounded-lg bg-gray27  shadow-sm my-2 gap-2 light:border light:border-gray12"
+                  className="w-full flex flex-col p-4 rounded-lg bg-gray27 shadow-sm my-2 gap-2 border border-gray21 "
                 >
                   <button className=" text-end">
                     <span
                       className={` font-medium text-xs text-center ${
                         items.is_current
-                          ? "text-blue-500"
-                          : "text-red-500 cursor-pointer"
+                          ? "text-blue2"
+                          : "text-red6 cursor-pointer"
                       }`}
                       onClick={() => {
                         if (!items.is_current) handleEndSession(items.id);
@@ -247,7 +253,7 @@ export default function DeviceList() {
                     </span>
                   </button>
 
-                  <div className="flex w-full items-center justify-between mt-3 font-normal text-sm text-black1">
+                  <div className="flex w-full items-center justify-between mt-3 font-normal text-sm text-black1 ">
                     <span className="text-center text-base font-normal mb-2">
                       {getDeviceType(items) === "mobile"
                         ? " موبایل"
@@ -268,8 +274,8 @@ export default function DeviceList() {
                   </div>
 
                   <div className="flex w-full items-center justify-between text-xs font-normal text-black1">
-                    <span>{items?.last_used_at}</span>
-                    <span>{items?.last_ip}</span>
+                    <span> {toPersianDigits(items?.last_used_at)}</span>
+                    <span> {toPersianDigits(items?.last_ip)}</span>
                   </div>
                 </div>
               ))}
@@ -294,7 +300,7 @@ export default function DeviceList() {
                   handleEndAllSessions();
                   setShowModal(false);
                 }}
-                className="flex-1 py-2 rounded-[12px] bg-blue-500 text-white hover:bg-blue-600"
+                className="flex-1 py-2 rounded-[12px] bg-blue2 text-white hover:bg-blue2"
               >
                 پایان نشست
               </button>

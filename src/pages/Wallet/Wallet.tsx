@@ -29,12 +29,12 @@ export default function Wallet() {
   return (
     <div className="h-full w-full">
       <HeaderLayout>
-        <div className="container-style lg:px-4 w-full  pt-16 flex flex-col lg:flex-row-reverse gap-10 overflow-visible">
+        <div className="container-style lg:px-4 w-full  pt-16 flex flex-col lg:flex-row-reverse gap-[33px] overflow-visible">
           <div className="w-full lg:w-5/12 text-right">
             <WalletCard showBuySell={false} isLoading={isLoadingDashboard} walletData={dashboardData?.wallets} />
           </div>
           <div className="w-full lg:w-7/12">
-            <p className="text-black2 pb-7 text-right align-middle text-lg font-bold">دارایی های شما</p>
+            <p className="text-black2 lg:pb-7 pb-3 text-right align-middle text-lg font-bold">دارایی های شما</p>
 
             <WalletAssets />
           </div>

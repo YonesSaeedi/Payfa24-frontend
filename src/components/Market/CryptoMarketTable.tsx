@@ -257,7 +257,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
           <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianDigits(priceBuy)} تومان</td>
           <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianDigits(priceSell)} تومان</td>
           <td className="py-3 px-4 hidden lg:table-cell text-center font-normal text-base">
-            <span className={`${change24h >= 0 ? "text-green-500" : "text-red-500"}`}>
+            <span className={`${change24h >= 0 ? "text-green9" : "text-red6"}`}>
               {formatPersianDigits(change24h)}%
             </span>
           </td>

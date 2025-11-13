@@ -22,13 +22,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text }) => {
       icon:<span className="w-5 h-5 icon-wrapper"><IconComplete/></span>,
     },
     "بسته شده": {
-      textColor: "text-red1",
-      bgColor: "bg-red6",
+      textColor: "text-red6",
+      bgColor: "bg-red7",
       icon:<span className="w-5 h-5 icon-wrapper"><IconButtonReject/></span>,
     },
      "رد شده": {
-      textColor: "text-red1",
-      bgColor: "bg-red6",
+      textColor: "text-red6",
+      bgColor: "bg-red7",
       icon:<span className="w-5 h-5 icon-wrapper"><IconButtonReject/></span>,
     },
     "درحال بررسی": {

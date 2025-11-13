@@ -73,15 +73,16 @@ export default function FilterModal({ isOpen, onClose, onApplyFilters, page }: F
   const [openDropdown, setOpenDropdown] = useState<string>("");
   const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: OptionType | null }>({});
 
- 
-  useEffect(() => {
-    const initial: { [key: string]: null } = {};
-    pageFilters[page].forEach((field) => {
-      initial[field.id] = null;
-    });
-    setSelectedFilters(initial);
-    setOpenDropdown("");
-  }, [page, isOpen]);
+useEffect(() => {
+  if (!pageFilters[page]) return; 
+  const initial: { [key: string]: null } = {};
+  pageFilters[page].forEach((field) => {
+    initial[field.id] = null;
+  });
+  setSelectedFilters(initial);
+  setOpenDropdown("");
+}, [page, isOpen]);
+
 
   if (!isOpen) return null;
 

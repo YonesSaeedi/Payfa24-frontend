@@ -104,19 +104,19 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
     switch (status) {
       case "confirm":
         return (
-          <span className="w-5 h-5">
+          <span className="w-[18px] h-[18px]">
             <IconAccept />
           </span>
         );
       case "pending":
         return (
-          <span className="w-5 h-5">
+          <span className="w-[18px] h-[18px]">
             <IconInProgress />
           </span>
         );
       case "rejected":
         return (
-          <span className="w-5 h-5">
+          <span className="w-[18px] h-[18px]">
             <IconDelete />
           </span>
         );
@@ -133,7 +133,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
 
   return (
     <div dir="rtl ">
-      <h2 className=" mb-8 text-2xl font-bold text-black1">کارت‌های من</h2>
+      <h2 className=" lg:mb-6 mb-3 lg:text-2xl  text-black1 font-bold text-[14px]">کارت‌های من</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {cards.map((card) => {
           const logoSrc = getBankLogo(card.bankName);
@@ -141,7 +141,8 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
             <div
               dir="rtl"
               key={card.id}
-              className="rounded-xl shadow p-4 flex flex-col justify-between relative"
+              className="lg:rounded-xl shadow p-4 flex flex-col justify-between relative rounded-[16px]
+"
               style={{
                 backgroundImage:`url(${isDark ? BackgroundCardDark : BackgroundCard})`,
                 backgroundSize: "cover",
@@ -165,13 +166,13 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
               </div>
 
               <div dir="rtl" className="relative z-10 flex justify-end flex-col pt-6">
-                <p className="text-sm pb-1 text-black1">شماره کارت</p>
+                <p className=" pb-1 text-black1 text-[12px] font-normal">شماره کارت</p>
                 <div dir="ltr" className="text-lg mb-2 text-black1 font-medium text-right"> {formatPersianCardNumber(card.number)}</div>
               </div>
 
               <div className="relative z-10 flex justify-between flex-row-reverse pt-2 items-center">
                 <div
-                  className={`text-sm font-medium flex items-center gap-1 ${statusColor(
+                  className={`font-medium text-xs  flex items-center gap-1 ${statusColor(
                     card.status
                   )}`}
                 >
@@ -184,7 +185,7 @@ const BankCardList: React.FC<BankCardListProps> = ({ cards }) => {
                 </div>
 
                 <div className="flex flex-col">
-                  <p className="text-black1">دارنده کارت</p>
+                  <p className="text-black1 text-[12px] font-normal">دارنده کارت</p>
                   <div className="text-sm text-black1 mb-2 font-medium"> {card.holder || userData?.user.name_display || "—"}</div>
                 </div>
               </div>

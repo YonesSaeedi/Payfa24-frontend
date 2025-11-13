@@ -184,7 +184,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
 
         <button
           onClick={handleClose}
-          className="absolute top-5 left-4 w-7 h-7 text-gray12"
+          className="absolute top-5 left-4 w-7 h-7 text-gray12 hover:text-red6"
         >
           <IconCloseButtun />
         </button>

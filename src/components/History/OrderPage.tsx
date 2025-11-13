@@ -203,7 +203,7 @@ const OrderPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center justify-center text-center gap-2">
-                    <span>{formatPersianDigits(tx.amount_coin)}</span>
+                    <span>{tx.amount_coin}</span>
                     <span>{tx.symbol}</span>
                   </div>
                   <div className="text-center font-normal text-base"> {transactionTypeMap[tx.type ?? ""] || tx.type || "نامشخص"}</div>

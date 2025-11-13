@@ -16,7 +16,7 @@ export default function AuthenticationRightAdvance({ step, onStart }: Props) {
       <div className="lg:w-5/6  w-full border-gray49 rounded-lg border  md:flex flex-col lg:p-6 px-4 py-5 dark:text-white justify-center sm:justify-end">
         <div className="flex flex-row-reverse justify-between mb-5 items-center">
           <h1 className="text-right text-blue2 font-medium">سطح {toPersianDigits(1)} : احراز هویت پایه</h1>
-          <div className="bg-green9 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center">
+          <div className="bg-green10 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center">
             <span className="lg:text-sm text-xs font-medium">احزار شده</span>
             <span className="icon-wrapper w-6 h-6 text-green2">  
               <IconIdentyBasic />

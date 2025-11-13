@@ -98,7 +98,7 @@ const FAQPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col lg:flex-row-reverse gap-8 items-start  lg:text-right">
+            <div className="flex flex-col lg:flex-row-reverse gap-10 items-start  lg:text-right">
               <div
                 dir="rtl"
                 className="flex flex-col items-center lg:items-start w-full max-w-[900px] mx-auto  lg:px-0"
@@ -121,7 +121,7 @@ const FAQPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className=" lg:pt-0 w-full lg:w-auto px-4 lg:px-0">
+              <div className=" lg:pt-0 w-full lg:w-auto">
                 <ContactBox />
               </div>
             </div>

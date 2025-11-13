@@ -227,6 +227,10 @@ export default function WithdrawForm() {
     ),
   }));
 
+  const toPersianDigits = (num: string | number) => {
+  return num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+};
+
   return (
     <>
       {/* فرم برداشت */}
@@ -278,7 +282,7 @@ export default function WithdrawForm() {
     <div className="h-5 w-20 bg-gray-300 rounded animate-pulse"></div> // اسکلتون
   ) : (
     <span className="font-medium text-blue-400 text-md">
-      {walletBalance.toLocaleString()} تومان
+     {toPersianDigits(walletBalance.toLocaleString())} تومان
     </span>
   )}
 </div>
