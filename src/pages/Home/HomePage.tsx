@@ -138,15 +138,15 @@ function HomePage() {
     <div className="bg-white1">
       <HeaderFooterLayout>
         <div className="container-style">
-          <div className="pt-8 pb-12 flex flex-col lg:flex-row-reverse justify-between gap-4 items-stretch">
+          <div className="pt-8 pb-10 flex flex-col lg:flex-row-reverse justify-between gap-4 items-stretch">
             <div className="w-full lg:w-1/2 h-full"><WalletCard isLoading={isLoadingDashboard} walletData={dashboardData?.wallets} /></div>
             <IdentityCard />
           </div>
-          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-10 ">
+          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-[49px] ">
             <PosterSlider isLoading={isLoadingDashboard} bannersData={dashboardData?.banner?.banner} />
             <InvitationCard />
           </div>
-          <div id="SyncSlider" className="pt-12 pb-12">
+          <div id="SyncSlider" className="pb-12">
             <SyncSlider boxes={cryptoBoxes} isLoading={isLoading} />
           </div>
           <div className="w-full pt-7">

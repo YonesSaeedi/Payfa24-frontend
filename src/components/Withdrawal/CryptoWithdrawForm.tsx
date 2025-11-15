@@ -318,7 +318,7 @@ if (!response.transaction_id) {
   return;
 }
 
-// ذخیره داده‌ها برای مرحله بعد
+//============================================================================================== ذخیره داده‌ها برای مرحله بعد
 setWithdrawData({
   transactionId: response.transaction_id,
   network: selectedNetwork.symbol,
@@ -417,7 +417,7 @@ setWithdrawData({
       });
 
       if (res.status) {
-        toast.success(res.msg || "انتقال با موفقیت انجام شد ✅");
+        toast.success(res.msg || "انتقال با موفقیت انجام شد");
         setIsOtpModalOpen(false);
         setOtpCode("");
         setWithdrawData(null);
@@ -434,6 +434,10 @@ setWithdrawData({
  const toPersianDigits = (num: string | number) => {
   return num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
 };
+useEffect(() => {
+  console.log("🔹 mergedCryptosData:", mergedCryptosData);
+  console.log("🔹 isCryptoListLoading:", isCryptoListLoading);
+}, [mergedCryptosData, isCryptoListLoading]);
 
 
   return (
@@ -547,7 +551,7 @@ setWithdrawData({
                   <div className="text-md text-gray5 mt-3 space-y-2">
  
   <div className="flex items-center justify-between mb-4">
-    <span>موجودی قابل برداشت</span>
+    <span className="text-[14px] font-normal">موجودی قابل برداشت</span>
     {isDataLoading ? (
       <span className="skeleton-bg h-5 w-24 lg:w-32 rounded"></span>
     ) : (
@@ -716,6 +720,8 @@ setWithdrawData({
             </Accordion>
           </div>
         </div>
+        {/*==============================================================مودال انتخاب رمز ارز=============================================*/}
+        {/*mergedCryptosData: لیست رمزارزها که از هوک useMergedCryptoList() آمده.*/}
         {isCurrencyModalOpen && (
           <div dir="rtl">
             <CryptoListModal
