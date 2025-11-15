@@ -62,7 +62,7 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
     const basic = userInfo.kyc.basic;
     const isCompleted = basic.name && basic.family && basic.father && basic.national_code && basic.date_birth;
 
-    if (isCompleted) return onNext(); // مرحله بعد اگر قبلاً کامل شده
+    if (isCompleted) return onNext();
 
     setValue("name", basic.name || "");
     setValue("family", basic.family || "");
@@ -93,7 +93,7 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
       const msg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
       if (msg.includes("قبلا این اطلاعات را ثبت کرده اید")) toast.info("اطلاعات شما قبلا ثبت شده است.");
       else toast.error(msg);
-      onNext();
+      // onNext();
     },
   });
 
@@ -105,7 +105,6 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
       return;
     }
 
-    // محاسبه سن از تاریخ تولد شمسی (فرض بر اینکه سال شمسی وارد می‌شود)
     const [year] = data.dateBirth.split("/").map(Number);
     const currentYear = new Date().getFullYear() - 621; // تبدیل تقریبی به شمسی
     const age = currentYear - year;
@@ -115,7 +114,6 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
       return;
     }
 
-    // اگر همه چیز اوکی بود
     submitMutation.mutate(data);
   };
 
@@ -130,7 +128,7 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit(onSubmit)} className="lg:bg-gray9 lg:rounded-2xl lg:px-8 px-4">
-        <StepperComponent currentStep={1}  />
+        <StepperComponent currentStep={1} />
 
         <div className="space-y-7 lg:space-y-8 my-14">
           <div className="flex space-x-4">
@@ -197,8 +195,14 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
                 key={field.name}
                 name={field.name as "father"}
                 control={control}
-                rules={{ required: `${field.label} الزامی است` }}
-                render={({ field: f, fieldState }) => <TextField {...f} label={field.label} error={fieldState.error?.message} labelBgClass="lg:bg-gray9 bg-gray38" />}
+                rules={{
+                  required: `${field.label} الزامی است`,
+                  minLength: {
+                    value: 3,
+                    message: `${field.label} باید حداقل ۳ کاراکتر باشد`,
+                  },
+                }}
+                render={({ field: f, fieldState }) => <TextField {...f}  label={field.label} error={fieldState.error?.message} showError={true}  labelBgClass="lg:bg-gray9 bg-gray38" />}
               />
             );
           })}

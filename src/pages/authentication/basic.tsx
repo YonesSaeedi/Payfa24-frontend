@@ -38,12 +38,12 @@ export default function AuthenticationBasic() {
 
     if (userInfo?.level_kyc === null) {
       setStarted(true);
-      setStep(1);
+      setStep(0);
     } else if (userInfo?.level_kyc === "basic") {
       setStarted(true);
       setStep(3);
     }
-  }, [userInfo]);
+  }, []);
 
   const renderStep = () => {
     switch (step) {

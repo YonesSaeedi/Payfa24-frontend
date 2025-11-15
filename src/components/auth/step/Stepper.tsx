@@ -26,13 +26,13 @@ const StepperComponent: React.FC<StepperProps> = ({
       ];
 
   return (
-    <div className="flex items-center justify-center flex-row-reverse py-8 gap-2">
+    <div className="flex w-full items-center justify-center flex-row-reverse py-8 gap-2">
       {steps.map((step, index) => (
         <React.Fragment key={index}>
-          <div className="flex flex-col items-center gap-1">
+          <div className="flex flex-col items-center gap-1 ">
             {/* آیکون */}
             <span
-              className={`lg:w-9 lg:h-9 w-6 h-6 ${
+              className={`lg:w-9 lg:h-9 w-6 h-6 icon-wrapper ${
                 index === currentStep
                   ? "text-blue2"
                   : index < currentStep
@@ -59,7 +59,7 @@ const StepperComponent: React.FC<StepperProps> = ({
 
           {index < steps.length - 1 && (
             <div
-              className="flex-none lg:w-20 w-12 h-0"
+              className="flex-none lg:w-32 w-12 h-0"
               style={{
                 border: `2px dashed ${
                   index < currentStep ? "#0B60FF" : "#8792AF"
