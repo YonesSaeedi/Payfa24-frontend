@@ -5,7 +5,6 @@ import useGetGeneralInfo from "../../hooks/useGetGeneralInfo"
 import useGetCryptoWithdraw from "../../hooks/useGetCryptoWithdraw"
 
 
-
 const useMergedCryptoList = () => {
   const generalInfo = useGetGeneralInfo()
   const cryptoData = useGetCryptoData()
@@ -17,50 +16,56 @@ const useMergedCryptoList = () => {
   const isError =
     generalInfo.isError || cryptoData.isError || withdrawQuery.isError
 
-  let merged: CryptoItem[] = []
+    
+console.log("🔹 useMergedCryptoList running")
+console.log("🔹 generalInfo:", generalInfo)
+console.log("🔹 cryptoData:", cryptoData)
+console.log("🔹 withdrawQuery:", withdrawQuery)
+console.log("💡 withdrawQuery.data raw:", withdrawQuery.data)
 
-  if (!isLoading && !isError && Array.isArray(withdrawQuery.data?.coins)) {
-    const coins = withdrawQuery.data.coins
 
-    // 🔹 مرحله ۱: ساخت لیست مرج‌شده
-    merged = coins.map((coin) => {
-      const info = generalInfo.data?.cryptocurrency?.find(
-        (c) => c.symbol === coin.symbol
-      )
-      const market = cryptoData.data?.[coin.symbol]
+let merged: CryptoItem[] = []
 
-      return {
-        symbol: coin.symbol,
-        id: coin.id,
-        name: info?.name ?? coin.symbol,
-        icon: info?.icon ?? "",
-        color: info?.color ?? "#999",
-        withdraw: info?.withdraw ? 1 : 0,
-        deposit: info?.deposit ? 1 : 0,
-        buy_status: info?.buy_status ? 1 : 0,
-        sell_status: info?.sell_status ? 1 : 0,
-        isFont: info?.isFont,
-        isDisable: market?.isDisable ?? info?.isDisable ?? false,
-        percent: info?.percent,
-        locale: info?.locale,
-        priceBuy: market?.priceBuy,
-        priceSell: market?.priceSell,
-        priceChangePercent: market?.priceChangePercent,
-        quoteVolume: market?.quoteVolume,
-        type: "crypto",
-        balance_available: coin.balance_available, 
-        balance: coin.balance,
-      } as CryptoItem
-    })
+const coins = withdrawQuery.data ? Object.values(withdrawQuery.data) : [];
 
-  console.log("🔹 merged before filtering balance:", merged) // ← اینجا لاگ کن
 
-  // فقط ارزهایی که موجودی دارند
-  merged = merged.filter((item) => Number(item.balance_available) > 0)
+if (!isLoading && !isError && coins.length > 0) {
+  merged = coins.map((coin) => {
+    const info = generalInfo.data?.cryptocurrency?.find((c) => c.symbol === coin.symbol)
+    const market = cryptoData.data?.[coin.symbol]
 
-  console.log("🔹 merged after filtering balance:", merged) // ← اینجا لاگ کن
-   
-  }
+    return {
+      symbol: coin.symbol,
+      id: coin.id,
+      name: info?.name ?? coin.symbol,
+      icon: info?.icon ?? "",
+      color: info?.color ?? "#999",
+      withdraw: info?.withdraw ? 1 : 0,
+      deposit: info?.deposit ? 1 : 0,
+      buy_status: info?.buy_status ? 1 : 0,
+      sell_status: info?.sell_status ? 1 : 0,
+      isFont: info?.isFont,
+      isDisable: market?.isDisable ?? info?.isDisable ?? false,
+      percent: info?.percent,
+      locale: info?.locale,
+      priceBuy: market?.priceBuy,
+      priceSell: market?.priceSell,
+      priceChangePercent: market?.priceChangePercent,
+      quoteVolume: market?.quoteVolume,
+      type: "crypto",
+      balance_available: coin.balance_available, 
+      balance: coin.balance,
+    } as CryptoItem
+  })
+
+  // فقط ارزهایی که موجودی بیشتر از صفر دارند
+  merged = merged.filter(item => Number(item.balance) > 0)
+
+  console.log("🔹 mergedCryptosData filtered by balance:", merged)
+}
+
+
+
 
   return {
     data: merged,

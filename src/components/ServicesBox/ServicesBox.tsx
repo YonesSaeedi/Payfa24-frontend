@@ -153,8 +153,8 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
                    h-[60px] lg:h-[72px] 
                    rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition"
           >
-            <span className="w-6 h-6 text-blue2 mt-2">{item.icon}</span>
-            <span className="text-gray-700 dark:text-gray-200 text-center mt-1 text-[14px] font-normal whitespace-nowrap pb-2 px-2">
+            <span className="w-5  h-5  lg:w-[26px] lg:h-[26px] text-blue2 mt-2">{item.icon}</span>
+            <span className="text-gray-700 dark:text-gray-200 text-center mt-1  lg:text-[14px] text-xs font-normal whitespace-nowrap pb-2 px-2">
               {item.label}
             </span>
           </div>
