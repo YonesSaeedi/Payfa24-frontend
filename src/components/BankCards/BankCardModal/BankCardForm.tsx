@@ -130,7 +130,7 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
         </div>
 
         <div className="relative w-full mb-2">
-        <input
+  <input
   dir="rtl"
   id="cardNumber"
   type="text"

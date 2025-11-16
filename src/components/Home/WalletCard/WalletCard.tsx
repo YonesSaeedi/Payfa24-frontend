@@ -67,19 +67,20 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
   const displayBalance = selectedCurrency === "tether" ? balance?.crypto?.balance : balance?.toman?.balance;
 
   const shownBalance = showBalance ? formatPersianDigits(displayBalance ?? 0) : formatPersianDigits(1234567);
- 
+
   const handleToggleBalance = () => {
     setIsAnimating(true);
     setTimeout(() => {
       setShowBalance((prev) => !prev);
       setIsAnimating(false);
-    }, 150); 
+    }, 150);
   };
 
   return (
     <div>
-      <div className="border border-gray21 rounded-xl p-4 lg:pt-6 lg:pb-4 lg:px-8 shadow lg:w-full h-full flex flex-col gap-[32px] select-none">
-        {/* بالا */}
+ <div className="border border-gray21 rounded-xl p-4 lg:pt-6 lg:pb-4 lg:px-8 shadow lg:w-full flex flex-col gap-14 lg:gap-[32px] select-none min-h-[334px]">
+
+      
         <div className="flex items-center justify-between mb-7">
           <CurrencyToggle onChange={(v) => setSelectedCurrency(v)} />
           <div className="flex items-center gap-1.5 cursor-pointer transition-all duration-300 rounded-xl px-2 py-1" onClick={handleToggleBalance}>
@@ -88,11 +89,10 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
           </div>
         </div>
 
-        {/* موجودی */}
         <div className="text-center mb-6">
           <div className="text-base lg:text-2xl flex items-center justify-center gap-3 font-bold text-black1 transition-all duration-300" dir="rtl" style={{ userSelect: "none" }}>
             {isLoading ? (
-              <span className="skeleton-bg h-5 lg:h-7 lg:w-36 w-20 rounded"></span>
+              <span className="skeleton-bg h-5 lg:h-7 lg:w-36 w-20 rounded min-h-[20px]"></span>
             ) : (
               <span className={`transition-all duration-300 ${!showBalance || isAnimating ? "blur text-gray-500" : ""}`}>{shownBalance}</span>
             )}

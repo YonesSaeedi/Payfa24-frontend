@@ -1,4 +1,3 @@
-
 import React from "react";
 import ValidationlightIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2 (1).png";
 import ValidationDarkIcon from "./../../assets/images/Home/ValidationIcon/402384808_1bcd8fe0-5c1f-4e2b-9729-fddbb4cab579 2.png";
@@ -9,16 +8,12 @@ import useGetKYCInfo from "../../hooks/useGetKYCInfo";
 import IconIdentyBasic from "../../assets/icons/authentication/IconIdentyBasic";
 
 
-
 const IdentityCard: React.FC = () => {
   const navigate = useNavigate();
-
-
   const { data: kycInfo, isLoading } = useGetKYCInfo();
-
   if (isLoading) {
     return (
-      <div className="skeleton-bg w-full h-[200px] rounded-xl animate-pulse"></div>
+      <div className="skeleton-bg w-full h-[200px] rounded-xl animate-pulse "></div>
     );
   }
 
@@ -62,10 +57,10 @@ const IdentityCard: React.FC = () => {
   }
 
   return (
-    <div className="border rounded-xl p-6 flex flex-col lg:flex-row items-right lg:justify-between border-gray21 shadow">
+    <div className="border rounded-xl p-6 flex flex-col lg:flex-row items-right lg:justify-between border-gray21 shadow h-full ">
       
   <div className="hidden rounded-lg lg:flex flex-col items-start justify-center">
-  {/* 🔹 باکس وضعیت احراز هویت کامل بالا سمت چپ */}
+
   {level === "advanced" && (
     <div className="bg-green10 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center mb-2">
       <span className="lg:text-sm text-xs font-medium">احراز شده</span>
@@ -75,7 +70,6 @@ const IdentityCard: React.FC = () => {
     </div>
   )}
 
-  {/* تصویر */}
   <img src={ValidationlightIcon} className="block dark:hidden" />
   <img src={ValidationDarkIcon} className="hidden dark:block" />
 </div>
@@ -83,11 +77,12 @@ const IdentityCard: React.FC = () => {
 
 
       <div className="lg:w-1/2 flex flex-col gap-2 text-right">
-        <h2 className="text-xl font-semibold text-blue2 pb-4">{title}</h2>
+        <h2 className="text-xl font-semibold text-blue2 pb-4 whitespace-nowrap">{title}</h2>
 
         <ul dir="rtl" className="list-disc text-black1">
           {items.map((item, index) => (
-            <li key={index} className="list-none flex items-center">
+           <li key={index} className="list-none flex items-center whitespace-nowrap text-[10px] sm:text-xs md:text-sm lg:text-base">
+
               <span className="w-[19px] h-[19px] icon-wrapper ml-1">
                 <IdentyfyCardIcon />
               </span>
@@ -99,19 +94,21 @@ const IdentityCard: React.FC = () => {
         <span className="mt-2 font-medium text-gray5">: دسترسی‌ ها </span>
         <ul dir="rtl" className="list-disc list-inside pr-4 text-black1">
           {accesses.map((a, index) => (
-            <li key={index}>{a}</li>
+          <li key={index} className="whitespace-nowrap text-[10px] sm:text-xs md:text-sm lg:text-base"
+>
+{a}</li>
           ))}
         </ul>
 
         {showButton && (
           <button
             onClick={buttonHandler}
-            className="mt-4 bg-blue2 text-white2 rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full"
+            className="mt-4 bg-blue2 text-white2 rounded-lg lg:w-[198px] h-[40px] self-end flex items-center justify-center w-full py-2 hover:border  transition duration-200 ease-in hover:border-blue2 hover:text-blue2  hover:bg-transparent"
           >
-            <span className="pr-2 flex w-8 h-8">
+            <span className="mr-2 flex w-5 h-5">
               <ArrowLeftIcon />
             </span>
-            <span>{buttonText}</span>
+            <span className="text-base font-bold">{buttonText}</span>
           </button>
         )}
       </div>

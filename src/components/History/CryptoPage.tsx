@@ -150,7 +150,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             </span>
             <span className="text-gray12">فیلترها</span>
           </div>
-          <div className="w-px h-6 bg-gray-400 self-center"></div>
+          <div className="w-px h-6 bg-gray12 self-center"></div>
 
           <input
             type="text"
@@ -238,7 +238,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             <div className="text-center py-12">
               <img src={TrasactionHisory} alt="بدون تراکنش" className="mb-3 dark:hidden mx-auto" />
               <img src={TransactionHistoryDark} alt="بدون تراکنش" className="mb-3 hidden dark:block mx-auto" />
-              <p className="text-gray-500 text-lg font-medium">تاکنون تراکنشی نداشته‌اید!</p>
+              <p className="text-black1 text-lg font-medium">تاکنون تراکنشی نداشته‌اید!</p>
             </div>
           ) : (
             <div className="text-center py-12">

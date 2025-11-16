@@ -523,7 +523,7 @@ useEffect(() => {
                 </button>
 
                 <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">
-                  انتخاب ارز
+                  انتخاب رمز ارز
                 </label>
               </div>
 
@@ -558,8 +558,7 @@ useEffect(() => {
       <span className="font-medium text-black0">
   {toPersianDigits(
     parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toFixed(8)
-  )}
-  {crypto}
+  )} {crypto}
 </span>
 
     )}
@@ -571,9 +570,12 @@ useEffect(() => {
     {isDataLoading ? (
       <span className="skeleton-bg h-5 w-20 lg:w-28 rounded"></span>
     ) : (
-      <span className="font-medium text-black0">
-        {levelUsed.daily_withdrawal_crypto?.toLocaleString() || "—"} تومان
-      </span>
+     <span className="font-medium text-black0">
+  {levelUsed.daily_withdrawal_crypto
+    ? toPersianDigits(levelUsed.daily_withdrawal_crypto)
+    : "۰"} تومان
+</span>
+
     )}
   </div>
 
@@ -583,9 +585,10 @@ useEffect(() => {
     {isDataLoading ? (
       <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
     ) : (
-      <span className="font-medium text-black0">
-        {selectedNetwork?.withdraw_min || "—"} {crypto}
-      </span>
+     <span className="font-medium text-black0">
+  {selectedNetwork?.withdraw_min ? toPersianDigits(selectedNetwork.withdraw_min) : "۰"} {crypto}
+</span>
+
     )}
   </div>
 </div>
@@ -642,7 +645,7 @@ useEffect(() => {
                       <span className="text-black1 font-medium">{currentCryptoCurrency.symbol}</span>
                     </span>
                   ) : (
-                    <span className="text-gray12">انتخاب ارز</span>
+                    <span className="text-gray12">انتخاب رمز ارز</span>
                   )}
 
                   <svg className="w-4 h-4 text-gray12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -662,15 +665,21 @@ useEffect(() => {
                
                   <div className="text-md text-gray5 mt-3 space-y-2">
                     <div className="flex items-center justify-between mb-4">
-                      <span>موجودی قابل برداشت</span>
-                      <span className="font-medium text-black0">
-                        {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toFixed(8)} {crypto}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>مقدار برداشت روزانه معادل</span>
-                      <span className="font-medium text-black0">{levelUsed.daily_withdrawal_crypto?.toLocaleString() || "—"} تومان</span>
-                    </div>
+  <span>موجودی قابل برداشت</span>
+  <span className="font-medium text-black0">
+    {toPersianDigits(
+      parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "۰").toFixed(8)
+    )} {crypto}
+  </span>
+</div>
+                   <div className="flex items-center justify-between">
+  <span>مقدار برداشت روزانه معادل</span>
+  <span className="font-medium text-black0">
+    {levelUsed.daily_withdrawal_crypto
+      ? toPersianDigits(levelUsed.daily_withdrawal_crypto)
+      : "۰"} تومان
+  </span>
+</div>
                   </div>
                 </div>
                
@@ -721,7 +730,6 @@ useEffect(() => {
           </div>
         </div>
         {/*==============================================================مودال انتخاب رمز ارز=============================================*/}
-        {/*mergedCryptosData: لیست رمزارزها که از هوک useMergedCryptoList() آمده.*/}
         {isCurrencyModalOpen && (
           <div dir="rtl">
             <CryptoListModal

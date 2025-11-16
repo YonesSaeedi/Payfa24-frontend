@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Ticket } from "./types";
-import bgChat from "../../../assets/images/Ticket/bgchat.jpg";
+import bgChat from "../../../assets/images/Ticket/bgchatlight.jpg";
+import bgchatDark from "../../../assets/images/Ticket/bgchatDark.jpg";
 import supportAvatar from "../../../assets/images/Ticket/avator.jpg";
 import IconSendMessage from "../../../assets/icons/ticket/IconSendMessage";
 import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
@@ -82,6 +83,21 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [isDark, setIsDark] = useState(false);
+
+ useEffect(() => {
+    // بررسی کلاس dark روی <html>
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+
+    updateTheme();
+
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+    return () => observer.disconnect();
+  }, []);
 
   const fetchData = async () => {
     if (!ticket?.id) return;
@@ -259,7 +275,7 @@ const lastMsg = updated.ticket_message[updated.ticket_message.length - 1];
       <div className=" relative border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
         {ticket && <ChatHeader ticket={ticket} />}
 
-        <div className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center" style={{ backgroundImage: `url(${bgChat})` }}>
+        <div className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center" style={{  backgroundImage: `url(${isDark ? bgchatDark : bgChat })` }}>
           <div className="relative z-10 flex flex-col gap-4">
             {loading ? (
               <>

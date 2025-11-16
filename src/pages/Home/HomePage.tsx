@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Fire from "../../assets/icons/Home/SynchronizedSlidersIcon/fireIcon";
 import TrendDownIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendDownIcon";
 import TrendIcon from "../../assets/icons/Home/SynchronizedSlidersIcon/TrendIcon";
@@ -57,6 +57,37 @@ function HomePage() {
     }
     return {}
   }, [mappedGeneralData, cryptoData])
+const identityRef = useRef<HTMLDivElement>(null);
+const walletRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  const id = identityRef.current;
+  const wa = walletRef.current;
+  if (!id || !wa) return;
+
+  const sync = () => {
+    id.style.height = "auto";
+    wa.style.height = "auto";
+
+    const max = Math.max(id.offsetHeight, wa.offsetHeight);
+
+    id.style.height = `${max}px`;
+    wa.style.height = `${max}px`;
+  };
+
+  const ro = new ResizeObserver(sync);
+
+  ro.observe(id);
+  ro.observe(wa);
+
+  sync();
+
+  return () => ro.disconnect();
+}, [dashboardData]);
+
+
+
+  
   // preparing lists ====================================================================================================================================
   const gainers = Object.values(mergedCryptosData).sort((item1, item2) => Number(item2.priceChangePercent) - Number(item1.priceChangePercent))
   const losers = Object.values(mergedCryptosData).sort((item1, item2) => Number(item1.priceChangePercent) - Number(item2.priceChangePercent))
@@ -138,21 +169,38 @@ function HomePage() {
     <div className="bg-white1">
       <HeaderFooterLayout>
         <div className="container-style">
-          <div className="pt-8 pb-10 flex flex-col lg:flex-row-reverse justify-between gap-4 items-stretch">
-            <div className="w-full lg:w-1/2 h-full"><WalletCard isLoading={isLoadingDashboard} walletData={dashboardData?.wallets} /></div>
-            <IdentityCard />
-          </div>
-          <div className="flex flex-col lg:flex-row-reverse justify-between gap-4 pb-[49px] ">
+    <div className="pt-8 pb-10 flex flex-col lg:flex-row-reverse gap-6 items-stretch">
+
+  <div className="w-full lg:w-1/2">
+  <div ref={walletRef}>
+   <WalletCard
+      isLoading={isLoadingDashboard}
+      walletData={dashboardData?.wallets}
+    />
+  </div>
+</div>
+
+<div className="w-full lg:w-1/2">
+  <div ref={identityRef}>
+    <IdentityCard />
+  </div>
+</div>
+
+
+</div>
+
+
+          <div className="flex flex-col lg:flex-row-reverse justify-between gap-[27px] lg:pb-[49px] pb-[40px]">
             <PosterSlider isLoading={isLoadingDashboard} bannersData={dashboardData?.banner?.banner} />
             <InvitationCard />
           </div>
-          <div id="SyncSlider" className="pb-12">
+          <div id="SyncSlider" className="pb-[61px]">
             <SyncSlider boxes={cryptoBoxes} isLoading={isLoading} />
           </div>
-          <div className="w-full pt-7">
+          <div className="w-full ">
             <CryptoTable data={Object.values(mergedCryptosData)} isLoading={isLoading} />
           </div>
-          <div id="qustionBox" className="pt-12">
+          <div id="qustionBox" className="pt-[93px]">
             <QuestionBox />
           </div>
         </div>

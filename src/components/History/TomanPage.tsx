@@ -101,7 +101,7 @@ const TomanPage: React.FC = () => {
             </span>
             <span className="text-gray12">فیلترها</span>
           </div>
-          <div className="w-px h-6 bg-gray-400 self-center"></div>
+          <div className="w-px h-6 bg-gray12 text-gray12 self-center"></div>
           <FilterDropdown
             id="type"
             label="نوع تراکنش"
@@ -174,7 +174,7 @@ const TomanPage: React.FC = () => {
             <div className="text-center py-12">
               <img src={TrasactionHisory} alt="بدون تراکنش" className="mb-3 dark:hidden mx-auto" />
               <img src={TransactionHistoryDark} alt="بدون تراکنش" className="mb-3 hidden dark:block mx-auto" />
-              <p className="text-gray-500 text-lg font-medium">تاکنون تراکنشی نداشته‌اید!</p>
+              <p className="text-black1 text-lg font-medium">تاکنون تراکنشی نداشته‌اید!</p>
             </div>
           )}
         </div>
@@ -222,7 +222,7 @@ const TomanPage: React.FC = () => {
             <div className="flex flex-col items-center justify-center py-12 min-h-[300px]">
               <img src={TrasactionHisory} alt="بدون تراکنش" className="mb-3 dark:hidden w-32 h-32 mx-auto" />
               <img src={TransactionHistoryDark} alt="بدون تراکنش" className="mb-3 hidden dark:block w-32 h-32 mx-auto" />
-              <p className="text-gray-500 text-base">تاکنون تراکنشی نداشته‌اید!</p>
+              <p className="text-black1 text-base">تاکنون تراکنشی نداشته‌اید!</p>
             </div>
           )}
         </div>

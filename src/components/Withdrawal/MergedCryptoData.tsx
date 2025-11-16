@@ -48,7 +48,7 @@ if (!isLoading && !isError && coins.length > 0) {
       isDisable: market?.isDisable ?? info?.isDisable ?? false,
       percent: info?.percent,
       locale: info?.locale,
-      priceBuy: market?.priceBuy,
+      priceBuy: market?.priceBuy,   
       priceSell: market?.priceSell,
       priceChangePercent: market?.priceChangePercent,
       quoteVolume: market?.quoteVolume,

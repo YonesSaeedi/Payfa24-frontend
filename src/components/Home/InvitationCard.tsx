@@ -11,7 +11,7 @@ function InvitationCard() {
         <div className="mb-4 w-[64px] h-[64px] text-blue2"><GiftIcon /></div>
         <p className="text-xl font-bold text-black1" >!دوستانتان را دعوت کنید</p>
         <p className="text-sm text-text mb-6 text-black1">دوستات رو دعوت کن و از پی‌فا24 جایزه بگیر</p>
-        <Link to={ROUTES.ADD_FRIEND} className="bg-blue2 hover:bg-blue-700 transition duration-200 ease-in text-white rounded-lg w-full py-2">دعوت</Link>
+        <Link to={ROUTES.ADD_FRIEND} className="bg-blue2 hover:border font-bold text-base hover:border-blue2 hover:text-blue2  hover:bg-transparent transition duration-200 ease-in text-white rounded-lg w-full py-2">دعوت</Link>
       </div>
     </div>
   );
