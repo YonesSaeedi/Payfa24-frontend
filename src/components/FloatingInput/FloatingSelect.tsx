@@ -70,7 +70,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
       <button
         type="button"
         onClick={handleButtonClick}
-        disabled={disabled} // ⬅️ دکمه واقعاً غیرفعال
+        disabled={disabled} 
         className={`
           flex items-center justify-between w-full px-4 lg:h-[56px] h-[48px] rounded-lg
           lg:bg-gray43

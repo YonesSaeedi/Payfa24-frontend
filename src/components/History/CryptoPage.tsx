@@ -142,8 +142,8 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
         <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه تراکنش های رمزارز</h1>
       </div>
 
-      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-4 text-black1">
-        <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-6">
+      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-6 text-black1 pt-8">
+        <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-8 ">
           <div className="flex items-center gap-1">
             <span className="w-5 h-5 icon-wrapper text-gray12">
               <IconFilterTable />

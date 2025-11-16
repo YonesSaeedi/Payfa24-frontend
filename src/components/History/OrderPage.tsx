@@ -137,8 +137,8 @@ const OrderPage: React.FC = () => {
         <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه خرید و فروش</h1>
       </div>
 
-      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-4 text-black1">
-        <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-6">
+      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-6 text-black1 pt-8">
+        <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-8">
           <div className="flex items-center gap-1">
             <span className="text-gray12">فیلترها</span>
           </div>

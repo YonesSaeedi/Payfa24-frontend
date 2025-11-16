@@ -277,11 +277,11 @@ export default function WithdrawForm() {
   dir="rtl"
   className="flex items-center justify-between mb-4 mt-3"
 >
-  <span className="text-gray5 text-md">موجودی قابل برداشت</span>
+  <span className="text-gray5 text-md text-[14px] font-normal">موجودی قابل برداشت</span>
   {isLoading ? (
-    <div className="h-5 w-20 bg-gray-300 rounded animate-pulse"></div> // اسکلتون
+    <div className="h-5 w-20 skeleton-bg rounded animate-pulse"></div> 
   ) : (
-    <span className="font-medium text-blue-400 text-md">
+    <span className=" text-blue2 text-md font-normal text-[14px]">
      {toPersianDigits(walletBalance.toLocaleString())} تومان
     </span>
   )}
@@ -332,12 +332,12 @@ export default function WithdrawForm() {
             <div dir="rtl" className=" text-gray-500 mt-3 space-y-2">
               {/* ردیف اول */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-md text-gray5">کارمزد</span>
+                <span className=" text-gray5 text-[14px] font-normal">کارمزد</span>
                 <span className="text-md text-gray-700"></span>
               </div>
               {/* ردیف دوم */}
               <div className="flex items-center justify-between ">
-                <span className="text-md text-gray5">
+                <span className=" text-gray5 text-[14px] font-normal">
                   مبلغ نهایی واریز به کیف پول{" "}
                 </span>
                 <span className="text-md text-gray-700"></span>
