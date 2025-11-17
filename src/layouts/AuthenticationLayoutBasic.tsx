@@ -68,9 +68,7 @@ type AuthenticationLayoutProps = {
 
 export default function AuthenticationLayoutBasic({
   step,
-  started,
   onStart,
-  children,
 }: AuthenticationLayoutProps) {
   return (
     <div className="w-full bg-white1">

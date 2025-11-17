@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -58,7 +57,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       window.location.replace("/login");
     }
   };
- const navigate = useNavigate();
+ 
   return (
     <div className="relative" ref={menuRef}>
       <button
