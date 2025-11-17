@@ -43,6 +43,7 @@ export default function AuthenticationRight({ step, onStart }: Props) {
         </div>
         <div className=" lg:mx-6 mx-2">
           <button
+            
             className={`bg-blue2  flex items-center justify-center  w-full   mt-5 h-[48px] rounded-lg text-white2 font-bold lg:text-lg text-base ${
               step === 0 ? "flex" : "hidden  "
             }`}

@@ -10,6 +10,7 @@ type AuthenticationLayoutProps = {
   children?: React.ReactNode;
 };
 
+
 export default function AuthenticationLayoutBasic({
   step,
   started,
@@ -22,7 +23,7 @@ export default function AuthenticationLayoutBasic({
         <BreadcrumbNavigation />
       </div>
 
-      <div className="w-full  lg:container-style flex flex-col pb-14 lg:mt-9 md:flex-row px-0 lg:px-8 items-center">
+      <div className="w-full lg:container-style flex flex-col pb-14 lg:mt-9 md:flex-row px-0 lg:px-8 items-center">
         {/* سمت چپ */}
         <div
           className={`w-full h-full flex items-center justify-center  ${
@@ -32,7 +33,7 @@ export default function AuthenticationLayoutBasic({
           {!started ? (
             <AuthenticationLeft
               step={step}
-              text2="لطفاً جهت دسترسی به خدمات ابتدایی، احراز هویت سطح پایه را تکمیل نمایید. این مرحله تنها چند دقیقه زمان خواهد برد"
+              text2="لطفاً جهت دسترسی به خدمات ابتدایی، احراز هویت سطح پایه را تکمیل نمایید. این مرحله تنها چند دقیقه زمان خواهد برد . "
             />
           ) : (
             <div className="flex flex-col items-center justify-center gap-6 w-full">
