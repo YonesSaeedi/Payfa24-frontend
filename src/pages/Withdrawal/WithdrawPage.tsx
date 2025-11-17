@@ -128,7 +128,7 @@ const WithdrawPage: React.FC = () => {
         <button
           className={`text-sm border rounded-[8px] px-2 py-1.5 transition-all duration-300 ${
             withdrawType === "fiat"
-              ? "bg-blue-400 text-white border-blue-500 shadow"
+              ? " text-blue2 border-blue2 shadow"
               : "text-gray5 border-gray21 bg-gray27 hover:border-blue2 hover:text-blue2"
           }`}
         >
@@ -181,7 +181,7 @@ const WithdrawPage: React.FC = () => {
         <button
           className={`text-sm border rounded-[8px] px-2 py-1.5 transition-all duration-300 ${
             withdrawType === "crypto"
-              ? "bg-blue-400 text-white border-blue-500 shadow"
+              ? " text-blue2 border-blue2 shadow"
               : "text-gray5 border-gray21 bg-gray27 hover:border-blue2 hover:text-blue2"
           }`}
         >

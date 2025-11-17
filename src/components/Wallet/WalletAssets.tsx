@@ -307,12 +307,13 @@ const WalletAssets: React.FC = () => {
     <span className="text-black1 hover:text-blue2 cursor-pointer">فروش</span>
   </Link>
 
-  <Link to={`${ROUTES.DEPOSIT}?coin=${item.symbol}`} className="flex items-center gap-2">
-    <span className="text-blue2 w-5 h-5 flex items-center justify-center">
-      <WalletAddIcon />
-    </span>
-    <span className="text-black1 hover:text-blue2 cursor-pointer">واریز</span>
-  </Link>
+<Link to={`${ROUTES.DEPOSIT}?coin=${item.symbol}&type=wallet`} className="flex items-center gap-2">
+  <span className="text-blue2 w-5 h-5 flex items-center justify-center">
+    <WalletAddIcon />
+  </span>
+  <span className="text-black1 hover:text-blue2 cursor-pointer">واریز</span>
+</Link>
+
 
   <Link to={`/withdraw/crypto?coin=${item.symbol}`} className="flex items-center gap-2">
     <span className="text-blue2 w-5 h-5 flex items-center justify-center">

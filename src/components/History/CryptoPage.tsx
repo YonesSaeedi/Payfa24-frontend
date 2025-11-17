@@ -143,7 +143,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
         <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه تراکنش های رمزارز</h1>
       </div>
 
-      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-6 text-black1 pt-8">
+      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 lg:p-6 text-black1 pt-8">
         <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-8 ">
           <div className="flex items-center gap-1">
             <span className="w-5 h-5 icon-wrapper text-gray12">
@@ -248,7 +248,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
           )}
         </div>
 
-        <div className="block lg:hidden space-y-4 mt-4">
+        <div className="block lg:hidden space-y-4 lg:mt-4">
           {filteredTransactions.length > 0 ? (
             filteredTransactions.map((tx) => (
               <div key={tx.id} className="border rounded-xl p-4  border-gray21">

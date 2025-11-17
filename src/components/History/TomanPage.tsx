@@ -93,7 +93,7 @@ const TomanPage: React.FC = () => {
       <div className="text-black1 flex lg:mb-4 font-medium lg:justify-between justify-end ">
         <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه تراکنش های تومانی</h1>
       </div>
-      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-6 text-black1 pt-8">
+      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 lg:p-6 text-black1 pt-8">
         <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-8">
           <div className="flex items-center gap-1">
             <span className="w-5 h-5 icon-wrapper text-gray12">
@@ -180,7 +180,7 @@ const TomanPage: React.FC = () => {
         </div>
 
         {/* ---------------- Mobile Transactions ---------------- */}
-        <div className="block lg:hidden space-y-4 mt-4">
+        <div className="block lg:hidden space-y-4 lg:mt-4">
           {responseData.length > 0 ? (
             responseData.map((tx) => (
               <div key={tx.id} className="border rounded-xl p-4 border-gray21">
