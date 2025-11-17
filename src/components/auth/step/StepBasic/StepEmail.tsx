@@ -59,10 +59,10 @@ export default function StepEmail({ onNext, userInfo }: Props) {
 
     const { email, mobile } = userInfo.kyc.basic;
 
-    if (email && mobile) {
-      onNext();
-      return;
-    }
+    // if (email && mobile) {
+    //   onNext();
+    //   return;
+    // }
 
     if (email && !mobile) {
       setValue("contactType", "mobile");
@@ -149,9 +149,9 @@ export default function StepEmail({ onNext, userInfo }: Props) {
   };
 
   // اگر هر دو وجود داشته باشن، رندر نکن
-  if (userInfo?.kyc?.basic?.email && userInfo?.kyc?.basic?.mobile) {
-    return null;
-  }
+  // if (userInfo?.kyc?.basic?.email && userInfo?.kyc?.basic?.mobile) {
+  //   return null;
+  // }
 
   return (
     <>

@@ -28,22 +28,50 @@ export default function AuthenticationBasic() {
   };
 
   const handleStart = () => {
-    setStarted(true);
-    setStep(1);
-  };
+  setStarted(true);
+};
 
 
   useEffect(() => {
-    if (!userInfo) return;
+    if (!userInfo || !started) return;
 
-    if (userInfo?.level_kyc === null) {
+    const basic = userInfo?.kyc?.basic || {};
+
+    let nextStep = 0;
+
+    const emailExists = !!basic.email;
+    const mobileExists = !!basic.mobile;
+
+    // مرحله ۱: اگر هرکدام از email یا mobile وجود نداشته باشد
+    if (!emailExists || !mobileExists) {
+      nextStep = 1;
       setStarted(true);
-      setStep(0);
-    } else if (userInfo?.level_kyc === "basic") {
-      setStarted(true);
-      setStep(3);
+      setStep(nextStep);
+      return;
     }
-  }, []);
+
+    // مرحله ۲: اگر email و mobile کامل هستند ولی اطلاعات شخصی ناقص است
+    const personalCompleted = basic.name && basic.family && basic.father && basic.national_code && basic.date_birth;
+
+    if (!personalCompleted) {
+      nextStep = 2;
+      setStarted(true);
+      setStep(nextStep);
+      return;
+    }
+
+    // مرحله ۳: اطلاعات شخصی کامل ولی کارت بانکی ندارد
+    if (!basic.cardbank) {
+      nextStep = 3;
+      setStarted(true);
+      setStep(nextStep);
+      return;
+    }
+
+    // مرحله نهایی
+    // setStarted(true);
+    // setStep(4);
+  }, [userInfo,started]);
 
   const renderStep = () => {
     switch (step) {
