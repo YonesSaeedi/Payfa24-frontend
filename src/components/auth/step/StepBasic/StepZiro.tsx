@@ -11,7 +11,7 @@ interface Props {
   onNext: () => void;
 }
 
-const AuthenticationIntro: React.FC<Props> = ({ onNext }) => {
+const AuthenticationIntro: React.FC<Props> = () => {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
