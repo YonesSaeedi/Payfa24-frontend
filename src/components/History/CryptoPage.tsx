@@ -135,6 +135,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
   const convertDigitsToPersian = (str: string) => {
     return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
   };
+ 
 
   return (
     <div dir="rtl">

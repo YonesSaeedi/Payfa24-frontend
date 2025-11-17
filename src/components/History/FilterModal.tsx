@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import IconClose from "../../assets/icons/Login/IconClose";
 import FilterDropdown from "./FilterDropdown";
 
@@ -17,35 +17,33 @@ interface OptionType {
   value: string;
 }
 
-
 const pageFilters: Record<string, { id: string; label: string; options: OptionType[] }[]> = {
   transactions: [
     {
-      id: "status",
-      label: "وضعیت",
-      options: [
-        { id: 1, name: "همه", value: "all" },
-        { id: 2, name: "فعال", value: "active" },
-        { id: 3, name: "غیرفعال", value: "inactive" },
-      ],
-    },
-    {
       id: "type",
-      label: "نوع تراکنش",
+      label: "همه تراکنش ها",
       options: [
-        { id: 1, name: "همه", value: "all" },
-        { id: 2, name: "دریافتی", value: "received" },
-        { id: 3, name: "پرداختی", value: "paid" },
+        { id: 1, name: "ترید", value: "trade" },
+        { id: 2, name: "سفارش", value: "order" },
+        { id: 3, name: "کیف پول", value: "wallet" },
       ],
     },
     {
-      id: "sort",
-      label: "مرتب سازی بر اساس",
+      id: "status",
+      label: "همه وضعیت ها",
       options: [
-        { id: 1, name: "جدیدترین", value: "newest" },
-        { id: 2, name: "قدیمی‌ترین", value: "oldest" },
-        { id: 3, name: "بیشترین تراکنش", value: "most" },
-        { id: 4, name: "کمترین تراکنش", value: "least" },
+        { id: 1, name: "موفق", value: "success" },
+        { id: 2, name: "در حال بررسی", value: "pending" },
+        { id: 3, name: "ناموفق", value: "failed" },
+        { id: 4, name: "رد شده", value: "rejected" },
+      ],
+    },
+    {
+      id: "filterFor",
+      label: "واریز و برداشت",
+      options: [
+        { id: 1, name: "واریز", value: "deposit" },
+        { id: 2, name: "برداشت", value: "withdraw" },
       ],
     },
   ],
@@ -75,16 +73,15 @@ export default function FilterModal({ isOpen, onClose, onApplyFilters, page }: F
   const [openDropdown, setOpenDropdown] = useState<string>("");
   const [selectedFilters, setSelectedFilters] = useState<{ [key: string]: OptionType | null }>({});
 
-useEffect(() => {
-  if (!pageFilters[page]) return; 
-  const initial: { [key: string]: null } = {};
-  pageFilters[page].forEach((field) => {
-    initial[field.id] = null;
-  });
-  setSelectedFilters(initial);
-  setOpenDropdown("");
-}, [page, isOpen]);
-
+  useEffect(() => {
+    if (!pageFilters[page]) return;
+    const initial: { [key: string]: OptionType | null } = {};
+    pageFilters[page].forEach((field) => {
+      initial[field.id] = null; // پیش‌فرض: label خودش نمایش داده شود
+    });
+    setSelectedFilters(initial);
+    setOpenDropdown("");
+  }, [page, isOpen]);
 
   if (!isOpen) return null;
 
@@ -100,6 +97,7 @@ useEffect(() => {
     });
     setSelectedFilters(cleared);
     setOpenDropdown("");
+    onApplyFilters(cleared);
     onClose();
   };
 
@@ -121,7 +119,6 @@ useEffect(() => {
         className="bg-white8 rounded-2xl p-6 w-[90%] max-w-md shadow-xl text-black0 dark:text-white transition-colors duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-       
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-semibold text-lg">فیلترها</h2>
           <button
@@ -132,13 +129,12 @@ useEffect(() => {
           </button>
         </div>
 
-        
         <div className="space-y-4">
           {pageFilters[page].map((field) => (
             <FilterDropdown
               key={field.id}
               id={field.id}
-              label={field.label}
+              label={selectedFilters[field.id]?.name || field.label}
               options={field.options}
               selected={selectedFilters[field.id]}
               isOpen={openDropdown === field.id}
@@ -148,7 +144,6 @@ useEffect(() => {
           ))}
         </div>
 
-      
         <div className="flex gap-2 mt-6">
           <button
             onClick={handleClearFilters}

@@ -130,7 +130,7 @@ const CryptoWithdrawForm: FC = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    if (!mergedCryptosData?.length || crypto) return; // داده‌ها هنوز نیومده یا از قبل ست شده
+    if (!mergedCryptosData?.length || crypto) return;
 
     const selectedCoinFromUrl = searchParams.get("coin");
     const urlCoin = selectedCoinFromUrl && mergedCryptosData.find((c) => c.symbol === selectedCoinFromUrl);
@@ -156,7 +156,6 @@ const CryptoWithdrawForm: FC = () => {
         },
       });
       toast.success(res.msg || "برداشت با موفقیت تأیید شد ✅");
-      // ✅ ریست کامل state‌ها
       setIsOtpModalOpen(false);
       setOtpCode("");
       setResendCodeTimeLeft(0);
@@ -213,7 +212,7 @@ const CryptoWithdrawForm: FC = () => {
       } catch (err) {
         console.error("خطا در گرفتن اطلاعات:", err);
       } finally {
-        setIsDataLoading(false); // ✅ وقتی داده‌ها اومدن
+        setIsDataLoading(false);
       }
     };
     fetchData();
@@ -312,7 +311,7 @@ const CryptoWithdrawForm: FC = () => {
         withdrawAddressWalletTag: tag,
       });
 
-      // ✅ باز کردن مودال OTP
+  
       setResendCodeTimeLeft(120);
       setIsOtpModalOpen(true);
     } catch (err) {
@@ -722,7 +721,7 @@ const CryptoWithdrawForm: FC = () => {
           <OTPInputModal
             closeModal={handleCloseOtpModal}
             onChange={(value: string) => setOtpCode(value)}
-            onSubmit={activeTab === "withdraw" ? handleSubmitOtp : handleSubmitTransferOtp} // ← اینجا
+            onSubmit={activeTab === "withdraw" ? handleSubmitOtp : handleSubmitTransferOtp} 
             OTPLength={6}
             handleResendCode={handleResendCode}
             resendCodeIsSubmitting={isResending}

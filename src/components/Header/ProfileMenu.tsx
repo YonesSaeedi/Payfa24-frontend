@@ -136,23 +136,23 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             )}
           </li>
 
-          <li
-            className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
-            onClick={() => {
-              if (kycLoading) return; 
-             if (kycInfo?.kyc?.basic?.cardbank) {
-             navigate(ROUTES.AUTHENTICATION_ADVANCED);
-                } else {
-            navigate(ROUTES.AUTHENTICATION_BASIC);
-                }
-              setOpen(false);
-            }}
-          >
-            <span className="w-6 h-6">
-              <IconAuthentication />
-            </span>
-            احراز هویت
-          </li>
+        <Link
+  to={
+    kycLoading
+      ? "#"
+      : kycInfo?.kyc?.basic?.cardbank
+      ? ROUTES.AUTHENTICATION_ADVANCED
+      : ROUTES.AUTHENTICATION_BASIC
+  }
+  className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
+  onClick={() => setOpen(false)}
+>
+  <span className="w-6 h-6">
+    <IconAuthentication />
+  </span>
+  احراز هویت
+</Link>
+
           <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm">
               <span className="w-6 h-6">
