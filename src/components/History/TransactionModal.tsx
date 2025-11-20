@@ -189,7 +189,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose }) => {
       >
         <div className="flex justify-between items-center pb-4 mb-4 ">
           <h2 className="font-semibold text-lg">جزئیات تراکنش</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition w-7">
+          <button onClick={onClose} className="text-gray-500 hover:text-blue2 transition w-7">
             <IconClose />
           </button>
         </div>

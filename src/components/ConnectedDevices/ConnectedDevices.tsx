@@ -114,7 +114,7 @@ export default function DeviceList() {
           </h2>
           <button
             onClick={() => setShowModal(true)}
-            className="w-full text-center justify-center lg:w-[197px] h-[40px] px-3 py-1 rounded-lg  transition bg-red6 text-red1 flex items-center gap-1 font-medium text-base"
+            className="w-full text-center justify-center lg:w-[197px] h-[40px] px-3 py-1 rounded-lg  transition bg-red7 text-red1 flex items-center gap-1 font-medium text-base"
           >
             <span className="w-5 h-5 icon-wrapper mr-2 ml-1">
               <IconCloseMonitor />

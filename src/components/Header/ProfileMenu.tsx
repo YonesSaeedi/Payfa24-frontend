@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -58,7 +57,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       window.location.replace("/login");
     }
   };
- const navigate = useNavigate();
+ 
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -72,23 +71,34 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       </button>
 
       <div
-        className={`hidden lg:block absolute top-full left-0 mt-2 w-96 rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
+        className={`hidden lg:block absolute top-full left-0 mt-2 w-[326px] rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
           open ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         }`}
       >
-        <div dir="rtl" className="bg-gray33 py-4 px-3 flex items-center justify-between border border-gray21 m-4 rounded-[8px]">
+        <div dir="rtl" className="bg-gray33 py-2 px-3 flex items-center justify-between border border-gray21 mx-4 mt-4 rounded-[8px]">
           <div className="flex ">
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-            <div>
-              <p className="font-semibold text-black1">{isLoading ? "در حال بارگذاری..." : userData?.user.name_display || "—"}</p>
-              <p className="text-xs text-gray-500 pt-1">{isLoading ? "" : `سطح کاربری ${userData?.user.level_account || "—"}`}</p>
-            </div>
+           <div className="flex flex-col">
+  {isLoading ? (
+
+      <div className="flex flex-col gap-1">
+        <div className="h-3 w-20 rounded skeleton-bg mt-2 pt-2"></div>
+        <div className="h-2 w-10 rounded skeleton-bg mt-1"></div>
+    </div>
+  ) : (
+    <>
+      <p className="font-semibold text-black1">{userData?.user.name_display || "—"}</p>
+      <p className="text-xs text-gray-500 pt-1">سطح کاربری {userData?.user.level_account || "—"}</p>
+    </>
+  )}
+</div>
+
           </div>
         </div>
 
-        <ul dir="rtl" className="p-4 space-y-3 font-medium">
+        <ul dir="rtl" className="p-6 space-y-3 font-medium">
           <Link to={ROUTES.USER_ACCOUNT} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer text-black1 font-medium text-sm">
               <span className="w-6 h-6">
@@ -125,23 +135,23 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             )}
           </li>
 
-          <li
-            className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
-            onClick={() => {
-              if (kycLoading) return; 
-             if (kycInfo?.kyc?.basic?.cardbank) {
-             navigate(ROUTES.AUTHENTICATION_ADVANCED);
-                } else {
-            navigate(ROUTES.AUTHENTICATION_BASIC);
-                }
-              setOpen(false);
-            }}
-          >
-            <span className="w-6 h-6">
-              <IconAuthentication />
-            </span>
-            احراز هویت
-          </li>
+        <Link
+  to={
+    kycLoading
+      ? "#"
+      : kycInfo?.kyc?.basic?.cardbank
+      ? ROUTES.AUTHENTICATION_ADVANCED
+      : ROUTES.AUTHENTICATION_BASIC
+  }
+  className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
+  onClick={() => setOpen(false)}
+>
+  <span className="w-6 h-6">
+    <IconAuthentication />
+  </span>
+  احراز هویت
+</Link>
+
           <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm">
               <span className="w-6 h-6">
@@ -176,7 +186,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
           }}
           className="p-4"
         >
-          <button className="w-full rounded-xl border  text-center border-blue2 text-blue-500 hover:bg-gray-100 transition font-bold text-sm py-[14px]">
+          <button className="w-full rounded-xl border  text-center border-blue2 text-blue-500 hover:bg-blue2 hover:text-white1 transition font-bold text-sm py-[13px]">
             خروج از حساب کاربری
             <span className="w-6 h-6 icon-wrapper ml-1">
               <IconExit />

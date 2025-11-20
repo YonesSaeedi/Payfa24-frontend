@@ -38,9 +38,9 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
   const sortedList = useMemo(() => sorters[activeCategory](data), [data, activeCategory])
 
   return (
-    <div className="w-full rounded-2xl p-4 shadow border border-gray21 overflow-hidden">
-      <div className="flex justify-between items-center border-gray21 mb-6">
-        <Link to={ROUTES.MARKET} className="flex items-center gap-2 px-3 py-1 rounded-xl text-sm lg:text-xl text-blue2 ml-2 text-center hover:underline">
+    <div className="w-full rounded-2xl shadow border border-gray21 overflow-hidden lg:p-[30px] pt-5 px-[15px]">
+      <div className="flex justify-between items-center border-gray21 lg:mb-6 mb-4">
+        <Link to={ROUTES.MARKET} className="flex items-center gap-2  py-1 rounded-xl text-sm lg:text-xl text-blue2 ml-2 text-center hover:underline">
           <span className="w-5 h-5 lg:w-6 lg:h-6 text-blue2"><ArrowLeftIcon /></span>همه ارزها
         </Link>
         <h2 className="text-base lg:text-xl font-bold flex items-center gap-2 text-black1">بازار پی‌فا ۲۴</h2>
@@ -50,7 +50,7 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
           <button
             key={category.name}
             onClick={() => setCategories(prev => prev.map(item => item.name === category.name ? { ...item, isActive: true } : { ...item, isActive: false }))}
-            className={`py-1.5 lg:py-2 px-3 lg:px-4 text-nowrap ${category.isActive ? "text-blue2 border-b-2 border-blue2 font-medium" : "text-gray3 font-normal"}`}
+            className={`py-1.5 lg:py-2 px-3 lg:px-4 text-nowrap hover:text-blue2 ${category.isActive ? "text-blue2 border-b-2 border-blue2 font-medium" : "text-gray3 font-normal"}`}
           >
             {category.label}
           </button>
@@ -120,7 +120,7 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
                 <td className="py-3 px-4 hidden lg:table-cell text-end text-black1">
                   <Link
                     to={`${ROUTES.TRADE.BUY}?coin=${item?.symbol}`}
-                    className="bg-blue2 text-white rounded-lg px-4 py-1.5 text-sm border border-transparent hover:bg-transparent hover:border-blue2 hover:text-blue2 transition duration-200 ease-in"
+                    className="bg-blue2 text-white rounded-lg px-4 py-1.5 text-sm border border-transparent hover:bg-transparent hover:border-blue2 hover:text-blue2 transition duration-200 ease-in text-sm font-bold"
                   >
                     خرید/فروش
                   </Link>

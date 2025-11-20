@@ -21,7 +21,7 @@ interface FloatingSelectProps {
   placeholderIcon?: React.ReactNode;
   placeholderClasses?: string;
   isBankSelect?: boolean;
-  disabled?: boolean; // ✅ از بیرون
+  disabled?: boolean; 
 }
 
 const FloatingSelect: FC<FloatingSelectProps> = ({
@@ -34,7 +34,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
   onOpen,
   placeholderIcon,
   placeholderClasses,
-  disabled = false, // ⬅️ مقدار پیش‌فرض
+  disabled = false, 
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
   const selected = options.find((o) => o.value === value);
 
   const handleButtonClick = () => {
-    if (disabled) return; // ⬅️ در حالت غیرفعال اصلاً باز نشود
+    if (disabled) return; 
     if (onOpen) {
       onOpen();
     } else {
@@ -70,7 +70,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
       <button
         type="button"
         onClick={handleButtonClick}
-        disabled={disabled} // ⬅️ دکمه واقعاً غیرفعال
+        disabled={disabled} 
         className={`
           flex items-center justify-between w-full px-4 lg:h-[56px] h-[48px] rounded-lg
           lg:bg-gray43

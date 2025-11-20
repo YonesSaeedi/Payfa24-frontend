@@ -90,33 +90,32 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
             توجه داشته باشید
           </p>
         </div>
-        <p className="text-sm text-black1 leading-6 text-[12px] lg:text-[14px] font-normal
-">
-          {userData ? (
-            <>
-              کارت بانکی باید با کد ملی{" "}
-              <span className="font-semibold">
-                  {toPersianDigits(userData.user.national_code)}
-              </span>{" "}
-              و شماره موبایل{" "}
-              <span className="font-semibold">
-                {userData.user.mobile
-                  ? formatPersianDigits(
-            `${userData.user.mobile.slice(-3)} ****${userData.user.mobile.slice(0, 3)}`
-          )
-                  : ""}
-              </span>{" "}
-              تعلق داشته باشد
-            </>
-          ) : (
-            "در حال بارگذاری اطلاعات کاربر..."
-          )}
-        </p>
+       <p className="text-sm text-black1 leading-6 text-[12px] lg:text-[14px] font-normal">
+  {userData ? (
+    <>
+      کارت بانکی باید به کد ملی <span className="font-semibold">
+        {userData.user.national_code
+          ? toPersianDigits(userData.user.national_code)
+          :   " شما " }
+      </span> و شماره موبایل      <span className="font-semibold"> 
+        {userData.user.mobile
+          ? formatPersianDigits(
+              `${userData.user.mobile.slice(-3)} ****${userData.user.mobile.slice(0, 3)}`
+            )
+          : " شما  " } {" "}
+      </span>
+      تعلق داشته باشد
+    </>
+  ) : (
+    "در حال بارگذاری اطلاعات کاربر..."
+  )}
+</p>
+
       </div>
 
       <div
-        className="h-[263px] rounded-xl relative flex flex-col justify-end px-6 w-full
-    lg:max-w-[600px]"
+        className=" rounded-xl relative flex flex-col  px-6 w-full
+    lg:max-w-[600px]  shadow-md"
         style={{
           backgroundImage: `url(${
             isDark ? BackgroundCardDark : BackgroundCard
@@ -125,57 +124,69 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute top-0 right-2 w-24 h-24">
+        <div className="absolute top-0 right-2 w-[114px] h-[79px] mt-4">
           <IconShetab />
         </div>
 
-        <div className="relative w-full mb-2">
-        <input
+        <div className="relative w-full mb-10 mt-[143px]">
+  <input
   dir="rtl"
   id="cardNumber"
   type="text"
   value={cardNumber}
-  onChange={(e) => {
+  // onChange={(e) => {
   
-    const inputValue = e.target.value;
-    const persianDigits = inputValue.replace(/[0-9]/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
-    const onlyDigits = persianDigits.replace(/[^۰-۹]/g, "");
-    const englishDigits = onlyDigits.replace(/[۰-۹]/g, (d) =>
-      "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]
-    );
-    const formatted = formatCardNumber(englishDigits);
-    const persianFormatted = formatted.replace(/[0-9]/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
-    setCardNumber(persianFormatted);
-    if (englishDigits.length >= 6) {
-      setBank(getBankByCardNumber(englishDigits));
-    } else {
-      setBank("");
-    }
-  }}
+  //   const inputValue = e.target.value;
+  //   const persianDigits = inputValue.replace(/[0-9]/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+  //   const onlyDigits = persianDigits.replace(/[^۰-۹]/g, "");
+  //   const englishDigits = onlyDigits.replace(/[۰-۹]/g, (d) =>
+  //     "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]
+  //   );
+  //   const formatted = formatCardNumber(englishDigits);
+  //   const persianFormatted = formatted.replace(/[0-9]/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+  //   setCardNumber(persianFormatted);
+  //   if (englishDigits.length >= 6) {
+  //     setBank(getBankByCardNumber(englishDigits));
+  //   } else {
+  //     setBank("");
+  //   }
+  // }}
+  onChange={(e) => {
+  const inputValue = e.target.value.replace(/\D/g, ""); // فقط اعداد انگلیسی
+  const formatted = formatCardNumber(inputValue);
+  setCardNumber(formatted);
+
+  if (inputValue.length >= 6) {
+    setBank(getBankByCardNumber(inputValue));
+  } else {
+    setBank("");
+  }
+}}
+
   placeholder="____ ____ ____ ____"
   className="
     peer
     w-full
     h-[56px]
     rounded-md
-    border border-gray-300
+    border border-gray12
     placeholder:leading-[56px]
     flex items-center justify-center
     bg-transparent
     text-center
     text-base text-black0
-    placeholder:text-gray-400
+    placeholder:text-gray12
     placeholder:text-2xl
     placeholder:tracking-[0.1em]
     [&::placeholder]:text-center
     focus:outline-none
-    focus:ring-2 focus:ring-blue-400
+    focus:ring-2 focus:ring-blue2
     focus:border-none
   "
 />
           <label
             htmlFor="cardNumber"
-            className="absolute -top-2 right-3 text-gray1 px-1 bg-[#eaf2ff] dark:bg-[#25354d] font-medium text-base "
+            className="absolute -top-[13px] right-3 text-gray12 px-1 bg-[#eaf2ff] dark:bg-[#13223a] font-medium text-[18px]"
           >
             شماره کارت
           </label>
@@ -183,7 +194,7 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
 
         <button
           disabled={isSubmitting || cardNumber.replace(/-/g, "").length !== 16}
-          className={`mt-4 mb-8 w-full py-3 rounded-xl font-medium text-base transition ${
+          className={` mb-8 w-full py-3 rounded-xl font-medium text-base transition ${
             isSubmitting || cardNumber.replace(/-/g, "").length !== 16
               ? "bg-gray12 cursor-not-allowed text-white"
               : "bg-[#197BFF] hover:bg-blue-700 text-white"

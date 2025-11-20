@@ -13,7 +13,7 @@ import IconMoreVertical from "../../assets/icons/Wallet/IconMoreVertical";
 import { Link } from "react-router-dom";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import Pagination from "../History/Pagination";
-import EmptyWallet from "./../../assets/EmptyWallet.png";
+import  IconEmptyWallet from "./../../assets/icons/Home/WalletCardIcon/iconEmptyWallet";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 
 interface Wallet {
@@ -159,7 +159,7 @@ const WalletAssets: React.FC = () => {
               placeholder="جستجو..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border border-gray19 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
+              className="border border-gray19 text-black1 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
             />
           </div>
           <div className="relative inline-block text-right max-w-[50%]" ref={dropdownRef}>
@@ -177,7 +177,7 @@ const WalletAssets: React.FC = () => {
             {openDropdown && (
               <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col border border-gray21">
                 {sortOptions.map((option) => (
-                  <button key={option.key} onClick={() => handleSort(option.key)} className="w-full text-right px-3 py-2 hover:bg-gray-100 text-sm text-black1 whitespace-nowrap">
+                  <button key={option.key} onClick={() => handleSort(option.key)} className="w-full text-right px-3 py-2 hover:bg-gray27 hover:text-blue2 text-sm text-black1 whitespace-nowrap">
                     {option.label}
                   </button>
                 ))}
@@ -228,14 +228,17 @@ const WalletAssets: React.FC = () => {
                     </div>
                   </div>
                 ))
-              ) : cryptoData.length === 0 ? (
-                <div className="flex flex-col items-center justify-center ">
-                  <div className="flex items-center justify-center">
-                    <img src={EmptyWallet} alt="Empty Wallet" className="w-full h-full object-contain" />
-                  </div>
-                  <span className="block text-center text-black2 mb-10 text-base font-normal">کیف پول دارایی‌های شما خالی است!</span>
-                </div>
-              ) : (
+              ) : !isLoading && cryptoData.length === 0 ? (
+  <div className="flex flex-col items-center justify-center ">
+    <div className="flex items-center justify-center icon-wrapper text-white1">
+      <IconEmptyWallet />
+    </div>
+    <span className="block text-center text-black2 mb-10 text-base font-normal">
+      کیف پول دارایی‌های شما خالی است!
+    </span>
+  </div>
+)
+ : (
                 cryptoData.map((item, index) => (
                   <div
                     key={index}
@@ -304,12 +307,13 @@ const WalletAssets: React.FC = () => {
     <span className="text-black1 hover:text-blue2 cursor-pointer">فروش</span>
   </Link>
 
-  <Link to={`${ROUTES.DEPOSIT}?coin=${item.symbol}`} className="flex items-center gap-2">
-    <span className="text-blue2 w-5 h-5 flex items-center justify-center">
-      <WalletAddIcon />
-    </span>
-    <span className="text-black1 hover:text-blue2 cursor-pointer">واریز</span>
-  </Link>
+<Link to={`${ROUTES.DEPOSIT}?coin=${item.symbol}&type=wallet`} className="flex items-center gap-2">
+  <span className="text-blue2 w-5 h-5 flex items-center justify-center">
+    <WalletAddIcon />
+  </span>
+  <span className="text-black1 hover:text-blue2 cursor-pointer">واریز</span>
+</Link>
+
 
   <Link to={`/withdraw/crypto?coin=${item.symbol}`} className="flex items-center gap-2">
     <span className="text-blue2 w-5 h-5 flex items-center justify-center">

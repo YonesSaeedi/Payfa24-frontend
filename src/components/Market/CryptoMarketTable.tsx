@@ -119,7 +119,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
             ))}
           </div>
         </div> */}
-       <div className="flex flex-row-reverse justify-between items-center px-4 pt-8">
+       <div className="flex flex-row-reverse justify-between items-center px-6 pt-8">
   {/* تب‌ها */}
   <div className="flex flex-row-reverse gap-4 text-sm text-gray24 overflow-x-auto whitespace-nowrap scrollbar-hide scroll-smooth">
     {tabs.map((tab, index) => (
@@ -129,8 +129,8 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
           setActive(index);
           setCurrentPage(1);
         }}
-        className={`cursor-pointer pb-2 pr-2 text-base font-normal flex-shrink-0 ${
-          active === index ? "text-blue-600 border-b-2 border-blue-600" : "text-gray5"
+        className={`cursor-pointer pb-2 pr-2 text-base font-normal flex-shrink-0 hover:text-blue2 ${
+          active === index ? "text-blue2 border-b-2 border-blue2" : "text-gray5"
         }`}
       >
         {tab}
@@ -141,7 +141,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
   {/* کادر جستجو سمت چپ */}
   <div
     onClick={() => inputRefDesktop.current?.focus()}
-    className="hidden lg:flex flex-row-reverse items-center w-[319px] h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200 cursor-text"
+    className="hidden lg:flex flex-row-reverse items-center w-[319px]  h-[40px] border border-gray19 rounded-lg bg-white1 dark:bg-gray-800 px-3 group focus-within:border-blue-500 transition-colors duration-200 cursor-text"
   >
     <span className="w-5 h-5 ml-2 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
       <IconSearch />

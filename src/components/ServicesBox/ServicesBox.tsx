@@ -50,15 +50,18 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
 
 
 
-  const handleItemClick = (item: ServiceItem) => {
-    setIsVisible(false);
-    setTimeout(() => {
-      onClose(); 
-      if (item.route && item.route !== location.pathname) {
-        navigate(item.route); 
-      }
-    }, 300);
-  };
+const handleItemClick = (item: ServiceItem) => {
+  setIsVisible(false);
+  setTimeout(() => {
+    onClose(); 
+    if (item.onClick) {
+      item.onClick();
+    } else if (item.route && item.route !== location.pathname) {
+      navigate(item.route); 
+    }
+  }, 300);
+};
+
 
  
   const financeItems: ServiceItem[] = [
@@ -107,19 +110,19 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   ];
 
   const supportItems: ServiceItem[] = [
-    {
-      label: "احراز هویت",
-      icon: <IconPersonalCard />,
-      onClick: () => {
-        if (kycLoading) return; 
-        if (kycInfo?.kyc?.basic?.cardbank) {
-          navigate("/kyc-advanced"); 
-        } else {
-          navigate("/kyc-basic"); 
-        }
-        onClose(); 
-      },
+      {
+    label: "احراز هویت",
+    icon: <IconPersonalCard />,
+    onClick: () => {
+      if (kycLoading) return; 
+      if (kycInfo?.kyc?.basic?.cardbank) {
+        navigate("/kyc-advanced"); 
+      } else {
+        navigate("/kyc-basic"); 
+      }
+      onClose(); 
     },
+  },
     {
       label: "امنیت",
       icon: <IconSecurity />,

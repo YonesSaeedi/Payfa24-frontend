@@ -135,6 +135,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
   const convertDigitsToPersian = (str: string) => {
     return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
   };
+ 
 
   return (
     <div dir="rtl">
@@ -142,15 +143,15 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
         <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه تراکنش های رمزارز</h1>
       </div>
 
-      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-4 text-black1">
-        <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-6">
+      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 lg:p-6 text-black1 pt-8">
+        <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-8 ">
           <div className="flex items-center gap-1">
             <span className="w-5 h-5 icon-wrapper text-gray12">
               <IconFilterTable />
             </span>
             <span className="text-gray12">فیلترها</span>
           </div>
-          <div className="w-px h-6 bg-gray-400 self-center"></div>
+          <div className="w-px h-6 bg-gray12 self-center"></div>
 
           <input
             type="text"
@@ -238,7 +239,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             <div className="text-center py-12">
               <img src={TrasactionHisory} alt="بدون تراکنش" className="mb-3 dark:hidden mx-auto" />
               <img src={TransactionHistoryDark} alt="بدون تراکنش" className="mb-3 hidden dark:block mx-auto" />
-              <p className="text-gray-500 text-lg font-medium">تاکنون تراکنشی نداشته‌اید!</p>
+              <p className="text-black1 text-lg font-medium">تاکنون تراکنشی نداشته‌اید!</p>
             </div>
           ) : (
             <div className="text-center py-12">
@@ -247,7 +248,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
           )}
         </div>
 
-        <div className="block lg:hidden space-y-4 mt-4">
+        <div className="block lg:hidden space-y-4 lg:mt-4">
           {filteredTransactions.length > 0 ? (
             filteredTransactions.map((tx) => (
               <div key={tx.id} className="border rounded-xl p-4  border-gray21">

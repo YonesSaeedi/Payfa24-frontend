@@ -62,49 +62,58 @@ function BankCardManager() {
     }
   };
 
-  return (
-    <HeaderLayout>
-     <div dir="rtl" className="bg-backgroundMain min-h-[400px] w-full">
-         <div className="container-style grid grid-col2 gap-8 lg:gap-12">
-           <div className="mt-7 lg:mt-4">
-             <BreadcrumbNavigation />
-          </div>
-<div className="flex flex-col lg:flex-row  gap-8 lg:gap-[62x] pb-8">
+ return (
+  <HeaderLayout>
+    <div dir="rtl" className="bg-backgroundMain min-h-[400px] w-full">
+      <div className="container-style grid grid-col2 gap-8 lg:gap-12">
+        <div className="mt-7 lg:mt-4">
+          <BreadcrumbNavigation />
+        </div>
 
-  <div className="w-full lg:w-2/5 px-4 lg:px-0">
-    <BankCardForm onSave={handleAddCard} />
-  </div>
-
-
-  <div className="lg:w-3/5 ">
-    {loading ? (
-  
+        
+{loading ? (
+  // نمایش Skeleton در بخش BankCardList
+  <div className="flex flex-col lg:flex-row gap-8 pb-8">
+    <div className="w-full lg:w-2/5">
+      <BankCardForm onSave={handleAddCard} />
+    </div>
+    <div className="w-full lg:w-3/5">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
       </div>
-    ) : error ? (
-      <p className="text-red-500">{error}</p>
-    ) : cards.length === 0 ? (
-
-      <EmptyCards onAddCard={() => setIsModalOpen(true)} />
-    ) : (
- 
-      <BankCardList cards={cards} onAddCard={() => setIsModalOpen(true)} />
-    )}
+    </div>
   </div>
-</div>
+) : error ? (
+  <p className="text-red-500">{error}</p>
+) : cards.length === 0 ? (
+  // اگر کارت نیست → فقط EmptyCards کل صفحه
+  <EmptyCards onAddCard={() => setIsModalOpen(true)} />
+) : (
+  // اگر کارت هست → فرم + لیست کارت
+  <div className="flex flex-col lg:flex-row gap-8 pb-8">
+    <div className="w-full lg:w-2/5">
+      <BankCardForm onSave={handleAddCard} />
+    </div>
+    <div className="w-full lg:w-3/5">
+      <BankCardList cards={cards} onAddCard={() => setIsModalOpen(true)} />
+    </div>
+  </div>
+)}
 
-          <AddBankCardModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onSave={handleAddCard}
-          />
-        </div>
+
+
+        <AddBankCardModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleAddCard}
+        />
       </div>
-    </HeaderLayout>
-  );
+    </div>
+  </HeaderLayout>
+);
+
 }
 
 

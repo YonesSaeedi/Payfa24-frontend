@@ -137,12 +137,12 @@ const OrderPage: React.FC = () => {
         <h1 className="hidden lg:block font-medium text-[20px]">تاریخچه خرید و فروش</h1>
       </div>
 
-      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 p-4 text-black1">
-        <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-6">
+      <div className="bg-white1 rounded-2xl lg:border lg:border-gray21 lg:p-6 text-black1 pt-8">
+        <div className="hidden lg:flex flex-wrap gap-2 justify-start mb-8">
           <div className="flex items-center gap-1">
             <span className="text-gray12">فیلترها</span>
           </div>
-          <div className="w-px h-6 bg-gray-400 self-center"></div>
+          <div className="w-px h-6 bg-gray12 self-center"></div>
 
           <FilterDropdown
             id="status"
@@ -213,7 +213,7 @@ const OrderPage: React.FC = () => {
                   </div>
                   <div className="text-center font-normal text-base">{tx.dateTime ? convertDigitsToPersian(tx.dateTime) : "-"}</div>
 
-                  <div className="text-blue-600 cursor-pointer text-center font-normal text-base" onClick={() => handleOpenModal(tx)}>
+                  <div className="text-blue2  cursor-pointer text-center font-normal text-base" onClick={() => handleOpenModal(tx)}>
                     جزئیات
                   </div>
                 </div>
@@ -223,12 +223,12 @@ const OrderPage: React.FC = () => {
             <div className="text-center py-12">
               <img src={TrasactionHisory} alt="بدون تراکنش" className="mb-3 dark:hidden mx-auto" />
               <img src={TransactionHistoryDark} alt="بدون تراکنش" className="mb-3 hidden dark:block mx-auto" />
-              <p className="text-gray-500 text-lg font-medium">تاکنون تراکنشی نداشته‌اید!</p>
+              <p className="text-black1 text-lg font-medium">تاکنون تراکنشی نداشته‌اید!</p>
             </div>
           )}
         </div>
 
-        <div className="block lg:hidden space-y-4 mt-4">
+        <div className="block lg:hidden space-y-4 lg:mt-4">
           {mergedTransactions.length > 0 ? (
             mergedTransactions.map((tx) => (
               <div key={tx.id} className="border rounded-xl p-4  border-gray21">
@@ -284,7 +284,7 @@ const OrderPage: React.FC = () => {
             <div className="flex flex-col items-center justify-center py-12 min-h-[300px]">
               <img src={TrasactionHisory} alt="بدون تراکنش" className="mb-3 dark:hidden w-32 h-32 mx-auto" />
               <img src={TransactionHistoryDark} alt="بدون تراکنش" className="mb-3 hidden dark:block w-32 h-32 mx-auto" />
-              <p className="text-gray-500 text-base">تاکنون تراکنشی نداشته‌اید!</p>
+              <p className="text-black1 text-base">تاکنون تراکنشی نداشته‌اید!</p>
             </div>
           )}
         </div>
