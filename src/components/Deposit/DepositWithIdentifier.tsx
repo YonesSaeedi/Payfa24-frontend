@@ -155,7 +155,7 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
       )}
 
       {/* Button */}
-      <div className={`${isShown ? "mt-6" : "mt-24"}`}>
+      <div className={`${isShown ? "mt-6" : "mt-80"}`}>
         <button
           onClick={handleCreate}
           disabled={isCreating || !selectedCardId || isShown} 

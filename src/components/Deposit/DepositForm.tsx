@@ -25,15 +25,12 @@ interface PaymentGatewayResponse {
 interface DepositFormProps {
   minDeposit: number;
   maxDeposit: number;
+  isDataLoaded?: boolean;
 }
 
-export default function DepositForm({ minDeposit, maxDeposit }: DepositFormProps) {
+export default function DepositForm({ minDeposit, maxDeposit, isDataLoaded }: DepositFormProps) {
   const presetAmounts = [5000000, 10000000, 20000000, 25000000];
-
-  // دیگر نیازی به state برای min/max نیست! از props استفاده می‌کنیم
   const urlId = new URLSearchParams(window.location.search).get("id");
-
-  // schema داینامیک بر اساس props
   const getValidationSchema = (min: number, max: number) =>
     yup.object().shape({
       amount: yup
@@ -162,7 +159,13 @@ export default function DepositForm({ minDeposit, maxDeposit }: DepositFormProps
 
       {/* پیام حداقل و حداکثر */}
       <p className="text-gray12 lg:text-sm text-xs mb-5">
-        میزان واریزی حداقل {formatPersianDigits(minDeposit.toLocaleString())} تومان و حداکثر تا سقف {formatPersianDigits(maxDeposit.toLocaleString())} تومان
+        میزان واریزی حداقل
+        {!isDataLoaded ? (
+          <span className="inline-block w-16 h-5 mx-1 rounded  align-middle skeleton-bg"></span>
+        ) : (
+          <span> {formatPersianDigits(minDeposit.toLocaleString())} </span>
+        )}
+        تومان و حداکثر تا سقف {formatPersianDigits(maxDeposit.toLocaleString())} تومان
       </p>
 
       {/* دکمه‌های مبلغ پیشنهادی */}

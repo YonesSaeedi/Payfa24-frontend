@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { getBankLogo } from "../../utils/bankLogos";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import { toPersianDigits } from "./CardToCardTransfer";
+import IconClose from "../../assets/icons/Login/IconClose";
 
 // ---------- validation ----------
 const schema = yup.object().shape({
@@ -153,11 +154,16 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
   return (
     <div className="w-full" dir="rtl">
       {/* ویدیو */}
-      <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
-        <span className="icon-wrapper w-6 h-6 text-blue2">
-          <IconVideo />
+      <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2 justify-between">
+        <div className="flex items-center gap-2">
+          <span className="icon-wrapper w-6 h-6 text-blue2">
+            <IconVideo />
+          </span>
+          <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با درگاه پرداخت</span>
+        </div>
+        <span className="icon-wrapper w-5 h-5 text-blue2">
+          <IconClose />
         </span>
-        <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با فیش بانکی</span>
       </div>
 
       {/* کارت مبدا */}

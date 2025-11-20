@@ -12,6 +12,7 @@ import { AxiosError } from "axios";
 import { getBankLogo } from "../../utils/bankLogos";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
+import IconClose from "../../assets/icons/Login/IconClose";
 
 // --- Interfaces ---
 interface CreditCard {
@@ -211,11 +212,16 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
       {!showSummary ? (
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Video guide */}
-          <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2">
-            <span className="icon-wrapper w-6 h-6 text-blue2">
-              <IconVideo />
-            </span>
-            <span className="lg:text-sm text-xs">ویدیو آموزشی کارت به کارت</span>
+          <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2 justify-between">
+           <div className="flex items-center gap-2">
+          <span className="icon-wrapper w-6 h-6 text-blue2">
+            <IconVideo />
+          </span>
+          <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با درگاه پرداخت</span>
+        </div>
+        <span className="icon-wrapper w-5 h-5 text-blue2">
+          <IconClose />
+        </span>
           </div>
 
           {/* Card select */}
