@@ -4,94 +4,92 @@ import HeaderLayout from "../../layouts/HeaderLayout";
 import StepEmail from "../../components/auth/step/StepBasic/StepEmail";
 import StepPersonal from "../../components/auth/step/StepBasic/StepPersonal";
 import StepCard from "../../components/auth/step/StepBasic/StepCard";
-import StepZiro from "../../components/auth/step/StepBasic/StepZiro";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routes/routes";
+
+
+
 
 export default function AuthenticationBasic() {
+  const navigate = useNavigate();
+  const { data: userInfo, isLoading } = useGetKYCInfo();
+
   const [step, setStep] = useState(0);
   const [started, setStarted] = useState(false);
-  const { data: userInfo } = useGetKYCInfo();
 
-  const safeUserInfo = {
-    kyc: {
-      basic: {
-        email: userInfo?.kyc?.basic?.email ?? undefined,
-        mobile: userInfo?.kyc?.basic?.mobile ?? undefined,
-        cardbank: !!userInfo?.kyc?.basic?.cardbank,
-        name: userInfo?.kyc?.basic?.name ?? undefined,
-        family: userInfo?.kyc?.basic?.family ?? undefined,
-        father: userInfo?.kyc?.basic?.father ?? undefined,
-        national_code: userInfo?.kyc?.basic?.national_code ?? undefined,
-        date_birth: userInfo?.kyc?.basic?.date_birth ?? undefined,
-      },
-    },
-  };
+  // فقط وقتی تموم شد → برو احراز پیشرفته
+  useEffect(() => {
+    if (userInfo?.level_kyc && step === 0) {
+      navigate(ROUTES.AUTHENTICATION_ADVANCED, { replace: true });
+    }
+  }, [userInfo?.level_kyc, step, navigate]);
 
   const handleStart = () => {
-  setStarted(true);
-};
+    setStarted(true);
+    setStep(1);
+  };
+
+  // اگر لودینگ یا دیتا نیومده
+  if (isLoading || !userInfo) {
+    return null;
+  }
+
+  const basic = userInfo.kyc?.basic || {};
+  const hasEmailOrMobile = !!basic.email && !!basic.mobile;
+  const hasPersonalInfo = !!basic.name && !!basic.family && !!basic.national_code;
+  const hasCard = basic.cardbank === 1;
 
 
-  useEffect(() => {
-    if (!userInfo || !started) return;
+  // ۱. اگر basic شده ولی کارت نزده → فقط مرحله کارت
+  if (userInfo.level_kyc === "basic" && !hasCard) {
+    return (
+      <HeaderLayout>
+        <AuthenticationLayout step={3} started={true} onStart={() => {}} levelKyc="basic">
+          <div className="w-full flex justify-center">
+            <StepCard  userInfo={userInfo} />
+          </div>
+        </AuthenticationLayout>
+      </HeaderLayout>
+    );
+  }
 
-    const basic = userInfo?.kyc?.basic || {};
+  if (hasEmailOrMobile && !hasPersonalInfo) {
+    return (
+      <HeaderLayout>
+        <AuthenticationLayout step={2} started={true} onStart={() => {}} levelKyc={null}>
+          <div className="w-full flex justify-center">
+            <StepPersonal onNext={() => setStep(3)} userInfo={userInfo} />
+          </div>
+        </AuthenticationLayout>
+      </HeaderLayout>
+    );
+  }
 
-    let nextStep = 0;
+  // ۳. اگر همه چیز تموم شده (step === 0 و level_kyc پر شده) → useEffect ریدایرکت می‌کنه
+  if (userInfo.level_kyc && step === 0) {
+    return null;
+  }
 
-    const emailExists = !!basic.email;
-    const mobileExists = !!basic.mobile;
-
-    // مرحله ۱: اگر هرکدام از email یا mobile وجود نداشته باشد
-    if (!emailExists || !mobileExists) {
-      nextStep = 1;
-      setStarted(true);
-      setStep(nextStep);
-      return;
-    }
-
-    // مرحله ۲: اگر email و mobile کامل هستند ولی اطلاعات شخصی ناقص است
-    const personalCompleted = basic.name && basic.family && basic.father && basic.national_code && basic.date_birth;
-
-    if (!personalCompleted) {
-      nextStep = 2;
-      setStarted(true);
-      setStep(nextStep);
-      return;
-    }
-
-    // مرحله ۳: اطلاعات شخصی کامل ولی کارت بانکی ندارد
-    if (!basic.cardbank) {
-      nextStep = 3;
-      setStarted(true);
-      setStep(nextStep);
-      return;
-    }
-
-    // مرحله نهایی
-    // setStarted(true);
-    // setStep(4);
-  }, [userInfo,started]);
-
+  // ۴. حالت عادی: کاربر هنوز شروع نکرده یا در حال انجام مراحل عادی
   const renderStep = () => {
-    switch (step) {
-      case 0:
-        return <StepZiro onNext={() => setStep(1)} />;
-      case 1:
-        return <StepEmail onNext={() => setStep(2)} userInfo={safeUserInfo} />;
-      case 2:
-        return <StepPersonal onNext={() => setStep(3)} userInfo={safeUserInfo} />;
-      case 3:
-        return <StepCard onNext={() => {}} userInfo={safeUserInfo} />;
-      default:
-        return null;
-    }
+    if (step === 1) return <StepEmail onNext={() => setStep(2)} userInfo={userInfo} />;
+    if (step === 2) return <StepPersonal onNext={() => setStep(3)} userInfo={userInfo} />;
+    if (step === 3) return <StepCard  userInfo={userInfo} />;
+    return null;
   };
 
   return (
     <HeaderLayout>
-      <AuthenticationLayout step={step} started={started} onStart={handleStart}>
-        <div className="flex flex-col items-center justify-center gap-6 w-full">{renderStep()}</div>
+      <AuthenticationLayout
+        step={step}
+        started={started}
+        onStart={handleStart}
+        levelKyc={userInfo.level_kyc}
+      >
+        <div className="w-full flex justify-center">
+          {renderStep()}
+        </div>
       </AuthenticationLayout>
     </HeaderLayout>
   );

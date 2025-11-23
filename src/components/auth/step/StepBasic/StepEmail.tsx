@@ -17,8 +17,8 @@ type Props = {
   userInfo: {
     kyc?: {
       basic?: {
-        email?: string;
-        mobile?: string;
+        email?: string | null;
+        mobile?: string | null;
       };
     };
   };
@@ -117,7 +117,7 @@ export default function StepEmail({ onNext, userInfo }: Props) {
     onSuccess: (res) => {
       if (res.status) {
         toast.success("تأیید با موفقیت انجام شد!");
-        refetch()
+        refetch();
         setIsModalOpen(false);
         onNext();
       } else {
@@ -134,7 +134,6 @@ export default function StepEmail({ onNext, userInfo }: Props) {
     sendContactMutation.mutate(payload);
   };
 
-  // وقتی کد ۴ رقمی شد، خودکار تأیید کن
   const handleVerifyCode = () => {
     if (otpValue.length === 4) {
       const payload = { [contactType]: contactValue, code: otpValue };
@@ -156,7 +155,7 @@ export default function StepEmail({ onNext, userInfo }: Props) {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmitContact)} className="w-full lg:bg-gray9 lg:mt-0 mt-6 pb-32 lg:rounded-2xl lg:border border-gray26">
-        <div className="w-full flex justify-center items-center flex-col lg:px-8 px-4">
+        <div className="w-full flex justify-center items-center flex-col lg:px-8 px-4 ">
           <StepperComponent currentStep={0} />
           <p className="lg:text-xl font-medium text-sm lg:mt-14 mt-10 lg:mb-8 mb-5 self-end text-black0">
             {contactType === "email" ? ". ایمیل خود را وارد کنید" : ". شماره موبایل خود را وارد کنید"}
@@ -178,12 +177,13 @@ export default function StepEmail({ onNext, userInfo }: Props) {
           />
 
           <button
+            dir="rtl"
             type="submit"
             disabled={sendContactMutation.isPending}
             className={`lg:mt-22 lg:text-xl text-base mt-12 w-full h-[40px] lg:h-[56px] font-bold text-white2 rounded-lg transition-colors
               ${sendContactMutation.isPending ? "bg-blue2 cursor-not-allowed opacity-60" : "opacity-100 bg-blue2 hover:border-blue1"}`}
           >
-            {sendContactMutation.isPending ? "در حال ارسال..." : "ارسال کد تأیید"}
+            {sendContactMutation.isPending ? "در حال ارسال ..." : "ارسال کد تأیید"}
           </button>
         </div>
       </form>
@@ -194,7 +194,7 @@ export default function StepEmail({ onNext, userInfo }: Props) {
           closeModal={handleCloseModal}
           onChange={(value) => setOtpValue(value)}
           submitButtonText="تأیید"
-          titleText={`تأیید ${contactType === "email" ? "ایمیل" : "موبایل"}`}
+          titleText={`تأیید${contactType === "email" ? "ایمیل" : "موبایل"}`}
           mainText={`کد ارسال‌شده به ${contactType === "email" ? "ایمیل" : "شماره موبایل"} ${contactValue} را وارد کنید.`}
           OTPLength={4}
           isSubmitting={verifyOtpMutation.isPending}
