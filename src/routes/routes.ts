@@ -16,8 +16,12 @@ export const ROUTES = {
   CONNECTED_DEVICES: "/connected-devices",
   FAQ: "/faq",
   BANK_CARDS: "/bank-cards",
-  WITHDRAWAL_FIAT: "/withdraw/fiat",
-  WITHDRAWAL_CRYPTO: "/withdraw/crypto",
+  WITHDRAWAL: {
+  ROOT: "/withdraw",
+  FIAT: "/withdraw/fiat",
+  CRYPTO: "/withdraw/crypto",
+},
+
   MARKET_VIEW: '/market-view',
   TRADE: {
     ROOT: "/trade",

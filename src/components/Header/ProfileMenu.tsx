@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -30,9 +30,8 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
   const [IsModal, setIsModal] = useState(false);
   const { data: userData, isLoading } = useGetUser();
   const [openSecurity, setOpenSecurity] = useState(false);
-
   const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
-
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -56,6 +55,18 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       localStorage.clear();
       window.location.replace("/login");
     }
+  };
+
+  const handleKYCClick = () => {
+    if (kycLoading) return;
+    if (!kycInfo?.level_kyc) {
+      navigate(ROUTES.AUTHENTICATION_BASIC); 
+    } else if (kycInfo.level_kyc === "basic") {
+      navigate(ROUTES.AUTHENTICATION_ADVANCED); 
+    } else {
+     navigate(ROUTES.AUTHENTICATION_ADVANCED);
+    }
+    setOpen(false); 
   };
  
   return (
@@ -135,22 +146,15 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             )}
           </li>
 
-        <Link
-  to={
-    kycLoading
-      ? "#"
-      : kycInfo?.kyc?.basic?.cardbank
-      ? ROUTES.AUTHENTICATION_ADVANCED
-      : ROUTES.AUTHENTICATION_BASIC
-  }
-  className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
-  onClick={() => setOpen(false)}
->
-  <span className="w-6 h-6">
-    <IconAuthentication />
-  </span>
-  احراز هویت
-</Link>
+   <li
+      onClick={handleKYCClick}
+      className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
+    >
+      <span className="w-6 h-6">
+        <IconAuthentication />
+      </span>
+      احراز هویت
+    </li>
 
           <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm">

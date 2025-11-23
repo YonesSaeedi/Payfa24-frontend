@@ -30,16 +30,15 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
           <h2 className="text-lg font-bold text-black1 text-right px-2 pb-4">برداشت</h2>
         </div>
 
-        {/* برداشت تومانی */}
         <Link
-          to={ROUTES.WITHDRAWAL_FIAT}
+         to={ROUTES.WITHDRAWAL.FIAT}
           className="flex items-center justify-between rounded-xl p-2 mb-4 hover:bg-gray27 cursor-pointer"
         >
           <div className="flex items-center justify-center">
-            <span className="w-6 h-6 icon-wrapper mr-2"><IconArrowLeft /></span>
+            <span className="w-6 h-6 icon-wrapper mr-2 hover:text-blue2 "><IconArrowLeft /></span>
             <span className="hidden lg:block text-gray17 border border-gray21 rounded-[8px] px-2 py-2 text-sm bg-gray27 mr-10 hover:border-blue2 hover:text-blue2 cursor-pointer">
               برداشت در لحظه
-            </span>
+            </span> 
           </div>
 
           <div className="flex flex-row-reverse">
@@ -55,7 +54,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
 
         {/* برداشت ارزی */}
         <Link
-          to={ROUTES.WITHDRAWAL_CRYPTO}
+        to={ROUTES.WITHDRAWAL.CRYPTO}
           className="flex items-center justify-between rounded-[8px] p-2 hover:bg-gray27 cursor-pointer"
         >
           <div className="flex items-center justify-center">

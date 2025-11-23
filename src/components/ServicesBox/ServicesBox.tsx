@@ -71,7 +71,7 @@ const handleItemClick = (item: ServiceItem) => {
     {
       label: "برداشت",
       icon: <WalletMinesIcon />,
-      route: ROUTES.WITHDRAWAL_FIAT,
+      route: ROUTES.WITHDRAWAL.FIAT,
     },
     { label: "کیف پول", icon: <IconWalletCard />, route: ROUTES.WALLET },
     {
