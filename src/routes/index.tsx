@@ -34,6 +34,8 @@ import useAuth from "../hooks/useAuth";
 import BankCardManager from "../pages/BankCards/BankCardsManager";
 import TicketsRoute from "../pages/Ticket/TicketsRoute";
 import ProtectedRoute from "./ProtectedRoute";
+import WithdrawFiat from "../pages/Withdrawal/WithdrawFiat";
+import WithdrawCrypto from "../pages/Withdrawal/WithdrawCrypto";
 
 
 
@@ -62,10 +64,7 @@ export default function AppRouter() {
         <Route path={ROUTES.ADD_FRIEND} element={<ProtectedRoute><AddFriend /></ProtectedRoute>} />
         <Route path={ROUTES.NOTIFICATIONS} element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
         <Route path={ROUTES.WALLET} element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
-        <Route path={ROUTES.WITHDRAWAL_FIAT} element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
-        <Route path={ROUTES.WITHDRAWAL_CRYPTO} element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
         <Route path={ROUTES.DEPOSIT} element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
-        {/* <Route path={ROUTES.DEPOSIT_GATEWAY} element={<ProtectedRoute><DepositForm minDeposit={1000} maxDeposit={100000000} /></ProtectedRoute>} /> */}
         <Route path={ROUTES.CONNECTED_DEVICES} element={<ProtectedRoute><ConnectedDevicesLayout /></ProtectedRoute>} />
         <Route path={ROUTES.BANK_CARDS} element={<ProtectedRoute><BankCardManager /></ProtectedRoute>} />
         <Route path={ROUTES.TICKET.ROOT} element={<ProtectedRoute><TicketsRoute /></ProtectedRoute>} />
@@ -74,6 +73,11 @@ export default function AppRouter() {
           <Route index element={<Navigate to={ROUTES.TRADE.BUY} replace />} />
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
           <Route path={ROUTES.TRADE.SELL} element={<Sell />} />
+        </Route>
+          <Route path={ROUTES.WITHDRAWAL.ROOT} element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>}>
+          <Route index element={<Navigate to={ROUTES.WITHDRAWAL.FIAT} replace />} />
+          <Route  path={ROUTES.WITHDRAWAL.FIAT} element={<WithdrawFiat />} />
+          <Route path={ROUTES.WITHDRAWAL.CRYPTO} element={<WithdrawCrypto />} />
         </Route>
         <Route path={ROUTES.TRANSACTION.ROOT} element={<ProtectedRoute><TransactionLayout /></ProtectedRoute>}>
           <Route index element={<CryptoPage />} />

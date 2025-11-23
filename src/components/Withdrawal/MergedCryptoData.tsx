@@ -16,12 +16,7 @@ const useMergedCryptoList = () => {
   const isError =
     generalInfo.isError || cryptoData.isError || withdrawQuery.isError
 
-    
-console.log("🔹 useMergedCryptoList running")
-console.log("🔹 generalInfo:", generalInfo)
-console.log("🔹 cryptoData:", cryptoData)
-console.log("🔹 withdrawQuery:", withdrawQuery)
-console.log("💡 withdrawQuery.data raw:", withdrawQuery.data)
+
 
 
 let merged: CryptoItem[] = []
@@ -58,10 +53,9 @@ if (!isLoading && !isError && coins.length > 0) {
     } as CryptoItem
   })
 
-  // فقط ارزهایی که موجودی بیشتر از صفر دارند
+ 
   merged = merged.filter(item => Number(item.balance) > 0)
 
-  console.log("🔹 mergedCryptosData filtered by balance:", merged)
 }
 
 
