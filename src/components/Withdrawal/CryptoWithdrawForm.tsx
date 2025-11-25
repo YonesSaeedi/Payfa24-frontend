@@ -15,6 +15,7 @@ import useGetUser from "../../hooks/useGetUser";
 import { AxiosError } from "axios";
 import { ROUTES } from "../../routes/routes";
 import { useSearchParams } from "react-router-dom";
+import { formatEnglishNumber, formatPersianNumber } from "../../utils/formatPersianNumber";
 
 
 interface WithdrawApiResponse {
@@ -521,9 +522,10 @@ const CryptoWithdrawForm: FC = () => {
                         {isDataLoading ? (
                           <span className="skeleton-bg h-5 w-24 lg:w-32 rounded"></span>
                         ) : (
-                        <span dir="ltr" className="font-medium text-black0 text-sm">
-                          {safeNumber(coins.find((c) => c.symbol === crypto)?.balance_available)} {crypto}
-                        </span>
+                      <span dir="ltr" className="font-medium text-black0 text-sm">
+                       {formatEnglishNumber(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0")} {crypto}
+                     </span>
+
 
                         )}
                       </div>
@@ -534,7 +536,7 @@ const CryptoWithdrawForm: FC = () => {
                           <span className="skeleton-bg h-5 w-20 lg:w-28 rounded"></span>
                         ) : (
                           <span className="font-medium text-black0  text-sm">
-                           {safeNumber(levelUsed.daily_withdrawal_crypto)} تومان
+                           {formatPersianNumber(levelUsed.daily_withdrawal_crypto?? "0")} تومان
                          </span>
 
                         )}
@@ -546,7 +548,7 @@ const CryptoWithdrawForm: FC = () => {
                           <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
                         ) : (
                           <span dir="ltr" className="font-medium text-black0 text-sm">
-                           {safeNumber(selectedNetwork?.withdraw_min)} {crypto}
+                           {formatEnglishNumber(selectedNetwork?.withdraw_min?? "0")} {crypto}
                          </span>
 
                         )}

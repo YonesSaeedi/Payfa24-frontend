@@ -5,6 +5,7 @@ import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon
 import IdentyfyCardIcon from "../../assets/icons/Home/IdentyfyCardIcon/identyfyCardIcon";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
 import IconIdentyBasic from "../../assets/icons/authentication/IconIdentyBasic";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 interface IdentityCardProps {
  dailyWithdrawalLimit?: number;
   dailyWithdrawalUsage?: number;
@@ -122,7 +123,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
   </span>
 
   <span className="whitespace-nowrap text-black1 text-sm">
-    {dailyWithdrawalLimit.toLocaleString()} تومان
+    {formatPersianNumber(dailyWithdrawalLimit.toLocaleString()) } تومان
   </span>
 </div>
 
