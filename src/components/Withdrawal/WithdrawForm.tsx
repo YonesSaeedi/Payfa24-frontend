@@ -13,6 +13,7 @@ import useGetUser from "../../hooks/useGetUser";
 import { getBankLogo } from "../../utils/bankLogos";
 import { AxiosError } from "axios";
 import { ROUTES } from "../../routes/routes";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 interface WithdrawRequestResponse {
   transaction_id: number;
@@ -307,7 +308,7 @@ const toEnglishDigits = (num: string) =>
     <div className="h-5 w-20 skeleton-bg rounded animate-pulse"></div> 
   ) : (
     <span className=" text-blue2 text-md font-normal text-[14px]">
-   {formatTomanView(walletBalance)} تومان
+   {formatPersianNumber(walletBalance)} تومان
 
     </span>
   )}

@@ -14,6 +14,7 @@ import FilterDropdown from "./FilterDropdown";
 import SkeletonTable from "./SkeletonTable";
 import { filterForOptions, MergedCryptoHistory, statusOptions, TypeCryptoHistory, typeOptions } from "./typeHistory";
 import { formatCryptoAmount } from "../../utils/formatCryptoAmount";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 // نوع تراکنش انتخاب شده (برای Modal)
 export interface Tx {
   id: string;
@@ -265,7 +266,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
                     </div>
                   </div>
              <div className="text-center font-normal text-base">
-  {formatPersianDigits(formatCryptoAmount(tx.amount))}
+  {formatPersianNumber(formatCryptoAmount(tx.amount))}
 </div>
 
                   <div className="text-center font-normal text-base">{transactionTypeMap[tx.type] || tx.type}</div>

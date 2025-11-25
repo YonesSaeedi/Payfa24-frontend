@@ -15,6 +15,7 @@ import { ROUTES } from "../../../routes/routes";
 import TetherIcon from "../../../assets/icons/Home/WalletCardIcon/TetherIcon";
 import TomanIcon from "../../../assets/icons/Home/WalletCardIcon/TomanIcon";
 import TransactionMainModal from "../../History/TransactionMainModal";
+import { formatPersianNumber } from "../../../utils/formatPersianNumber";
 
 interface WalletCardProps {
   showBuySell?: boolean;
@@ -70,7 +71,7 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
   // specify displayed balance currency ==========================================================================================================
   const displayBalance = selectedCurrency === "tether" ? balance?.crypto?.balance : balance?.toman?.balance;
 
-  const shownBalance = showBalance ? formatPersianDigits(displayBalance ?? 0) : formatPersianDigits(1234567);
+  const shownBalance = showBalance ? formatPersianNumber(displayBalance ?? 0) : formatPersianNumber(1234567);
 
   const handleToggleBalance = () => {
     setIsAnimating(true);

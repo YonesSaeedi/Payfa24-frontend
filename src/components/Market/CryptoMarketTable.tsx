@@ -8,6 +8,7 @@ import Pagination from "../History/Pagination";
 import { ROUTES } from "../../routes/routes";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import { NewCryptoItem } from "./types";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 interface Props {
   data: NewCryptoItem[];
@@ -101,24 +102,6 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
 
       {/* Tabs */}
       <div className="bg-white1 rounded-2xl lg:shadow lg:border border-gray21 overflow-hidden">
-        {/* <div className="flex flex-row-reverse justify-between items-center px-4 pt-8">
-          <div className="flex flex-row-reverse gap-4 text-sm text-gray24 overflow-x-auto whitespace-nowrap scrollbar-hide scroll-smooth">
-            {tabs.map((tab, index) => (
-              <span
-                key={index}
-                onClick={() => {
-                  setActive(index);
-                  setCurrentPage(1);
-                }}
-                className={`cursor-pointer pb-2 pr-2 text-base font-normal flex-shrink-0 ${
-                  active === index ? "text-blue-600 border-b-2 border-blue-600" : "text-gray5"
-                }`}
-              >
-                {tab}
-              </span>
-            ))}
-          </div>
-        </div> */}
        <div className="flex flex-row-reverse justify-between items-center px-6 pt-8">
   {/* تب‌ها */}
   <div className="flex flex-row-reverse gap-4 text-sm text-gray24 overflow-x-auto whitespace-nowrap scrollbar-hide scroll-smooth">
@@ -254,8 +237,8 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
           </td>
 
           <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">USDT {item?.fee}</td>
-          <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianDigits(priceBuy)} تومان</td>
-          <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianDigits(priceSell)} تومان</td>
+          <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianNumber(priceBuy)} تومان</td>
+          <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianNumber(priceSell)} تومان</td>
           <td className="py-3 px-4 hidden lg:table-cell text-center font-normal text-base">
             <span className={`${change24h >= 0 ? "text-green9" : "text-red6"}`}>
               {formatPersianDigits(change24h)}%
