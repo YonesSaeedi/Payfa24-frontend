@@ -47,9 +47,9 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
   }
 
   return (
-    <div className="border rounded-xl p-6 shadow border-gray21 min-h-[371px]">
-    <div className=" flex flex-col lg:flex-row items-right lg:justify-between  h-full lg:items-start">
-  <div className="hidden rounded-lg w-[300px] lg:flex flex-col items-left justify-start gap-4">
+      <div className="border rounded-xl p-6 shadow border-gray21 min-h-[371px]">
+      <div className=" flex flex-col lg:flex-row items-right lg:justify-between  h-full lg:items-start">
+      <div className="hidden rounded-lg w-[300px] lg:flex flex-col items-left justify-start gap-4">
   {/* بخش advanced */}
   {level === "advanced" && (
     <div className="bg-green10 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center">
@@ -80,8 +80,8 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
   {/* تصاویر Validation درست زیر دکمه */}
   <img src={ValidationlightIcon} className="block dark:hidden" />
   <img src={ValidationDarkIcon} className="hidden dark:block" />
-</div>
-     <div className=" flex flex-col gap-2 text-right  min-w-0">
+      </div>
+      <div className=" flex flex-col gap-2 text-right  min-w-0">
         <h2 className="text-xl font-semibold text-blue2 pb-4 overflow-hidden whitespace-nowrap" style={{textOverflow: 'ellipsis', direction: 'rtl',unicodeBidi: 'plaintext',}}title={title}>
             {title}
         </h2>
@@ -105,44 +105,45 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
         </ul>
 
       </div>
- </div>
-      <div dir="rtl" className="w-full flex  gap-5 mt-4">
+      </div>
+      <div dir="rtl" className="w-full flex flex-col md:flex-row gap-5  lg:mt-0 mt-8">
+
 
   {/* آیتم اول */}
-  <div className="flex justify-between items-center gap-2 p-3 border border-gray21 rounded-lg shadow-sm w-full bg-gray27">
-    <span className="flex items-center gap-1 whitespace-nowrap text-sm">
-      <span className="w-[16px] h-[16px] flex items-center justify-center">
-        {dailyWithdrawalLimit === 0
-          ? <span className="w-[6px] h-[6px] bg-black rounded-sm block" />
-          : <IdentyfyCardIcon />
-        }
-      </span>
-      سقف برداشت روزانه:
+<div className="flex justify-between items-center gap-2 p-3 border border-gray21 rounded-lg shadow-sm w-full bg-gray27">
+  <span className="flex items-center gap-1 text-sm text-black1">
+    <span className="w-[16px] h-[16px] flex items-center justify-center">
+      {dailyWithdrawalLimit === 0
+        ? <span className="w-[6px] h-[6px] bg-black1 rounded-sm block" />
+        : <IdentyfyCardIcon />
+      }
     </span>
+    سقف برداشت روزانه:
+  </span>
 
-    <span className="whitespace-nowrap">
-      {dailyWithdrawalLimit.toLocaleString()} تومان
-    </span>
-  </div>
+  <span className="whitespace-nowrap text-black1 text-sm">
+    {dailyWithdrawalLimit.toLocaleString()} تومان
+  </span>
+</div>
+
 
   {/* آیتم دوم */}
-  <div className="flex justify-between items-center gap-2 p-3 border border-gray21 rounded-lg shadow-sm w-full bg-gray27">
-    <span className="flex items-center gap-1 whitespace-nowrap text-sm">
-      <span className="w-[14px] h-[14px] flex items-center justify-center">
-        {dailyWithdrawalUsage === 0 ? (
-          <span className="w-[6px] h-[6px] bg-black rounded-sm block" aria-hidden />
-        ) : (
-          <IdentyfyCardIcon />
-        )}
-      </span>
-      مقدار روزانه برداشت شده:
+<div className="flex justify-between items-center gap-2 p-3 border border-gray21 rounded-lg shadow-sm w-full bg-gray27">
+  <span className="flex items-center gap-1 text-sm text-black1">
+    <span className="w-[14px] h-[14px] flex items-center justify-center">
+      {dailyWithdrawalUsage === 0 ? (
+        <span className="w-[6px] h-[6px] bg-black1 rounded-sm block" aria-hidden />
+      ) : (
+        <IdentyfyCardIcon />
+      )}
     </span>
+    مقدار روزانه برداشت شده:
+  </span>
 
-    <span className=" whitespace-nowrap">
-      {dailyWithdrawalUsage.toLocaleString()} تومان
-    </span>
-  </div>
-
+    <span className="whitespace-nowrap text-black1 text-sm">
+    {dailyWithdrawalUsage.toLocaleString()} تومان
+     </span>
+     </div>
      </div>
 
    

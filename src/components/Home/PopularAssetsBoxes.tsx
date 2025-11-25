@@ -25,7 +25,6 @@ type PopularAssetsBoxesProps = {
 export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }: PopularAssetsBoxesProps) {
   const { data: generalData } = useGetGeneralInfo();
 
-  // تبدیل داده‌های عمومی به map برای دسترسی سریع
   const mappedGeneralData = useMemo(() => {
     return (
       generalData?.cryptocurrency?.reduce((acc, item) => {
@@ -35,7 +34,6 @@ export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }:
     );
   }, [generalData]);
 
-  // merge کردن اطلاعات topCoins با داده‌های محلی و عمومی
   const mergedCoins: MergedCoin[] = useMemo(() => {
     return topCoins.map((coin) => {
       const localCoin = ListDigitalCoin.find((c) => c.symbol.toUpperCase() === coin.symbol.toUpperCase());
@@ -49,21 +47,21 @@ export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }:
     });
   }, [topCoins, mappedGeneralData]);
 
-  // همیشه 4 باکس ثابت
+ 
   const boxes = Array.from({ length: 4 });
 
   return (
     <div className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {boxes.map((_, i) => {
-          const coin = mergedCoins[i]; // استفاده از mergedCoins
+          const coin = mergedCoins[i]; 
           const showSkeleton = isLoading || !coin;
 
           return (
             <div
               key={i}
               dir="rtl"
-              className="relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex items-center justify-between min-h-[120px]"
+              className="relative  border border-gray21 rounded-2xl p-4 shadow-sm flex items-center justify-between min-h-[120px]"
             >
               {showSkeleton ? (
                 <div className="flex justify-between items-center w-full animate-pulse">
@@ -79,6 +77,7 @@ export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }:
               ) : (
                 <>
        <div className="flex items-center justify-between flex-row-reverse w-full">
+      
   {/* دکمه خرید/فروش سمت راست */}
   <Link
     to={`${ROUTES.TRADE.BUY}?coin=${coin.symbol}`}
@@ -87,22 +86,26 @@ export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }:
   >
     خرید/فروش
   </Link> 
+    <div className="flex items-center overflow-hidden">
 
-  {/* بخش اسم و نماد وسط */}
-  <div className="flex flex-col text-right overflow-hidden max-w-[calc(100%-140px)]">
-    <div className="text-lg font-semibold text-gray-900 truncate text-right">{coin.name || coin.symbol}</div>
-    <span className="text-sm font-medium text-gray-700">{coin.symbol}</span>
-  </div>
-
-  {/* آیکن سمت چپ */}
+       {/* آیکن سمت چپ */}
   <img
     src={coin.image ? `https://api.payfa24.org/images/currency/${coin.image}` : "/images/fallback-coin.png"}
-    className="w-10 h-10 object-contain flex-shrink-0 ml-3"
+    className="w-10 h-10 object-contain flex-shrink-0 ml-3 
+             max-w-full max-h-full overflow-hidden"
     alt={coin.symbol}
   />
+           {/* بخش اسم و نماد وسط */}
+  <div className="flex flex-col text-right overflow-hidden ">
+  <div className="text-lg font-semibold text-black1
+            truncate overflow-hidden text-ellipsis whitespace-nowrap text-right max-w-[120px]">
+  {coin.name || coin.symbol}
 </div>
 
-
+    <span className="text-sm font-medium text-gray35">{coin.symbol}</span>
+  </div>
+        </div>
+</div>
                 </>
               )}
             </div>

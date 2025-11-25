@@ -100,7 +100,7 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
           </div>
         </div>
 
-      <div className="flex justify-center items-center h-full">
+      <div className="flex justify-center items-center flex-1">
   <div className="text-base lg:text-2xl flex items-center justify-center gap-3 font-bold text-black1 transition-all duration-300" dir="rtl" style={{ userSelect: "none" }}>
     {isLoading ? (
       <span className="skeleton-bg h-5 lg:h-7 lg:w-36 w-20 rounded min-h-[20px]"></span>
