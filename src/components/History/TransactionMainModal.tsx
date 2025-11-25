@@ -10,7 +10,7 @@ interface WithdrawModalProps {
   onClose: () => void;
 }
 
-const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
+const TransactionMainModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
@@ -27,17 +27,17 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
             <IconClose />
           </button>
 
-          <h2 className="text-lg font-bold text-black1 text-right px-2 pb-4">برداشت</h2>
+          <h2 className="text-lg font-bold text-black1 text-right px-2 pb-4">تاریخچه</h2>
         </div>
 
         <Link
-         to={ROUTES.WITHDRAWAL.FIAT}
+        to={ROUTES.TRANSACTION.TOMAN_HISTORY}
           className="flex items-center justify-between rounded-xl p-2 mb-4 hover:bg-gray27 cursor-pointer"
         >
           <div className="flex items-center justify-center">
             <span className="w-6 h-6 icon-wrapper mr-2 hover:text-blue2 "><IconArrowLeft /></span>
             <span className="hidden lg:block text-gray17 border border-gray21 rounded-[8px] px-2 py-2 text-sm bg-gray27 mr-10 hover:border-blue2 hover:text-blue2 cursor-pointer">
-              برداشت در لحظه
+              تراکنش در لحظه
             </span> 
           </div>
 
@@ -46,21 +46,21 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
               <span className="w-8 h-8 icon-wrapper text-blue2"><WalletMinesIcon /></span>
             </div>
             <div className="flex flex-col text-right">
-              <span className="text-black1 text-base font-medium">برداشت تومان</span>
-              <span className="text-sm text-gray-500 pt-2">برداشت تومانی به کارت بانکی</span>
+              <span className="text-black1 text-base font-medium"> تراکنش های تومانی</span>
+              <span className="text-sm text-gray-500 pt-2">تراکنش تومانی به کارت بانکی</span>
             </div>
           </div>
         </Link>
 
-        {/* برداشت ارزی */}
+   
         <Link
-        to={ROUTES.WITHDRAWAL.CRYPTO}
+          to={ROUTES.TRANSACTION.CRYPTO_HISTORY}
           className="flex items-center justify-between rounded-[8px] p-2 hover:bg-gray27 cursor-pointer"
         >
           <div className="flex items-center justify-center">
             <span className="w-6 h-6 icon-wrapper mr-2"><IconArrowLeft /></span>
             <span className="hidden lg:block text-gray17 text-sm border px-2 py-2 rounded-lg bg-gray27 border-gray21 mr-10 hover:border-blue2 hover:text-blue2 cursor-pointer">
-              برداشت در ۲۰ دقیقه
+              تراکنش در ۲۰ دقیقه
             </span>
           </div>
 
@@ -69,8 +69,8 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
               <span className="w-8 h-8 icon-wrapper text-blue2"><IconCurrency /></span>
             </div>
             <div className="flex flex-col text-right">
-              <span className="text-black1 text-base font-medium">برداشت رمز ارز</span>
-              <span className="text-sm text-gray-500 pt-2">برداشت از کیف پول از طریق شبکه بلاکچین</span>
+              <span className="text-black1 text-base font-medium"> تراکنش های رمز ارز</span>
+              <span className="text-sm text-gray-500 pt-2">تراکنش از کیف پول از طریق شبکه بلاکچین</span>
             </div>
           </div>
         </Link>
@@ -79,4 +79,4 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default WithdrawModal;
+export default TransactionMainModal;

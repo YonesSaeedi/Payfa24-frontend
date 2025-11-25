@@ -13,8 +13,9 @@ import IconMoreVertical from "../../assets/icons/Wallet/IconMoreVertical";
 import { Link } from "react-router-dom";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import Pagination from "../History/Pagination";
-import  IconEmptyWallet from "./../../assets/icons/Home/WalletCardIcon/iconEmptyWallet";
+import IconEmptyWallet from "./../../assets/icons/Home/WalletCardIcon/iconEmptyWallet";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import CurrencyToggle from "../Home/WalletCard/CurrencyToggle";
 
 interface Wallet {
   name: string;
@@ -37,7 +38,7 @@ interface WalletsResponse {
 }
 
 const sortOptions = [
-  { label: "پیش فرض", key: "default" },
+  { label: "مرتب سازی  پیش فرض", key: "default" },
   { label: "موجودی (تعداد)", key: "stock" },
   { label: "موجودی (ارزش تومانی)", key: "balance" },
   { label: "قیمت (زیاد به کم)", key: "priceDown" },
@@ -57,6 +58,7 @@ const WalletAssets: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [expectedCount, setExpectedCount] = useState(10);
+  const [filterMode, setFilterMode] = useState<"all" | "withBalance">("all");
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -74,8 +76,9 @@ const WalletAssets: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNum: number) => {
+  const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNum: number, mode: string) => {
     setIsLoading(true);
+
     try {
       const limit = 10;
       const response = await apiRequest<WalletsResponse>({
@@ -86,31 +89,34 @@ const WalletAssets: React.FC = () => {
           page: pageNum,
           search: searchTerm,
           sort: sortKey,
-          justBalance: true,
+          justBalance: mode === "withBalance",
         },
       });
 
       setWalletsData(response.wallets || []);
       setExpectedCount(response.wallets?.length || limit);
-      if (response.crypto_count) {
-        setTotalPages(Math.ceil(response.crypto_count / limit));
+
+      if (mode === "withBalance") {
+        setTotalPages(response.wallets && response.wallets.length > 0 ? Math.ceil(response.wallets.length / limit) : 0);
+      } else {
+        setTotalPages(response.crypto_count ? Math.ceil(response.crypto_count / limit) : 1);
       }
-    } catch (error) {
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
   }, []);
+
   useEffect(() => {
-    fetchData(search, selectedSortKey, page);
-  }, [search, selectedSortKey, page, fetchData]);
+    fetchData(search, selectedSortKey, page, filterMode);
+  }, [search, selectedSortKey, page, filterMode, fetchData]);
+
   const handleSort = (key: string) => {
     setSelectedSortKey(key);
     setOpenDropdown(false);
+    setPage(1);
   };
 
   const { data: generalData } = useGetGeneralInfo();
-
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -144,45 +150,68 @@ const WalletAssets: React.FC = () => {
   const formatNumber = (num: number, decimals = 8) => {
     return formatPersianDigits(Number(num.toFixed(decimals)).toString());
   };
-  
 
   return (
     <div className="flex flex-col gap-6">
       <div dir="rtl" className="lg:p-6 bg-white1 rounded-xl lg:border border-gray21 w-full overflow-visible">
-        <div className="flex items-center justify-between lg:mb-6 mb-3">
-          <div className="relative w-1/2">
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
-              <IconSearch />
-            </span>
-            <input
-              type="text"
-              placeholder="جستجو..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border border-gray19 text-black1 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
+        <div className="flex-col items-center justify-between lg:mb-6 mb-3">
+          <div className="flex items-center justify-between lg:mb-2 mb-3">
+            <p className="text-black2 lg:pb-7 pb-3 text-right align-middle text-lg font-bold">دارایی های شما</p>
+            <CurrencyToggle
+              defaultValue="all"
+              showIcons={false}
+              options={[
+                { label: "همه ارزها", value: "all" },
+                { label: "ارزهای دارای موجودی", value: "withBalance" },
+              ]}
+              onChange={(v) => {
+                setFilterMode(v as "all" | "withBalance");
+                setPage(1);
+              }}
             />
           </div>
-          <div className="relative inline-block text-right max-w-[50%]" ref={dropdownRef}>
-            <button
-              onClick={() => setOpenDropdown(!openDropdown)}
-              className={`border rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1 transition-colors duration-200 ${
-                openDropdown ? "border-blue2" : "border-gray19"
-              }`}
-            >
-              {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
-              <span className={`w-4 h-4 transition-transform duration-200 text-gray12 ${openDropdown ? "rotate-180" : ""}`}>
-                <IconChervDown />
+          <div className="flex items-center justify-between lg:mb-6 mb-3">
+            <div className="relative w-1/2">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
+                <IconSearch />
               </span>
-            </button>
-            {openDropdown && (
-              <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col border border-gray21">
-                {sortOptions.map((option) => (
-                  <button key={option.key} onClick={() => handleSort(option.key)} className="w-full text-right px-3 py-2 hover:bg-gray27 hover:text-blue2 text-sm text-black1 whitespace-nowrap">
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            )}
+              <input
+                type="text"
+                placeholder="جستجو..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-gray19 text-black1 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
+              />
+            </div>
+            <div className="relative inline-block text-right max-w-[50%]" ref={dropdownRef}>
+              <button
+                onClick={() => setOpenDropdown(!openDropdown)}
+                className={`border rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1 transition-colors duration-200 ${
+                  openDropdown ? "border-blue2" : "border-gray19"
+                }`}
+              >
+                {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
+                <span className={`w-4 h-4 transition-transform duration-200 text-gray12 ${openDropdown ? "rotate-180" : ""}`}>
+                  <IconChervDown />
+                </span>
+              </button>
+              {openDropdown && (
+                <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col border border-gray21">
+                  {sortOptions.map((option) => (
+                    <button
+                      key={option.key}
+                      onClick={() => handleSort(option.key)}
+                      className="w-full text-right px-3 py-2 hover:bg-gray27 hover:text-blue2 text-sm text-black1 whitespace-nowrap"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -229,16 +258,13 @@ const WalletAssets: React.FC = () => {
                   </div>
                 ))
               ) : !isLoading && cryptoData.length === 0 ? (
-  <div className="flex flex-col items-center justify-center ">
-    <div className="flex items-center justify-center icon-wrapper text-white1">
-      <IconEmptyWallet />
-    </div>
-    <span className="block text-center text-black2 mb-10 text-base font-normal">
-      کیف پول دارایی‌های شما خالی است!
-    </span>
-  </div>
-)
- : (
+                <div className="flex flex-col items-center justify-center ">
+                  <div className="flex items-center justify-center icon-wrapper text-white1">
+                    <IconEmptyWallet />
+                  </div>
+                  <span className="block text-center text-black2 mb-10 text-base font-normal">کیف پول دارایی‌های شما خالی است!</span>
+                </div>
+              ) : (
                 cryptoData.map((item, index) => (
                   <div
                     key={index}
@@ -255,14 +281,9 @@ const WalletAssets: React.FC = () => {
                       </div>
                     </div>
 
-              <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
-  {
-    item.price < 0.0001
-      ? parseFloat(item.price.toFixed(5))
-      : parseFloat(item.price.toFixed(2))
-  }  USDT
-</span>
-
+                    <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
+                      {item.price < 0.0001 ? parseFloat(item.price.toFixed(5)) : parseFloat(item.price.toFixed(2))} USDT
+                    </span>
 
                     <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
                       {formatPersianDigits(item.fee_toman.toLocaleString())}
@@ -289,40 +310,38 @@ const WalletAssets: React.FC = () => {
                         {isMobile ? openModalId === index ? <IconMoreVertical /> : <IconMoreHorizental /> : openMenuId === index ? <IconMoreVertical /> : <IconMoreHorizental />}
                       </button>
                       {!isMobile && openMenuId === index && (
-                       <div
-  ref={menuRef}
-  className="absolute left-[25px] p-4 gap-4 mt-2 top-6 w-[226px] bg-white8 overflow-hidden border border-gray21 shadow-md rounded-lg flex flex-col z-10"
->
-  <Link to={`${ROUTES.TRADE.BUY}?coin=${item.symbol}`} className="flex items-center gap-2">
-    <span className="text-blue2 w-5 h-5 flex items-center justify-center">
-      <ReceivedIcon />
-    </span>
-    <span className="text-black1 hover:text-blue2 cursor-pointer">خرید</span>
-  </Link>
+                        <div
+                          ref={menuRef}
+                          className="absolute left-[25px] p-4 gap-4 mt-2 top-6 w-[226px] bg-white8 overflow-hidden border border-gray21 shadow-md rounded-lg flex flex-col z-10"
+                        >
+                          <Link to={`${ROUTES.TRADE.BUY}?coin=${item.symbol}`} className="flex items-center gap-2">
+                            <span className="text-blue2 w-5 h-5 flex items-center justify-center">
+                              <ReceivedIcon />
+                            </span>
+                            <span className="text-black1 hover:text-blue2 cursor-pointer">خرید</span>
+                          </Link>
 
-  <Link to={`${ROUTES.TRADE.SELL}?coin=${item.symbol}`} className="flex items-center gap-2">
-    <span className="text-blue2 w-5 h-5 flex items-center justify-center">
-      <SendIcon />
-    </span>
-    <span className="text-black1 hover:text-blue2 cursor-pointer">فروش</span>
-  </Link>
+                          <Link to={`${ROUTES.TRADE.SELL}?coin=${item.symbol}`} className="flex items-center gap-2">
+                            <span className="text-blue2 w-5 h-5 flex items-center justify-center">
+                              <SendIcon />
+                            </span>
+                            <span className="text-black1 hover:text-blue2 cursor-pointer">فروش</span>
+                          </Link>
 
-<Link to={`${ROUTES.DEPOSIT}?coin=${item.symbol}&type=wallet`} className="flex items-center gap-2">
-  <span className="text-blue2 w-5 h-5 flex items-center justify-center">
-    <WalletAddIcon />
-  </span>
-  <span className="text-black1 hover:text-blue2 cursor-pointer">واریز</span>
-</Link>
+                          <Link to={`${ROUTES.DEPOSIT}?coin=${item.symbol}&type=wallet`} className="flex items-center gap-2">
+                            <span className="text-blue2 w-5 h-5 flex items-center justify-center">
+                              <WalletAddIcon />
+                            </span>
+                            <span className="text-black1 hover:text-blue2 cursor-pointer">واریز</span>
+                          </Link>
 
-
-  <Link to={`/withdraw/crypto?coin=${item.symbol}`} className="flex items-center gap-2">
-    <span className="text-blue2 w-5 h-5 flex items-center justify-center">
-      <WalletMinesIcon />
-    </span>
-    <span className="text-black1 hover:text-blue2 cursor-pointer">برداشت</span>
-  </Link>
-</div>
-
+                          <Link to={`/withdraw/crypto?coin=${item.symbol}`} className="flex items-center gap-2">
+                            <span className="text-blue2 w-5 h-5 flex items-center justify-center">
+                              <WalletMinesIcon />
+                            </span>
+                            <span className="text-black1 hover:text-blue2 cursor-pointer">برداشت</span>
+                          </Link>
+                        </div>
                       )}
                       {isMobile && <ActionModal open={openModalId === index} onClose={() => setOpenModalId(null)} name={item.name} symbol={item.symbol} />}
                     </div>

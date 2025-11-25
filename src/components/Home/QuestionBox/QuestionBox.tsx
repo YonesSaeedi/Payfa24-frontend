@@ -20,17 +20,18 @@ function QuestionBox() {
         <h2 className="text-base lg:text-xl font-bold lg:pt-5 mb-2 pt-3">سوالات متداول</h2>
         <p className="text-center font-normal text-sm lg:text-lg ">سوال دیگری اگر دارید میتوانید از طریق</p>
         <p className="text-center font-normal text-sm lg:text-lg ">پشتیبانی آنلاین با ما در تماس باشید</p>
-        <div className="text-center lg:pb-[29px] pt-4 lg:pb-10 pb-5 flex flex-col gap-1">
+        <div className="text-center lg:pb-[29px] pt-4  pb-5 flex flex-col gap-1">
           <span className="text-xs lg:text-base font-normal">تماس با پشتیبانی</span>
           <Link to='tel:04433721037' className="text-blue2 hover:underline  lg:text-lg font-medium text-base">۰۴۴۳۳۷۲۱۰۳۷</Link>
         </div>
         <Link
-          to={ROUTES.FAQ}
-          className="hidden lg:flex px-4 py-2 rounded-lg bg-blue2 text-base hover:border hover:border-blue2 hover:text-blue2  hover:bg-transparent  text-white items-center justify-center gap-1 font-bold transition duration-200 ease-in"
-        >
-          <span className="w-5 h-5"> <ArrowLeftIcon /></span>
-          مشاهده همه سوالات
-        </Link>
+  to={ROUTES.FAQ}
+  className="hidden lg:flex px-4 py-2 rounded-lg bg-blue2 border border-transparent text-base hover:border-blue2 hover:text-blue2 hover:bg-transparent text-white items-center justify-center gap-1 font-bold transition duration-200 ease-in"
+>
+  <span className="w-5 h-5"><ArrowLeftIcon /></span>
+  مشاهده همه سوالات
+</Link>
+
       </div>
     </div>
   );

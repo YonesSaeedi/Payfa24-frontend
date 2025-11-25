@@ -85,7 +85,7 @@ const WithdrawPage: React.FC = () => {
                   </div>
                   {/* ----------------------------------------------------------------------------------withdra crypto --------------------------------------------------- */}
                   <div>
-                    <span className="flex justify-end mb-4 text-black1">برداشت ارز</span>
+                    <span className="flex justify-end mb-4 text-black1">برداشت رمز ارز</span>
                     <div className={`flex items-center justify-between rounded-xl p-4 cursor-pointer border transition-all duration-300 ${
                         withdrawType === "crypto" ? "border-blue-500 shadow-md": "border-gray21 hover:border-blue2"}`}
                       onClick={() => {setWithdrawType("crypto");setShowBox(true);
@@ -114,7 +114,7 @@ const WithdrawPage: React.FC = () => {
                           </span>
                         </div>
                         <div className="flex flex-col text-right">
-                          <span className="text-black1">برداشت ارز</span>
+                          <span className="text-black1">برداشت رمز ارز</span>
                           <span className="text-sm text-gray-500 mt-2">
                             برداشت از کیف پول از طریق شبکه بلاکچین
                           </span>

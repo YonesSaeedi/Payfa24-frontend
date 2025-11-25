@@ -29,5 +29,6 @@ export interface Dashboard {
   wallets?: Wallets,
   banner?: Banner,
   [key: string]: unknown
-  dailyWithdrawal?: DailyWithdrawal; // allowing other optional key value pairs
+  dailyWithdrawal?: DailyWithdrawal;
+   top_coins?:any[]; // allowing other optional key value pairs
 }

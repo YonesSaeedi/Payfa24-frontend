@@ -15,6 +15,8 @@ import IconSun from "../../assets/icons/header/IconSun";
 import MoonIcon from "../../assets/icons/HeaderLogin/MoonIcon";
 import { ROUTES } from "../../routes/routes";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
+import useGetKYCInfo from "../../hooks/useGetKYCInfo";
+import { useNavigate } from "react-router-dom";
 
 type MobileMenuProps = {
   open: boolean;
@@ -38,6 +40,21 @@ export default function MobileMenu({
 
   const { data: userData, isLoading } = useGetUser();
 
+  const navigate = useNavigate();
+const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
+
+const handleKYCClick = () => {
+  if (kycLoading) return;
+  if (!kycInfo?.level_kyc) {
+    navigate(ROUTES.AUTHENTICATION_BASIC); 
+  } else if (kycInfo.level_kyc === "basic") {
+    navigate(ROUTES.AUTHENTICATION_ADVANCED); 
+  } else {
+    navigate(ROUTES.AUTHENTICATION_ADVANCED);
+  }
+  onClose(); // بستن منو بعد از انتخاب
+};
+
   const handleLogout = async () => {
     try {
       await apiRequest({ url: "/auth/logout", method: "POST" });
@@ -48,6 +65,7 @@ export default function MobileMenu({
       window.location.replace("/login");
     }
   };
+
 
 
   return (
@@ -231,16 +249,15 @@ export default function MobileMenu({
     </li>
 
     {/* احراز هویت */}
-    <div className="flex items-center justify-start gap-2">
-      <Link
-        to={ROUTES.AUTHENTICATION_BASIC}
-        className="flex items-center gap-2 group w-auto"
-      >
-        <span className="transition-colors duration-200 hover:text-blue2">
-          احراز هویت
-        </span>
-      </Link>
-    </div>
+<div className="flex items-center justify-start gap-2">
+  <button
+    onClick={handleKYCClick}
+    className="flex items-center gap-2 group w-auto transition-colors duration-200 hover:text-blue2"
+  >
+    احراز هویت
+  </button>
+</div>
+
 
     {/* حساب‌های بانکی */}
     <div className="flex items-center justify-start gap-2">
