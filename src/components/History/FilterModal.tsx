@@ -77,7 +77,7 @@ export default function FilterModal({ isOpen, onClose, onApplyFilters, page }: F
     if (!pageFilters[page]) return;
     const initial: { [key: string]: OptionType | null } = {};
     pageFilters[page].forEach((field) => {
-      initial[field.id] = null; // پیش‌فرض: label خودش نمایش داده شود
+      initial[field.id] = null;
     });
     setSelectedFilters(initial);
     setOpenDropdown("");
@@ -115,15 +115,15 @@ export default function FilterModal({ isOpen, onClose, onApplyFilters, page }: F
       className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 backdrop-blur-sm animate-fadeIn"
       onClick={onClose}
     >
-      <div
-        className="bg-white8 rounded-2xl p-6 w-[90%] max-w-md shadow-xl text-black0 dark:text-white transition-colors duration-200"
+      <div dir="rtl"
+        className="bg-white8 rounded-2xl p-6 w-[327px] max-w-md shadow-xl text-black0 dark:text-white transition-colors duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-8">
           <h2 className="font-semibold text-lg">فیلترها</h2>
           <button
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center text-black0"
+            className="w-6 h-6 flex items-center justify-center text-gray12 hover:text-blue2"
           >
             <IconClose />
           </button>
@@ -147,13 +147,13 @@ export default function FilterModal({ isOpen, onClose, onApplyFilters, page }: F
         <div className="flex gap-2 mt-6">
           <button
             onClick={handleClearFilters}
-            className="w-full py-2 border border-blue-500 text-blue-500 rounded-lg text-sm"
+            className="w-full py-2 border border-blue2 text-blue2 rounded-lg text-sm hover:bg-blue2 hover:text-white"
           >
             حذف فیلتر
           </button>
           <button
             onClick={handleApplyFilters}
-            className="w-full py-2 bg-blue-600 text-white rounded-lg text-sm"
+            className="w-full py-2 bg-blue2 text-white rounded-lg text-sm hover:bg-white8 hover:border hover:border-blue2 hover:text-blue2"
           >
             اعمال فیلتر
           </button>

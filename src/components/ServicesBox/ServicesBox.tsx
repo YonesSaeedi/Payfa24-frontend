@@ -67,18 +67,27 @@ const handleItemClick = (item: ServiceItem) => {
   const financeItems: ServiceItem[] = [
     { label: "خرید", icon: <ReceivedIcon />, route: ROUTES.TRADE.BUY },
     { label: "فروش", icon: <SendIcon />, route: ROUTES.TRADE.SELL },
-    { label: "واریز", icon: <WalletAddIcon />, route: ROUTES.DEPOSIT },
-    {
-      label: "برداشت",
-      icon: <WalletMinesIcon />,
-      route: ROUTES.WITHDRAWAL_FIAT,
-    },
     { label: "کیف پول", icon: <IconWalletCard />, route: ROUTES.WALLET },
     {
       label: "کارت‌ها",
       icon: <IconCards />,
       route: ROUTES.BANK_CARDS,
     },
+
+
+    { label: "واریز  رمزارز", icon: <WalletAddIcon />, route: ROUTES.DEPOSIT },
+     { label: "واریز تومانی", icon: <WalletAddIcon />, route: ROUTES.DEPOSIT },
+    {
+      label: " برداشت رمزارز",
+      icon: <WalletMinesIcon />,
+      route: ROUTES.WITHDRAWAL.FIAT,
+    },
+    {
+      label: " برداشت تومانی",
+      icon: <WalletMinesIcon />,
+      route: ROUTES.WITHDRAWAL.FIAT,
+    },
+    
   ];
 
   const marketItems: ServiceItem[] = [
@@ -110,23 +119,29 @@ const handleItemClick = (item: ServiceItem) => {
   ];
 
   const supportItems: ServiceItem[] = [
-      {
-    label: "احراز هویت",
-    icon: <IconPersonalCard />,
-    onClick: () => {
-      if (kycLoading) return; 
-      if (kycInfo?.kyc?.basic?.cardbank) {
-        navigate("/kyc-advanced"); 
-      } else {
-        navigate("/kyc-basic"); 
-      }
-      onClose(); 
-    },
+    {
+  label: "احراز هویت",
+  icon: <IconPersonalCard />,
+  onClick: () => {
+    if (kycLoading) return; 
+
+    if (!kycInfo?.level_kyc) {
+      navigate(ROUTES.AUTHENTICATION_BASIC); 
+    } else if (kycInfo.level_kyc === "basic") {
+      navigate(ROUTES.AUTHENTICATION_ADVANCED); 
+    } else if (kycInfo.level_kyc === "advanced") {
+       navigate(ROUTES.AUTHENTICATION_ADVANCED);
+    
+    }
+
+    onClose();
   },
+}
+,
     {
       label: "امنیت",
       icon: <IconSecurity />,
-      route: ROUTES.AUTHENTICATION_BASIC,
+      route: ROUTES.MULTI_FACTOR,
     },
     { label: "تیکت", icon: <IconTicket />, route: ROUTES.TICKET.ROOT },
     { label: "سوالات", icon: <IconQuestionLabel />, route: ROUTES.FAQ },
@@ -147,17 +162,17 @@ const handleItemClick = (item: ServiceItem) => {
       <h3 dir="rtl" className="text-right text-black1 font-medium mb-3 mt-7">
         {title}
       </h3>
-      <div className="lg:px-6 flex flex-wrap lg:gap-x-4 lg:gap-y-3 gap-x-2 gap-y-3">
+      <div className="lg:px-4 flex flex-wrap lg:gap-x-2 lg:gap-y-3 gap-x-2 gap-y-3">
         {items.map((item) => (
           <div
+          key={item.label}
             onClick={() => handleItemClick(item)}
-            className="flex flex-col items-center justify-center 
-                   w-[calc(25%-12px)]  // 25% منهای gap بینشان
+            className="flex flex-col items-center justify-center  w-[calc(25%-8px)]  
                    h-[60px] lg:h-[72px] 
                    rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition"
           >
             <span className="w-5  h-5  lg:w-[26px] lg:h-[26px] text-blue2 mt-2">{item.icon}</span>
-            <span className="text-gray-700 dark:text-gray-200 text-center mt-1  lg:text-[14px] text-xs font-normal whitespace-nowrap pb-2 px-2">
+            <span className="text-gray-700 dark:text-gray-200 text-center mt-1  lg:text-[14px] text-xs font-normal whitespace-nowrap pb-2 px-4">
               {item.label}
             </span>
           </div>
@@ -187,7 +202,7 @@ const handleItemClick = (item: ServiceItem) => {
 
         <button
           onClick={handleClose}
-          className="absolute top-5 left-4 w-7 h-7 text-gray12 hover:text-red6"
+          className="absolute top-5 left-4 lg:w-7 w-5 lg:h-7 h-5 text-gray12 hover:text-red6 text-[14px] font-medium"
         >
           <IconCloseButtun />
         </button>

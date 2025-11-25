@@ -36,6 +36,7 @@ import TicketsRoute from "../pages/Ticket/TicketsRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import WithdrawFiat from "../pages/Withdrawal/WithdrawFiat";
 import WithdrawCrypto from "../pages/Withdrawal/WithdrawCrypto";
+import ScrollToTop from "../components/ScrollToTop";
 
 
 
@@ -44,6 +45,7 @@ export default function AppRouter() {
 
   return (
     <BrowserRouter>
+     <ScrollToTop />
       <Routes>
         {/* =================== Public Routes =================== */}
         <Route element={<RecaptchaWrapper />}>

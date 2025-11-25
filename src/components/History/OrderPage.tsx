@@ -112,21 +112,20 @@ const OrderPage: React.FC = () => {
       };
     });
   }, [responseData, mappedGeneralData]);
-  const handleOpenModal = (tx: MergedOrderHistory) => {
-   setSelectedTx({
-  ...selectedTx,
-  id: tx.id.toString(),
-  source: "order",
-  faName: tx.locale?.fa?.name || tx.name,
-  image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : undefined,
-  date: tx.dateTime || tx.dateTime,
-  amount: tx.amount.toString(),
-  amountCoin: tx.amount_coin.toString(),
-  fee: tx.fee.toString(),
-  symbol: tx.symbol ?? undefined, 
-});
+ const handleOpenModal = (tx: MergedOrderHistory) => {
+  setSelectedTx({
+    id: tx.id.toString(),  // حتما string
+    source: "order",
+    faName: tx.locale?.fa?.name || tx.name,
+    image: tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : undefined,
+    date: tx.dateTime,
+    amount: tx.amount.toString(),
+    amountCoin: tx.amount_coin.toString(),
+    fee: tx.fee.toString(),
+    symbol: tx.symbol,
+  });
+};
 
-  };
   const convertDigitsToPersian = (str: string) => {
     return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
   };
@@ -151,7 +150,10 @@ const OrderPage: React.FC = () => {
             selected={selectedStatus}
             isOpen={openDropdown === "status"}
             onToggle={() => handleToggle("status")}
-            onSelect={(_, option) => setSelectedStatus(option)}
+             onSelect={(_, option) => {
+    setPage(1);
+    setSelectedStatus(option);   
+  }}
           />
 
           <FilterDropdown
@@ -161,7 +163,10 @@ const OrderPage: React.FC = () => {
             selected={selectedFilterType}
             isOpen={openDropdown === "type"}
             onToggle={() => handleToggle("type")}
-            onSelect={(_, option) => setSelectedFilterType(option)}
+            onSelect={(_, option) => {
+    setPage(1);                  
+    setSelectedFilterType(option);
+  }}
           />
         </div>
 

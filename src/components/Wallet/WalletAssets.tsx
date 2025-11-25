@@ -15,6 +15,7 @@ import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import Pagination from "../History/Pagination";
 import  IconEmptyWallet from "./../../assets/icons/Home/WalletCardIcon/iconEmptyWallet";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import CurrencyToggle from "../Home/WalletCard/CurrencyToggle";
 
 interface Wallet {
   name: string;
@@ -37,7 +38,7 @@ interface WalletsResponse {
 }
 
 const sortOptions = [
-  { label: "پیش فرض", key: "default" },
+  { label: "مرتب سازی  پیش فرض", key: "default" },
   { label: "موجودی (تعداد)", key: "stock" },
   { label: "موجودی (ارزش تومانی)", key: "balance" },
   { label: "قیمت (زیاد به کم)", key: "priceDown" },
@@ -57,6 +58,8 @@ const WalletAssets: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [expectedCount, setExpectedCount] = useState(10);
+  const [filterMode, setFilterMode] = useState<"all" | "withBalance">("all");
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -74,8 +77,15 @@ const WalletAssets: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const fetchData = useCallback(async (searchTerm: string, sortKey: string, pageNum: number) => {
+const fetchData = useCallback(
+  async (
+    searchTerm: string,
+    sortKey: string,
+    pageNum: number,
+    mode: string
+  ) => {
     setIsLoading(true);
+
     try {
       const limit = 10;
       const response = await apiRequest<WalletsResponse>({
@@ -86,7 +96,7 @@ const WalletAssets: React.FC = () => {
           page: pageNum,
           search: searchTerm,
           sort: sortKey,
-          justBalance: true,
+          justBalance: mode === "withBalance",
         },
       });
 
@@ -95,22 +105,28 @@ const WalletAssets: React.FC = () => {
       if (response.crypto_count) {
         setTotalPages(Math.ceil(response.crypto_count / limit));
       }
-    } catch (error) {
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  },
+  [filterMode]
+);
+
+
+
   useEffect(() => {
-    fetchData(search, selectedSortKey, page);
-  }, [search, selectedSortKey, page, fetchData]);
-  const handleSort = (key: string) => {
-    setSelectedSortKey(key);
-    setOpenDropdown(false);
-  };
+  fetchData(search, selectedSortKey, page, filterMode);
+}, [search, selectedSortKey, page, filterMode, fetchData]);
+
+
+
+const handleSort = (key: string) => {
+  setSelectedSortKey(key);
+  setOpenDropdown(false);
+  setPage(1); 
+};
 
   const { data: generalData } = useGetGeneralInfo();
-
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -149,18 +165,41 @@ const WalletAssets: React.FC = () => {
   return (
     <div className="flex flex-col gap-6">
       <div dir="rtl" className="lg:p-6 bg-white1 rounded-xl lg:border border-gray21 w-full overflow-visible">
-        <div className="flex items-center justify-between lg:mb-6 mb-3">
-          <div className="relative w-1/2">
+        <div className="flex-col items-center justify-between lg:mb-6 mb-3">
+          <div className="flex items-center justify-between lg:mb-2 mb-3">
+              
+             <p className="text-black2 lg:pb-7 pb-3 text-right align-middle text-lg font-bold">دارایی های شما</p>
+   <CurrencyToggle
+  defaultValue="all"
+  showIcons={false}
+  options={[
+    { label: "همه ارزها", value: "all" },
+    { label: "ارزهای دارای موجودی", value: "withBalance" }
+  ]}
+  onChange={(v) => {
+    setFilterMode(v as "all" | "withBalance");
+    setPage(1); // ⬅ ریست صفحه
+  }}
+/>
+
+
+          </div>
+            <div className="flex items-center justify-between lg:mb-6 mb-3">
+               <div className="relative w-1/2">
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
               <IconSearch />
             </span>
             <input
-              type="text"
-              placeholder="جستجو..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border border-gray19 text-black1 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
-            />
+  type="text"
+  placeholder="جستجو..."
+  value={search}
+  onChange={(e) => {
+    setSearch(e.target.value);
+    setPage(1); // ⬅ ریست صفحه
+  }}
+  className="border border-gray19 text-black1 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
+/>
+
           </div>
           <div className="relative inline-block text-right max-w-[50%]" ref={dropdownRef}>
             <button
@@ -184,6 +223,8 @@ const WalletAssets: React.FC = () => {
               </div>
             )}
           </div>
+            </div>
+         
         </div>
 
         <div>

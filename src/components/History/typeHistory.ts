@@ -24,6 +24,11 @@ export interface TypeCryptoHistory {
   fee?: number;
   memoTag?: string;
   code?: string;
+  amount_toman?: number;
+  stock?: number;
+  withdraw_fee?: number;
+  network?: string;
+
 }
 
 
@@ -50,6 +55,8 @@ export interface TypeOrderHistory {
   symbol?: string;
   type?: string;
   icon?: string;
+   wage?: number;
+  data?: any;
 }
 
 export interface MergedOrderHistory {
@@ -65,6 +72,8 @@ export interface MergedOrderHistory {
   status?: string;
   symbol?: string;
   type?: string;
+  wage?: number;
+  data?: any;
 
   // ---------------- اطلاعات ارز ----------------
   color: string | null;
