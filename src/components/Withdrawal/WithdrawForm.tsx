@@ -233,18 +233,7 @@ const toEnglishDigits = (num: string) =>
       </div>
     ),
   }));
-  const formatTomanView = (value: string | number | undefined | null) => {
-  if (value === undefined || value === null) return "۰";
 
-  const number = Number(value);
-  if (isNaN(number)) return "۰";
-
-  // 1) جدا کردن سه رقمی
-  const formatted = number.toLocaleString("en-US");
-
-  // 2) تبدیل به فارسی
-  return formatted.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
-};
 
 
   

@@ -91,18 +91,19 @@ const handleKYCClick = () => {
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-            <div>
-              <p className="font-semibold text-black1">
-                {isLoading
-                  ? "در حال بارگذاری..."
-                  : userData?.user.name_display || "—"}
-              </p>
-              <p className="text-xs text-gray-500 pt-1">
-                {isLoading
-                  ? ""
-                  : `سطح کاربری ${userData?.user.level_account || "—"}`}
-              </p>
-            </div>
+           <div>
+  <p className="font-semibold text-black1">
+    {isLoading
+      ? "در حال بارگذاری..."
+      : `${userData?.user.name || ""} ${userData?.user.family || ""}`}
+  </p>
+  <p className="text-xs text-gray-500 pt-1">
+    {isLoading
+      ? ""
+      : `سطح کاربری ${userData?.user.level_account || "—"}`}
+  </p>
+</div>
+
           </div>
         
         </div>

@@ -310,10 +310,7 @@ const CryptoWithdrawForm: FC = () => {
       setIsLoading(false);
     }
   };
- const safeNumber = (num: string | number | undefined | null) => {
-  const n = parseFloat(num as any);
-  return isNaN(n) ? 0 : n;
-};
+
 
   //  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
   const handleSubmitTransfers = async (e: React.FormEvent) => {

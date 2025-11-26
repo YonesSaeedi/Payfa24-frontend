@@ -3,7 +3,7 @@ import StatusBadge from "../UI/Button/StatusBadge";
 import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
 import Pagination from "./Pagination";
 import TransactionModal from "./TransactionModal";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
+
 import TrasactionHisory from "./../../assets/images/Transaction/Transactionhistory.png";
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
 import { apiRequest } from "../../utils/apiClient";
@@ -15,7 +15,7 @@ import SkeletonTable from "./SkeletonTable";
 import { filterForOptions, MergedCryptoHistory, statusOptions, TypeCryptoHistory, typeOptions } from "./typeHistory";
 import { formatCryptoAmount } from "../../utils/formatCryptoAmount";
 import { formatPersianNumber } from "../../utils/formatPersianNumber";
-// نوع تراکنش انتخاب شده (برای Modal)
+
 export interface Tx {
   id: string;
   source: "crypto" | "order" | "fiat";

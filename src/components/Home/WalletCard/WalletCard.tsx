@@ -9,7 +9,6 @@ import WalletMines from "../../../assets/icons/Home/WalletCardIcon/WalletMinesIc
 import ReceiptText from "../../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
 import WithdrawModal from "../../Withdrawal/WithdrawModal";
 import DepositModal from "../../Deposit/DepositModal";
-import { formatPersianDigits } from "../../../utils/formatPersianDigits";
 import IconEyeClosed from "../../../assets/icons/Login/IconEyeClosed";
 import { ROUTES } from "../../../routes/routes";
 import TetherIcon from "../../../assets/icons/Home/WalletCardIcon/TetherIcon";
@@ -83,7 +82,7 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
 
   return (
    
- <div className="border border-gray21 rounded-xl p-4 lg:pt-6 lg:pb-6 lg:px-10 shadow lg:w-full flex flex-col gap-14 lg:gap-[32px] select-none min-h-[371px]">
+ <div className="border border-gray21 rounded-xl p-4 lg:pt-6 lg:pb-6 lg:px-10 shadow lg:w-full flex flex-col gap-14 lg:gap-[32px] select-none lg:min-h-[371px]">
         <div className="flex items-center justify-between mb-7">
           <CurrencyToggle
   defaultValue="toman"

@@ -11,11 +11,11 @@ import { apiRequest } from "../../utils/apiClient";
 import { ActionModal } from "./ActionModal";
 import IconMoreVertical from "../../assets/icons/Wallet/IconMoreVertical";
 import { Link } from "react-router-dom";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import Pagination from "../History/Pagination";
 import IconEmptyWallet from "./../../assets/icons/Home/WalletCardIcon/iconEmptyWallet";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import CurrencyToggle from "../Home/WalletCard/CurrencyToggle";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 interface Wallet {
   name: string;
@@ -148,7 +148,7 @@ const WalletAssets: React.FC = () => {
   });
 
   const formatNumber = (num: number, decimals = 8) => {
-    return formatPersianDigits(Number(num.toFixed(decimals)).toString());
+    return formatPersianNumber(Number(num.toFixed(decimals)).toString());
   };
 
   return (
@@ -286,7 +286,7 @@ const WalletAssets: React.FC = () => {
                     </span>
 
                     <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
-                      {formatPersianDigits(item.fee_toman.toLocaleString())}
+                      {formatPersianNumber(item.fee_toman.toLocaleString())}
                     </span>
                     <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
                       {formatNumber(item.balance, 8)} {item.symbol}
@@ -294,7 +294,7 @@ const WalletAssets: React.FC = () => {
                     <div className="px-2 py-3 text-center relative whitespace-nowrap group flex items-center justify-between">
                       <span></span>
                       <div className="flex flex-col items-end justify-end text-xs lg:text-sm font-normal">
-                        <span className="whitespace-nowrap">{formatNumber(item.price * item.balance, 2)} دلار</span>
+                        <span className="whitespace-nowrap">{formatPersianNumber(item.price * item.balance)} دلار</span>
                         <span className="whitespace-nowrap lg:hidden">معادل {item.balance} تومان</span>
                       </div>
                       <button

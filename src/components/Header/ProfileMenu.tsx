@@ -91,17 +91,20 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-           <div className="flex flex-col">
+          <div className="flex flex-col">
   {isLoading ? (
-
-      <div className="flex flex-col gap-1">
-        <div className="h-3 w-20 rounded skeleton-bg mt-2 pt-2"></div>
-        <div className="h-2 w-10 rounded skeleton-bg mt-1"></div>
+    <div className="flex flex-col gap-1">
+      <div className="h-3 w-20 rounded skeleton-bg mt-2 pt-2"></div>
+      <div className="h-2 w-10 rounded skeleton-bg mt-1"></div>
     </div>
   ) : (
     <>
-      <p className="font-semibold text-black1">{userData?.user.name_display || "—"}</p>
-      <p className="text-xs text-gray-500 pt-1">سطح کاربری {userData?.user.level_account || "—"}</p>
+      <p className="font-semibold text-black1">
+        {userData?.user.name || ""} {userData?.user.family || ""}
+      </p>
+      <p className="text-xs text-gray-500 pt-1">
+        سطح کاربری {userData?.user.level_account || "—"}
+      </p>
     </>
   )}
 </div>

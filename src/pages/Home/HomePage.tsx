@@ -316,26 +316,44 @@ function HomePage() {
   const identityRef = useRef<HTMLDivElement>(null);
   const walletRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const id = identityRef.current;
-    const wa = walletRef.current;
-    if (!id || !wa) return;
+useEffect(() => {
+  const id = identityRef.current;
+  const wa = walletRef.current;
+  if (!id || !wa) return;
 
-    const syncHeights = () => {
+  const syncHeights = () => {
+    if (window.innerWidth < 1024) {
       id.style.height = "auto";
       wa.style.height = "auto";
-      const max = Math.max(id.offsetHeight, wa.offsetHeight);
-      id.style.height = `${max}px`;
-      wa.style.height = `${max}px`;
-    };
+      return;
+    }
 
-    const ro = new ResizeObserver(syncHeights);
-    ro.observe(id);
-    ro.observe(wa);
-    syncHeights();
+    // reset
+    id.style.height = "auto";
+    wa.style.height = "auto";
 
-    return () => { ro.disconnect(); }
-  }, [dashboardData]);
+    const max = Math.max(id.offsetHeight, wa.offsetHeight);
+    id.style.height = `${max}px`;
+    wa.style.height = `${max}px`;
+  };
+
+  // resize window
+  window.addEventListener("resize", syncHeights);
+
+  // observe content changes
+  const ro = new ResizeObserver(syncHeights);
+  ro.observe(id);
+  ro.observe(wa);
+
+  // initial sync
+  syncHeights();
+
+  return () => {
+    ro.disconnect();
+    window.removeEventListener("resize", syncHeights);
+  };
+}, [dashboardData]);
+
 
   // آماده‌سازی لیست‌ها
   const gainers = Object.values(mergedCryptosData).sort((item1, item2) => Number(item2.priceChangePercent) - Number(item1.priceChangePercent))
@@ -422,8 +440,8 @@ function mergeTopCoinsWithGeneralInfo(topCoins: Coin[], generalDataMap: CryptoDa
     <div className="bg-white1">
       <HeaderFooterLayout>
         <div className="container-style">
-          <div className="pt-8 pb-10 flex flex-col lg:flex-row-reverse gap-6 items-stretch lg:items-start">
-            <div className="w-full lg:w-1/2 h-full">
+          <div className="pt-8 pb-10 flex flex-col lg:flex-row-reverse gap-6 lg:items-start">
+            <div className="w-full lg:w-1/2 lg:h-full">
               <div ref={walletRef} className="h-full">
                 <WalletCard
                   isLoading={isLoadingDashboard}

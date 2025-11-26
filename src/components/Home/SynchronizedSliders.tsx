@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CryptoItem } from "../../types/crypto";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 export type Slide = CryptoItem;
 interface BoxConfig {
@@ -128,7 +129,7 @@ const SyncSlider = ({ boxes, isLoading }: SyncSliderProps) => {
                           </span>
                           <div className="text-black1 tabular-nums flex items-center gap-1">
                             <span className="text-gray3 pl-2">تومان</span>
-                            <span className="text-base lg:text-xl font-medium">{formatPersianDigits(parseFloat(slide?.priceBuy ?? '0'))}</span>
+                            <span className="text-base lg:text-xl font-medium">{formatPersianNumber(parseFloat(slide?.priceBuy ?? '0'))}</span>
                           </div>
                         </div>
                       </div>
