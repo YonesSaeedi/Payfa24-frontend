@@ -142,7 +142,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
   </span>
 
     <span className="whitespace-nowrap text-black1 text-sm">
-    {dailyWithdrawalUsage.toLocaleString()} تومان
+    {formatPersianNumber(dailyWithdrawalUsage.toLocaleString())} تومان
      </span>
      </div>
      </div>

@@ -3,7 +3,8 @@ import StatusBadge from "../UI/Button/StatusBadge";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
+
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 // export interface OrderDetail {
 //   id: string;
@@ -95,7 +96,7 @@ const TransactionModalOrder: React.FC<TransactionModalOrderProps> = ({ tx, onClo
 const renderIcon = (size = "w-20 h-20") => {
   if (!detail) return null;
 
-  // اگر فونت باشد
+
   if (detail.isFont) {
     return (
       <i
@@ -105,7 +106,7 @@ const renderIcon = (size = "w-20 h-20") => {
     );
   }
 
-  // اگر تصویر باشد
+
   return (
     <img
       src={
@@ -116,7 +117,7 @@ const renderIcon = (size = "w-20 h-20") => {
       alt={detail.faName || detail.symbol || ""}
       className={`${size} rounded-full object-cover`}
       onError={(e) => {
-        // اگر تصویر اصلی لود نشد، تصویر پیش‌فرض نمایش داده شود
+      
         (e.currentTarget as HTMLImageElement).src = "/images/fallback-coin.png";
       }}
     />
@@ -165,7 +166,7 @@ const renderIcon = (size = "w-20 h-20") => {
                 {detail.type && <DetailRow label="نوع" value={transactionTypeMap[detail.type] || detail.type} />}
                 {detail.amount && <DetailRow label="مقدار" value={detail.amount} symbol={detail.symbol} />}
                 {detail.amountCoin && <DetailRow label="مقدار ارز" value={detail.amountCoin} symbol={detail.symbol} />}
-                {detail.fee && <DetailRow label="کارمزد" value={formatPersianDigits(detail.fee)} symbol={detail.symbol} />}
+                {detail.fee && <DetailRow label="کارمزد" value={formatPersianNumber(detail.fee)} symbol={detail.symbol} />}
                 {detail.description && <DetailRow label="توضیحات" value={detail.description} />}
               </div>
             </>

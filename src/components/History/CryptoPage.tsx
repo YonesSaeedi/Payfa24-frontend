@@ -267,7 +267,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
                   </div>
              <div className="text-center font-normal text-base">
   {formatPersianNumber(formatCryptoAmount(tx.amount))}
-</div>
+             </div>
 
                   <div className="text-center font-normal text-base">{transactionTypeMap[tx.type] || tx.type}</div>
                   <div className="text-center">

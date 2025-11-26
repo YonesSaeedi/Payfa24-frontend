@@ -68,12 +68,12 @@ const SyncSlider = ({ boxes, isLoading }: SyncSliderProps) => {
           </div>
           <div className="relative">
             {/* === background icon (unclipped) === */}
-            <div className="pointer-events-none absolute -bottom-14 -right-14 opacity-10 z-0 w-[185px] h-[185px]">
+            <div className="pointer-events-none absolute -bottom-14 -right-14 opacity-10 z-0 w-[185px] h-[185px] rounded-full overflow-hidden">
               {!isLoading && (
                 box?.slides[index]?.isFont ?
                   <i className={`cf cf-${box?.slides[index]?.symbol?.toLowerCase()}`} style={{ color: box?.slides[index]?.color, fontSize: '185px' }}></i>
                   :
-                  <img src={`https://api.payfa24.org/images/currency/${box?.slides[index]?.icon}`} alt={box?.slides[index]?.symbol} className="object-contain w-full h-full" />
+                  <img src={`https://api.payfa24.org/images/currency/${box?.slides[index]?.icon}`} alt={box?.slides[index]?.symbol} className="object-cover w-full h-full" />
               )}
             </div>
             {/* === slides (clipped for movement) === */}
