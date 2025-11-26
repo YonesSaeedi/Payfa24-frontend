@@ -211,7 +211,7 @@ const handleItemClick = (item: ServiceItem) => {
           <IconCloseButtun />
         </button>
 
-        <div className="overflow-auto flex-1 pl-2 mt-1">
+        <div className="overflow-auto flex-1  mt-1">
           {renderSection("مالی و تراکنش", financeItems)}
           {renderSection("بازار و اطلاعات", marketItems)}
           {renderSection("تاریخچه", historyItems)}

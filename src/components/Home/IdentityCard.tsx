@@ -48,7 +48,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
   }
 
   return (
-      <div className="border rounded-xl p-6 shadow border-gray21 min-h-[371px] flex flex-col gap-6">
+      <div className="border rounded-xl p-6 shadow border-gray21 min-h-[371px] flex flex-col gap-0 lg:gap-6">
       <div className=" flex flex-col lg:flex-row items-right lg:justify-between  h-full lg:items-start">
       <div className="hidden rounded-lg w-[300px] lg:flex flex-col items-left justify-start gap-4">
   {/* بخش advanced */}

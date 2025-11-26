@@ -15,7 +15,7 @@ import SkeletonTable from "./SkeletonTable";
 import { filterForOptions, MergedCryptoHistory, statusOptions, TypeCryptoHistory, typeOptions } from "./typeHistory";
 import { formatCryptoAmount } from "../../utils/formatCryptoAmount";
 import { formatPersianNumber } from "../../utils/formatPersianNumber";
-// نوع تراکنش انتخاب شده (برای Modal)
+
 export interface Tx {
   id: string;
   source: "crypto" | "order" | "fiat";
