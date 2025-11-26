@@ -3,7 +3,8 @@ import StatusBadge from "../UI/Button/StatusBadge";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
+
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 export interface FiatDetail {
   id: string;
@@ -110,8 +111,8 @@ const TransactionModalFiat: React.FC<TransactionModalFiatProps> = ({ tx, onClose
                 {detail.DateTime && <DetailRow label="تاریخ تراکنش" value={convertDigitsToPersian(detail.DateTime)} />}
                 {detail.type && <DetailRow label="نوع" value={transactionTypeMap[detail.type] || detail.type} />}
                 {detail.amount && <DetailRow label="مقدار" value={detail.amount} symbol={detail.currencySymbol} />}
-                {detail.payment && <DetailRow label="پرداخت" value={formatPersianDigits(detail.payment)} symbol="تومان" />}
-                {detail.stock && <DetailRow label="موجودی پس از تراکنش" value={formatPersianDigits(detail.stock)} symbol="تومان" />}
+                {detail.payment && <DetailRow label="پرداخت" value={formatPersianNumber(detail.payment)} symbol="تومان" />}
+                {detail.stock && <DetailRow label="موجودی پس از تراکنش" value={formatPersianNumber(detail.stock)} symbol="تومان" />}
                 {detail.description && <DetailRow label="توضیحات" value={detail.description} />}
                 {detail.PaymentGateway && <DetailRow label="درگاه پرداخت" value={detail.PaymentGateway} />}
                 {detail.accountNumber && <DetailRow label="شماره حساب" value={detail.accountNumber} />}
