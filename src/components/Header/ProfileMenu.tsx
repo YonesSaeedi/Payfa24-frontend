@@ -10,12 +10,11 @@ import IconTransactionhistory from "../../assets/icons/ProfileMenue/IconTransact
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconUser from "../../assets/icons/ProfileMenue/IconUser";
 import { ROUTES } from "../../routes/routes";
-import { apiRequest } from "../../utils/apiClient";
 import useGetUser from "../../hooks/useGetUser";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import FrameActiveIcon from "../../assets/icons/header/FrameActiveIcon";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
-
+import Logout from  "../../assets/images/logout.png";
 
 interface ProfileMenuProps {
   themeContext: {
@@ -47,16 +46,23 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
     };
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await apiRequest({ url: "/auth/logout", method: "POST" });
-    } catch (error) {
-      console.error("Error logging out:", error);
-    } finally {
-      localStorage.clear();
-      window.location.replace("/login");
-    }
-  };
+const handleLogout = () => {
+  const token = localStorage.getItem("accessToken");
+
+  localStorage.clear();
+  window.location.replace("/login");
+
+  fetch("https://api.payfa24.org/api/v4/auth/logout", {
+    method: "POST",
+    headers: {
+      "Authorization": token ? `Bearer ${token}` : "",
+      "Content-Type": "application/json",
+      "X-Device": "website",
+    },
+    keepalive: true,
+    credentials: "include",
+  }).catch(() => {});
+};
  
   return (
     <div className="relative" ref={menuRef}>
@@ -204,8 +210,9 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
               setIsModal(false);
             }}
           >
-            <div className="lg:w-3/12 w-11/12 rounded-lg lg:p-10 p-4 relative bg-white8" onClick={(e) => e.stopPropagation()}>
+            <div className="lg:w-4/12 w-11/12 rounded-lg lg:p-10 p-4 relative bg-white8" onClick={(e) => e.stopPropagation()}>
               <div className="text-center gap-4 flex items-center justify-center flex-col">
+                <img src={Logout} alt="Logout" />
                 <h1 className="lg:text-2xl text-lg text-black0 font-medium">خروج از حساب کاربری</h1>
                 <p className="lg:text-lg text-sm text-gray5">آیا از خروج از حساب کاربری خود اطمینان دارید. توجه داشته باشید که اطلاعات شما نزد ما محفوظ میماند</p>
               </div>
