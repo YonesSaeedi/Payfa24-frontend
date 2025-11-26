@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 type Item = {
   name: string;
@@ -64,7 +64,7 @@ const skeletonArray: number[] = Array.from({ length: 5 }, (_, i) => i);
           </div>
 
           <div className="flex justify-center w-[150px] pt-2">
-            <span className="text-gray5 tabular-nums">{formatPersianDigits(item.buyPrice.toLocaleString())}</span>
+            <span className="text-gray5 tabular-nums">{formatPersianNumber(item.buyPrice.toLocaleString())}</span>
             <span className="text-gray5 text-sm pr-1">تومان</span>
           </div>
 
@@ -74,7 +74,7 @@ const skeletonArray: number[] = Array.from({ length: 5 }, (_, i) => i);
                 item.isPositive ? "bg-green10 text-green9" : "bg-red7 text-red6"
               }`}
             >
-              {formatPersianDigits(Math.abs(item.change).toFixed(2))}%{item.isPositive ? "+" : "-"}
+              {formatPersianNumber(Math.abs(item.change).toFixed(2))}%{item.isPositive ? "+" : "-"}
             </span>
           </div>
         </li>

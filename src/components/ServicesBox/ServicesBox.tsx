@@ -167,14 +167,18 @@ const handleItemClick = (item: ServiceItem) => {
           <div
           key={item.label}
             onClick={() => handleItemClick(item)}
-            className="flex flex-col items-center justify-center  w-[calc(25%-8px)]  
+            className="flex flex-col items-center justify-center  w-[calc(25%-6px)]  
                    h-[60px] lg:h-[72px] 
                    rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition"
           >
             <span className="w-5  h-5  lg:w-[26px] lg:h-[26px] text-blue2 mt-2">{item.icon}</span>
-            <span className="text-gray-700 dark:text-gray-200 text-center mt-1  lg:text-[14px] text-xs font-normal whitespace-nowrap pb-2 px-4">
-              {item.label}
-            </span>
+         <div className="flex items-center justify-center gap-2 px-3 py-1.5 max-w-full min-w-[85px]">
+  <span className="text-gray-700 dark:text-gray-200 text-center text-sm font-normal truncate lg:truncate-none">
+    {item.label}
+  </span>
+</div>
+
+
           </div>
         ))}
       </div>

@@ -8,7 +8,7 @@ import Pagination from "../History/Pagination";
 import { ROUTES } from "../../routes/routes";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import { NewCryptoItem } from "./types";
-import { formatPersianNumber } from "../../utils/formatPersianNumber";
+import { formatEnglishNumber, formatPersianNumber } from "../../utils/formatPersianNumber";
 
 interface Props {
   data: NewCryptoItem[];
@@ -236,7 +236,9 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
             </div>
           </td>
 
-          <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">USDT {item?.fee}</td>
+        <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">
+  USDT {formatEnglishNumber(item?.fee ?? "0")}</td>
+
           <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianNumber(priceBuy)} تومان</td>
           <td className="py-3 px-4 hidden lg:table-cell text-black1 font-normal text-base">{formatPersianNumber(priceSell)} تومان</td>
           <td className="py-3 px-4 hidden lg:table-cell text-center font-normal text-base">

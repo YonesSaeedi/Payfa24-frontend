@@ -3,7 +3,7 @@ import StatusBadge from "../UI/Button/StatusBadge";
 import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
 import Pagination from "./Pagination";
 import TransactionModal from "./TransactionModal";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
+
 import TrasactionHisory from "./../../assets/images/Transaction/Transactionhistory.png";
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
 import { apiRequest } from "../../utils/apiClient";

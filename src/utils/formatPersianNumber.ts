@@ -1,42 +1,37 @@
-
 export const formatPersianNumber = (input: string | number): string => {
   if (input === null || input === undefined) return "۰";
 
   const numStr = String(input).replace(/,/g, "").trim();
   if (numStr === "" || isNaN(Number(numStr))) return "۰";
 
-  const [intPartRaw, decimalRaw] = numStr.split(".");
+  let num = Number(numStr);
 
-  const intPart = intPartRaw.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-  let decimal = decimalRaw ? decimalRaw.replace(/0+$/, "") : "";
-
-  if (decimalRaw) {
-    if (parseInt(decimalRaw) === 0) {
-      decimal = "";
-    } else if (numStr.startsWith("0.")) {
-      const match = decimalRaw.match(/^0+(.*)$/);
-      if (match) {
-        const nonZeroPart = match[1].slice(0, 2);
-        decimal = match[0].slice(0, -match[1].length) + nonZeroPart;
-      }
-    } else {
-      decimal = decimal.slice(0, 2);
-    }
+  if (Math.abs(num) >= 1) {
+    const rounded = Math.round(num).toString();
+    const withCommas = rounded.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return withCommas.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
   }
 
-  const finalNumber = decimal ? `${intPart}.${decimal}` : intPart;
+ 
+  if (Math.abs(num) >= 0.01) {
+    const fixed = num.toFixed(2)
+      .replace(/0+$/, "")
+      .replace(/\.$/, ""); 
 
-  return finalNumber.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
+    return fixed.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+  }
+
+  const match = numStr.match(/^(0\.0*)(\d+)/);
+  if (match) {
+    const zeros = match[1];     
+    const digits = match[2];    
+    const trimmed = zeros + digits.slice(0, 2);
+
+    return trimmed.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+  }
+
+  return "۰";
 };
-
-
-
-
-
-
-
-
 
 
 export const formatEnglishNumber = (input: string | number): string => {
@@ -45,26 +40,30 @@ export const formatEnglishNumber = (input: string | number): string => {
   const numStr = String(input).replace(/,/g, "").trim();
   if (numStr === "" || isNaN(Number(numStr))) return "0";
 
-  const [intPartRaw, decimalRaw] = numStr.split(".");
+  let num = Number(numStr);
 
-  // افزودن جداکننده هزارگان
-  const intPart = intPartRaw.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-  let decimal = decimalRaw ? decimalRaw.replace(/0+$/, "") : "";
-
-  if (decimalRaw) {
-    if (parseInt(decimalRaw) === 0) {
-      decimal = "";
-    } else if (numStr.startsWith("0.")) {
-      const match = decimalRaw.match(/^0+(.*)$/);
-      if (match) {
-        const nonZeroPart = match[1].slice(0, 2);
-        decimal = match[0].slice(0, -match[1].length) + nonZeroPart;
-      }
-    } else {
-      decimal = decimal.slice(0, 2);
-    }
+ 
+  if (Math.abs(num) >= 1) {
+    const rounded = Math.round(num).toString();
+    return rounded.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  return decimal ? `${intPart}.${decimal}` : intPart;
+ 
+  if (Math.abs(num) >= 0.01) {
+    return num
+      .toFixed(2)
+      .replace(/0+$/, "")
+      .replace(/\.$/, ""); 
+  }
+
+  
+  const match = numStr.match(/^(0\.0*)(\d+)/);
+  if (match) {
+    const zeros = match[1];     
+    const digits = match[2];    
+    return zeros + digits.slice(0, 2);
+  }
+
+  return "0";
 };
+
