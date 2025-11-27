@@ -263,11 +263,12 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       if (isSell) {
         try {
           setIsSubmitting(true)
-          await apiRequest({
+          const response = await apiRequest<{ id_order: number }, { voucherCode: string }>({
             url: `/order/digital/sell/${currentCryptocurrency?.locale?.en?.name}`,
             method: 'POST',
             data: { voucherCode: voucherCode }
           })
+          setTransactionSuccessId(response?.id_order)
           setIsTradeSuccessModalOpen(true)
         } catch (err) {
           toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
@@ -279,10 +280,11 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         try {
           setIsSubmitting(true)
           const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
-          setDigitalIDOrder(response?.order_id)
-          setResendCodeTimeLeft(120)
-          setIsOtpModalOpen(true)
-          toast.success(response?.msgOtp)
+          setTransactionSuccessId(response?.id_order)
+          // setResendCodeTimeLeft(120)
+          // setIsOtpModalOpen(true)
+          // toast.success(response?.msgOtp)
+          setIsTradeSuccessModalOpen(true)
         } catch (err) {
           toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
         }
