@@ -82,6 +82,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
   <img src={ValidationlightIcon} className="block dark:hidden" />
   <img src={ValidationDarkIcon} className="hidden dark:block" />
       </div>
+      
       <div className=" flex flex-col gap-2 text-right  min-w-0">
         <h2 className="text-xl font-semibold text-blue2 pb-4 overflow-hidden whitespace-nowrap" style={{textOverflow: 'ellipsis', direction: 'rtl',unicodeBidi: 'plaintext',}}title={title}>
             {title}

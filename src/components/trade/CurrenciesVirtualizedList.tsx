@@ -2,6 +2,7 @@ import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 import { CryptoItem } from "../../types/crypto";
 import React from "react";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import { removeDecs } from "../../utils/removeDecs";
 
 interface CurrenciesVirtualizedListProps {
   items: (CryptoItem | null)[];
@@ -51,7 +52,7 @@ const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ h
             </div>
             <div className="flex flex-col lg:gap-1 items-end">
               <span className="text-gray3 text-xs font-normal">{isSell ? 'قیمت فروش' : 'قیمت خرید'}</span>
-              <span className="text-xs lg:text-sm font-normal text-black1">{formatPersianDigits(Number(isSell ? item?.priceSell : item?.priceBuy))} تومان</span>
+              <span className="text-xs lg:text-sm font-normal text-black1">{formatPersianDigits(removeDecs(Number(isSell ? item?.priceSell : item?.priceBuy)))} تومان</span>
             </div>
           </div>
         </button>
