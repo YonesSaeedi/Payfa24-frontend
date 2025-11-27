@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import StatusBadge from "../UI/Button/StatusBadge";
 import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
 import Pagination from "./Pagination";
-import TransactionModal, { CryptoDetail, TransactionDetail } from "./TransactionModal";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import TransactionModal from "./TransactionModal";
+
 import TrasactionHisory from "./../../assets/images/Transaction/Transactionhistory.png";
 import TransactionHistoryDark from "./../../assets/images/Transaction/Transaction HistoryDark.png";
 import { apiRequest } from "../../utils/apiClient";
@@ -13,6 +13,32 @@ import { CryptoDataMap } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import SkeletonTable from "./SkeletonTable";
 import { filterForOptions, MergedCryptoHistory, statusOptions, TypeCryptoHistory, typeOptions } from "./typeHistory";
+import { formatCryptoAmount } from "../../utils/formatCryptoAmount";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
+
+export interface Tx {
+  id: string;
+  source: "crypto" | "order" | "fiat";
+  date?: string;
+  amount?: string;
+  amountCoin?: string;
+  symbol?: string;
+  description?: string;
+  status?: string;
+  type?: string;
+  fee?: number;
+  amountToman?: string;
+  stock?: string;
+  withdrawFee?: number | null;
+  network?: string | null;
+  faName?: string;
+  color?: string | null;
+  isFont?: boolean;
+  icon?: string | null;
+  image?: string;
+  coin?: { symbol: string };
+}
+
 
 interface CryptoTransaction {
   id: number;
@@ -34,7 +60,7 @@ const CryptoPage: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [selectedTx, setSelectedTx] = useState<TransactionDetail | null>(null);
+const [selectedTx, setSelectedTx] = useState<Tx | null>(null);
   const [totalPages, setTotalPages] = useState<number>(1);
   const { data: generalData } = useGetGeneralInfo();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -111,16 +137,21 @@ const CryptoPage: React.FC = () => {
 const handleOpenModal = (tx: MergedCryptoHistory) => {
   const coinData = mappedGeneralData[tx.coin.symbol];
 
-  const cryptoTx: CryptoDetail = {
+  const cryptoTx: Tx = {
     id: tx.id.toString(),
     source: "crypto",
     date: tx.DateTime,
     amount: tx.amount?.toString() ?? "0",
+    amountCoin: tx.amount?.toString() ?? "0",
     symbol: tx.coin.symbol,
     description: tx.description,
     status: tx.status,
     type: tx.type,
     fee: tx.fee,
+    amountToman: tx.amount_toman?.toString() ?? "0",
+    stock: tx.stock?.toString(),
+    withdrawFee: tx.withdraw_fee ?? null,
+    network: tx.network ?? null,
     faName: coinData?.locale?.fa?.name ?? tx.coin.symbol,
     color: coinData?.color ?? null,
     isFont: coinData?.isFont ?? false,
@@ -128,14 +159,18 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
     image: coinData?.icon
       ? `https://api.payfa24.org/images/currency/${coinData.icon}`
       : "/images/fallback-coin.png",
+    coin: { symbol: tx.coin.symbol },
   };
 
   setSelectedTx(cryptoTx);
 };
+
+
   const convertDigitsToPersian = (str: string) => {
     return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
   };
- 
+
+
 
   return (
     <div dir="rtl">
@@ -168,7 +203,8 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             selected={selectedFilterType}
             isOpen={openDropdown === "type"}
             onToggle={(id) => handleToggle(id)}
-            onSelect={(_, option) => setSelectedFilterType(option)}
+            onSelect={(_, option) => {setPage(1); setSelectedFilterType(option);}}
+
           />
 
           <FilterDropdown
@@ -178,7 +214,10 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             selected={selectedStatus}
             isOpen={openDropdown === "status"}
             onToggle={(id) => handleToggle(id)}
-            onSelect={(_, option) => setSelectedStatus(option)}
+          onSelect={(_, option) => {
+    setPage(1);
+    setSelectedStatus(option);    
+  }}
           />
 
           <FilterDropdown
@@ -188,7 +227,11 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
             selected={selectedFilterFor}
             isOpen={openDropdown === "filterFor"}
             onToggle={(id) => handleToggle(id)}
-            onSelect={(_, option) => setSelectedFilterFor(option)}
+           onSelect={(_, option) => {
+    setPage(1);
+    setSelectedFilterFor(option); 
+  }}
+
           />
         </div>
 
@@ -222,14 +265,16 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
                       <span className="font-normal text-sm text-gray-500">{tx.coin.symbol}</span>
                     </div>
                   </div>
-                  <div className="text-center font-normal text-base">{formatPersianDigits(tx.amount)}</div>
+             <div className="text-center font-normal text-base">
+  {formatPersianNumber(formatCryptoAmount(tx.amount))}
+             </div>
+
                   <div className="text-center font-normal text-base">{transactionTypeMap[tx.type] || tx.type}</div>
                   <div className="text-center">
                     <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                   </div>
                   <div className="text-center font-normal text-base">{tx.DateTime ? convertDigitsToPersian(tx.DateTime) : "-"}</div>
-
-                  <div className="text-blue-600 cursor-pointer text-center font-normal text-base" onClick={() => handleOpenModal(tx)}>
+                  <div className="text-blue2 cursor-pointer text-center font-normal text-base" onClick={() => handleOpenModal(tx)}>
                     جزئیات
                   </div>
                 </div>
@@ -288,7 +333,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
                   </p>
                 </div>
 
-                <div className="text-blue-600 text-sm mt-3 cursor-pointer border-t pt-3 border-gray21  text-center font-bold text-[14px]" onClick={() => handleOpenModal(tx)}>
+                <div className="text-blue2 text-sm mt-3 cursor-pointer border-t pt-3 border-gray21  text-center font-bold text-[14px]" onClick={() => handleOpenModal(tx)}>
                   جزئیات تراکنش
                 </div>
               </div>
@@ -309,7 +354,14 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
 
       {filteredTransactions.length > 0 && !isLoading && <Pagination current={page} total={Math.ceil((totalPages ?? 0) / 15)} onPageChange={setPage} />}
 
-      {selectedTx && <TransactionModal tx={selectedTx} onClose={() => setSelectedTx(null)} />}
+     {selectedTx && (
+  <TransactionModal
+    tx={selectedTx}
+    onClose={() => setSelectedTx(null)}
+    coinData={selectedTx.coin ? mappedGeneralData[selectedTx.coin.symbol] : undefined}
+  />
+)}
+
     </div>
   );
 };

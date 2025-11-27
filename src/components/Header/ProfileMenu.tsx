@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FrameIcon from "../../assets/icons/header/FrameIcon";
 import IconUserAccount from "../../assets/icons/ProfileMenue/IconUserAccount";
 import IconSecurity from "../../assets/icons/ProfileMenue/IconSecurity";
@@ -29,9 +29,8 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
   const [IsModal, setIsModal] = useState(false);
   const { data: userData, isLoading } = useGetUser();
   const [openSecurity, setOpenSecurity] = useState(false);
-
   const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
-
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -45,6 +44,19 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+
+  const handleKYCClick = () => {
+    if (kycLoading) return;
+    if (!kycInfo?.level_kyc) {
+      navigate(ROUTES.AUTHENTICATION_BASIC); 
+    } else if (kycInfo.level_kyc === "basic") {
+      navigate(ROUTES.AUTHENTICATION_ADVANCED); 
+    } else {
+     navigate(ROUTES.AUTHENTICATION_ADVANCED);
+    }
+    setOpen(false); 
+  };
 
 const handleLogout = () => {
   const token = localStorage.getItem("accessToken");
@@ -63,6 +75,7 @@ const handleLogout = () => {
     credentials: "include",
   }).catch(() => {});
 };
+
  
   return (
     <div className="relative" ref={menuRef}>
@@ -86,17 +99,26 @@ const handleLogout = () => {
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-           <div className="flex flex-col">
+          <div className="flex flex-col">
   {isLoading ? (
-
-      <div className="flex flex-col gap-1">
-        <div className="h-3 w-20 rounded skeleton-bg mt-2 pt-2"></div>
-        <div className="h-2 w-10 rounded skeleton-bg mt-1"></div>
+    <div className="flex flex-col gap-1">
+      <div className="h-3 w-20 rounded skeleton-bg mt-2 pt-2"></div>
+      <div className="h-2 w-10 rounded skeleton-bg mt-1"></div>
     </div>
   ) : (
     <>
-      <p className="font-semibold text-black1">{userData?.user.name_display || "—"}</p>
-      <p className="text-xs text-gray-500 pt-1">سطح کاربری {userData?.user.level_account || "—"}</p>
+      <p className="font-semibold text-black1">
+        {userData?.user.name || ""} {userData?.user.family || ""}
+      </p>
+      <p className="text-xs text-gray-500 pt-1">
+  سطح کاربری{" "}
+  {userData?.user.level_kyc === "advanced"
+    ? "پیشرفته"
+    : userData?.user.level_kyc === "basic"
+    ? "پایه"
+    : "—"}
+</p>
+
     </>
   )}
 </div>
@@ -141,22 +163,15 @@ const handleLogout = () => {
             )}
           </li>
 
-        <Link
-  to={
-    kycLoading
-      ? "#"
-      : kycInfo?.kyc?.basic?.cardbank
-      ? ROUTES.AUTHENTICATION_ADVANCED
-      : ROUTES.AUTHENTICATION_BASIC
-  }
-  className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
-  onClick={() => setOpen(false)}
->
-  <span className="w-6 h-6">
-    <IconAuthentication />
-  </span>
-  احراز هویت
-</Link>
+   <li
+      onClick={handleKYCClick}
+      className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
+    >
+      <span className="w-6 h-6">
+        <IconAuthentication />
+      </span>
+      احراز هویت
+    </li>
 
           <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm">

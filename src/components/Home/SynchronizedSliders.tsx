@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CryptoItem } from "../../types/crypto";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 export type Slide = CryptoItem;
 interface BoxConfig {
@@ -67,12 +68,12 @@ const SyncSlider = ({ boxes, isLoading }: SyncSliderProps) => {
           </div>
           <div className="relative">
             {/* === background icon (unclipped) === */}
-            <div className="pointer-events-none absolute -bottom-14 -right-14 opacity-10 z-0 w-[185px] h-[185px]">
+            <div className="pointer-events-none absolute -bottom-14 -right-14 opacity-10 z-0 w-[185px] h-[185px] rounded-full overflow-hidden">
               {!isLoading && (
                 box?.slides[index]?.isFont ?
                   <i className={`cf cf-${box?.slides[index]?.symbol?.toLowerCase()}`} style={{ color: box?.slides[index]?.color, fontSize: '185px' }}></i>
                   :
-                  <img src={`https://api.payfa24.org/images/currency/${box?.slides[index]?.icon}`} alt={box?.slides[index]?.symbol} className="object-contain w-full h-full" />
+                  <img src={`https://api.payfa24.org/images/currency/${box?.slides[index]?.icon}`} alt={box?.slides[index]?.symbol} className="object-cover w-full h-full" />
               )}
             </div>
             {/* === slides (clipped for movement) === */}
@@ -128,7 +129,7 @@ const SyncSlider = ({ boxes, isLoading }: SyncSliderProps) => {
                           </span>
                           <div className="text-black1 tabular-nums flex items-center gap-1">
                             <span className="text-gray3 pl-2">تومان</span>
-                            <span className="text-base lg:text-xl font-medium">{formatPersianDigits(parseFloat(slide?.priceBuy ?? '0'))}</span>
+                            <span className="text-base lg:text-xl font-medium">{formatPersianNumber(parseFloat(slide?.priceBuy ?? '0'))}</span>
                           </div>
                         </div>
                       </div>

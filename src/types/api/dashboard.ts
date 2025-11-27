@@ -6,6 +6,10 @@ export interface Banner {
   sort?: string // "2"
   [key: string]: unknown
 }
+export interface DailyWithdrawal {
+  limit?: number;
+  usage?: number;
+}
 
 // dashboard
 export interface Wallets {
@@ -24,5 +28,7 @@ export interface Banner {
 export interface Dashboard {
   wallets?: Wallets,
   banner?: Banner,
-  [key: string]: unknown // allowing other optional key value pairs
+  [key: string]: unknown
+  dailyWithdrawal?: DailyWithdrawal;
+   top_coins?:any[]; // allowing other optional key value pairs
 }

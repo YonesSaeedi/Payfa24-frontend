@@ -13,6 +13,7 @@ import useGetUser from "../../hooks/useGetUser";
 import { getBankLogo } from "../../utils/bankLogos";
 import { AxiosError } from "axios";
 import { ROUTES } from "../../routes/routes";
+import { formatPersianNumber } from "../../utils/formatPersianNumber";
 
 interface WithdrawRequestResponse {
   transaction_id: number;
@@ -82,14 +83,20 @@ export default function WithdrawForm() {
     } catch (err) {
       console.error("Failed to fetch cards", err);
     } finally {
-      setIsLoading(false); // این خط اضافه شود
+      setIsLoading(false); 
     }
   };
   fetchCards();
 }, []);
 
+ const toPersianDigits = (num: string) =>
+  num.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
 
-  // تایمر ارسال مجدد کد
+const toEnglishDigits = (num: string) =>
+  num.replace(/[۰-۹]/g, (d) => "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]);
+
+
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isOpen && resendTimer > 0) {
@@ -106,21 +113,21 @@ export default function WithdrawForm() {
     const amountNumber = Number(data.amount);
     setIsSubmitting(true);
 
-    // چک مقدار
+ 
     if (amountNumber < 100000) {
       toast.error("حداقل مقدار برداشت 100,000 تومان میباشد.");
       setIsSubmitting(false);
       return;
     }
 
-    // چک کارت انتخابی
+  
     if (!data.bank) {
       toast.error("لطفاً یک کارت بانکی انتخاب کنید");
       setIsSubmitting(false);
       return;
     }
 
-    // داده‌ها برای ارسال
+ 
     const requestData = {
       amount: amountNumber,
       card: data.bank.id,
@@ -227,10 +234,9 @@ export default function WithdrawForm() {
     ),
   }));
 
-  const toPersianDigits = (num: string | number) => {
-  return num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
-};
 
+
+  
   return (
     <>
       {/* فرم برداشت */}
@@ -258,21 +264,30 @@ export default function WithdrawForm() {
           </div>
 
           <div dir="rtl" className="mb-6">
-            <Controller
-              name="amount"
-              control={control}
-              rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
-              render={({ field }) => (
-                <FloatingInput
-                  label="مقدار برداشت (تومان)"
-                  value={field.value}
-                  onChange={field.onChange}
-                  type="number"
-                  placeholder="0 تومان"
-                  className="text-black0 border-gray12"
-                />
-              )}
-            />
+  <Controller
+  name="amount"
+  control={control}
+  rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
+  render={({ field }) => (
+    <FloatingInput
+      label="مقدار برداشت (تومان)"
+      value={
+        field.value
+          ? toPersianDigits(Number(field.value).toLocaleString("en-US"))
+          : ""
+      }
+      onChange={(e) => {
+        const english = toEnglishDigits(e.target.value.replace(/,/g, "")); 
+        field.onChange(english);
+      }}
+      type="text"
+      placeholder="۰ تومان"
+      className="text-black0 border-gray12"
+    />
+  )}
+/>
+
+
        <div
   dir="rtl"
   className="flex items-center justify-between mb-4 mt-3"
@@ -282,7 +297,8 @@ export default function WithdrawForm() {
     <div className="h-5 w-20 skeleton-bg rounded animate-pulse"></div> 
   ) : (
     <span className=" text-blue2 text-md font-normal text-[14px]">
-     {toPersianDigits(walletBalance.toLocaleString())} تومان
+   {formatPersianNumber(walletBalance)} تومان
+
     </span>
   )}
 </div>

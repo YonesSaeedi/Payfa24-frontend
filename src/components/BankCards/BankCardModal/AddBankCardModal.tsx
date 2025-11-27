@@ -1,5 +1,4 @@
 import IconClose from "../../../assets/icons/Login/IconClose";
-import useGetUser from "../../../hooks/useGetUser";
 import BankCardForm from "./BankCardForm";
 
 type AddBankCardModalProps = {
@@ -20,10 +19,8 @@ const AddBankCardModal = ({
       onClose();
     }
   };
-const { data: userData } = useGetUser();
-console.log("Modal userData:", userData);
-console.log("Modal mobile:", userData?.user?.mobile);
-console.log("Modal national_code:", userData?.user?.national_code);
+
+
 
 
   return (

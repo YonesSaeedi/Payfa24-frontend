@@ -15,20 +15,8 @@ import useGetUser from "../../hooks/useGetUser";
 import { AxiosError } from "axios";
 import { ROUTES } from "../../routes/routes";
 import { useSearchParams } from "react-router-dom";
+import { formatEnglishNumber, formatPersianNumber } from "../../utils/formatPersianNumber";
 
-// interface WithdrawApiResponse {
-//   status: boolean;
-//   msg: string;
-//   coins?: Coin[];
-//   networks?: FullNetwork[];
-//   level_used?: { daily_withdrawal_crypto?: number };
-//   data?: {
-//     otp: boolean;
-//     msgOtp: string;
-//     transaction_id: number;
-//     method: string;
-//   };
-// }
 
 interface WithdrawApiResponse {
   status: boolean;
@@ -116,8 +104,7 @@ const CryptoWithdrawForm: FC = () => {
   const { data: userData } = useGetUser();
   const [isDataLoading, setIsDataLoading] = useState(true);
   const userMobile = userData?.user?.mobile || "شماره شما";
-  console.log("🔹 mergedCryptosData:", mergedCryptosData);
-  console.log("🔹 isCryptoListLoading:", isCryptoListLoading);
+
   const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
     setCrypto(currency.symbol);
     setCurrentCryptoCurrency(currency);
@@ -155,7 +142,7 @@ const CryptoWithdrawForm: FC = () => {
           codeOtp: otpCode,
         },
       });
-      toast.success(res.msg || "برداشت با موفقیت تأیید شد ✅");
+      toast.success(res.msg || "برداشت با موفقیت تأیید شد");
       setIsOtpModalOpen(false);
       setOtpCode("");
       setResendCodeTimeLeft(0);
@@ -210,7 +197,10 @@ const CryptoWithdrawForm: FC = () => {
         setAllNetworks(res.networks || []);
         setLevelUsed(res.level_used || {});
       } catch (err) {
-        console.error("خطا در گرفتن اطلاعات:", err);
+     toast.error(
+    (err as AxiosError<{ msg?: string }>).response?.data?.msg ||
+      "در بارگذاری اطلاعات برداشت مشکلی پیش آمده لطفاً دوباره تلاش کنید"
+  );
       } finally {
         setIsDataLoading(false);
       }
@@ -321,6 +311,7 @@ const CryptoWithdrawForm: FC = () => {
     }
   };
 
+
   //  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
   const handleSubmitTransfers = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -413,10 +404,7 @@ const CryptoWithdrawForm: FC = () => {
   const toPersianDigits = (num: string | number) => {
     return num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
   };
-  useEffect(() => {
-    console.log("🔹 mergedCryptosData:", mergedCryptosData);
-    console.log("🔹 isCryptoListLoading:", isCryptoListLoading);
-  }, [mergedCryptosData, isCryptoListLoading]);
+
 
   return (
     <>
@@ -522,7 +510,7 @@ const CryptoWithdrawForm: FC = () => {
                       type="number"
                       className="border border-gray12 mb-6"
                       labelClassName="!font-normal !text-sm"
-                      placeholder="۰ تومان"
+                      placeholder="0"
                     />
 
                     <div className="text-md text-gray5 mt-3 space-y-2">
@@ -531,9 +519,11 @@ const CryptoWithdrawForm: FC = () => {
                         {isDataLoading ? (
                           <span className="skeleton-bg h-5 w-24 lg:w-32 rounded"></span>
                         ) : (
-                          <span className="font-medium text-black0  text-sm">
-                            {toPersianDigits(parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toFixed(8))} {crypto}
-                          </span>
+                      <span dir="ltr" className="font-medium text-black0 text-sm">
+                       {formatEnglishNumber(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0")} {crypto}
+                     </span>
+
+
                         )}
                       </div>
 
@@ -543,8 +533,9 @@ const CryptoWithdrawForm: FC = () => {
                           <span className="skeleton-bg h-5 w-20 lg:w-28 rounded"></span>
                         ) : (
                           <span className="font-medium text-black0  text-sm">
-                            {levelUsed.daily_withdrawal_crypto ? toPersianDigits(levelUsed.daily_withdrawal_crypto) : "۰"} تومان
-                          </span>
+                           {formatPersianNumber(levelUsed.daily_withdrawal_crypto?? "0")} تومان
+                         </span>
+
                         )}
                       </div>
 
@@ -553,9 +544,10 @@ const CryptoWithdrawForm: FC = () => {
                         {isDataLoading ? (
                           <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
                         ) : (
-                          <span className="font-medium text-black0  text-sm">
-                            {selectedNetwork?.withdraw_min ? toPersianDigits(selectedNetwork.withdraw_min) : "۰"} {crypto}
-                          </span>
+                          <span dir="ltr" className="font-medium text-black0 text-sm">
+                           {formatEnglishNumber(selectedNetwork?.withdraw_min?? "0")} {crypto}
+                         </span>
+
                         )}
                       </div>
                     </div>
@@ -630,14 +622,14 @@ const CryptoWithdrawForm: FC = () => {
                     type="number"
                     className="border border-gray12 mb-6 "
                     labelClassName="!font-normal !text-sm"
-                    placeholder="۰ تومان"
+                    placeholder="0"
                   />
 
                   <div className="text-md text-gray5 mt-3 space-y-2">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-normal text-sm">موجودی قابل برداشت</span>
-                      <span className="font-medium text-black0  text-sm">
-                        {toPersianDigits(parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "۰").toFixed(8))} {crypto}
+                      <span dir="ltr" className="font-medium text-black0 text-sm">
+                      {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toString()} {crypto}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">

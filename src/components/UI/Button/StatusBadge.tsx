@@ -45,6 +45,8 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text }) => {
       icon: "",
     };
 
+     
+
   return (
     <div
       className={`inline-flex items-center gap-1 px-3 py-1 rounded-[4px] ${status.bgColor}`}

@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import ArrowLeftIcon from "../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 import { CryptoItem } from "../../types/crypto";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import { Link } from "react-router";
 import { ROUTES } from "../../routes/routes";
+import { formatEnglishNumber, formatPersianNumber } from "../../utils/formatPersianNumber";
 
 type Category = {
   name: 'all' | 'mostTraded' | 'gainers' | 'losers' | 'newest';
@@ -103,18 +103,18 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
                     <span className="text-[10px] lg:text-sm font-normal text-gray12">{item?.symbol}</span>
                   </div>
                 </td>
-                <td className="py-3 px-4 hidden lg:table-cell text-black1">USDT {item?.fee}</td>
+                <td className="py-3 px-4 hidden lg:table-cell text-black1">USDT {formatEnglishNumber(item?.fee?? "0")}</td>
                 <td className="py-3 px-4 text-black1 text-xs lg:text-base font-normal">
-                  {formatPersianDigits(parseFloat(item?.priceBuy ?? '0'))}
+                  {formatPersianNumber(parseFloat(item?.priceBuy ?? '0'))}
                   <span className="hidden lg:inline"> تومان </span>
                 </td>
-                <td className="py-3 px-4 hidden lg:table-cell text-black1">{formatPersianDigits(parseFloat(item?.priceSell ?? '0'))} تومان</td>
+                <td className="py-3 px-4 hidden lg:table-cell text-black1">{formatPersianNumber(parseFloat(item?.priceSell ?? '0'))} تومان</td>
                 <td className="py-3 px-4 text-center text-black1">
                   <span
                     className={`font-normal text-xs lg:text-base ${Number(item?.priceChangePercent) >= 0 ? "text-green-500" : "text-red-500"}`}
                     dir="ltr"
                   >
-                    {formatPersianDigits(item?.priceChangePercent ?? '0')}%
+                    {formatPersianNumber(item?.priceChangePercent ?? '0')}%
                   </span>
                 </td>
                 <td className="py-3 px-4 hidden lg:table-cell text-end text-black1">
