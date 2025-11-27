@@ -186,6 +186,17 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       setIsCreatingIdentifier(false);
     }
   };
+
+
+
+
+
+
+
+
+
+
+  
   const handleStart = () => setStarted(true);
 
   const depositFormMessages = [
@@ -212,7 +223,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     {
       id: "closeDeal",
       Icon: <IconBank />,
-      Title: "واریز با درگاه پرداخت",
+      Title: "واریز تومانی با درگاه پرداخت",
       description: `واریز حداکثر تا ${formatPersianDigits((maxDeposit / 1_000_000).toString())} میلیون تومان`,
       button: "پرداخت در لحظه",
       IconMore: <IconArrowRight />,
@@ -220,7 +231,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     {
       id: "Identifier",
       Icon: <IconIDentifier />,
-      Title: "واریز با شناسه",
+      Title: "واریز تومانی با شناسه",
       description: "واریز وجه به صورت نامحدود",
       button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
       IconMore: <IconArrowRight />,
@@ -228,7 +239,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     {
       id: "CardToCard",
       Icon: <IconConvertCard />,
-      Title: "واریز کارت به کارت",
+      Title: "واریز تومانی با کارت به کارت",
       description: `واریز تا سقف ${formatPersianDigits(15)} میلیون تومان`,
       button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
       IconMore: <IconArrowRight />,
@@ -236,7 +247,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     {
       id: "Bank Receipt:",
       Icon: <IconReceipt />,
-      Title: "فیش بانکی",
+      Title: " واریز تومانی با فیش بانکی",
       description: "واریز وجه به صورت نامحدود",
       button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
       IconMore: <IconArrowRight />,
@@ -244,7 +255,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     {
       id: "DedicatedWallet",
       Icon: <IconWallet />,
-      Title: "واریز با ولت اختصاصی",
+      Title: "واریز رمز ارز با ولت اختصاصی",
       description: "بدون نیاز به TxID , واریز خودکار و سریع",
       button: "",
       IconMore: <IconArrowRight />,
@@ -252,7 +263,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     {
       id: "DepositWithTxID",
       Icon: <IconLink />,
-      Title: "واریز با TxID",
+      Title: "واریز  رمز ارز با TxID",
       description: "برای واریز از صرافی با کیف پول دیگر",
       button: "",
       IconMore: <IconArrowRight />,
@@ -311,7 +322,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       <DepositLayout step={1} started={started} onStart={handleStart} alertMessages={currentAlertMessages}>
         {/* بخش راست */}
         <div className="w-full overflow-y-auto h-full lg:block hidden" dir="rtl">
-          <p className="text-base text-black0 mb-4 font-medium">واریز تومان</p>
+          <p className="text-base text-black0 mb-4 font-medium">واریز تومانی</p>
           {rightOptions.slice(0, 4).map((option) => (
             <div key={option.id} className="mt-4 cursor-pointer" onClick={() => setSelectedOption(option.id)}>
               <div
@@ -338,7 +349,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
             </div>
           ))}
 
-          <p className="mt-8 mb-4 text-base text-black0 font-medium">واریز ارز</p>
+          <p className="mt-8 mb-4 text-base text-black0 font-medium">واریز رمز ارز</p>
           {rightOptions.slice(4, 6).map((option) => (
             <div key={option.id} className="mt-4 cursor-pointer" onClick={() => setSelectedOption(option.id)}>
               <div

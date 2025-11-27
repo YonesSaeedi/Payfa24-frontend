@@ -49,7 +49,13 @@ export function formatPersianCardNumber(input: string | number): string {
   return persianGrouped;
 }
 
-export default function DepositWithIdentifier({ cards = [], identifierData = null, onCreateIdentifier, isCreating = false }: DepositWithIdentifierProps) {
+export default function DepositWithIdentifier({ 
+  cards = [], 
+  identifierData = null, 
+  onCreateIdentifier, 
+  isCreating = false 
+}: DepositWithIdentifierProps) {
+  
   const { control, watch } = useForm<{ bank?: string }>();
   const selectedCardId = Number(watch("bank"));
 

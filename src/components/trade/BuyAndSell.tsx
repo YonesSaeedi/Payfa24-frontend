@@ -167,20 +167,22 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       }
     }
   }
-  useEffect(() => {
-    if (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') {
-      setCurrentCryptocurrency(mergedDigitalCryptosData[currentCryptocurrency.symbol])
-      if (isSell) setCurrentCryptoPrice(Number(currentCryptocurrency.priceSell))
-      else {
-        setCurrentCryptoPrice(Number(currentCryptocurrency.priceBuy))
-        fetchTomanBalance()
-      }
-    }
-    else {
-      fetchTomanBalance()
-      fetchCryptoBalanceAndPrice()
-    }
-  }, [isSell, currentCryptocurrency])
+  // useEffect(() => {
+  //   if (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') {
+  //     setCurrentCryptocurrency(mergedDigitalCryptosData[currentCryptocurrency.symbol])
+  //     if (isSell) setCurrentCryptoPrice(Number(currentCryptocurrency.priceSell))
+  //     else {
+  //       setCurrentCryptoPrice(Number(currentCryptocurrency.priceBuy))
+  //       fetchTomanBalance()
+  //     }
+  //   }
+  //   else {
+  //     fetchTomanBalance()
+  //     fetchCryptoBalanceAndPrice()
+  //   }
+  // }, [isSell, currentCryptocurrency])
+
+
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
@@ -251,11 +253,11 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     return {}
   }, [mappedGeneralData, orderInfoData])
   // assign BTC to the current cryptocurrency at first
-  useEffect(() => {
-    const coinSymbol = searchParams.get('coin')
-    if (coinSymbol && !currentCryptocurrency && mergedCryptosData[coinSymbol]) setCurrentCryptocurrency(mergedCryptosData[coinSymbol]);
-    else if ((mergedCryptosData['BTC'] && currentCryptocurrency === null)) setCurrentCryptocurrency(mergedCryptosData['BTC'])
-  }, [mergedCryptosData, currentCryptocurrency, setCurrentCryptocurrency])
+  // useEffect(() => {
+  //   const coinSymbol = searchParams.get('coin')
+  //   if (coinSymbol && !currentCryptocurrency && mergedCryptosData[coinSymbol]) setCurrentCryptocurrency(mergedCryptosData[coinSymbol]);
+  //   else if ((mergedCryptosData['BTC'] && currentCryptocurrency === null)) setCurrentCryptocurrency(mergedCryptosData['BTC'])
+  // }, [mergedCryptosData, currentCryptocurrency, setCurrentCryptocurrency])
   // buy/sell functionality ==========================================================================================================================================================
   // buy/sell functionality ==========================================================================================================================================================
   // buy/sell functionality ==========================================================================================================================================================
@@ -364,7 +366,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const isDisabled = (isSell && cryptoBalance === 0) || (!isSell && TomanBalance === 0)
   // compute if it's isDigitalCurrencySell or isDigitalCurrency =================================================================================================================
   const isDigitalCurrencySell = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') && isSell
-  const isDigitalCurrency = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher')
+
   // data of the OTP modal ======================================================================================================================================================
   const { data: settingsData } = useGetSettings()
   const { data: userData } = useGetUser()
@@ -396,7 +398,18 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       setResendCodeIsSubmitting(false)
     }
   }
+  useEffect(() => {
+  const coinSymbol = searchParams.get('coin')?.toUpperCase(); // گرفتن پارامتر coin از URL
+  if (!coinSymbol) return;
 
+  if (mergedCryptosData[coinSymbol] && !currentCryptocurrency) {
+    setCurrentCryptocurrency(mergedCryptosData[coinSymbol]);
+  } else if (mergedDigitalCryptosData[coinSymbol] && !currentCryptocurrency) {
+    setCurrentCryptocurrency(mergedDigitalCryptosData[coinSymbol]);
+  } else if (!currentCryptocurrency && mergedCryptosData['BTC']) {
+    setCurrentCryptocurrency(mergedCryptosData['BTC']);
+  }
+}, [mergedCryptosData, mergedDigitalCryptosData, currentCryptocurrency, setCurrentCryptocurrency, searchParams]);
   return (
     <div className="w-full h-full lg:bg-white8 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between lg:border lg:border-gray21">
       <div className="flex flex-col gap-10">
@@ -467,15 +480,18 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               onChange={(value: string) => setOtpCode(value)}
             />
           }
-          <div className={`flex items-center ${isDigitalCurrency ? 'justify-end' : 'justify-between'}`}>
-            <div className={`items-center gap-1 text-gray24 text-xs lg:text-sm font-medium ${isDigitalCurrency ? 'hidden' : 'flex'}`}>
-              موجودی شما :
-              {isLoading || cryptoBalance === null ?
-                <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
-                :
-                <span className="text-black1 font-normal" dir="ltr">{`${cryptoBalance} ${currentCryptocurrency?.symbol ?? 'رمزارز'}`}</span>
-              }
-            </div>
+          <div className="flex items-center justify-between">
+            <div className="items-center gap-1 text-gray24 text-xs lg:text-sm font-medium flex">
+  موجودی شما :
+  {isLoading ? (
+    <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
+  ) : currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher' ? (
+    <span className="text-black1 font-normal" dir="ltr">{cryptoBalance ?? 0} {currentCryptocurrency?.symbol}</span>
+  ) : (
+    <span className="text-black1 font-normal" dir="ltr">{formatPersianDigits(TomanBalance ?? 0)} تومان</span>
+  )}
+</div>
+
             <span className="text-sm font-normal text-black1 flex items-center gap-1">
               {isSell ? 'قیمت فروش' : 'قیمت خرید'} :
               {isLoading ?
