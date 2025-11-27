@@ -137,30 +137,30 @@ const [selectedTx, setSelectedTx] = useState<Tx | null>(null);
 const handleOpenModal = (tx: MergedCryptoHistory) => {
   const coinData = mappedGeneralData[tx.coin.symbol];
 
-  const cryptoTx: Tx = {
-    id: tx.id.toString(),
-    source: "crypto",
-    date: tx.DateTime,
-    amount: tx.amount?.toString() ?? "0",
-    amountCoin: tx.amount?.toString() ?? "0",
-    symbol: tx.coin.symbol,
-    description: tx.description,
-    status: tx.status,
-    type: tx.type,
-    fee: tx.fee,
-    amountToman: tx.amount_toman?.toString() ?? "0",
-    stock: tx.stock?.toString(),
-    withdrawFee: tx.withdraw_fee ?? null,
-    network: tx.network ?? null,
-    faName: coinData?.locale?.fa?.name ?? tx.coin.symbol,
-    color: coinData?.color ?? null,
-    isFont: coinData?.isFont ?? false,
-    icon: coinData?.icon ?? null,
-    image: coinData?.icon
-      ? `https://api.payfa24.org/images/currency/${coinData.icon}`
-      : "/images/fallback-coin.png",
-    coin: { symbol: tx.coin.symbol },
-  };
+ const cryptoTx: Tx = {
+  id: tx.id.toString(),
+  source: "crypto",
+  date: tx.DateTime,
+  amount: tx.amount?.toString() ?? "0",
+  amountCoin: tx.amount?.toString() ?? "0",
+  symbol: tx.coin.symbol,  // حتما این رو داشته باش
+  description: tx.description,
+  status: tx.status,
+  type: tx.type,
+  fee: tx.fee,
+  amountToman: tx.amount_toman?.toString() ?? "0",
+  stock: tx.stock?.toString(),
+  withdrawFee: tx.withdraw_fee ?? null,
+  network: tx.network ?? null,
+  faName: coinData?.locale?.fa?.name || tx.coin.name,
+  color: coinData?.color ?? null,
+  isFont: coinData?.isFont ?? false,
+  icon: coinData?.icon ?? null,
+  image: coinData?.icon
+    ? `https://api.payfa24.org/images/currency/${coinData.icon}` 
+    : "/images/fallback-coin.png",
+  coin: { symbol: tx.coin.symbol },
+};
 
   setSelectedTx(cryptoTx);
 };

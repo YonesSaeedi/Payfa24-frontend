@@ -104,8 +104,6 @@ export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }:
       </>
     )}
   </div>
-
- 
   <Link
     to={`${ROUTES.TRADE.BUY}?coin=${coin.symbol}`}
     className="hover:bg-blue2 hover:text-white rounded-lg px-3 py-1.5 text-sm border border-blue2 transition duration-200 ease-in font-bold whitespace-nowrap text-blue2"
@@ -113,15 +111,10 @@ export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }:
     خرید/فروش
   </Link>
 </div>
-
-   
       </div>
-
-      
     </>
   )}
 </div>
-
           );
         })}
       </div>

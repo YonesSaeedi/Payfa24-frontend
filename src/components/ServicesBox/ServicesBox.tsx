@@ -193,7 +193,7 @@ const handleItemClick = (item: ServiceItem) => {
     >
       <div
 
-        className={`bg-white8 rounded-xl shadow-lg p-4 lg:px-[22px] w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+        className={`bg-white8 rounded-xl shadow-lg p-4 lg:px-[22px] w-[550px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
           } relative`}
         onClick={(e) => e.stopPropagation()}
       >

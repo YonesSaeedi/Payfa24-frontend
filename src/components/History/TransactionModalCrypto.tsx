@@ -4,6 +4,7 @@ import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import { Tx } from "./CryptoPage";
 
 export interface CryptoDetail {
   id: string;
@@ -31,17 +32,18 @@ export interface CryptoDetail {
   color?: string | null;
   isFont?: boolean;
   icon?: string | null;
-  DateTime?:string;
+  DateTime?: string;
 }
 
 interface TransactionModalCryptoProps {
-  tx: { id: string; source: "crypto" };
+  tx: Tx;
   onClose: () => void;
   coinData?: {
     faName?: string;
     icon?: string;
     isFont?: boolean;
     color?: string | null;
+    symbol?: string;
   };
 }
 
@@ -49,68 +51,67 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState<CryptoDetail | null>(null);
 
-useEffect(() => {
-  if (!tx.id) return;
+  useEffect(() => {
+    if (!tx.id) return;
 
-  const fetchDetails = async () => {
-    setLoading(true);
-    try {
-      const url = `/history/crypto-transaction/${tx.id}`;
-      const res = await apiRequest<{ transaction: CryptoDetail }>({ url, method: "GET" });
+    const fetchDetails = async () => {
+      setLoading(true);
+      try {
+        const url = `/history/crypto-transaction/${tx.id}`;
+        const res = await apiRequest<{ transaction: CryptoDetail }>({ url, method: "GET" });
 
-      console.log("API response for tx", tx.id, res); 
+        if (res.transaction) {
+          // اصلاح شده: همیشه اولویت با coinData است
+          const mergedDetail: CryptoDetail = {
+            ...res.transaction,
+            source: "crypto",
+            symbol: coinData?.symbol || res.transaction.symbol || "unknown",
+            faName: coinData?.faName || tx.faName || res.transaction.faName || res.transaction.symbol || "ارز نامشخص",
+            color: coinData?.color ?? res.transaction.color ?? null,
+            isFont: coinData?.isFont ?? res.transaction.isFont ?? false,
+            icon: coinData?.icon ?? res.transaction.icon ?? null,
+          };
 
-      if (res.transaction) {
-        const mergedDetail: CryptoDetail = {
-          ...res.transaction,
-          source: "crypto",
-          faName: coinData?.faName || res.transaction.faName || res.transaction.symbol || "ارز نامشخص",
-          color: coinData?.color ?? res.transaction.color ?? null,
-          isFont: coinData?.isFont ?? res.transaction.isFont ?? false,
-          icon: res.transaction.icon ?? coinData?.icon ?? null,
-        };
+          mergedDetail.image = mergedDetail.icon
+            ? `https://api.payfa24.org/images/currency/${mergedDetail.icon}`
+            : "/images/fallback-coin.png";
 
-        mergedDetail.image = mergedDetail.icon
-          ? `https://api.payfa24.org/images/currency/${mergedDetail.icon}`
-          : "/images/fallback-coin.png";
-
-        console.log("Merged detail", mergedDetail); 
-
-        setDetail(mergedDetail);
+          setDetail(mergedDetail);
+        }
+      } catch (err) {
+        console.error("خطا در دریافت جزئیات تراکنش:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("خطا در دریافت جزئیات تراکنش:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchDetails();
-}, [tx, coinData]);
+    fetchDetails();
+  }, [tx, coinData]);
 
-const renderIcon = (size = "w-20 h-20") => {
-  if (!detail) return null;
+  const renderIcon = (size = "w-20 h-20") => {
+    if (!detail) return null;
 
-  if (detail.isFont) {
     return (
-      <i
-        className={`cf cf-${detail.symbol?.toLowerCase()} ${size} text-[55px]`}
-        style={{ color: detail.color ?? "" }}
-      />
+      <span className={`${size} rounded-full flex items-center justify-center`}>
+        {detail.isFont && detail.symbol ? (
+          <i
+            className={`cf cf-${detail.symbol.toLowerCase()}`}
+            style={{
+              color: detail.color ?? "",
+              fontSize: size.includes("w-20") ? "55px" : "28px",
+            }}
+          />
+        ) : (
+          <img
+            src={detail.icon ? `https://api.payfa24.org/images/currency/${detail.icon}` : "/images/fallback-coin.png"}
+            alt={detail.faName ?? detail.symbol ?? ""}
+            className="object-contain rounded-full"
+            onError={(e) => (e.currentTarget.src = "/images/fallback-coin.png")}
+          />
+        )}
+      </span>
     );
-  }
-
-  return (
-    <img
-      src={detail.image} // مسیر آماده شده از قبل
-      alt={detail.faName || detail.symbol || ""}
-      className={`${size} rounded-full object-cover`}
-    
-    />
-  );
-};
-
-
+  };
 
   const convertDigitsToPersian = (str: string) =>
     str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
@@ -163,9 +164,7 @@ const renderIcon = (size = "w-20 h-20") => {
                     label="وضعیت"
                     value={
                       <StatusBadge
-                        text={
-                          transactionStatusMap[detail.status] || detail.status
-                        }
+                        text={transactionStatusMap[detail.status] || detail.status}
                       />
                     }
                   />
