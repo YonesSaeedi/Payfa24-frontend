@@ -26,7 +26,7 @@ const StepperComponent: React.FC<StepperProps> = ({
       ];
 
   return (
-    <div className="flex w-full items-center justify-center flex-row-reverse py-8 gap-2">
+    <div className="flex w-full items-center justify-center flex-row-reverse py-8 gap-2 ">
       {steps.map((step, index) => (
         <React.Fragment key={index}>
           <div className="flex flex-col items-center gap-1 ">
@@ -59,7 +59,7 @@ const StepperComponent: React.FC<StepperProps> = ({
 
           {index < steps.length - 1 && (
             <div
-              className="flex-none lg:w-32 w-12 h-0"
+              className="flex-none lg:w-32 w-12 h-0 text-center"
               style={{
                 border: `2px dashed ${
                   index < currentStep ? "#0B60FF" : "#8792AF"

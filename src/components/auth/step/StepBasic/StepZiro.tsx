@@ -1,6 +1,3 @@
-// src/components/AuthenticationIntro.tsx
-// src/components/AuthenticationIntro.tsx
-
 import React, { useContext } from "react";
 import enticationDark from "../../../../assets/enticationDark.png";
 import enticationLight from "../../../../assets/enticationLight.png";

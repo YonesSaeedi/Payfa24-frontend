@@ -155,7 +155,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
                   )}
                 </span>
               )}
-              <div className="flex items-center justify-end w-full flex-row-reverse">
+              <div className="flex items-center justify-end w-full flex-row-reverse text-black0 lg:text-sm text-xs">
                 {option.label}
                 {option.icon && (
                   <span className="w-5 h-5 ml-2">{option.icon}</span>

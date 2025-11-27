@@ -13,14 +13,14 @@ import useGetKYCInfo from "../../../../hooks/useGetKYCInfo";
 
 type Props = {
   onNext: () => void;
-  userInfo: {
+  userInfo?: {
     kyc?: {
       basic?: {
-        name?: string;
-        family?: string;
-        father?: string;
-        national_code?: string;
-        date_birth?: string;
+        name?: string | null;
+        family?: string | null;
+        father?: string | null;
+        national_code?: string | null;
+        date_birth?: string | null;
       };
     };
   };
@@ -83,17 +83,17 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
       if (data.status) {
         toast.success("اطلاعات با موفقیت ثبت شد.");
         refetch();
+        onNext();
       } else if (data.msg?.includes("قبلا این اطلاعات را ثبت کرده‌اید")) {
         toast.info("اطلاعات شما قبلا ثبت شده است.");
+        onNext();
       } else toast.error(data.msg || "خطا در ثبت اطلاعات.");
-
-      // onNext();
     },
     onError: (error) => {
       const msg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
       if (msg.includes("قبلا این اطلاعات را ثبت کرده اید")) toast.info("اطلاعات شما قبلا ثبت شده است.");
       else toast.error(msg);
-      // onNext();
+      onNext();
     },
   });
 
@@ -130,7 +130,7 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit(onSubmit)} className="lg:bg-gray9 lg:rounded-2xl lg:px-8 px-4">
-        <StepperComponent currentStep={1}  />
+        <StepperComponent currentStep={1} />
 
         <div className="space-y-7 lg:space-y-8 my-14">
           <div className="flex space-x-4">
@@ -204,8 +204,8 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
           })}
         </div>
 
-        <button type="submit" className="mt-1 text-lg font-bold mb-8 bg-blue1 w-full h-[56px] rounded-lg text-white2" disabled={submitMutation.isPending}>
-          {submitMutation.isPending ? "در حال ثبت..." : "تأیید"}
+        <button dir="rtl" type="submit" className="mt-32 text-lg font-bold mb-8 bg-blue1 w-full h-[56px] rounded-lg text-white2" disabled={submitMutation.isPending}>
+          {submitMutation.isPending ? "در حال ثبت ..." : "تأیید"}
         </button>
       </form>
 

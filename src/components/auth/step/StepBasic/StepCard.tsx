@@ -14,11 +14,11 @@ import { toPersianDigits } from "../../../Deposit/CardToCardTransfer";
 import useGetKYCInfo from "../../../../hooks/useGetKYCInfo";
 
 type Props = {
-  onNext: () => void;
+  // onNext: () => void;
   userInfo?: {
     kyc?: {
       basic?: {
-        cardbank?: boolean;
+        cardbank?: number;
       };
     };
   };
@@ -44,7 +44,9 @@ const formatCardNumber = (digits: string): string => {
   return parts.join("-");
 };
 
-export default function StepCard({ onNext,  }: Props) {
+export default function StepCard({userInfo}:Props) {
+  const hasCard = userInfo?.kyc?.basic?.cardbank === 1;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { refetch } = useGetKYCInfo();
   const {
@@ -79,7 +81,7 @@ export default function StepCard({ onNext,  }: Props) {
         toast.success("شماره کارت با موفقیت ثبت شد.");
         refetch();
         setIsModalOpen(true);
-        onNext();
+        // onNext();
       } else {
         toast.error(data.msg || "خطا در ثبت شماره کارت.");
       }
@@ -96,7 +98,6 @@ export default function StepCard({ onNext,  }: Props) {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    onNext();
   };
 
   return (
@@ -165,6 +166,7 @@ export default function StepCard({ onNext,  }: Props) {
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
+              disabled={hasCard}
               className="lg:w-1/2 w-full h-[40px] lg:h-[56px] border border-blue2  lg:text-xl text-base font-medium transition-all rounded-lg text-gray5 hover:bg-blue2 hover:text-white2"
             >
               بعدا انجام میدهم

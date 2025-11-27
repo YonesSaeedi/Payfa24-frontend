@@ -1,60 +1,32 @@
 import { useEffect, useState } from "react";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import DepositLayout from "./DepositLayout";
-import IconBank from "../../assets/icons/Deposit/IconBank";
-import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
-import IconWallet from "../../assets/icons/Deposit/IconWallet";
-import IconLink from "../../assets/icons/Deposit/IconLink";
 import DepositForm from "../../components/Deposit/DepositForm";
 import CardToCardTransfer from "../../components/Deposit/CardToCardTransfer";
 import DepositWithTxID from "../../components/Deposit/DepositWithTxID";
 import DepositDedicatedWallet from "../../components/Deposit/DepositDedicatedWallet";
 import DepositwithIdentifier from "../../components/Deposit/DepositWithIdentifier";
 import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
-import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
-import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
-import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
-import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
+import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import { CryptoItem } from "../../types/crypto";
+import IconBank from "../../assets/icons/Deposit/IconBank";
+import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
+import IconIDentifier from "../../assets/icons/Deposit/Deposit/IconIDentifier";
+import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
+import IconReceipt from "../../assets/icons/Deposit/Deposit/IconReceipt";
+import IconWallet from "../../assets/icons/Deposit/IconWallet";
+import IconLink from "../../assets/icons/Deposit/IconLink";
+import { formatPersianDigits } from "../../utils/formatPersianDigits";
+import CryptoListModal from "../../components/trade/CryptoListModal";
 
-// --- Interface ---
 interface WalletFiatData {
-  wallet?: {
-    internal?: {
-      min_deposit: string | number;
-      max_deposit: string | number;
-    };
-  };
-  list_cards?: Array<{
-    id: number;
-    card: string;
-    bank: string;
-    iban: string | null;
-  }>;
-  receipt?: {
-    list_cards?: Array<{
-      iban_number: string;
-      name_bank: string;
-      account_name: string;
-      account_number?: string;
-    }>;
-  };
-  cardToCard?: {
-    transaction: {
-      id: number;
-      amount: number;
-      date: string;
-      card: number;
-    } | null;
-    card: {
-      name: string;
-      card: string;
-      bank: string;
-      iban: string | null;
-    } | null;
-  };
+  wallet?: { internal?: { min_deposit: string | number; max_deposit: string | number } };
+  list_cards?: Array<{ id: number; card: string; bank: string; iban: string | null }>;
+  receipt?: { list_cards?: Array<any> };
+  cardToCard?: any;
 }
 
 interface DepositIdentifierResponse {
@@ -63,16 +35,16 @@ interface DepositIdentifierResponse {
   destination_iban: string;
   destination_account_number: string;
   deposit_id: number | string;
+  openCryptoModal: () => void;
 }
 
 interface DepositPageProps {
   selected?: "gateway" | "identifier" | "card" | "receipt" | "wallet" | "txid";
 }
 
-export default function DepositPage({
-  
-  selected = "gateway",
-}: DepositPageProps) {
+export default function DepositPage({ selected = "gateway" }: DepositPageProps) {
+  const [depositNetworks, setDepositNetworks] = useState<[]>([]);
+  const [depositWalletsTxid, setDepositWalletsTxid] = useState<[]>([]);
   const [started, setStarted] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>(() => {
     switch (selected) {
@@ -91,64 +63,106 @@ export default function DepositPage({
     }
   });
 
-  /////////////////simin-navigate
-   const location = useLocation(); 
-   useEffect(() => {
-  const params = new URLSearchParams(location.search);
-  const type = params.get("type"); // gateway, identifier, card, receipt, wallet, txid
-  switch (type) {
-    case "identifier":
-      setSelectedOption("Identifier");
-      break;
-    case "card":
-      setSelectedOption("CardToCard");
-      break;
-    case "receipt":
-      setSelectedOption("Bank Receipt:");
-      break;
-    case "wallet":
-      setSelectedOption("DedicatedWallet");
-      break;
-    case "txid":
-      setSelectedOption("DepositWithTxID");
-      break;
-    case "gateway":
-      setSelectedOption("closeDeal");
-      break;
-    default:
-      break;
-  }
-}, [location.search]);
-  
+  // حالت‌های مدال و لیست ارزها - فقط اینجا و یک بار!
+  const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
+  const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
 
+  const { data: generalInfo } = useGetGeneralInfo();
+
+  const location = useLocation();
   const [fiatData, setFiatData] = useState<WalletFiatData | null>(null);
-  const [loading, setLoading] = useState(true);
-  // --- برای شناسه واریز ---
-  const [identifierData, setIdentifierData] =
-    useState<DepositIdentifierResponse | null>(null);
+  const [identifierData, setIdentifierData] = useState<DepositIdentifierResponse | null>(null);
   const [isCreatingIdentifier, setIsCreatingIdentifier] = useState(false);
+  const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
+  const [selectedCrypto, setSelectedCrypto] = useState<CryptoItem | null>(null);
+  // تغییر تب از طریق URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const type = params.get("type");
+    switch (type) {
+      case "identifier":
+        setSelectedOption("Identifier");
+        break;
+      case "card":
+        setSelectedOption("CardToCard");
+        break;
+      case "receipt":
+        setSelectedOption("Bank Receipt:");
+        break;
+      case "wallet":
+        setSelectedOption("DedicatedWallet");
+        break;
+      case "txid":
+        setSelectedOption("DepositWithTxID");
+        break;
+      case "gateway":
+        setSelectedOption("closeDeal");
+        break;
+    }
+  }, [location.search]);
 
-  // --- API فقط اینجا ---
+  // لود اطلاعات فیات
   useEffect(() => {
     const fetchFiatData = async () => {
       try {
-        setLoading(true);
-        const response = await apiRequest<WalletFiatData>({
-          url: "/wallets/fiat",
-          method: "GET",
-        });
+        // setLoading(true);
+        const response = await apiRequest<WalletFiatData>({ url: "/wallets/fiat", method: "GET" });
         setFiatData(response);
       } catch (err: any) {
-        console.error("Error:", err);
         toast.error("خطا در بارگذاری اطلاعات واریز");
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
     fetchFiatData();
   }, []);
 
-  // --- ساخت شناسه واریز ---
+  // فقط یک بار لیست ارزهای کریپتو رو گرفتم و به فرزند پاس میدم
+  useEffect(() => {
+    setIsDepositCoinsLoading(true);
+    const fetchCryptoData = async () => {
+      setIsDepositCoinsLoading(true);
+      try {
+        const res = await apiRequest<any>({ url: "/wallets/crypto/deposit", method: "GET" });
+        const depositCoins = res?.coins ?? [];
+        const infoCoins = generalInfo?.cryptocurrency ?? [];
+
+        const merged = depositCoins.map((coin: any) => {
+          const info = infoCoins.find((i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase());
+          return {
+            ...info,
+            id: coin.id,
+            symbol: coin.symbol || "UNK",
+            name: info?.locale?.fa?.name || coin.symbol || "نام ناشناس",
+            icon: info?.icon || "",
+            balance: coin.balance || "0",
+            network: coin.network || [],
+            isFont: info?.isFont || false,
+            color: info?.color || "#000",
+            priceBuy: coin.price || info?.priceBuy || "0",
+          } as CryptoItem & { id: number; network: any[] };
+        });
+
+        setCryptoListData(merged);
+        setDepositNetworks(res?.networks ?? []);
+        setDepositWalletsTxid(res?.wallets_txid ?? []);
+
+        // این قسمت مهمه: اولین ارز رو به عنوان پیش‌فرض انتخاب کن
+        if (!selectedCrypto && merged.length > 0) {
+          setSelectedCrypto(merged[0] as CryptoItem);
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("خطا در بارگذاری لیست ارزها");
+      } finally {
+        setIsDepositCoinsLoading(false);
+      }
+    };
+
+    fetchCryptoData();
+  }, [generalInfo, cryptoListData.length]);
+  // تابع باز کردن مدال مشترک
+
   const handleCreateIdentifier = async (cardId: number) => {
     setIsCreatingIdentifier(true);
     try {
@@ -159,13 +173,7 @@ export default function DepositPage({
       });
 
       const data = res.deposit_id || res;
-      if (
-        typeof data === "object" &&
-        data !== null &&
-        "deposit_id" in data &&
-        data.deposit_id !== undefined &&
-        data.deposit_id !== null
-      ) {
+      if (typeof data === "object" && data !== null && "deposit_id" in data && data.deposit_id !== undefined && data.deposit_id !== null) {
         setIdentifierData(data as DepositIdentifierResponse);
         toast.success("شناسه واریز ساخته شد");
       } else {
@@ -179,6 +187,16 @@ export default function DepositPage({
     }
   };
 
+
+
+
+
+
+
+
+
+
+  
   const handleStart = () => setStarted(true);
 
   const depositFormMessages = [
@@ -192,69 +210,28 @@ export default function DepositPage({
   ];
 
   let currentAlertMessages: string[] = [];
-  if (selectedOption === "closeDeal")
-    currentAlertMessages = depositFormMessages;
-  else if (selectedOption === "Identifier")
-    currentAlertMessages = DepositWithIdentifierMessages;
+  if (selectedOption === "closeDeal") currentAlertMessages = depositFormMessages;
+  else if (selectedOption === "Identifier") currentAlertMessages = DepositWithIdentifierMessages;
 
-  // --- لودینگ ---
-  if (loading) {
-    return (
-      <HeaderLayout>
-       <DepositLayout
-          step={1}
-          started={started}
-          onStart={handleStart}
-          alertMessages={[]}
-        >
-        <div className="w-full text-center py-10"></div>
-        </DepositLayout> 
-      </HeaderLayout>
-    );
-  }
-
-  if (!fiatData) {
-    return (
-      <HeaderLayout>
-        <DepositLayout
-          step={1}
-          started={started}
-          onStart={handleStart}
-          alertMessages={[]}
-        >
-          <div>
-            {/* خطا در دریافت اطلاعات. لطفاً دوباره تلاش کنید. */}
-          </div>
-        </DepositLayout>
-      </HeaderLayout>
-    );
-  }
-
-  // --- داده‌های تضمینی ---
-  const minDeposit = Number(fiatData.wallet?.internal?.min_deposit) || 200000;
-  const maxDeposit = Number(fiatData.wallet?.internal?.max_deposit) || 25000000;
-  const bankCards = fiatData.list_cards || []; // (CreditCard[])
-  const receiptAccounts = fiatData.receipt?.list_cards || [];
-  const cardToCardInfo = fiatData.cardToCard || {
-    transaction: null,
-    card: null,
-  };
+  const minDeposit = Number(fiatData?.wallet?.internal?.min_deposit ?? 200000);
+  const maxDeposit = Number(fiatData?.wallet?.internal?.max_deposit ?? 25000000);
+  const bankCards = fiatData?.list_cards ?? [];
+  const receiptAccounts = fiatData?.receipt?.list_cards ?? [];
+  const cardToCardInfo = fiatData?.cardToCard ?? { transaction: null, card: null };
 
   const rightOptions = [
     {
       id: "closeDeal",
       Icon: <IconBank />,
-      Title: "واریز با درگاه پرداخت",
-      description: `واریز حداکثر تا ${formatPersianDigits(
-        (maxDeposit / 1_000_000).toString()
-      )} میلیون تومان`,
+      Title: "واریز تومانی با درگاه پرداخت",
+      description: `واریز حداکثر تا ${formatPersianDigits((maxDeposit / 1_000_000).toString())} میلیون تومان`,
       button: "پرداخت در لحظه",
       IconMore: <IconArrowRight />,
     },
     {
       id: "Identifier",
       Icon: <IconIDentifier />,
-      Title: "واریز با شناسه",
+      Title: "واریز تومانی با شناسه",
       description: "واریز وجه به صورت نامحدود",
       button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
       IconMore: <IconArrowRight />,
@@ -262,7 +239,7 @@ export default function DepositPage({
     {
       id: "CardToCard",
       Icon: <IconConvertCard />,
-      Title: "واریز کارت به کارت",
+      Title: "واریز تومانی با کارت به کارت",
       description: `واریز تا سقف ${formatPersianDigits(15)} میلیون تومان`,
       button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
       IconMore: <IconArrowRight />,
@@ -270,7 +247,7 @@ export default function DepositPage({
     {
       id: "Bank Receipt:",
       Icon: <IconReceipt />,
-      Title: "فیش بانکی",
+      Title: " واریز تومانی با فیش بانکی",
       description: "واریز وجه به صورت نامحدود",
       button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
       IconMore: <IconArrowRight />,
@@ -278,7 +255,7 @@ export default function DepositPage({
     {
       id: "DedicatedWallet",
       Icon: <IconWallet />,
-      Title: "واریز با ولت اختصاصی",
+      Title: "واریز رمز ارز با ولت اختصاصی",
       description: "بدون نیاز به TxID , واریز خودکار و سریع",
       button: "",
       IconMore: <IconArrowRight />,
@@ -286,51 +263,55 @@ export default function DepositPage({
     {
       id: "DepositWithTxID",
       Icon: <IconLink />,
-      Title: "واریز با TxID",
+      Title: "واریز  رمز ارز با TxID",
       description: "برای واریز از صرافی با کیف پول دیگر",
       button: "",
       IconMore: <IconArrowRight />,
     },
   ];
 
+  const openCryptoModal = () => {
+    setIsCryptoListModalOpen(true);
+  };
+  const handleCryptoSelect = (crypto: CryptoItem) => {
+    console.log("ارز انتخاب شد:", crypto);
+    setSelectedCrypto(crypto);
+    setIsCryptoListModalOpen(false);
+  };
   const renderStep = () => {
     switch (selectedOption) {
       case "closeDeal":
-        return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} />;
+        return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} isDataLoaded={!!fiatData} />;
       case "Identifier":
-        return (
-          <DepositwithIdentifier
-            cards={bankCards}
-            identifierData={identifierData}
-            onCreateIdentifier={handleCreateIdentifier}
-            isCreating={isCreatingIdentifier}
-          />
-        );
+        return <DepositwithIdentifier cards={bankCards} identifierData={identifierData} onCreateIdentifier={handleCreateIdentifier} isCreating={isCreatingIdentifier} />;
       case "CardToCard":
-        return (
-          <CardToCardTransfer
-            cards={bankCards} 
-            cardToCardInfo={cardToCardInfo} 
-            minDeposit={minDeposit} 
-            maxDeposit={maxDeposit}
-          />
-        );
+        return <CardToCardTransfer cards={bankCards} cardToCardInfo={cardToCardInfo} minDeposit={minDeposit} maxDeposit={maxDeposit} />;
       case "Bank Receipt:":
         return (
-          <DepositBankReceipt
-            bankCards={bankCards}
-            receiptAccounts={receiptAccounts}
-            onNext={() => {
-              setIdentifierData(null);
-            }}
-            onFileChange={() => {}}
-            initialPreviewUrl={null}
-          />
+          <DepositBankReceipt bankCards={bankCards} receiptAccounts={receiptAccounts} onNext={() => setIdentifierData(null)} onFileChange={() => {}} initialPreviewUrl={null} />
         );
       case "DedicatedWallet":
-        return <DepositDedicatedWallet />;
+        return (
+          <DepositDedicatedWallet
+            openCryptoModal={openCryptoModal}
+            selectedCrypto={selectedCrypto}
+            cryptoDepositData={cryptoListData}
+            networks={depositNetworks}
+            walletsTxid={depositWalletsTxid}
+            isDepositCoinsLoading={isDepositCoinsLoading}
+          />
+        );
       case "DepositWithTxID":
-        return <DepositWithTxID />;
+        return (
+          <DepositWithTxID
+            openCryptoModal={openCryptoModal}
+            selectedCrypto={selectedCrypto}
+            cryptoDepositData={cryptoListData}
+            networks={depositNetworks}
+            walletsTxid={depositWalletsTxid}
+            isDepositCoinsLoading={isDepositCoinsLoading}
+          />
+        );
       default:
         return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} />;
     }
@@ -338,104 +319,76 @@ export default function DepositPage({
 
   return (
     <HeaderLayout>
-      <DepositLayout
-        step={1}
-        started={started}
-        onStart={handleStart}
-        alertMessages={currentAlertMessages}
-      >
+      <DepositLayout step={1} started={started} onStart={handleStart} alertMessages={currentAlertMessages}>
         {/* بخش راست */}
-        <div
-          className="w-full overflow-y-auto h-full lg:block hidden"
-          dir="rtl"
-        >
-          <p className="text-base text-black0 mb-4 font-medium">واریز تومان</p>
+        <div className="w-full overflow-y-auto h-full lg:block hidden" dir="rtl">
+          <p className="text-base text-black0 mb-4 font-medium">واریز تومانی</p>
           {rightOptions.slice(0, 4).map((option) => (
-            <div
-              key={option.id}
-              className="mt-4 cursor-pointer"
-              onClick={() => setSelectedOption(option.id)}
-            >
+            <div key={option.id} className="mt-4 cursor-pointer" onClick={() => setSelectedOption(option.id)}>
               <div
                 className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200  ${
-                  selectedOption === option.id
-                    ? "border border-blue2"
-                    : "border border-gray2"
+                  selectedOption === option.id ? "border border-blue2" : "border border-gray2"
                 }`}
               >
                 <div>
                   <div className="flex items-center gap-2">
                     <div className="bg-blue14 p-3 rounded-lg">
-                      <span className="icon-wrapper w-7 h-7 text-blue2">
-                        {option.Icon}
-                      </span>
+                      <span className="icon-wrapper w-7 h-7 text-blue2">{option.Icon}</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <h2 className="text-lg font-medium text-black0">
-                        {option.Title}
-                      </h2>
+                      <h2 className="text-lg font-medium text-black0">{option.Title}</h2>
                       <p className="text-sm text-gray5">{option.description}</p>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  {option.button && (
-                    <button className="text-xs font-normal border text-gray5 border-gray26 px-2 py-[6px] rounded-lg">
-                      {option.button}
-                    </button>
-                  )}
-                  <span className="icon-wrapper w-5 h-5 text-gray5">
-                    {option.IconMore}
-                  </span>
+                  {option.button && <button className="text-xs font-normal border text-gray5 border-gray26 px-2 py-[6px] rounded-lg">{option.button}</button>}
+                  <span className="icon-wrapper w-5 h-5 text-gray5">{option.IconMore}</span>
                 </div>
               </div>
             </div>
           ))}
 
-          <p className="mt-8 mb-4 text-base text-black0 font-medium">
-            واریز ارز
-          </p>
+          <p className="mt-8 mb-4 text-base text-black0 font-medium">واریز رمز ارز</p>
           {rightOptions.slice(4, 6).map((option) => (
-            <div
-              key={option.id}
-              className="mt-4 cursor-pointer"
-              onClick={() => setSelectedOption(option.id)}
-            >
+            <div key={option.id} className="mt-4 cursor-pointer" onClick={() => setSelectedOption(option.id)}>
               <div
                 className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${
-                  selectedOption === option.id
-                   ? "border border-blue2"
-                    : "border border-gray2"
+                  selectedOption === option.id ? "border border-blue2" : "border border-gray2"
                 }`}
               >
                 <div>
                   <div className="flex items-center gap-2">
                     <div className="bg-blue14 p-3 rounded-lg">
-                      <span className="icon-wrapper w-7 h-7 text-blue2">
-                        {option.Icon}
-                      </span>
+                      <span className="icon-wrapper w-7 h-7 text-blue2">{option.Icon}</span>
                     </div>
                     <div>
-                      <h2 className="text-lg font-medium text-black0">
-                        {option.Title}
-                      </h2>
+                      <h2 className="text-lg font-medium text-black0">{option.Title}</h2>
                       <p className="text-sm text-gray5">{option.description}</p>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="icon-wrapper w-5 h-5 text-gray5">
-                    {option.IconMore}
-                  </span>
+                  <span className="icon-wrapper w-5 h-5 text-gray5">{option.IconMore}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
-
         {/* بخش چپ */}
         <div className="w-full">{renderStep()}</div>
       </DepositLayout>
+
+      <div dir="rtl">
+        {isCryptoListModalOpen && (
+          <CryptoListModal
+            setIsCryptoListModalOpen={setIsCryptoListModalOpen}
+            cryptoListData={cryptoListData}
+            setCurrentCryptoCurrency={handleCryptoSelect}
+            isCryptoListLoading={isDepositCoinsLoading}
+          />
+        )}
+      </div>
     </HeaderLayout>
   );
 }

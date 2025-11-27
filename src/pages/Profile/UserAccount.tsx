@@ -42,7 +42,6 @@ interface ApiResponse {
     level_account?: number;
     level_kyc?: "none" | "basic" | "advanced";
     national_code?: string;
-    
   };
 }
 
@@ -151,7 +150,7 @@ export default function UserAccount() {
       case "level":
         return userData.verification_level > 0 ? `سطح ${toPersianDigits(userData.verification_level)}` : "احراز هویت نشده";
       case "join_date": {
-        const formattedDate = formatPersianDate(userData.join_date) ;
+        const formattedDate = formatPersianDate(userData.join_date);
         return formattedDate !== "---" ? toPersianDigits(formattedDate) : null;
       }
       case "mobile":
@@ -169,7 +168,7 @@ export default function UserAccount() {
   let kycContent;
   if (userKycLevel === "none") {
     kycContent = (
-      <form className="lg:w-[498px] w-full border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 dark:text-white justify-center sm:justify-end">
+      <form className="lg:w-[498px] w-full border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-5 dark:text-white justify-center sm:justify-end">
         <h1 className="text-right mb-5 text-blue2">سطح ۱ : احراز هویت پایه</h1>
         <div className="flex flex-row items-center justify-end">
           <span className="mr-2 text-black1">ثبت ایمیل</span>
@@ -197,7 +196,7 @@ export default function UserAccount() {
           </ul>
         </div>
         <Link to={"/kyc-basic"} className="w-full">
-          <button className="bg-blue2 flex items-center justify-center w-full mt-5 h-[48px] rounded-lg text-white2 font-bold"> شروع احراز هویت</button>
+          <button className="bg-blue2 flex items-center justify-center w-full mt-5 py-2 rounded-lg text-white2 font-bold text-base"> شروع احراز هویت</button>
         </Link>
       </form>
     );
@@ -235,7 +234,7 @@ export default function UserAccount() {
       <div dir="rtl" className="flex flex-col lg:w-[498px] w-full border border-gray19 px-5 py-4 rounded-lg">
         <div className="flex justify-between w-full items-center">
           <div>
-            <span className="text-base font-medium text-blue2">احراز هویت کامل انجام شد  </span>
+            <span className="text-base font-medium text-blue2">احراز هویت کامل انجام شد </span>
           </div>
           <div className="bg-green10 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-lg items-center justify-center">
             <span className="lg:text-sm text-xs font-medium">احراز شده</span>
@@ -321,7 +320,31 @@ export default function UserAccount() {
             </div>
 
             {/* بخش KYC */}
-            {kycContent}
+            {/* بخش KYC */}
+            {loading ? (
+              <div dir="rtl" className="lg:w-[498px] w-full border border-gray12  rounded-md p-6 space-y-3 ">
+                    {/* <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-10/12"></div> */}
+                <div className="h-7 skeleton-bg rounded-md w-64"></div>
+                <div dir="ltr" className="space-y-5">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="flex justify-end items-center gap-3">
+                      <div className="skeleton-bg rounded w-36 h-5"></div>
+                      <div className="skeleton-bg w-7 h-7 rounded"></div>
+                    </div>
+                  ))}
+                </div>
+                <div className="pt-2 space-y-2">
+                  <div className="h-5 skeleton-bg rounded w-28"></div>
+                  <div className="space-y-2">
+                    <div className="h-5 skeleton-bg rounded w-48"></div>
+                    <div className="h-5 skeleton-bg rounded w-56"></div>
+                  </div>
+                </div>
+                <div className="h-8 skeleton-bg rounded-lg mt-6"></div>
+              </div>
+            ) : (
+              kycContent
+            )}
           </div>
         </div>
       </div>
