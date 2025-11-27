@@ -103,8 +103,14 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
         {userData?.user.name || ""} {userData?.user.family || ""}
       </p>
       <p className="text-xs text-gray-500 pt-1">
-        سطح کاربری {userData?.user.level_account || "—"}
-      </p>
+  سطح کاربری{" "}
+  {userData?.user.level_kyc === "advanced"
+    ? "پیشرفته"
+    : userData?.user.level_kyc === "basic"
+    ? "پایه"
+    : "—"}
+</p>
+
     </>
   )}
 </div>
