@@ -27,15 +27,22 @@ interface WalletFiatData {
   list_cards?: Array<{ id: number; card: string; bank: string; iban: string | null }>;
   receipt?: { list_cards?: Array<any> };
   cardToCard?: any;
+  list_deposit_id?: Array<{ deposit_id: string; id_card: number }>;
+  deposit_id?: {
+    destination_bank: string;
+    destination_owner_name: string;
+    destination_iban: string;
+    destination_account_number: string;
+    deposit_id: number | string;
+  };
 }
-
 interface DepositIdentifierResponse {
   destination_bank: string;
   destination_owner_name: string;
   destination_iban: string;
   destination_account_number: string;
   deposit_id: number | string;
-  openCryptoModal: () => void;
+  list_deposit_id?: Array<{ deposit_id: string; id_card: number }>;
 }
 
 interface DepositPageProps {
@@ -101,23 +108,29 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   }, [location.search]);
 
-  // لود اطلاعات فیات
+  // لود اطلاعات fiat
   useEffect(() => {
     const fetchFiatData = async () => {
       try {
-        // setLoading(true);
-        const response = await apiRequest<WalletFiatData>({ url: "/wallets/fiat", method: "GET" });
+        const response = await apiRequest<WalletFiatData>({
+          url: "/wallets/fiat",
+          method: "GET",
+        });
         setFiatData(response);
+
+        if (response.deposit_id) {
+          setIdentifierData({
+            ...response.deposit_id,
+            list_deposit_id: response.list_deposit_id,
+          });
+        }
       } catch (err: any) {
         toast.error("خطا در بارگذاری اطلاعات واریز");
-      } finally {
-        // setLoading(false);
       }
     };
     fetchFiatData();
   }, []);
 
-  // فقط یک بار لیست ارزهای کریپتو رو گرفتم و به فرزند پاس میدم
   useEffect(() => {
     setIsDepositCoinsLoading(true);
     const fetchCryptoData = async () => {
@@ -178,7 +191,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
         toast.success("شناسه واریز ساخته شد");
       } else {
         setIdentifierData(null);
-        toast.error("خطا در ساخت شناسه");
+        toast.success("شناسه واریز ساخته شد");
       }
     } catch (err: any) {
       toast.error(err.response?.data?.msg || "قبلاً شناسه ساخته شده");
@@ -187,16 +200,6 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   };
 
-
-
-
-
-
-
-
-
-
-  
   const handleStart = () => setStarted(true);
 
   const depositFormMessages = [
@@ -336,7 +339,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
                       <span className="icon-wrapper w-7 h-7 text-blue2">{option.Icon}</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <h2 className="text-lg font-medium text-black0">{option.Title}</h2>
+                      <h2 className="lg:text-base xl:text-lg font-medium text-black0">{option.Title}</h2>
                       <p className="text-sm text-gray5">{option.description}</p>
                     </div>
                   </div>

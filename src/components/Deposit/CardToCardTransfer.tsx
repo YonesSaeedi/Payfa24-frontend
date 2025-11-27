@@ -246,8 +246,8 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
                               value: card.id.toString(),
                               label: (
                                 <div className="flex items-center justify-between w-full py-1 rounded-md">
-                                  <span className="text-sm text-black0">{card.bank}</span>
-                                  <span className="text-sm text-black0">{formatPersianCardNumber(card.card)}</span>
+                                  <span className="lg:text-sm text-xs text-black0">{card.bank}</span>
+                                  <span className="lg:text-sm text-xs text-black0">{formatPersianCardNumber(card.card)}</span>
                                 </div>
                               ),
                               icon: <img src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"} alt={card.bank} className="w-6 h-6 object-contain" />,
