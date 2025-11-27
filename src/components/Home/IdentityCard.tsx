@@ -113,13 +113,8 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
 
   {/* آیتم اول */}
 <div className="flex justify-between items-center gap-2 p-3 border border-gray21 rounded-lg shadow-sm w-full bg-gray27">
-  <span className="flex items-center gap-1 text-sm text-black1">
-    <span className="w-[16px] h-[16px] flex items-center justify-center">
-      {dailyWithdrawalLimit === 0
-        ? <span className="w-[6px] h-[6px] bg-black1 rounded-sm block" />
-        : <IdentyfyCardIcon />
-      }
-    </span>
+  <span className="flex items-center gap-1 text-xs text-black1">
+   
     سقف برداشت روزانه:
   </span>
 
@@ -132,17 +127,11 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
   {/* آیتم دوم */}
 <div className="flex justify-between items-center gap-2 p-3 border border-gray21 rounded-lg shadow-sm w-full bg-gray27">
   <span className="flex items-center gap-1 text-sm text-black1">
-    <span className="w-[14px] h-[14px] flex items-center justify-center">
-      {dailyWithdrawalUsage === 0 ? (
-        <span className="w-[6px] h-[6px] bg-black1 rounded-sm block" aria-hidden />
-      ) : (
-        <IdentyfyCardIcon />
-      )}
-    </span>
+   
     مقدار روزانه برداشت شده:
   </span>
 
-    <span className="whitespace-nowrap text-black1 text-sm">
+    <span className="whitespace-nowrap text-black1 text-xs">
     {formatPersianNumber(dailyWithdrawalUsage.toLocaleString())} تومان
      </span>
      </div>
