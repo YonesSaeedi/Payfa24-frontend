@@ -90,7 +90,7 @@ export default function IdentificationDocument({ handleUploadImageFiles, setStep
           onClick={handleProceed}
           type="submit"
           className={`mt-1 text-lg font-bold mb-6 w-full lg:h-[56px] h-10 rounded-lg border border-transparent transition duration-300 ease-in
-          ${previewImage ? "hover:bg-transparent hover:border-blue1 hover:text-blue1 text-white2 bg-blue1" : "bg-gray2"}`}
+          ${previewImage ? "hover:bg-blue1 text-white2 bg-blue2" : "bg-blue2 text-white2 opacity-60 cursor-not-allowed"}`}
           disabled={!previewImage}
         >
           تأیید

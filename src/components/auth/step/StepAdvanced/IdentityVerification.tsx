@@ -121,10 +121,10 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
           className={`relative mt-1 text-lg font-bold mb-6 w-full lg:h-[56px] h-10 rounded-lg border border-transparent transition duration-300 ease-in overflow-hidden
     ${
       uploadProgress !== null
-        ? "bg-gray2 cursor-not-allowed"
+        ? "bg-blue2  cursor-not-allowed"
         : previewImage
-        ? "hover:bg-transparent hover:border-blue1 hover:text-blue1 text-white2 bg-blue1"
-        : "bg-gray2 cursor-not-allowed"
+        ? "bg-blue2 text-white2 hover:bg-blue1"
+        : "bg-blue2 text-white2 opacity-60 cursor-not-allowed"
     }`}
         >
           {uploadProgress !== null && <span className="absolute left-0 top-0 bottom-0 bg-green-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />}

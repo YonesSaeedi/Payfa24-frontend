@@ -67,17 +67,8 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
       setCurrentIdentifier(null);
     }
   }, [selectedCardId, identifierData]);
-  console.log("🔍 identifierData در فرزند:", identifierData);
-  console.log("🔍 list_deposit_id:", identifierData?.list_deposit_id);
-  console.log("🔍 کارت انتخاب شده:", selectedCardId);
-  console.log(
-    "🔍 تطابق کارت با list_deposit_id:",
-    identifierData?.list_deposit_id?.map((item) => ({
-      id_card: item.id_card,
-      selectedCardId,
-      isMatch: item.id_card === selectedCardId,
-    }))
-  );
+  
+  
   const handleCreate = async () => {
     if (!selectedCardId) {
       toast.error("لطفاً کارت انتخاب کنید");
