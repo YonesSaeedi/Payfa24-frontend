@@ -52,6 +52,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState<number>(0)
   const [digitalIDOrder, setDigitalIDOrder] = useState<number | null>(null)
   const [transactionSuccessId, setTransactionSuccessId] = useState<number>(0)
+  const [buyVoucherCode, setBuyVoucherCode] = useState('')
   const { currentCryptocurrency, setCurrentCryptocurrency } = useOutletContext<{ currentCryptocurrency: CryptoItem | null; setCurrentCryptocurrency: React.Dispatch<React.SetStateAction<CryptoItem | null>>; }>();
   const [searchParams] = useSearchParams()
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
@@ -280,6 +281,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         try {
           setIsSubmitting(true)
           const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
+          setBuyVoucherCode(response?.code)
           setTransactionSuccessId(response?.id_order)
           // setResendCodeTimeLeft(120)
           // setIsOtpModalOpen(true)
@@ -453,6 +455,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
             />}
           {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
           {isTradeSuccessModalOpen && <TradeSuccessModal
+            buyVoucherCode={buyVoucherCode}
             setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen}
             successMsg={`${isSell ? 'فروش ' : 'خرید '}با موفقیت انجام شد.`}
             linkTo={`${ROUTES.TRANSACTION.ORDER_HISTORY}?id=${transactionSuccessId}`}
