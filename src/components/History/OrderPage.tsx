@@ -11,6 +11,8 @@ import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { CryptoDataMap, UnifiedCryptoItem } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import { ListDigitalCoin } from "../../constants/ListdigitalCoins";
+import { useLocation } from "react-router-dom";
+
 import {
   MergedOrderHistory,
   statusOrderOptions,
@@ -54,6 +56,10 @@ const OrderPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const { data: generalData } = useGetGeneralInfo();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const location = useLocation();
+ const query = new URLSearchParams(location.search);
+  const orderIdFromUrl = query.get("id");
+
 
   const handleToggle = (id: string) => setOpenDropdown((prev) => (prev === id ? null : id));
 
@@ -130,6 +136,21 @@ const OrderPage: React.FC = () => {
       fullData: order,
     });
   };
+  useEffect(() => {
+  if (!orderIdFromUrl || !responseData.length) return;
+
+  const order = responseData.find((item) => String(item.id) === String(orderIdFromUrl));
+
+  if (order) {
+    setSelectedTx({
+      id: order.id.toString(),
+      source: "order",
+      coin: { symbol: order.symbol },
+      fullData: order,
+    });
+  }
+}, [orderIdFromUrl, responseData]);
+
 
   const convertDigitsToPersian = (str: string) => {
     return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
