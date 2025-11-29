@@ -47,7 +47,7 @@ const TransactionMainModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose })
             </div>
             <div className="flex flex-col text-right">
               <span className="text-black1 text-base font-medium"> تراکنش های خرید و فروش</span>
-              <span className="text-sm text-gray-500 pt-2">تراکنش تومانی به کارت بانکی</span>
+              <span className="text-sm text-gray-500 pt-2">تاریخچه سفارشات</span>
             </div>
           </div>
         </Link>
@@ -70,7 +70,7 @@ const TransactionMainModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose })
             </div>
             <div className="flex flex-col text-right">
               <span className="text-black1 text-base font-medium"> تراکنش های تومانی</span>
-              <span className="text-sm text-gray-500 pt-2">تراکنش تومانی به کارت بانکی</span>
+              <span className="text-sm text-gray-500 pt-2">واریز و برداشت به کیف پول تومانی</span>
             </div>
           </div>
         </Link>
@@ -93,7 +93,7 @@ const TransactionMainModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose })
             </div>
             <div className="flex flex-col text-right">
               <span className="text-black1 text-base font-medium"> تراکنش های رمز ارز</span>
-              <span className="text-sm text-gray-500 pt-2">تراکنش از کیف پول از طریق شبکه بلاکچین</span>
+              <span className="text-sm text-gray-500 pt-2">واریز و برداشت به کیف پول های رمزارزی</span>
             </div>
           </div>
         </Link>

@@ -18,7 +18,7 @@ import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
 import { useNavigate } from "react-router-dom";
 import ReceiptTextIcon from "../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
-import Logout from  "../../assets/images/logout.png";
+import ModalLogout from "./ModalLogout";
 
 type MobileMenuProps = {
   open: boolean;
@@ -426,48 +426,12 @@ const handleLogoutConfirm = async () => {
       </div>
 
      {isLogoutModalOpen && (
-  <>
-    {/* بک‌گراند تار */}
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 z-45"
-      onClick={() => setIsLogoutModalOpen(false)}
-    ></div>
+  <ModalLogout
+  open={isLogoutModalOpen}
+  onClose={() => setIsLogoutModalOpen(false)}
+  onConfirm={handleLogoutConfirm}
+/>
 
-    {/* خود مودال */}
-    <div className="fixed inset-0 flex items-center justify-center z-50" onClick={() => setIsLogoutModalOpen(false)}>
-      <div
-        className="lg:w-4/12 w-11/12 rounded-lg lg:p-10 p-4 relative bg-white dark:bg-gray-800"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* تصویر خروج */}
-        <div className="text-center flex flex-col items-center gap-4">
-          <img src={Logout} alt="Logout" className="w-20 h-20"/>
-          <h1 className="lg:text-2xl text-lg text-black1 dark:text-white font-medium">
-            خروج از حساب کاربری
-          </h1>
-          <p className="lg:text-lg text-sm text-gray-500 dark:text-gray-300 text-center">
-            آیا از خروج از حساب کاربری خود اطمینان دارید. توجه داشته باشید که اطلاعات شما نزد ما محفوظ می‌ماند
-          </p>
-        </div>
-
-        {/* دکمه‌ها */}
-        <div className="flex gap-2 mt-12 items-center justify-center">
-          <button
-            onClick={() => setIsLogoutModalOpen(false)}
-            className="w-1/2 lg:py-3 py-2 border border-blue2 rounded-lg text-blue2 font-medium"
-          >
-            انصراف
-          </button>
-          <button
-            onClick={handleLogoutConfirm}
-            className="w-1/2 lg:py-3 py-2 font-bold bg-blue2 text-white rounded-lg"
-          >
-            خروج
-          </button>
-        </div>
-      </div>
-    </div>
-  </>
 )}
 
 
