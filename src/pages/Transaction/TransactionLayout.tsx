@@ -1,5 +1,5 @@
 import { useState } from "react";
-import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
+// import IconFilterTable from "../../assets/icons/transaction-history/IconFilterTable";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import HeaderLayout from "../../layouts/HeaderLayout";
 import { Outlet } from "react-router";
@@ -33,9 +33,9 @@ const TransactionLayout = () => {
           <div className="container-style flex flex-col lg:gap-12">
             <div className="mt-7 lg:mt-4 flex flex-row-reverse items-center justify-between px-4">
               <BreadcrumbNavigation />
-              <span className="w-6 h-6 icon-wrapper text-gray12 lg:hidden cursor-pointer" onClick={() => setIsFilterModalOpen(true)}>
+              {/* <span className="w-6 h-6 icon-wrapper text-gray12 lg:hidden cursor-pointer" onClick={() => setIsFilterModalOpen(true)}>
                 <IconFilterTable />
-              </span>
+              </span> */}
             </div>
             <Outlet context={{ selectedStatus, selectedFilterFor, selectedFilterType, page, setPage }} />
           </div>

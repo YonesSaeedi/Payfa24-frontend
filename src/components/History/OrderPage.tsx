@@ -8,7 +8,7 @@ import TransactionHistoryDark from "../../assets/images/Transaction/Transaction 
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
-import { CryptoDataMap } from "../../types/crypto";
+import { CryptoDataMap, UnifiedCryptoItem } from "../../types/crypto";
 import FilterDropdown from "./FilterDropdown";
 import { ListDigitalCoin } from "../../constants/ListdigitalCoins";
 import {
@@ -57,6 +57,7 @@ const OrderPage: React.FC = () => {
 
   const handleToggle = (id: string) => setOpenDropdown((prev) => (prev === id ? null : id));
 
+  // مپ اطلاعات عمومی ارزها
   const mappedGeneralData: CryptoDataMap = useMemo(() => {
     return (
       generalData?.cryptocurrency?.reduce((acc, item) => {
@@ -96,37 +97,23 @@ const OrderPage: React.FC = () => {
     if (!responseData.length) return [];
 
     return responseData.map((tx) => {
+  
       const localCoin = ListDigitalCoin.find(
         (item) => item.symbol.toLowerCase() === (tx.symbol?.toLowerCase() || "")
       );
 
-      if (localCoin) {
-        return {
-          ...tx,
-          color: localCoin.colorCode || null,
-          isFont: false,
-          icon: localCoin.icon || tx.icon || null,
-          locale: localCoin.locale || null,
-          name:
-            localCoin.locale?.fa?.name ||
-            localCoin.locale?.en?.name ||
-            tx.name ||
-            tx.symbol ||
-            "",
-        };
-      }
+ const coinSource = (localCoin || mappedGeneralData[tx.symbol || ""]) as UnifiedCryptoItem;
 
-      const coinData = mappedGeneralData[tx.symbol || ""] || null;
 
       return {
         ...tx,
-        color: coinData?.color || null,
-        isFont: coinData?.isFont || false,
-        icon: coinData?.icon || tx.icon || null,
-        locale: coinData?.locale || null,
+        color: coinSource?.colorCode || coinSource?.color || null,
+        isFont: coinSource?.isFont ?? false,
+        icon: coinSource?.icon || tx.icon || null,
+        locale: coinSource?.locale || null,
         name:
-          coinData?.locale?.fa?.name ||
-          coinData?.locale?.en?.name ||
+          coinSource?.locale?.fa?.name ||
+          coinSource?.locale?.en?.name ||
           tx.name ||
           tx.symbol ||
           "",
@@ -134,9 +121,7 @@ const OrderPage: React.FC = () => {
     });
   }, [responseData, mappedGeneralData]);
 
-  /** -----------------------------
-   *  🔥 استانداردترین هندل باز کردن مودال
-   *  ----------------------------- */
+ 
   const handleOpenModal = (order: any) => {
     setSelectedTx({
       id: order.id.toString(),
@@ -225,9 +210,6 @@ const OrderPage: React.FC = () => {
                           src={tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : "/images/fallback-coin.png"}
                           className="w-full h-full"
                           alt={tx.symbol}
-                          onError={(e) => {
-                            e.currentTarget.src = "/images/fallback-coin.png";
-                          }}
                         />
                       )}
                     </span>
@@ -299,9 +281,7 @@ const OrderPage: React.FC = () => {
         {/* نسخه موبایل */}
         <div className="block lg:hidden space-y-4 lg:mt-4">
           {mergedTransactions.length > 0 ? (
-            mergedTransactions.map((
-              tx
-            ) => (
+            mergedTransactions.map((tx) => (
               <div
                 key={tx.id}
                 className="border rounded-xl p-4 border-gray21"
@@ -408,7 +388,7 @@ const OrderPage: React.FC = () => {
         />
       )}
 
-      {/* 🔥 مودال */}
+      {/* مودال */}
       {selectedTx && (
         <TransactionModalOrder
           key={selectedTx.id}

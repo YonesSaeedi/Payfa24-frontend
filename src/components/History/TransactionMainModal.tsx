@@ -31,6 +31,29 @@ const TransactionMainModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose })
         </div>
 
         <Link
+        to={ROUTES.TRANSACTION.ORDER_HISTORY}
+          className="flex items-center justify-between rounded-xl p-2 mb-4 hover:bg-gray27 cursor-pointer"
+        >
+          <div className="flex items-center justify-center">
+            <span className="w-6 h-6 icon-wrapper mr-2 hover:text-blue2 "><IconArrowLeft /></span>
+            <span className="hidden lg:block text-gray17 border border-gray21 rounded-[8px] px-2 py-2 text-sm bg-gray27 mr-10 hover:border-blue2 hover:text-blue2 cursor-pointer">
+              تراکنش در لحظه
+            </span> 
+          </div>
+
+          <div className="flex flex-row-reverse">
+            <div className="w-[52px] h-[52px] ml-2 bg-blue14 rounded-[8px] flex items-center justify-center">
+              <span className="w-8 h-8 icon-wrapper text-blue2"><WalletMinesIcon /></span>
+            </div>
+            <div className="flex flex-col text-right">
+              <span className="text-black1 text-base font-medium"> تراکنش های خرید و فروش</span>
+              <span className="text-sm text-gray-500 pt-2">تراکنش تومانی به کارت بانکی</span>
+            </div>
+          </div>
+        </Link>
+
+   
+<Link
         to={ROUTES.TRANSACTION.TOMAN_HISTORY}
           className="flex items-center justify-between rounded-xl p-2 mb-4 hover:bg-gray27 cursor-pointer"
         >
@@ -52,7 +75,7 @@ const TransactionMainModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose })
           </div>
         </Link>
 
-   
+
         <Link
           to={ROUTES.TRANSACTION.CRYPTO_HISTORY}
           className="flex items-center justify-between rounded-[8px] p-2 hover:bg-gray27 cursor-pointer"

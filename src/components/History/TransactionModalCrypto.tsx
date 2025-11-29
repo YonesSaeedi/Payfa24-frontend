@@ -61,7 +61,6 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
         const res = await apiRequest<{ transaction: CryptoDetail }>({ url, method: "GET" });
 
         if (res.transaction) {
-          // اصلاح شده: همیشه اولویت با coinData است
           const mergedDetail: CryptoDetail = {
             ...res.transaction,
             source: "crypto",
@@ -129,20 +128,26 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
       >
         <div className="flex justify-between items-center pb-4 mb-4">
           <h2 className="font-semibold text-lg">جزئیات تراکنش</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-blue2 transition w-7"
-          >
+          <button onClick={onClose} className="text-gray-500 hover:text-blue2 transition w-7">
             <IconClose />
           </button>
         </div>
 
         <div className="min-h-[200px]">
           {loading ? (
-            <div className="flex flex-col items-center gap-4 animate-pulse">
-              <div className="w-20 h-20 rounded-full skeleton-bg mx-auto" />
-              <div className="h-6 w-32 rounded-md skeleton-bg mx-auto" />
-              <div className="h-4 w-20 rounded-md skeleton-bg mx-auto" />
+            <div className="flex flex-col items-center gap-6 animate-pulse">
+              <div className="w-24 h-24 rounded-full skeleton-bg" />
+              <div className="h-6 w-36 rounded-md skeleton-bg" />
+              <div className="h-4 w-20 rounded-md skeleton-bg" />
+
+              <div className="w-full mt-6 flex flex-col gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="flex justify-between items-center">
+                    <div className="w-28 h-4 skeleton-bg rounded-md" />
+                    <div className="w-24 h-4 skeleton-bg rounded-md" />
+                  </div>
+                ))}
+              </div>
             </div>
           ) : detail ? (
             <>
@@ -152,91 +157,24 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
                   {detail.faName || detail.symbol || "ارز نامشخص"}
                 </h3>
                 {detail.symbol && (
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {detail.symbol}
-                  </span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{detail.symbol}</span>
                 )}
               </div>
 
               <div className="grid grid-cols-1 gap-6 text-sm">
-                {detail.status && (
-                  <DetailRow
-                    label="وضعیت"
-                    value={
-                      <StatusBadge
-                        text={transactionStatusMap[detail.status] || detail.status}
-                      />
-                    }
-                  />
-                )}
-                {detail.id && (
-                  <DetailRow
-                    label="شناسه تراکنش"
-                    value={convertDigitsToPersian(`${detail.id}`)}
-                  />
-                )}
-                {detail.DateTime && (
-                  <DetailRow
-                    label="تاریخ تراکنش"
-                    value={convertDigitsToPersian(detail.DateTime)}
-                  />
-                )}
-                {detail.type && (
-                  <DetailRow
-                    label="نوع"
-                    value={transactionTypeMap[detail.type] || detail.type}
-                  />
-                )}
-                {detail.amount && (
-                  <DetailRow
-                    label="مقدار"
-                    value={detail.amount}
-                    symbol={detail.symbol}
-                  />
-                )}
-                {detail.amount_toman && (
-                  <DetailRow
-                    label="مبلغ به تومان"
-                    value={formatPersianDigits(detail.amount_toman)}
-                    symbol="تومان"
-                  />
-                )}
-                {detail.fee && (
-                  <DetailRow
-                    label="کارمزد"
-                    value={formatPersianDigits(detail.fee)}
-                    symbol={detail.symbol}
-                  />
-                )}
-                {detail.withdrawFee && (
-                  <DetailRow
-                    label="کارمزد برداشت"
-                    value={detail.withdrawFee}
-                    symbol={detail.symbol}
-                  />
-                )}
-                {detail.stock && (
-                  <DetailRow
-                    label="موجودی پس از تراکنش"
-                    value={formatPersianDigits(detail.stock)}
-                    symbol={detail.symbol}
-                  />
-                )}
-                {detail.description && (
-                  <DetailRow label="توضیحات" value={detail.description} />
-                )}
-                {detail.destination && (
-                  <DetailRow label="آدرس مقصد" value={detail.destination} />
-                )}
-                {detail.destinationTag && (
-                  <DetailRow
-                    label="Destination Tag"
-                    value={detail.destinationTag}
-                  />
-                )}
-                {detail.network && (
-                  <DetailRow label="شبکه" value={detail.network} />
-                )}
+                {detail.status && <DetailRow label="وضعیت" value={<StatusBadge text={transactionStatusMap[detail.status] || detail.status} />} />}
+                {detail.id && <DetailRow label="شناسه تراکنش" value={convertDigitsToPersian(`${detail.id}`)} />}
+                {detail.DateTime && <DetailRow label="تاریخ تراکنش" value={convertDigitsToPersian(detail.DateTime)} />}
+                {detail.type && <DetailRow label="نوع" value={transactionTypeMap[detail.type] || detail.type} />}
+                {detail.amount && <DetailRow label="مقدار" value={detail.amount} symbol={detail.symbol} />}
+                {detail.amount_toman && <DetailRow label="مبلغ به تومان" value={formatPersianDigits(detail.amount_toman)} symbol="تومان" />}
+                {detail.fee && <DetailRow label="کارمزد" value={formatPersianDigits(detail.fee)} symbol={detail.symbol} />}
+                {detail.withdrawFee && <DetailRow label="کارمزد برداشت" value={detail.withdrawFee} symbol={detail.symbol} />}
+                {detail.stock && <DetailRow label="موجودی پس از تراکنش" value={formatPersianDigits(detail.stock)} symbol={detail.symbol} />}
+                {detail.description && <DetailRow label="توضیحات" value={detail.description} />}
+                {detail.destination && <DetailRow label="آدرس مقصد" value={detail.destination} />}
+                {detail.destinationTag && <DetailRow label="Destination Tag" value={detail.destinationTag} />}
+                {detail.network && <DetailRow label="شبکه" value={detail.network} />}
                 {detail.txid && <DetailRow label="TXID" value={detail.txid} />}
                 {detail.reason && <DetailRow label="دلیل" value={detail.reason} />}
                 {detail.file && <DetailRow label="فایل" value={detail.file} />}
@@ -253,25 +191,11 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
   );
 };
 
-const DetailRow = ({
-  label,
-  value,
-  symbol,
-}: {
-  label: string;
-  value: React.ReactNode;
-  symbol?: string;
-}) => (
+const DetailRow = ({ label, value, symbol }: { label: string; value: React.ReactNode; symbol?: string }) => (
   <div className="flex justify-between items-center">
     <span className="font-medium text-[16px] text-gray5">{label}:</span>
-    <div className="flex items-end justify-end gap-1 min-w-[120px] text-right">
-      <span
-        className={`break-words ${
-          typeof value === "string" && value.length > 20 ? "break-all" : ""
-        }`}
-      >
-        {value}
-      </span>
+    <div className="flex items-end justify-end gap-1 min-w-[120px] text-left">
+      <span className={`break-words ${typeof value === "string" && value.length > 20 ? "break-all" : ""}`}>{value}</span>
       {symbol && <span>{symbol}</span>}
     </div>
   </div>
