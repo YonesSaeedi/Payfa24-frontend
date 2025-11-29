@@ -67,6 +67,7 @@ const handleItemClick = (item: ServiceItem) => {
   const financeItems: ServiceItem[] = [
     { label: "خرید", icon: <ReceivedIcon />, route: ROUTES.TRADE.BUY },
     { label: "فروش", icon: <SendIcon />, route: ROUTES.TRADE.SELL },
+
     { label: "کیف پول", icon: <IconWalletCard />, route: ROUTES.WALLET },
     {
       label: "کارت‌ها",
