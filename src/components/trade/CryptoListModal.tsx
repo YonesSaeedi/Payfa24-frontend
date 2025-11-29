@@ -70,7 +70,7 @@ const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentC
             <input onChange={handleSearch} type="text" placeholder="جستجو..." ref={searchInputRef} className="bg-transparent outline-none text-black1 placeholder:text-gray15" />
           </div>
           {/* currency type toggle */}
-          <div className={`items-center ${digitalCryptoListData ? 'flex' : 'hidden'}`}>
+          <div className={`items-center ${digitalCryptoListData?.length ? 'flex' : 'hidden'}`}>
             <button
               onClick={() => handleSwitch(false)}
               className={`w-1/2 border-b-2 py-1.5 lg:py-2 hover:text-blue2 transition duration-300 text-sm lg:text-lg
