@@ -25,6 +25,7 @@ import useGetSettings from "../../hooks/useGetSettings";
 import { AxiosError } from "axios";
 import { DigitalBuy } from "../../types/api/digital-trade";
 import { toFixedNoExponential } from "../../utils/toFixedNoExponential";
+import { removeDecs } from "../../utils/removeDecs";
 
 const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const countInputRef = useRef<HTMLInputElement | null>(null)
@@ -51,6 +52,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const [resendCodeTimeLeft, setResendCodeTimeLeft] = useState<number>(0)
   const [digitalIDOrder, setDigitalIDOrder] = useState<number | null>(null)
   const [transactionSuccessId, setTransactionSuccessId] = useState<number>(0)
+  const [buyVoucherCode, setBuyVoucherCode] = useState('')
   const { currentCryptocurrency, setCurrentCryptocurrency } = useOutletContext<{ currentCryptocurrency: CryptoItem | null; setCurrentCryptocurrency: React.Dispatch<React.SetStateAction<CryptoItem | null>>; }>();
   const [searchParams] = useSearchParams()
   const persianToEnglish = (input: string) => input.replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776)).replace(/,/g, "");
@@ -167,22 +169,17 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       }
     }
   }
-  // useEffect(() => {
-  //   if (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') {
-  //     setCurrentCryptocurrency(mergedDigitalCryptosData[currentCryptocurrency.symbol])
-  //     if (isSell) setCurrentCryptoPrice(Number(currentCryptocurrency.priceSell))
-  //     else {
-  //       setCurrentCryptoPrice(Number(currentCryptocurrency.priceBuy))
-  //       fetchTomanBalance()
-  //     }
-  //   }
-  //   else {
-  //     fetchTomanBalance()
-  //     fetchCryptoBalanceAndPrice()
-  //   }
-  // }, [isSell, currentCryptocurrency])
-
-
+  useEffect(() => {
+    if (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') {
+      setCurrentCryptocurrency(mergedDigitalCryptosData[currentCryptocurrency.symbol])
+      if (isSell) setCurrentCryptoPrice(Number(currentCryptocurrency.priceSell))
+      else setCurrentCryptoPrice(Number(currentCryptocurrency.priceBuy));
+    }
+    else fetchCryptoBalanceAndPrice();
+  }, [isSell, currentCryptocurrency])
+  useEffect(() => {
+    fetchTomanBalance()
+  }, [isSell])
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
   // preparing crypto list modal data ===============================================================================================================================================
@@ -253,11 +250,12 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
     return {}
   }, [mappedGeneralData, orderInfoData])
   // assign BTC to the current cryptocurrency at first
-  // useEffect(() => {
-  //   const coinSymbol = searchParams.get('coin')
-  //   if (coinSymbol && !currentCryptocurrency && mergedCryptosData[coinSymbol]) setCurrentCryptocurrency(mergedCryptosData[coinSymbol]);
-  //   else if ((mergedCryptosData['BTC'] && currentCryptocurrency === null)) setCurrentCryptocurrency(mergedCryptosData['BTC'])
-  // }, [mergedCryptosData, currentCryptocurrency, setCurrentCryptocurrency])
+  useEffect(() => {
+    const coinSymbol = searchParams.get('coin')?.toUpperCase()
+    if (coinSymbol && !currentCryptocurrency && mergedCryptosData[coinSymbol]) setCurrentCryptocurrency(mergedCryptosData[coinSymbol]);
+    else if (coinSymbol && !currentCryptocurrency && mergedDigitalCryptosData[coinSymbol]) setCurrentCryptocurrency(mergedDigitalCryptosData[coinSymbol])
+    else if ((mergedCryptosData['BTC'] && currentCryptocurrency === null)) setCurrentCryptocurrency(mergedCryptosData['BTC'])
+  }, [mergedCryptosData, currentCryptocurrency, setCurrentCryptocurrency])
   // buy/sell functionality ==========================================================================================================================================================
   // buy/sell functionality ==========================================================================================================================================================
   // buy/sell functionality ==========================================================================================================================================================
@@ -266,11 +264,12 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       if (isSell) {
         try {
           setIsSubmitting(true)
-          await apiRequest({
+          const response = await apiRequest<{ id_order: number }, { voucherCode: string }>({
             url: `/order/digital/sell/${currentCryptocurrency?.locale?.en?.name}`,
             method: 'POST',
             data: { voucherCode: voucherCode }
           })
+          setTransactionSuccessId(response?.id_order)
           setIsTradeSuccessModalOpen(true)
         } catch (err) {
           toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
@@ -282,10 +281,12 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
         try {
           setIsSubmitting(true)
           const response = await apiRequest<DigitalBuy, { amount: number | '' }>({ url: `/order/digital/buy/request/${currentCryptocurrency?.locale?.en?.name}`, method: 'POST', data: { amount: amountValue } })
-          setDigitalIDOrder(response?.order_id)
-          setResendCodeTimeLeft(120)
-          setIsOtpModalOpen(true)
-          toast.success(response?.msgOtp)
+          setBuyVoucherCode(response?.code)
+          setTransactionSuccessId(response?.id_order)
+          // setResendCodeTimeLeft(120)
+          // setIsOtpModalOpen(true)
+          // toast.success(response?.msgOtp)
+          setIsTradeSuccessModalOpen(true)
         } catch (err) {
           toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ثبت سفارش مشکلی پیش آمد.');
         }
@@ -366,7 +367,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
   const isDisabled = (isSell && cryptoBalance === 0) || (!isSell && TomanBalance === 0)
   // compute if it's isDigitalCurrencySell or isDigitalCurrency =================================================================================================================
   const isDigitalCurrencySell = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher') && isSell
-
+  const isDigitalCurrency = (currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher')
   // data of the OTP modal ======================================================================================================================================================
   const { data: settingsData } = useGetSettings()
   const { data: userData } = useGetUser()
@@ -398,18 +399,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       setResendCodeIsSubmitting(false)
     }
   }
-  useEffect(() => {
-  const coinSymbol = searchParams.get('coin')?.toUpperCase(); // گرفتن پارامتر coin از URL
-  if (!coinSymbol) return;
 
-  if (mergedCryptosData[coinSymbol] && !currentCryptocurrency) {
-    setCurrentCryptocurrency(mergedCryptosData[coinSymbol]);
-  } else if (mergedDigitalCryptosData[coinSymbol] && !currentCryptocurrency) {
-    setCurrentCryptocurrency(mergedDigitalCryptosData[coinSymbol]);
-  } else if (!currentCryptocurrency && mergedCryptosData['BTC']) {
-    setCurrentCryptocurrency(mergedCryptosData['BTC']);
-  }
-}, [mergedCryptosData, mergedDigitalCryptosData, currentCryptocurrency, setCurrentCryptocurrency, searchParams]);
   return (
     <div className="w-full h-full lg:bg-white8 rounded-2xl lg:px-8 lg:py-12 flex flex-col gap-10 justify-between lg:border lg:border-gray21">
       <div className="flex flex-col gap-10">
@@ -429,13 +419,15 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
             <div className="absolute px-1 bg-white1  lg:bg-white8 border-none -top-4 right-4 text-gray5 text-sm font-normal group-hover:text-blue2">انتخاب رمز ارز</div>
             <div className="flex items-center gap-2">
               <span className="w-7 h-7 rounded-full">
-                {currentCryptocurrency?.isFont ?
-                  <i className={`cf cf-${currentCryptocurrency?.symbol.toLowerCase()}`} style={{ color: currentCryptocurrency?.color, fontSize: '28px' }}></i>
-                  :
-                  <img src={`https://api.payfa24.org/images/currency/${currentCryptocurrency?.icon}`} alt={currentCryptocurrency?.symbol} className="object-contain" />
+                {!currentCryptocurrency ? <div className="w-7 h-7 rounded-full skeleton-bg" /> :
+                  currentCryptocurrency?.isFont ?
+                    <i className={`cf cf-${currentCryptocurrency?.symbol.toLowerCase()}`} style={{ color: currentCryptocurrency?.color, fontSize: '28px' }}></i>
+                    :
+                    <img src={`https://api.payfa24.org/images/currency/${currentCryptocurrency?.icon}`} alt={currentCryptocurrency?.symbol} className="object-contain" />
                 }
               </span>
-              <span className="text-black1 text-sm font-normal">{currentCryptocurrency?.locale?.fa?.name}</span>
+              {!currentCryptocurrency ? <div className="w-16 h-4 rounded skeleton-bg" /> :
+                <span className="text-black1 text-sm font-normal">{currentCryptocurrency?.locale?.fa?.name}</span>}
             </div>
             <span className="icon-wrapper w-5 h-5 -rotate-90 text-gray23 group-hover:text-blue2"><IconChevron /></span>
           </div>
@@ -463,6 +455,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
             />}
           {isTradeCancelModalOpen && <TradeCancelModal setIsTradeCancelModalOpen={setIsTradeCancelModalOpen} />}
           {isTradeSuccessModalOpen && <TradeSuccessModal
+            buyVoucherCode={buyVoucherCode}
             setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen}
             successMsg={`${isSell ? 'فروش ' : 'خرید '}با موفقیت انجام شد.`}
             linkTo={`${ROUTES.TRANSACTION.ORDER_HISTORY}?id=${transactionSuccessId}`}
@@ -480,24 +473,21 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               onChange={(value: string) => setOtpCode(value)}
             />
           }
-          <div className="flex items-center justify-between">
-            <div className="items-center gap-1 text-gray24 text-xs lg:text-sm font-medium flex">
-  موجودی شما :
-  {isLoading ? (
-    <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
-  ) : currentCryptocurrency?.type === 'digitalCurrency' || currentCryptocurrency?.type === 'voucher' ? (
-    <span className="text-black1 font-normal" dir="ltr">{cryptoBalance ?? 0} {currentCryptocurrency?.symbol}</span>
-  ) : (
-    <span className="text-black1 font-normal" dir="ltr">{formatPersianDigits(TomanBalance ?? 0)} تومان</span>
-  )}
-</div>
-
+          <div className={`flex items-center ${isDigitalCurrency ? 'justify-end' : 'justify-between'}`}>
+            <div className={`items-center gap-1 text-gray24 text-xs lg:text-sm font-medium ${isDigitalCurrency ? 'hidden' : 'flex'}`}>
+              موجودی شما :
+              {isLoading || cryptoBalance === null ?
+                <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
+                :
+                <span className="text-black1 font-normal" dir="ltr">{`${cryptoBalance} ${currentCryptocurrency?.symbol ?? 'رمزارز'}`}</span>
+              }
+            </div>
             <span className="text-sm font-normal text-black1 flex items-center gap-1">
               {isSell ? 'قیمت فروش' : 'قیمت خرید'} :
               {isLoading ?
                 <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
                 :
-                <span>{formatPersianDigits(currentCryptoPrice ?? 0)} تومان</span>
+                <span>{formatPersianDigits(removeDecs(currentCryptoPrice ?? 0))} تومان</span>
               }
             </span>
           </div>
@@ -550,7 +540,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
               type="text"
               inputMode="decimal"
               className="bg-transparent appearance-none outline-none text-black1 text-right w-10/12"
-              value={amountValue === "" ? formatPersianDigits(0) : formatPersianDigits(amountValue)}
+              value={amountValue === "" ? formatPersianDigits(0) : formatPersianDigits(removeDecs(amountValue))}
               onChange={handleAmountChange}
               dir="ltr"
             />
@@ -577,11 +567,11 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
       <button
         disabled={isDigitalCurrencySell ? !voucherCode || isSubmitting : (isSubmitting || !countInputStr || !amountValue)}
         onClick={handleBuyOrSell}
-        className={`rounded-lg py-2 lg:py-2.5 text-base font-medium lg:text-lg lg:font-bold transition duration-300
+        className={`rounded-lg py-2 lg:py-2.5 text-base font-medium lg:text-lg lg:font-bold bg-blue2 text-white2 transition duration-300
         ${isSubmitting
             || (!isDigitalCurrencySell && !countInputStr)
             || (!isDigitalCurrencySell && !amountValue)
-            || (isDigitalCurrencySell && !voucherCode) ? 'text-black1 bg-gray2' : 'bg-blue2 text-white2 hover:bg-blue-600 hover:-translate-y-0.5'}`}
+            || (isDigitalCurrencySell && !voucherCode) ? 'opacity-60' : 'hover:bg-blue-600 hover:-translate-y-0.5'}`}
       >
         {isSubmitting ? 'در حال ثبت سفارش ...' : isSell ? "ثبت فروش" : "ثبت خرید"}
       </button>

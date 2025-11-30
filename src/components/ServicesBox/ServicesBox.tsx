@@ -20,9 +20,6 @@ import IconUserPlus from "../../assets/icons/services/IconUserPlus";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
 
-
-
-
 interface ServiceItem {
   label: string;
   icon: ReactNode;
@@ -37,7 +34,7 @@ interface ServicesBoxProps {
 const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
- const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
+  const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
 
   useEffect(() => {
     setIsVisible(true);
@@ -48,22 +45,18 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     setTimeout(onClose, 300);
   };
 
+  const handleItemClick = (item: ServiceItem) => {
+    setIsVisible(false);
+    setTimeout(() => {
+      onClose();
+      if (item.onClick) {
+        item.onClick();
+      } else if (item.route && item.route !== location.pathname) {
+        navigate(item.route);
+      }
+    }, 300);
+  };
 
-
-const handleItemClick = (item: ServiceItem) => {
-  setIsVisible(false);
-  setTimeout(() => {
-    onClose(); 
-    if (item.onClick) {
-      item.onClick();
-    } else if (item.route && item.route !== location.pathname) {
-      navigate(item.route); 
-    }
-  }, 300);
-};
-
-
- 
   const financeItems: ServiceItem[] = [
     { label: "خرید", icon: <ReceivedIcon />, route: ROUTES.TRADE.BUY },
     { label: "فروش", icon: <SendIcon />, route: ROUTES.TRADE.SELL },
@@ -75,9 +68,8 @@ const handleItemClick = (item: ServiceItem) => {
       route: ROUTES.BANK_CARDS,
     },
 
-
     { label: "واریز  رمزارز", icon: <WalletAddIcon />, route: ROUTES.DEPOSIT },
-     { label: "واریز تومانی", icon: <WalletAddIcon />, route: ROUTES.DEPOSIT },
+    { label: "واریز تومانی", icon: <WalletAddIcon />, route: ROUTES.DEPOSIT },
     {
       label: " برداشت رمزارز",
       icon: <WalletMinesIcon />,
@@ -88,7 +80,6 @@ const handleItemClick = (item: ServiceItem) => {
       icon: <WalletMinesIcon />,
       route: ROUTES.WITHDRAWAL.FIAT,
     },
-    
   ];
 
   const marketItems: ServiceItem[] = [
@@ -98,7 +89,6 @@ const handleItemClick = (item: ServiceItem) => {
       icon: <IconMarketView />,
       route: ROUTES.MARKET_VIEW,
     },
-
   ];
 
   const historyItems: ServiceItem[] = [
@@ -121,24 +111,22 @@ const handleItemClick = (item: ServiceItem) => {
 
   const supportItems: ServiceItem[] = [
     {
-  label: "احراز هویت",
-  icon: <IconPersonalCard />,
-  onClick: () => {
-    if (kycLoading) return; 
+      label: "احراز هویت",
+      icon: <IconPersonalCard />,
+      onClick: () => {
+        if (kycLoading) return;
 
-    if (!kycInfo?.level_kyc) {
-      navigate(ROUTES.AUTHENTICATION_BASIC); 
-    } else if (kycInfo.level_kyc === "basic") {
-      navigate(ROUTES.AUTHENTICATION_ADVANCED); 
-    } else if (kycInfo.level_kyc === "advanced") {
-       navigate(ROUTES.AUTHENTICATION_ADVANCED);
-    
-    }
+        if (!kycInfo?.level_kyc) {
+          navigate(ROUTES.AUTHENTICATION_BASIC);
+        } else if (kycInfo.level_kyc === "basic") {
+          navigate(ROUTES.AUTHENTICATION_ADVANCED);
+        } else if (kycInfo.level_kyc === "advanced") {
+          navigate(ROUTES.AUTHENTICATION_ADVANCED);
+        }
 
-    onClose();
-  },
-}
-,
+        onClose();
+      },
+    },
     {
       label: "امنیت",
       icon: <IconSecurity />,
@@ -165,21 +153,14 @@ const handleItemClick = (item: ServiceItem) => {
       </h3>
       <div className="lg:px-4 flex flex-wrap lg:gap-x-2 lg:gap-y-3 gap-x-2 gap-y-3">
         {items.map((item) => (
-          <div
-          key={item.label}
-            onClick={() => handleItemClick(item)}
-            className="flex flex-col items-center justify-center  w-[calc(25%-6px)]  
-                   h-[60px] lg:h-[72px] 
-                   rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition"
-          >
-            <span className="w-5  h-5  lg:w-[26px] lg:h-[26px] text-blue2 mt-2">{item.icon}</span>
-         <div className="flex items-center justify-center gap-2 px-3 py-1.5 max-w-full min-w-[85px]">
-  <span className="text-gray-700 dark:text-gray-200 text-center text-sm font-normal truncate lg:truncate-none">
-    {item.label}
-  </span>
-</div>
-
-
+          <div key={item.label}   onClick={() => handleItemClick(item)} className="flex flex-col items-center justify-center  w-[calc(25%-6px)]  h-[60px] lg:h-[72px]  rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition">
+            <span className="w-5 h-5 lg:w-[26px] lg:h-[26px] text-blue2 mt-2">{item.icon}</span>
+            <div className="flex items-center justify-center gap-2 px-3 py-1.5 max-w-full min-w-[85px]">
+              <span
+                className="text-gray-700 dark:text-gray-200 text-center text-[10px] sm:text-sm  font-normal  sm:truncate  lg:truncate-none">
+                {item.label}
+              </span>
+            </div>
           </div>
         ))}
       </div>
@@ -187,17 +168,10 @@ const handleItemClick = (item: ServiceItem) => {
   );
 
   return (
-    <div
-      dir="rtl"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-6"
-      onClick={handleClose}
-    >
+    <div dir="rtl" className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-6" onClick={handleClose}>
       <div
-
-        className={`bg-white8 rounded-xl shadow-lg p-4 lg:px-[22px] w-[500px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
-          } relative`}
-        onClick={(e) => e.stopPropagation()}
-      >
+        className={`bg-white8 rounded-xl shadow-lg p-4 lg:px-[22px] w-[550px] max-h-[90vh] flex flex-col transform transition-all duration-300 ${
+          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} relative`} onClick={(e) => e.stopPropagation()}>
         <div className="flex border-b border-b-gray21 pb-4">
           <span className="w-6 h-6 icon-wrapper ml-1">
             <CategoryActiveIcon />
@@ -205,10 +179,7 @@ const handleItemClick = (item: ServiceItem) => {
           <h3 className="text-blue2">خدمات</h3>
         </div>
 
-        <button
-          onClick={handleClose}
-          className="absolute top-5 left-4 lg:w-7 w-5 lg:h-7 h-5 text-gray12 hover:text-red6 text-[14px] font-medium"
-        >
+        <button onClick={handleClose} className="absolute top-5 left-4 lg:w-7 w-5 lg:h-7 h-5 text-gray12 hover:text-red6 text-[14px] font-medium">
           <IconCloseButtun />
         </button>
 
@@ -221,7 +192,6 @@ const handleItemClick = (item: ServiceItem) => {
         </div>
       </div>
     </div>
-
   );
 };
 

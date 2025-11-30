@@ -20,6 +20,12 @@ export interface Wallets {
     balance?: number // 679.61
   }
 }
+
+export type Referral = {
+  refid: number;
+  reflink: string;
+};
+
 export interface Banner {
   status?: boolean,
   perPage?: string // "2",
@@ -31,4 +37,5 @@ export interface Dashboard {
   [key: string]: unknown
   dailyWithdrawal?: DailyWithdrawal;
    top_coins?:any[]; // allowing other optional key value pairs
+    referral?: Referral;
 }

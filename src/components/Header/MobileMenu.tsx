@@ -17,6 +17,8 @@ import { ROUTES } from "../../routes/routes";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
 import { useNavigate } from "react-router-dom";
+import ReceiptTextIcon from "../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
+import ModalLogout from "./ModalLogout";
 
 type MobileMenuProps = {
   open: boolean;
@@ -34,14 +36,13 @@ export default function MobileMenu({
   if (!themeContext) {
     throw new Error("ThemeContext is undefined. Wrap with ThemeProvider.");
   }
-
   const { theme, toggleTheme } = themeContext;
   const [openSecurity, setOpenSecurity] = useState(false);
-
   const { data: userData, isLoading } = useGetUser();
-
   const navigate = useNavigate();
-const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
+  const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
 
 const handleKYCClick = () => {
   if (kycLoading) return;
@@ -55,16 +56,28 @@ const handleKYCClick = () => {
   onClose(); // بستن منو بعد از انتخاب
 };
 
-  const handleLogout = async () => {
-    try {
-      await apiRequest({ url: "/auth/logout", method: "POST" });
-    } catch (error) {
-      console.error("Error logging out:", error);
-    } finally {
-      localStorage.clear();
-      window.location.replace("/login");
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await apiRequest({ url: "/auth/logout", method: "POST" });
+  //   } catch (error) {
+  //     console.error("Error logging out:", error);
+  //   } finally {
+  //     localStorage.clear();
+  //     window.location.replace("/login");
+  //   }
+  // };
+const handleLogoutConfirm = async () => {
+  try {
+    await apiRequest({ url: "/auth/logout", method: "POST" });
+  } catch (error) {
+    console.error("Error logging out:", error);
+  } finally {
+    localStorage.clear();
+    window.location.replace("/login");
+  }
+};
+
+
 
 
 
@@ -100,7 +113,7 @@ const handleKYCClick = () => {
  <p className="text-xs text-gray-500 pt-1">
   {isLoading
     ? ""
-    : `سطح کاربری ${
+    : `سطح احراز هویت ${
         userData?.user.level_kyc === "advanced"
           ? "پیشرفته"
           : userData?.user.level_kyc === "basic"
@@ -144,6 +157,73 @@ const handleKYCClick = () => {
     </span>
   </button>
 </div>
+
+{/* تاریخچه */}
+<li className="flex flex-col cursor-pointer">
+  <details className="w-full group">
+    <summary className="flex items-center justify-between cursor-pointer">
+      <div className="flex items-center gap-2 group/item">
+        <span className="flex items-center justify-center w-6 h-6 transition-colors duration-200 group-hover/item:text-blue2">
+         <ReceiptTextIcon/>
+        </span>
+        <span className="transition-colors duration-200 group-hover/item:text-blue2">
+          تاریخچه
+        </span>
+      </div>
+
+      <svg
+        className="w-5 h-5 transform transition-transform duration-300 group-open:rotate-180"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </summary>
+
+    <ul className="pr-4 mt-5 text-gray-600 dark:text-gray-300 space-y-4">
+      <div className="flex items-center justify-start gap-2">
+        <Link
+          to={ROUTES.TRANSACTION.ORDER_HISTORY}
+          className="flex items-center gap-2 group w-auto"
+        >
+          <span className="transition-colors duration-200 hover:text-blue2">
+         تاریخچه خرید و فروش
+          </span>
+        </Link>
+      </div>
+
+      <div className="flex items-center justify-start gap-2">
+        <Link
+          to={ROUTES.TRANSACTION.CRYPTO_HISTORY}
+          className="flex items-center gap-2 group w-auto"
+        >
+          <span className="transition-colors duration-200 hover:text-blue2">
+           تاریخچه رمزارز
+          </span>
+        </Link>
+      </div>
+
+      <div className="flex items-center justify-start gap-2">
+        <Link
+              to={ROUTES.TRANSACTION.TOMAN_HISTORY}
+          className="flex items-center gap-2 group w-auto"
+        >
+          <span className="transition-colors duration-200 hover:text-blue2">
+           تاریخچه تومانی
+          </span>
+        </Link>
+      </div>
+    </ul>
+  </details>
+</li>
+
 
 <div className="flex items-center justify-start gap-2">
   <Link to="/wallet" className="flex items-center gap-2 group">
@@ -331,7 +411,7 @@ const handleKYCClick = () => {
 {/* خروج از حساب کاربری */}
 <div className="p-4 flex items-center justify-start gap-2">
   <button
-    onClick={handleLogout}
+    onClick={() => setIsLogoutModalOpen(true)}
     className="flex items-center gap-2 group w-auto"
   >
     <span className="flex items-center justify-center w-6 h-6 transition-colors duration-200 group-hover:text-red-600 ">
@@ -344,6 +424,22 @@ const handleKYCClick = () => {
 </div>
 
       </div>
+
+     {isLogoutModalOpen && (
+  <ModalLogout
+  open={isLogoutModalOpen}
+  onClose={() => setIsLogoutModalOpen(false)}
+  onConfirm={handleLogoutConfirm}
+/>
+
+)}
+
+
+
     </>
+
+    
   );
+
+  
 }

@@ -466,7 +466,7 @@ function mergeTopCoinsWithGeneralInfo(topCoins: Coin[], generalDataMap: CryptoDa
 
           <div className="flex flex-col lg:flex-row-reverse justify-between gap-[27px] lg:pb-[49px] pb-[40px]">
             <PosterSlider isLoading={isLoadingDashboard} bannersData={dashboardData?.banner?.banner} />
-            <InvitationCard />
+            <InvitationCard referralLink={dashboardData?.referral?.reflink} />
           </div>
 
           <div id="SyncSlider" className="pb-[61px]">

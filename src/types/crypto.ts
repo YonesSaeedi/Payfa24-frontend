@@ -1,5 +1,34 @@
 import { TradePrices } from "./apiResponses"
 
+export type UnifiedCryptoItem = {
+  symbol: string
+  icon?: string
+  locale?: LocaleName
+  name?: string
+
+  // From CryptoItem
+  color?: string
+  isFont?: boolean
+
+  // From DigitalCurrency
+  colorCode?: string
+  type?: string
+} & Partial<CryptoItem> & Partial<DigitalCurrency>
+
+export type UnifiedCoin = {
+  symbol: string;
+
+  name?: string;
+  faName?: string;
+
+  icon?: string;
+  isFont?: boolean;
+  color?: string;
+  colorCode?: string;
+
+  locale?: LocaleName; 
+} & Partial<CryptoItem> & Partial<DigitalCurrency>;
+
 export interface LocaleName {
   en?: { name: string }
   fa?: { name: string }

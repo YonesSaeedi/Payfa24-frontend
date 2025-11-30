@@ -420,7 +420,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ tx, onClose, coinDa
 
   switch (tx.source) {
     case "order":
-      return <TransactionModalOrder tx={tx} onClose={onClose} />;
+      return <TransactionModalOrder tx={tx} onClose={onClose} coinData={coinData}/>;
 
     case "crypto":
       return <TransactionModalCrypto tx={tx} onClose={onClose} coinData={coinData} />;
