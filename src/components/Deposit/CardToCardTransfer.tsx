@@ -47,7 +47,6 @@ interface CardToCardResponse {
   msg: string;
 }
 
-// --- **Interface جدید برای پراپ‌های ورودی** ---
 interface CardToCardTransferProps {
   cards: CreditCard[];
   cardToCardInfo: CardToCardInfo;
@@ -57,9 +56,10 @@ interface CardToCardTransferProps {
 
 export function formatPersianCardNumber(input: string | number): string {
   if (input === null || input === undefined || input === "") return "";
-  
+
   const persianMap = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-  const digitsOnly = String(input).replace(/[^\d۰-۹]/g, "")
+  const digitsOnly = String(input)
+    .replace(/[^\d۰-۹]/g, "")
     .replace(/[۰-۹]/g, (d) => "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]); // فارسی → انگلیسی
 
   const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, "$1-");
@@ -67,7 +67,6 @@ export function formatPersianCardNumber(input: string | number): string {
 
   return persianGrouped;
 }
-
 
 export function toPersianDigits(input: string | number): string {
   if (input === null || input === undefined) return "";
@@ -81,6 +80,16 @@ const formatTimer = (seconds: number) => {
   const s = seconds % 60;
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 };
+
+function calculateFee(amount: number): number {
+  if (!amount || amount <= 0) return 0;
+  const feePercentage = 0.001; // 0.1%
+  const minFee = 1000;
+  const calculatedFee = amount * feePercentage;
+  // گرد کردن و سپس مقایسه با مینیمم
+  const finalFee = Math.max(Math.round(calculatedFee), minFee);
+  return finalFee;
+}
 
 // --- Component ---
 export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo: initialCardToCardInfo }: CardToCardTransferProps) {
@@ -141,7 +150,7 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
 
   const setPresetAmount = (amount: number) => {
     setValue("amount", amount * 1000000, { shouldValidate: true });
-  }; // --- Submit ---
+  };
 
   const onSubmit = async (data: CardToCardRequestData) => {
     if (showSummary) return;
@@ -190,7 +199,10 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
 
   const summarySourceCard = cards.find((c) => c.id === cardToCardData?.transaction?.card);
   const finalSourceCard = showSummary ? summarySourceCard : selectedCard;
-  const finalAmount = showSummary ? cardToCardData?.transaction?.amount : Number(selectedAmount) || 0;
+  const finalAmount: number = showSummary ? cardToCardData?.transaction?.amount ?? 0 : Number(selectedAmount ?? 0) || 0;
+
+  const computedFee = calculateFee(finalAmount);
+  const computedFinalAmountAfterFee = Math.max(0, finalAmount - computedFee);
 
   const transactionData = {
     fromCard: formatPersianCardNumber(finalSourceCard?.card || ""),
@@ -202,7 +214,8 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
     toBank: cardToCardData?.card?.bank || "",
     owner: cardToCardData?.card?.name || "گروه فرهنگی و هنری",
     amount: finalAmount,
-    finalAmountWithFee: finalAmount && finalAmount >= 100000 ? formatPersianDigits(finalAmount - 100000) : formatPersianDigits(finalAmount || 0),
+    fee: computedFee,
+    finalAmountWithFee: computedFinalAmountAfterFee,
   };
 
   if (showSummary && !cardToCardData?.card) return <div className="text-center py-8 text-red1">خطا: اطلاعات کارت مقصد ناقص است. لطفاً با پشتیبانی تماس بگیرید.</div>;
@@ -213,15 +226,15 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Video guide */}
           <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2 justify-between">
-           <div className="flex items-center gap-2">
-          <span className="icon-wrapper w-6 h-6 text-blue2">
-            <IconVideo />
-          </span>
-          <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با درگاه پرداخت</span>
-        </div>
-        <span className="icon-wrapper w-5 h-5 text-blue2">
-          <IconClose />
-        </span>
+            <div className="flex items-center gap-2">
+              <span className="icon-wrapper w-6 h-6 text-blue2">
+                <IconVideo />
+              </span>
+              <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با درگاه پرداخت</span>
+            </div>
+            <span className="icon-wrapper w-5 h-5 text-blue2">
+              <IconClose />
+            </span>
           </div>
 
           {/* Card select */}
@@ -231,11 +244,19 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
               control={control}
               render={({ field }) => {
                 const hasCards = cards.length > 0;
-
+                const IsLoadingPlaceholder = cards.length === 0;
                 return (
                   <>
                     <FloatingSelect
-                      placeholder={hasCards ? "کارت مبدا را انتخاب کنید" : "هیچ کارت ثبت‌ شده‌ای ندارید"}
+                      placeholder={
+                        IsLoadingPlaceholder ? (
+                          <span className="skeleton-bg lg:w-44 w-36 h-5 rounded-sm"></span>
+                        ) : hasCards ? (
+                          " کارت مبدا را انتخاب کنید"
+                        ) : (
+                          "هیچ کارت ثبت‌ شده‌ای ندارید"
+                        )
+                      }
                       label="انتخاب کارت مبدا"
                       value={hasCards ? field.value?.toString() || "" : ""}
                       onChange={field.onChange}
@@ -252,7 +273,7 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
                               ),
                               icon: <img src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"} alt={card.bank} className="w-6 h-6 object-contain" />,
                             }))
-                          : [] 
+                          : []
                       }
                     />
 
@@ -355,9 +376,13 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
                 <span className="text-gray5 lg:text-lg text-sm">شماره کارت مقصد</span>
                 <span className="text-sm lg:text-base">{transactionData.owner}</span>
               </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray5 lg:text-lg text-sm">کارمزد</span>
+                <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.fee)} تومان</span>
+              </div>
               <div className="flex justify-between items-center lg:pb-52">
                 <span className="text-gray5 lg:text-lg text-sm">مبلغ نهایی با کسر کارمزد</span>
-                <span className="text-sm lg:text-base">{transactionData.finalAmountWithFee} تومان</span>
+                <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.finalAmountWithFee)} تومان</span>
               </div>
             </div>
             {/* <button type="button" onClick={() => setShowSummary(false)} className="mt-8 text-blue2 bg-gray-100 w-full py-3 font-bold text-lg rounded-lg">

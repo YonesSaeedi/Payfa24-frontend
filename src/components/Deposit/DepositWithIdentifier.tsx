@@ -7,6 +7,7 @@ import Accordion from "../Withdrawal/Accordion";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { getBankLogo } from "../../utils/bankLogos";
 import { useEffect, useState } from "react";
+import { toPersianDigits } from "./CardToCardTransfer";
 
 interface BankCard {
   id: number;
@@ -67,8 +68,7 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
       setCurrentIdentifier(null);
     }
   }, [selectedCardId, identifierData]);
-  
-  
+
   const handleCreate = async () => {
     if (!selectedCardId) {
       toast.error("لطفاً کارت انتخاب کنید");
@@ -114,13 +114,7 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
             return (
               <FloatingSelect
                 placeholder={
-                  IsLoadingPlaceholder ? (
-                      <span className="skeleton-bg lg:w-44 w-36 h-5 rounded-sm"></span>
-                  ) : hasCards ? (
-                    "حساب بانکی را انتخاب کنید"
-                  ) : (
-                    "هیچ کارت ثبت‌ شده‌ای ندارید"
-                  )
+                  IsLoadingPlaceholder ? <span className="skeleton-bg lg:w-44 w-36 h-5 rounded-sm"></span> : hasCards ? "حساب بانکی را انتخاب کنید" : "هیچ کارت ثبت‌ شده‌ای ندارید"
                 }
                 label="کارت بانکی"
                 value={hasCards ? field.value : ""}
@@ -164,21 +158,32 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
             <div className="flex w-1/2  flex-col gap-5 items-end text-sm text-black0">
               <span>{currentIdentifier.destination_bank}</span>
               <span>{currentIdentifier.destination_owner_name}</span>
-              <div className="flex gap-1 items-center">
-                <span>{currentIdentifier.destination_iban}</span>
-                <button className="icon-wrapper w-5 h-5 text-gray5" onClick={() => copyToClipboard(currentIdentifier.destination_iban, "شبا")}>
+              <div className="flex gap-1 items-center  cursor-pointer group hover:text-blue2" onClick={() => copyToClipboard(currentIdentifier.destination_iban, "شبا")}>
+                <span>{toPersianDigits(currentIdentifier.destination_iban)}</span>
+                <button className="icon-wrapper w-5 h-5 text-gray5 group-hover:text-blue2" >
                   <IconCopy />
                 </button>
               </div>
-              <div className="flex gap-1 items-center">
-                <span>{currentIdentifier.destination_account_number}</span>
-                <button className="icon-wrapper w-5 h-5 text-gray5" onClick={() => copyToClipboard(currentIdentifier.destination_account_number, "شماره حساب")}>
+              <div
+                className="flex gap-1 items-center cursor-pointer group hover:text-blue2"
+                onClick={() => copyToClipboard(currentIdentifier.destination_account_number, "شماره حساب")}
+              >
+                <span>{toPersianDigits(currentIdentifier.destination_account_number)}</span>
+
+                <button
+                  className="icon-wrapper w-5 h-5 text-gray5 group-hover:text-blue2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyToClipboard(currentIdentifier.destination_account_number, "شماره حساب");
+                  }}
+                >
                   <IconCopy />
                 </button>
               </div>
-              <div className="flex gap-1 items-center">
-                <span>{currentIdentifier.deposit_id}</span>
-                <button className="icon-wrapper w-5 h-5 text-gray5" onClick={() => copyToClipboard(currentIdentifier.deposit_id, "شناسه واریز")}>
+
+              <div className="flex gap-1 items-center cursor-pointer group hover:text-blue2" onClick={() => copyToClipboard(currentIdentifier.deposit_id, "شناسه واریز")}>
+                <span>{toPersianDigits(currentIdentifier.deposit_id)}</span>
+                <button className="icon-wrapper w-5 h-5 text-gray5 group-hover:text-blue2" onClick={() => copyToClipboard(currentIdentifier.deposit_id, "شناسه واریز")}>
                   <IconCopy />
                 </button>
               </div>

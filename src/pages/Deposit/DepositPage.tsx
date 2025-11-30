@@ -232,60 +232,60 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
   const receiptAccounts = fiatData?.receipt?.list_cards ?? [];
   const cardToCardInfo = fiatData?.cardToCard ?? { transaction: null, card: null };
 
- const rightOptions = [
-  {
-    id: "closeDeal",
-    methodKey: "gateway" as const,
-    Icon: <IconBank />,
-    Title: "واریز تومانی با درگاه پرداخت",
-    description: `واریز حداکثر تا ${formatPersianDigits((maxDeposit / 1_000_000).toString())} میلیون تومان`,
-    button: "پرداخت در لحظه",
-    IconMore: <IconArrowRight />,
-  },
-  {
-    id: "Identifier",
-    methodKey: "gatewayId" as const,
-    Icon: <IconIDentifier />,
-    Title: "واریز تومانی با شناسه",
-    description: "واریز وجه به صورت نامحدود",
-    button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
-    IconMore: <IconArrowRight />,
-  },
-  {
-    id: "CardToCard",
-    methodKey: "card" as const,
-    Icon: <IconConvertCard />,
-    Title: "واریز تومانی با کارت به کارت",
-    description: `واریز تا سقف ${formatPersianDigits(15)} میلیون تومان`,
-    button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
-    IconMore: <IconArrowRight />,
-  },
-  {
-    id: "Bank Receipt:",
-    methodKey: "receipt" as const,
-    Icon: <IconReceipt />,
-    Title: "واریز تومانی با فیش بانکی",
-    description: "واریز وجه به صورت نامحدود",
-    button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
-    IconMore: <IconArrowRight />,
-  },
-  {
-    id: "DedicatedWallet",
-    Icon: <IconWallet />,
-    Title: "واریز رمز ارز با ولت اختصاصی",
-    description: "بدون نیاز به TxID , واریز خودکار و سریع",
-    button: "",
-    IconMore: <IconArrowRight />,
-  },
-  {
-    id: "DepositWithTxID",
-    Icon: <IconLink />,
-    Title: "واریز رمز ارز با TxID",
-    description: "برای واریز از صرافی با کیف پول دیگر",
-    button: "",
-    IconMore: <IconArrowRight />,
-  },
-];
+  const rightOptions = [
+    {
+      id: "closeDeal",
+      methodKey: "gateway" as const,
+      Icon: <IconBank />,
+      Title: "واریز تومانی با درگاه پرداخت",
+      description: `واریز حداکثر تا ${formatPersianDigits((maxDeposit / 1_000_000).toString())} میلیون تومان`,
+      button: "پرداخت در لحظه",
+      IconMore: <IconArrowRight />,
+    },
+    {
+      id: "Identifier",
+      methodKey: "gatewayId" as const,
+      Icon: <IconIDentifier />,
+      Title: "واریز تومانی با شناسه",
+      description: "واریز وجه به صورت نامحدود",
+      button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
+      IconMore: <IconArrowRight />,
+    },
+    {
+      id: "CardToCard",
+      methodKey: "card" as const,
+      Icon: <IconConvertCard />,
+      Title: "واریز تومانی با کارت به کارت",
+      description: `واریز تا سقف ${formatPersianDigits(15)} میلیون تومان`,
+      button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
+      IconMore: <IconArrowRight />,
+    },
+    {
+      id: "Bank Receipt:",
+      methodKey: "receipt" as const,
+      Icon: <IconReceipt />,
+      Title: "واریز تومانی با فیش بانکی",
+      description: "واریز وجه به صورت نامحدود",
+      button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
+      IconMore: <IconArrowRight />,
+    },
+    {
+      id: "DedicatedWallet",
+      Icon: <IconWallet />,
+      Title: "واریز رمز ارز با ولت اختصاصی",
+      description: "بدون نیاز به TxID , واریز خودکار و سریع",
+      button: "",
+      IconMore: <IconArrowRight />,
+    },
+    {
+      id: "DepositWithTxID",
+      Icon: <IconLink />,
+      Title: "واریز رمز ارز با TxID",
+      description: "برای واریز از صرافی با کیف پول دیگر",
+      button: "",
+      IconMore: <IconArrowRight />,
+    },
+  ];
   const openCryptoModal = () => {
     setIsCryptoListModalOpen(true);
   };
@@ -339,61 +339,45 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
         {/* بخش راست */}
         <div className="w-full overflow-y-auto h-full lg:block hidden" dir="rtl">
           <p className="text-base text-black0 mb-4 font-medium">واریز تومانی</p>
-         {rightOptions.slice(0, 4).map((option) => {
-    const visible = option.methodKey ? isMethodisHidden(option.methodKey) : true;
-    const disabled = option.methodKey ? isMethodDisabled(option.methodKey) : false;
+          {rightOptions.slice(0, 4).map((option) => {
+            const visible = option.methodKey ? isMethodisHidden(option.methodKey) : true;
+            const disabled = option.methodKey ? isMethodDisabled(option.methodKey) : false;
 
-    if (!visible) return null; // کاملاً مخفی
+            if (!visible) return null; 
 
-    return (
-      <div
-        key={option.id}
-        className={`mt-4 ${disabled ? "pointer-events-none" : "cursor-pointer"}`}
-        onClick={() => !disabled && setSelectedOption(option.id)}
-      >
-        <div
-          className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200 border ${
-            selectedOption === option.id
-              ? "border-blue2 "
-              : disabled
-              ? "border-gray-300 bg-gray-50 opacity-50"
-              : "border-gray2 "
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <div className={`p-3 rounded-lg ${disabled ? "bg-gray-200" : "bg-blue14"}`}>
-              <span className={`icon-wrapper w-7 h-7 ${disabled ? "text-gray5" : "text-blue2"}`}>
-                {option.Icon}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <h2 className={`font-medium ${disabled ? "text-gray-500" : "text-black0"}`}>
-                {option.Title}
-                {disabled && <span className="text-xs block text-gray-500">(به زودی)</span>}
-              </h2>
-              <p className="text-sm text-gray5">{option.description}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {option.button && (
-              <button
-                className={`text-xs font-normal border px-2 py-[6px] rounded-lg ${
-                  disabled
-                    ? "border-gray-300 text-gray-500 bg-gray-100"
-                    : "border-gray26 text-gray5"
-                }`}
-              >
-                {option.button}
-              </button>
-            )}
-            <span className={`icon-wrapper w-5 h-5 ${disabled ? "text-gray-400" : "text-gray5"}`}>
-              {option.IconMore}
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  })}
+            return (
+              <div key={option.id} className={`mt-4 ${disabled ? "pointer-events-none" : "cursor-pointer"}`} onClick={() => !disabled && setSelectedOption(option.id)}>
+                <div
+                  className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200 border ${
+                    selectedOption === option.id ? "border-blue2" : disabled ? "border-gray2 dark:bg-gray21 opacity-60" : "border-gray2"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <div className={`p-3 rounded-lg ${disabled ? "bg-gray21 border border-gray5 opacity-45" : "bg-blue14"}`}>
+                      <span className={`icon-wrapper w-7 h-7 ${disabled ? "text-gray5" : "text-blue2"}`}>{option.Icon}</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <h2 className={`font-medium flex items-center gap-2 lg:text-base xl:text-lg   ${disabled ? "text-gray5" : "text-black0"}`}>
+                        {option.Title}
+                        {/* {disabled && <span className="text-xs  text-gray5">(به زودی)</span>} */}
+                      </h2>
+                      <p className="text-sm text-gray5">{option.description}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {option.button && (
+                      <button
+                        className={`text-xs font-normal border px-2 py-[6px] rounded-lg ${disabled ? "border-gray12 text-gray5 dark:bg-gray21" : "border-gray26 text-gray5"}`}
+                      >
+                        {option.button}
+                      </button>
+                    )}
+                    <span className={`icon-wrapper w-5 h-5 ${disabled ? "text-gray-400" : "text-gray5"}`}>{option.IconMore}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
 
           <p className="mt-8 mb-4 text-base text-black0 font-medium">واریز رمز ارز</p>
           {rightOptions.slice(4, 6).map((option) => (
@@ -409,7 +393,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
                       <span className="icon-wrapper w-7 h-7 text-blue2">{option.Icon}</span>
                     </div>
                     <div>
-                      <h2 className="text-lg font-medium text-black0">{option.Title}</h2>
+                      <h2 className=" font-medium text-black0 lg:text-base xl:text-lg ">{option.Title}</h2>
                       <p className="text-sm text-gray5">{option.description}</p>
                     </div>
                   </div>
