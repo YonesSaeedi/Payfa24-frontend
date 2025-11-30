@@ -122,10 +122,8 @@ const handleLogout = () => {
     </>
   )}
 </div>
-
           </div>
         </div>
-
         <ul dir="rtl" className="p-6 space-y-3 font-medium">
           <Link to={ROUTES.USER_ACCOUNT} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 pt-1 hover:text-blue2 cursor-pointer text-black1 font-medium text-sm">
@@ -143,9 +141,6 @@ const handleLogout = () => {
                 </span>
                 تنظیمات امنیت
               </div>
-
-              
-
               <span className={`w-5 h-5 transition-transform duration-300 ${openSecurity ? "rotate-180" : "rotate-0"}`}>
                 <IconChervDown />
               </span>
@@ -225,7 +220,7 @@ const handleLogout = () => {
               setIsModal(false);
             }}
           >
-            <div className="lg:w-4/12 w-11/12 rounded-lg lg:p-10 p-4 relative bg-white8" onClick={(e) => e.stopPropagation()}>
+            <div className="lg:w-4/12 w-11/12 rounded-lg lg:p-8 p-4 relative bg-white8" onClick={(e) => e.stopPropagation()}>
               <div className="text-center gap-4 flex items-center justify-center flex-col">
                 <img src={Logout} alt="Logout" />
                 <h1 className="lg:text-2xl text-lg text-black0 font-medium">خروج از حساب کاربری</h1>

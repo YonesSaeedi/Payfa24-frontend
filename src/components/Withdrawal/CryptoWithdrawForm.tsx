@@ -469,7 +469,7 @@ const CryptoWithdrawForm: FC = () => {
                       ) : (
                         <img src={`https://api.payfa24.org/images/currency/${currentCryptoCurrency.icon}`} alt={currentCryptoCurrency.symbol} className="w-6 h-6 object-contain" />
                       )}
-                      <span className="text-black1 font-medium">{currentCryptoCurrency.symbol}</span>
+                      <span className="text-black1 font-medium">{currentCryptoCurrency.locale?.fa?.name}</span>
                     </span>
                   ) : (
                     <span className="text-gray12">انتخاب ارز</span>

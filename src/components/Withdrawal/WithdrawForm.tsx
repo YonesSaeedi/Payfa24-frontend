@@ -288,7 +288,7 @@ const toEnglishDigits = (num: string) =>
 />
 
 
-       <div
+   <div
   dir="rtl"
   className="flex items-center justify-between mb-4 mt-3"
 >
@@ -296,12 +296,25 @@ const toEnglishDigits = (num: string) =>
   {isLoading ? (
     <div className="h-5 w-20 skeleton-bg rounded animate-pulse"></div> 
   ) : (
-    <span className=" text-blue2 text-md font-normal text-[14px]">
-   {formatPersianNumber(walletBalance)} تومان
+    <Controller
+      name="amount"
+      control={control}
+      render={({ field }) => (
+        <span
+  className="text-blue2 text-md font-normal text-[14px] cursor-pointer"
+  onClick={() => {
+    const rounded = Math.round(walletBalance); // عدد صحیح
+    field.onChange(rounded.toString());        // ارسال به react-hook-form
+  }}
+>
+  {formatPersianNumber(walletBalance)} تومان
+</span>
 
-    </span>
+      )}
+    />
   )}
 </div>
+
 
           </div>
 
@@ -367,7 +380,7 @@ const toEnglishDigits = (num: string) =>
             type="submit"
             disabled={!allFieldsFilled || isSubmitting}
             className={`w-full py-3 rounded-lg mt-24 font-bold text-[18px] transition-colors duration-300 ${!allFieldsFilled || isSubmitting
-                ? "bg-gray12  text-white cursor-not-allowed"
+                ? "bg-blue2  text-white cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600 text-white"
               }`}
           >
