@@ -15,13 +15,13 @@ interface FloatingSelectProps {
   value?: string;
   options: Option[];
   onChange: (value: string) => void;
-  placeholder?: string;
+  placeholder?: string | React.ReactNode;
   placeholderColor?: string;
   onOpen?: () => void;
   placeholderIcon?: React.ReactNode;
   placeholderClasses?: string;
   isBankSelect?: boolean;
-  disabled?: boolean; 
+  disabled?: boolean;
 }
 
 const FloatingSelect: FC<FloatingSelectProps> = ({
@@ -34,7 +34,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
   onOpen,
   placeholderIcon,
   placeholderClasses,
-  disabled = false, 
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
   const selected = options.find((o) => o.value === value);
 
   const handleButtonClick = () => {
-    if (disabled) return; 
+    if (disabled) return;
     if (onOpen) {
       onOpen();
     } else {
@@ -52,10 +52,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        selectRef.current &&
-        !selectRef.current.contains(event.target as Node)
-      ) {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -70,34 +67,18 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
       <button
         type="button"
         onClick={handleButtonClick}
-        disabled={disabled} 
+        disabled={disabled}
         className={`
           flex items-center justify-between w-full px-4 lg:h-[56px] h-[48px] rounded-lg
           lg:bg-gray43
-          ${
-            disabled
-              ? "border border-gray-300 text-gray-400 cursor-pointer focus:border-gray-300 focus:ring-0"
-              : isOpen
-              ? "border border-blue2"
-              : "border border-gray12"
-          }
+          ${disabled ? "border border-gray-300 text-gray-400 cursor-pointer focus:border-gray-300 focus:ring-0" : isOpen ? "border border-blue2" : "border border-gray12"}
         `}
       >
-        <span
-          className={`flex items-center gap-3 w-full text-xs lg:text-sm ${
-            placeholderClasses || placeholderColor
-          }`}
-        >
-          {!selected && placeholderIcon && (
-            <span className="w-6 h-6">{placeholderIcon}</span>
-          )}
+        <span className={`flex items-center gap-3 w-full text-xs lg:text-sm ${placeholderClasses || placeholderColor}`}>
+          {!selected && placeholderIcon && <span className="w-6 h-6">{placeholderIcon}</span>}
           {selected ? (
             <div className="flex items-center justify-between w-full ">
-              {selected.icon && (
-                <span className="w-6 h-6 flex-shrink-0 ml-2">
-                  {selected.icon}
-                </span>
-              )}
+              {selected.icon && <span className="w-6 h-6 flex-shrink-0 ml-2">{selected.icon}</span>}
               {selected.label}
             </div>
           ) : (
@@ -110,23 +91,17 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
               <IconChervUp />
             </span>
           ) : (
-            <span
-              className={`icon-wrapper w-5 h-5 ${
-                disabled ? "text-gray-300" : "text-gray12"
-              }`}
-            >
+            <span className={`icon-wrapper w-5 h-5 ${disabled ? "text-gray-300" : "text-gray12"}`}>
               <IconChervDown />
             </span>
           )}
         </div>
       </button>
 
-      <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">
-        {label}
-      </label>
+      <label className="absolute right-3 text-gray12 text-xs -top-2 lg:bg-gray43 bg-gray38 px-1 pointer-events-none transition-all duration-200">{label}</label>
 
       {!onOpen && isOpen && options.length > 0 && (
-        <div className="w-full p-2 absolute z-50 mt-1 bg-gray43 border border-gray21 rounded-lg shadow-lg overflow-hidden">
+        <div className="w-full p-2 absolute z-40 mt-1 bg-gray43 border border-gray21 rounded-lg shadow-lg overflow-hidden">
           {options.map((option) => (
             <button
               key={option.value}
@@ -137,29 +112,17 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
               }}
               disabled={option.disabled}
               className={`w-full flex items-center justify-start px-3 py-2 text-right transition ${
-                option.disabled
-                  ? "text-gray-400 cursor-not-allowed"
-                  : value === option.value
-                  ? "text-blue2"
-                  : "text-gray12 hover:text-blue2"
+                option.disabled ? "text-gray-400 cursor-not-allowed" : value === option.value ? "text-blue2" : "text-gray12 hover:text-blue2"
               }`}
             >
               {!option.hideIndicator && (
-                <span
-                  className={`relative w-4 h-4 ml-2 rounded-full border flex-shrink-0 ${
-                    value === option.value ? "border-blue2" : "border-gray-400"
-                  }`}
-                >
-                  {value === option.value && (
-                    <span className="absolute w-2 h-2 top-1/2 left-1/2 bg-blue2 -translate-x-1/2 -translate-y-1/2 rounded-full"></span>
-                  )}
+                <span className={`relative w-4 h-4 ml-2 rounded-full border flex-shrink-0 ${value === option.value ? "border-blue2" : "border-gray-400"}`}>
+                  {value === option.value && <span className="absolute w-2 h-2 top-1/2 left-1/2 bg-blue2 -translate-x-1/2 -translate-y-1/2 rounded-full"></span>}
                 </span>
               )}
               <div className="flex items-center justify-end w-full flex-row-reverse text-black0 lg:text-sm text-xs">
                 {option.label}
-                {option.icon && (
-                  <span className="w-5 h-5 ml-2">{option.icon}</span>
-                )}
+                {option.icon && <span className="w-5 h-5 ml-2">{option.icon}</span>}
               </div>
             </button>
           ))}

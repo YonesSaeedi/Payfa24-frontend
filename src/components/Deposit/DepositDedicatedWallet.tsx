@@ -9,6 +9,7 @@ import { CryptoItem } from "../../types/crypto";
 import { toast } from "react-toastify";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { ThemeContext } from "../../context/ThemeContext";
+import { formatEnglishNumber } from "../../utils/formatPersianNumber";
 
 interface DepositDedicatedWalletProps {
   openCryptoModal: () => void;
@@ -144,7 +145,6 @@ export default function DepositDedicatedWallet({
               <div className="h-5 w-32 skeleton-bg rounded-sm " />
             </div>
           ) : selectedCurrency.symbol && selectedCrypto ? (
-            /* همون کد اصلی تو */
             <span className="flex items-center gap-2">
               {selectedCurrency.isFont ? (
                 <i className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`} style={{ color: selectedCurrency.color || "#000", fontSize: "24px" }} />
@@ -185,7 +185,7 @@ export default function DepositDedicatedWallet({
           <div className="skeleton-bg w-32 h-5 rounded-sm"></div>
         ) : (
           <span dir="ltr" className="text-sm font-medium text-black0">
-            {selectedCurrency.balance ?? "0"} {selectedCurrency.symbol}
+            {formatEnglishNumber(selectedCurrency.balance ?? "0")} {selectedCurrency.symbol}
           </span>
         )}
       </div>

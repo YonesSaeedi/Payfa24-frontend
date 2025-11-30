@@ -220,7 +220,9 @@ const handleLogout = () => {
               setIsModal(false);
             }}
           >
+
             <div className="lg:w-4/12 w-11/12 rounded-lg lg:p-8 p-4 relative bg-white8" onClick={(e) => e.stopPropagation()}>
+
               <div className="text-center gap-4 flex items-center justify-center flex-col">
                 <img src={Logout} alt="Logout" />
                 <h1 className="lg:text-2xl text-lg text-black0 font-medium">خروج از حساب کاربری</h1>
@@ -228,14 +230,12 @@ const handleLogout = () => {
               </div>
 
               <div className="flex gap-2 mt-12 items-center justify-center ">
-                <button onClick={() => setIsModal(false)} className="w-1/2 lg:py-3 py-2 border border-blue2 rounded-lg text-blue2  font-medium">
+                <button onClick={() => setIsModal(false)} className="w-1/2 lg:py-3 py-2 border border-blue2 rounded-xl text-blue2  font-bold">
                   انصراف
                 </button>
-                <Link to={""} className="w-1/2">
-                  <button onClick={handleLogout} className="w-full lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-lg ">
+                  <button onClick={handleLogout} className="w-1/2 lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-xl ">
                     خروج
                   </button>
-                </Link>
               </div>
             </div>
           </div>

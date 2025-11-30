@@ -28,28 +28,72 @@ export default function Advance() {
   const navigate = useNavigate()
   const { refetch } = useGetKYCInfo()
   // fetches advanced kyc status and reason_reject to display related modals =============================================================
-  useEffect(() => {
-    const fetchAdvancedKYC = async () => {
-      try {
-        const response = await apiRequest<KycGetInfo>({ url: "/kyc/get-info" });
-        if (response?.level_kyc === null) {
-          toast.warn('احراز هویت سطح مقدماتی هنوز تکمیل نشده است!')
-          navigate(ROUTES.AUTHENTICATION_BASIC)
-        } else if (response?.level_kyc === 'advanced') setIsSuccessModalOpen(true)
-        const advancedInfo = response?.kyc?.advanced;
-        if (advancedInfo?.status === 'confirm') {
-          setIsSuccessModalOpen(true)
-        }
-        else if (advancedInfo?.status === 'reject') {
-          setRejectModalMsg(advancedInfo?.reason_reject)
-          setIsRejectModalOpen(true)
-        } else if (advancedInfo?.status === 'pending') setIsPendingModalOpen(true)
-      } catch (err) {
-        toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || "دریافت اطلاعات کاربر با خطا مواجه شد.")
+ 
+  // useEffect(() => {
+  //   const fetchAdvancedKYC = async () => {
+  //     try {
+  //       const response = await apiRequest<KycGetInfo>({ url: "/kyc/get-info" });
+  //       if (response?.level_kyc === null) {
+  //         toast.warn('احراز هویت سطح مقدماتی هنوز تکمیل نشده است!')
+  //         navigate(ROUTES.AUTHENTICATION_BASIC)
+  //       } else if (response?.level_kyc === 'advanced') setIsSuccessModalOpen(true)
+  //       const advancedInfo = response?.kyc?.advanced;
+  //       if (advancedInfo?.status === 'confirm') {
+  //         setIsSuccessModalOpen(true)
+  //       }
+  //       else if (advancedInfo?.status === 'reject') {
+  //         setRejectModalMsg(advancedInfo?.reason_reject)
+  //         setIsRejectModalOpen(true)
+  //       } else if (advancedInfo?.status === 'pending') setIsPendingModalOpen(true)
+  //     } catch (err) {
+  //       toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || "دریافت اطلاعات کاربر با خطا مواجه شد.")
+  //     }
+  //   }
+  //   fetchAdvancedKYC()
+  // }, [])
+
+const [userLevelKYC, setUserLevelKYC] = useState<string | null>(null);
+
+useEffect(() => {
+  const fetchAdvancedKYC = async () => {
+    try {
+      const response = await apiRequest<KycGetInfo>({ url: "/kyc/get-info" });
+
+      if (response?.level_kyc === null) {
+        toast.warn("احراز هویت سطح مقدماتی هنوز تکمیل نشده است!");
+        navigate(ROUTES.AUTHENTICATION_BASIC);
+        return;
       }
+
+      // این خط حیاتیه — حتماً باید ست بشه!
+      setUserLevelKYC(response.level_kyc);
+
+      // اگر advanced بود → هیچ مدالی باز نشه
+      if (response.level_kyc === "advanced") {
+        setIsSuccessModalOpen(false);
+        setIsPendingModalOpen(false);
+        setIsRejectModalOpen(false);
+        return;
+      }
+
+      const advancedInfo = response?.kyc?.advanced;
+
+      if (advancedInfo?.status === "confirm") {
+        setIsSuccessModalOpen(true);
+      } else if (advancedInfo?.status === "reject") {
+        setRejectModalMsg(advancedInfo.reason_reject || null);
+        setIsRejectModalOpen(true);
+      } else if (advancedInfo?.status === "pending") {
+        setIsPendingModalOpen(true);
+      }
+    } catch (err) {
+      toast.error("خطا در دریافت اطلاعات");
+      setUserLevelKYC(null);
     }
-    fetchAdvancedKYC()
-  }, [])
+  };
+
+  fetchAdvancedKYC();
+}, [navigate]);
   // submits data =======================================================================================================================
   const handleSubmit = async () => {
     if (!imageFiles.idCardImageFile) {
@@ -94,8 +138,9 @@ export default function Advance() {
       <AuthenticationLayoutAdvance
         step={step}
         setStep={setStep}
+        userLevelKYC={userLevelKYC}
         text1="! احراز هویت سطح پایه شما با موفقیت انجام شد "
-        text2="برای دسترسی به تمام امکانات و افزایش امنیت، لطفاً احراز هویت پیشرفته را تکمیل نمایید"
+        text2="برای دسترسی به تمام امکانات و افزایش امنیت، لطفاً احراز هویت پیشرفته را تکمیل نمایید ."
       >
         <div className="flex flex-col items-center justify-center gap-6 w-full overflow-x-hidden">
           {step === 0 && null}

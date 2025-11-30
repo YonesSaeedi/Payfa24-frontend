@@ -27,15 +27,28 @@ interface WalletFiatData {
   list_cards?: Array<{ id: number; card: string; bank: string; iban: string | null }>;
   receipt?: { list_cards?: Array<any> };
   cardToCard?: any;
+  list_deposit_id?: Array<{ deposit_id: string; id_card: number }>;
+  deposit_id?: {
+    destination_bank: string;
+    destination_owner_name: string;
+    destination_iban: string;
+    destination_account_number: string;
+    deposit_id: number | string;
+  };
+  depositMethods: {
+    gateway: { isDisable: boolean; isHidden: boolean };
+    card: { isDisable: boolean; isHidden: boolean };
+    receipt: { isDisable: boolean; isHidden: boolean };
+    gatewayId: { isDisable: boolean; isHidden: boolean };
+  };
 }
-
 interface DepositIdentifierResponse {
   destination_bank: string;
   destination_owner_name: string;
   destination_iban: string;
   destination_account_number: string;
   deposit_id: number | string;
-  openCryptoModal: () => void;
+  list_deposit_id?: Array<{ deposit_id: string; id_card: number }>;
 }
 
 interface DepositPageProps {
@@ -63,10 +76,9 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   });
 
-  // حالت‌های مدال و لیست ارزها - فقط اینجا و یک بار!
   const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
   const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
-
+  const [depositMethods, setDepositMethods] = useState<WalletFiatData["depositMethods"] | null>(null);
   const { data: generalInfo } = useGetGeneralInfo();
 
   const location = useLocation();
@@ -75,7 +87,6 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
   const [isCreatingIdentifier, setIsCreatingIdentifier] = useState(false);
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoItem | null>(null);
-  // تغییر تب از طریق URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const type = params.get("type");
@@ -101,23 +112,28 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   }, [location.search]);
 
-  // لود اطلاعات فیات
+  // لود اطلاعات fiat
   useEffect(() => {
     const fetchFiatData = async () => {
       try {
-        // setLoading(true);
-        const response = await apiRequest<WalletFiatData>({ url: "/wallets/fiat", method: "GET" });
+        const response = await apiRequest<WalletFiatData>({
+          url: "/wallets/fiat",
+          method: "GET",
+        });
         setFiatData(response);
+        setDepositMethods(response.depositMethods);
+        if (response.deposit_id) {
+          setIdentifierData({
+            ...response.deposit_id,
+            list_deposit_id: response.list_deposit_id,
+          });
+        }
       } catch (err: any) {
         toast.error("خطا در بارگذاری اطلاعات واریز");
-      } finally {
-        // setLoading(false);
       }
     };
     fetchFiatData();
   }, []);
-
-  // فقط یک بار لیست ارزهای کریپتو رو گرفتم و به فرزند پاس میدم
   useEffect(() => {
     setIsDepositCoinsLoading(true);
     const fetchCryptoData = async () => {
@@ -178,7 +194,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
         toast.success("شناسه واریز ساخته شد");
       } else {
         setIdentifierData(null);
-        toast.error("خطا در ساخت شناسه");
+        toast.success("شناسه واریز ساخته شد");
       }
     } catch (err: any) {
       toast.error(err.response?.data?.msg || "قبلاً شناسه ساخته شده");
@@ -187,18 +203,15 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   };
 
-
-
-
-
-
-
-
-
-
-  
   const handleStart = () => setStarted(true);
+  // این فانکشن رو قبل از return بذار
+  const isMethodisHidden = (method: keyof WalletFiatData["depositMethods"]) => {
+    return depositMethods?.[method]?.isHidden !== true;
+  };
 
+  const isMethodDisabled = (method: keyof WalletFiatData["depositMethods"]) => {
+    return depositMethods?.[method]?.isDisable === true;
+  };
   const depositFormMessages = [
     "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید، چراکه درصورت بروز هرگونه مشکل احتمالی، مسئولیت قضایی ناشی از این امر به عهده کاربر است و ارز هشت مسئولیتی در این زمینه ندارد.",
     "جهت واریز وجه، حتما باید از کارت‌های بانکی به نام خودتان که در بخش کاربری ثبت و تایید شده است، استفاده نمایید.",
@@ -222,6 +235,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
   const rightOptions = [
     {
       id: "closeDeal",
+      methodKey: "gateway" as const,
       Icon: <IconBank />,
       Title: "واریز تومانی با درگاه پرداخت",
       description: `واریز حداکثر تا ${formatPersianDigits((maxDeposit / 1_000_000).toString())} میلیون تومان`,
@@ -230,6 +244,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     },
     {
       id: "Identifier",
+      methodKey: "gatewayId" as const,
       Icon: <IconIDentifier />,
       Title: "واریز تومانی با شناسه",
       description: "واریز وجه به صورت نامحدود",
@@ -238,6 +253,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     },
     {
       id: "CardToCard",
+      methodKey: "card" as const,
       Icon: <IconConvertCard />,
       Title: "واریز تومانی با کارت به کارت",
       description: `واریز تا سقف ${formatPersianDigits(15)} میلیون تومان`,
@@ -246,8 +262,9 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     },
     {
       id: "Bank Receipt:",
+      methodKey: "receipt" as const,
       Icon: <IconReceipt />,
-      Title: " واریز تومانی با فیش بانکی",
+      Title: "واریز تومانی با فیش بانکی",
       description: "واریز وجه به صورت نامحدود",
       button: `پرداخت در ${formatPersianDigits(20)} دقیقه`,
       IconMore: <IconArrowRight />,
@@ -263,13 +280,12 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     {
       id: "DepositWithTxID",
       Icon: <IconLink />,
-      Title: "واریز  رمز ارز با TxID",
+      Title: "واریز رمز ارز با TxID",
       description: "برای واریز از صرافی با کیف پول دیگر",
       button: "",
       IconMore: <IconArrowRight />,
     },
   ];
-
   const openCryptoModal = () => {
     setIsCryptoListModalOpen(true);
   };
@@ -323,31 +339,45 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
         {/* بخش راست */}
         <div className="w-full overflow-y-auto h-full lg:block hidden" dir="rtl">
           <p className="text-base text-black0 mb-4 font-medium">واریز تومانی</p>
-          {rightOptions.slice(0, 4).map((option) => (
-            <div key={option.id} className="mt-4 cursor-pointer" onClick={() => setSelectedOption(option.id)}>
-              <div
-                className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200  ${
-                  selectedOption === option.id ? "border border-blue2" : "border border-gray2"
-                }`}
-              >
-                <div>
+          {rightOptions.slice(0, 4).map((option) => {
+            const visible = option.methodKey ? isMethodisHidden(option.methodKey) : true;
+            const disabled = option.methodKey ? isMethodDisabled(option.methodKey) : false;
+
+            if (!visible) return null; 
+
+            return (
+              <div key={option.id} className={`mt-4 ${disabled ? "pointer-events-none" : "cursor-pointer"}`} onClick={() => !disabled && setSelectedOption(option.id)}>
+                <div
+                  className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200 border ${
+                    selectedOption === option.id ? "border-blue2" : disabled ? "border-gray2 dark:bg-gray21 opacity-60" : "border-gray2"
+                  }`}
+                >
                   <div className="flex items-center gap-2">
-                    <div className="bg-blue14 p-3 rounded-lg">
-                      <span className="icon-wrapper w-7 h-7 text-blue2">{option.Icon}</span>
+                    <div className={`p-3 rounded-lg ${disabled ? "bg-gray21 border border-gray5 opacity-45" : "bg-blue14"}`}>
+                      <span className={`icon-wrapper w-7 h-7 ${disabled ? "text-gray5" : "text-blue2"}`}>{option.Icon}</span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <h2 className="text-lg font-medium text-black0">{option.Title}</h2>
+                      <h2 className={`font-medium flex items-center gap-2 lg:text-base xl:text-lg   ${disabled ? "text-gray5" : "text-black0"}`}>
+                        {option.Title}
+                        {/* {disabled && <span className="text-xs  text-gray5">(به زودی)</span>} */}
+                      </h2>
                       <p className="text-sm text-gray5">{option.description}</p>
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {option.button && <button className="text-xs font-normal border text-gray5 border-gray26 px-2 py-[6px] rounded-lg">{option.button}</button>}
-                  <span className="icon-wrapper w-5 h-5 text-gray5">{option.IconMore}</span>
+                  <div className="flex items-center gap-3">
+                    {option.button && (
+                      <button
+                        className={`text-xs font-normal border px-2 py-[6px] rounded-lg ${disabled ? "border-gray12 text-gray5 dark:bg-gray21" : "border-gray26 text-gray5"}`}
+                      >
+                        {option.button}
+                      </button>
+                    )}
+                    <span className={`icon-wrapper w-5 h-5 ${disabled ? "text-gray-400" : "text-gray5"}`}>{option.IconMore}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           <p className="mt-8 mb-4 text-base text-black0 font-medium">واریز رمز ارز</p>
           {rightOptions.slice(4, 6).map((option) => (
@@ -363,7 +393,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
                       <span className="icon-wrapper w-7 h-7 text-blue2">{option.Icon}</span>
                     </div>
                     <div>
-                      <h2 className="text-lg font-medium text-black0">{option.Title}</h2>
+                      <h2 className=" font-medium text-black0 lg:text-base xl:text-lg ">{option.Title}</h2>
                       <p className="text-sm text-gray5">{option.description}</p>
                     </div>
                   </div>

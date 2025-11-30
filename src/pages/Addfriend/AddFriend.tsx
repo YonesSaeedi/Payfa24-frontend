@@ -188,11 +188,11 @@ export default function AddFriend() {
             <BreadcrumbNavigation />
 
             {/* Section1 */}
-            <div className="w-full bg-gray41 rounded-2xl my-8 py-10 flex flex-row-reverse justify-evenly items-center overflow-x-hidden">
+            <div className="w-full bg-gray41 rounded-2xl my-8 lg:p-10  px-4 py-6 flex flex-row-reverse justify-between items-center overflow-x-hidden">
               <div className="hidden lg:block">
                 <img src={theme === "dark" ? addFriendDark : addFriendLight} alt="theme-based image" className="w-full max-w-[480px] h-auto lg:h-[305px]" />
               </div>
-              <div className="space-y-5 lg:w-[580px] w-full px-4" dir="rtl">
+              <div className="space-y-5 lg:w-[580px] w-full " dir="rtl">
                 <h3 className="lg:text-xl text-sm font-medium text-black1">
                   با دعوت از دوستانتان از {toPersianDigits(25)} تا {toPersianDigits(30)} درصد در کارمزد تراکنش‌های آن‌ها پاداش بگیرید .
                 </h3>
@@ -217,7 +217,7 @@ export default function AddFriend() {
                         </div>
                       ) : (
                         <>
-                          <div className="hover:text-blue2">
+                          <div className="hover:text-blue2 flex gap-1 items-center px-3 py-1.5 mt-2 rounded-lg border border-gray5 hover:border-blue2">
                             <span>{toPersianDigits(e.Link)}</span>
                             <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4">{e.Icon}</span>
                           </div>

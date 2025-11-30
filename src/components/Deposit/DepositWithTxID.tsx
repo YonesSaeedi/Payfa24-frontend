@@ -11,6 +11,7 @@ import { CryptoItem } from "../../types/crypto";
 import { toast } from "react-toastify";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { ThemeContext } from "../../context/ThemeContext";
+import { formatEnglishNumber } from "../../utils/formatPersianNumber";
 
 interface DepositWithTxIDProps {
   openCryptoModal: () => void;
@@ -198,7 +199,7 @@ export default function DepositWithTxID({
                   }}
                 />
               )}
-              <span className="text-black1 font-medium">{selectedCurrency.name || selectedCurrency.symbol}</span>
+              <span className="text-black1 font-medium lg:text-base text-sm">{selectedCurrency.name || selectedCurrency.symbol}</span>
             </span>
           ) : (
             <span className="text-gray12">انتخاب رمز ارز</span>
@@ -226,7 +227,7 @@ export default function DepositWithTxID({
             <div className="skeleton-bg w-32 h-5 rounded-sm"></div>
           ) : (
             <span dir="ltr" className="text-sm font-medium text-black0">
-              {selectedCurrency.balance ?? "0"} {selectedCurrency.symbol || ""}
+              {formatEnglishNumber( selectedCurrency.balance ?? "0")} {selectedCurrency.symbol || ""}
             </span>
           )}
         </div>
@@ -248,7 +249,7 @@ export default function DepositWithTxID({
                 label: (
                   <div className="flex items-center justify-between w-full py-1 rounded-md">
                     <div className="flex items-center gap-2">
-                      <span className="lg:text-sm text-xs text-black0">{option.label}</span>
+                      <span className="text-sm  text-black0">{option.label}</span>
                     </div>
                   </div>
                 ),

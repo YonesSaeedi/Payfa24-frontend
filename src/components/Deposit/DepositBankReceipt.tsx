@@ -173,10 +173,12 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
           control={control}
           render={({ field }) => {
             const hasCards = bankCards.length > 0;
-
+            const IsLoadingPlaceholder = bankCards.length === 0;
             return (
               <FloatingSelect
-                placeholder={hasCards ? "حساب مبدا را انتخاب کنید" : "هیچ کارت ثبت‌ شده‌ای ندارید"}
+                placeholder={
+                  IsLoadingPlaceholder ? <span className="skeleton-bg lg:w-44 w-36 h-5 rounded-sm"></span> : hasCards ? "حساب بانکی را انتخاب کنید" : "هیچ کارت ثبت‌ شده‌ای ندارید"
+                }
                 label="حساب مبدا"
                 value={hasCards ? field.value : ""}
                 onChange={field.onChange}
@@ -274,7 +276,7 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
         className={`relative w-full mx-auto my-5 p-4 border-2 border-dashed rounded-lg text-center transition-all ${
           previewURL ? "border-blue2 " : "border-gray31 hover:border-gray12"
         } ${isUploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
-        onClick={!isUploading ? handleClick : undefined} 
+        onClick={!isUploading ? handleClick : undefined}
       >
         <div className="flex flex-col items-center justify-center h-48 relative">
           {/* حالت عادی */}

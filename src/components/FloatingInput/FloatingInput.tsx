@@ -18,7 +18,7 @@ const FloatingInput: FC<FloatingInputProps> = ({ label, value, onChange, type = 
     <div dir="rtl" className="relative w-full">
       <label
         className={`
-        absolute right-3 text-xs -top-2 px-1 duration-200 z-40 lg:bg-gray43 bg-gray38
+        absolute right-3 text-xs -top-2 px-1 duration-200 z-30 lg:bg-gray43 bg-gray38
         ${isFocused ? "text-blue2" : "text-gray12"} ${labelClassName ? labelClassName : "lg:bg-gray43 bg-gray38"}
       `}
       >

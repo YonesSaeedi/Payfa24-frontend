@@ -17,7 +17,7 @@ export default function MultiFactorCard({ dataCard, onClick, }: MultiFactorCardP
     <div className="w-full rounded-xl lg:p-6 lg:h-44 p-4 border border-gray21">
       {/* بخش بالایی کارت */}
       <div className="flex items-center justify-between flex-row-reverse mb-5">
-        <button onClick={(e) => { e.preventDefault(); onClick(); }} className="w-24 h-9 rounded-lg border border-blue2 text-base text-blue2 font-medium">{button}</button>
+        <button onClick={(e) => { e.preventDefault(); onClick(); }} className="lg:w-[99px] lg:h-9 h-[30px] w-[83px] rounded-lg border border-blue2 lg:text-base text-xs text-blue2 font-medium">{button}</button>
         {img ? <img className="w-[43px] h-11" src={img} alt={Title} />
           :
           <span className="icon-wrapper w-10 h-10 text-blue2">{icon}</span>
