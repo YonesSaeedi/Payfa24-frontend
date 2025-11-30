@@ -145,7 +145,6 @@ export default function DepositDedicatedWallet({
               <div className="h-5 w-32 skeleton-bg rounded-sm " />
             </div>
           ) : selectedCurrency.symbol && selectedCrypto ? (
-            /* همون کد اصلی تو */
             <span className="flex items-center gap-2">
               {selectedCurrency.isFont ? (
                 <i className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`} style={{ color: selectedCurrency.color || "#000", fontSize: "24px" }} />
