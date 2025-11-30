@@ -6,13 +6,15 @@ export const formatPersianNumber = (input: string | number): string => {
 
   let num = Number(numStr);
 
+  // اعداد بزرگ‌تر از 1 بدون رند کردن
   if (Math.abs(num) >= 1) {
-    const rounded = Math.round(num).toString();
-    const withCommas = rounded.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return withCommas.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
-  }
+  const integerPart = Math.trunc(num)  // قسمت صحیح بدون رند کردن
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return integerPart.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+}
 
- 
+
   if (Math.abs(num) >= 0.01) {
     const fixed = num.toFixed(2)
       .replace(/0+$/, "")
@@ -32,6 +34,7 @@ export const formatPersianNumber = (input: string | number): string => {
 
   return "۰";
 };
+
 
 
 export const formatEnglishNumber = (input: string | number): string => {

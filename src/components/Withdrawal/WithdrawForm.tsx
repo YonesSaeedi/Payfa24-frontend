@@ -44,9 +44,7 @@ interface WithdrawFormValues {
 }
 
 export default function WithdrawForm() {
-  const [listCards, setListCards] = useState<
-    { id: number; card: string; bank: string }[]
-  >([]);
+  const [listCards, setListCards] = useState<{ id: number; card: string; bank: string }[]>([]);
   const [isOpen] = useState(false);
   const [otpCode, setOtpCode] = useState("");
 
@@ -58,7 +56,7 @@ export default function WithdrawForm() {
   const [isResending, setIsResending] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number>(0);
   const [, setSelectedCard] = useState<number | null>(null);
-  const [pendingWithdrawData, setPendingWithdrawData] =useState<PendingWithdrawData | null>(null);
+  const [pendingWithdrawData, setPendingWithdrawData] = useState<PendingWithdrawData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { data: userData } = useGetUser();
   const userMobile = userData?.user?.mobile || "شماره شما";
@@ -68,34 +66,29 @@ export default function WithdrawForm() {
   });
   const watchAmount = useWatch({ control, name: "amount" });
   const watchBank = useWatch({ control, name: "bank" });
-  const allFieldsFilled =
-    !!watchBank && !!watchAmount && Number(watchAmount) > 0;
+  const allFieldsFilled = !!watchBank && !!watchAmount && Number(watchAmount) > 0;
 
   useEffect(() => {
-  const fetchCards = async () => {
-    try {
-      const response = await apiRequest<WalletResponse>({
-        url: "/wallets/fiat?withdraw=true",
-        method: "GET",
-      });
-      setListCards(response.list_cards || []);
-      setWalletBalance(Number(response.wallet.balance_available) || 0);
-    } catch (err) {
-      console.error("Failed to fetch cards", err);
-    } finally {
-      setIsLoading(false); 
-    }
-  };
-  fetchCards();
-}, []);
+    const fetchCards = async () => {
+      try {
+        const response = await apiRequest<WalletResponse>({
+          url: "/wallets/fiat?withdraw=true",
+          method: "GET",
+        });
+        setListCards(response.list_cards || []);
+        setWalletBalance(Number(response.wallet.balance_available) || 0);
+      } catch (err) {
+        console.error("Failed to fetch cards", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCards();
+  }, []);
 
- const toPersianDigits = (num: string) =>
-  num.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+  const toPersianDigits = (num: string) => num.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[+d]);
 
-const toEnglishDigits = (num: string) =>
-  num.replace(/[۰-۹]/g, (d) => "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]);
-
-
+  const toEnglishDigits = (num: string) => num.replace(/[۰-۹]/g, (d) => "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -113,21 +106,18 @@ const toEnglishDigits = (num: string) =>
     const amountNumber = Number(data.amount);
     setIsSubmitting(true);
 
- 
     if (amountNumber < 100000) {
       toast.error("حداقل مقدار برداشت 100,000 تومان میباشد.");
       setIsSubmitting(false);
       return;
     }
 
-  
     if (!data.bank) {
       toast.error("لطفاً یک کارت بانکی انتخاب کنید");
       setIsSubmitting(false);
       return;
     }
 
- 
     const requestData = {
       amount: amountNumber,
       card: data.bank.id,
@@ -140,7 +130,6 @@ const toEnglishDigits = (num: string) =>
         data: requestData,
       });
 
-     
       const transactionId = response.transaction_id;
 
       setPendingWithdrawData({
@@ -154,10 +143,9 @@ const toEnglishDigits = (num: string) =>
       setResendCodeTimeLeft(120);
       setIsResending(false);
     } catch (err: unknown) {
-      
       if (err instanceof AxiosError) {
-        toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در ارسال درخواست برداشت مشکلی پیش امده است')
-      } 
+        toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "در ارسال درخواست برداشت مشکلی پیش امده است");
+      }
 
       let message = "خطا در برداشت!";
       if (err instanceof AxiosError && err.response?.data?.msg) {
@@ -227,35 +215,27 @@ const toEnglishDigits = (num: string) =>
     label: (
       <div className="flex justify-between items-center w-full">
         <span>{card.bank}</span>
-        <span className="text-sm text-gray-700">
-          {card.card.replace(/(\d{4})(?=\d)/g, "$1-")}
-        </span>
+        <span className="text-sm text-gray-700">{card.card.replace(/(\d{4})(?=\d)/g, "$1-")}</span>
       </div>
     ),
   }));
 
+  const formatPersianInteger = (num: number) => {
+    const integerPart = Math.trunc(num);
+    const withCommas = integerPart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return toPersianDigits(withCommas);
+  };
 
-
-  
   return (
     <>
-      {/* فرم برداشت */}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray43 flex flex-col justify-between  w-full lg:border lg:border-gray26"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="lg:p-8 rounded-xl lg:shadow-sm lg:bg-gray43 flex flex-col justify-between  w-full lg:border lg:border-gray26">
         <div>
-          <div
-            dir="rtl"
-            className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex flex-row justify-between items-center text-blue17"
-          >
+          <div dir="rtl" className="mb-6 bg-blue14 py-4 px-4 rounded-[8px] flex flex-row justify-between items-center text-blue17">
             <div className="flex flex-row">
               <span className="w-6 h-6 icon-wrapper ml-2 text-blue17">
                 <IconVideo />
               </span>
-              <h2 className="font-normal text-blue17">
-                ویدیو آموزشی برداشت تومانی
-              </h2>
+              <h2 className="font-normal text-blue17">ویدیو آموزشی برداشت تومانی</h2>
             </div>
 
             <span className="w-6 h-6 icon-wrapper  text-blue17 ">
@@ -264,58 +244,53 @@ const toEnglishDigits = (num: string) =>
           </div>
 
           <div dir="rtl" className="mb-6">
-  <Controller
-  name="amount"
-  control={control}
-  rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
-  render={({ field }) => (
-    <FloatingInput
-      label="مقدار برداشت (تومان)"
-      value={
-        field.value
-          ? toPersianDigits(Number(field.value).toLocaleString("en-US"))
-          : ""
-      }
-      onChange={(e) => {
-        const english = toEnglishDigits(e.target.value.replace(/,/g, "")); 
-        field.onChange(english);
-      }}
-      type="text"
-      placeholder="۰ تومان"
-      className="text-black0 border-gray12"
-    />
-  )}
-/>
+            <Controller
+              name="amount"
+              control={control}
+              rules={{ required: "لطفا مقدار برداشت را وارد کنید" }}
+              render={({ field }) => (
+                <FloatingInput
+                  label="مقدار برداشت (تومان)"
+                  value={field.value ? formatPersianInteger(Number(field.value)) : ""}
+                  onChange={(e) => {
+                    let value = e.target.value;
 
+                    value = toEnglishDigits(value.replace(/,/g, ""));
 
-   <div
-  dir="rtl"
-  className="flex items-center justify-between mb-4 mt-3"
->
-  <span className="text-gray5 text-md text-[14px] font-normal">موجودی قابل برداشت</span>
-  {isLoading ? (
-    <div className="h-5 w-20 skeleton-bg rounded animate-pulse"></div> 
-  ) : (
-    <Controller
-      name="amount"
-      control={control}
-      render={({ field }) => (
-        <span
-  className="text-blue2 text-md font-normal text-[14px] cursor-pointer"
-  onClick={() => {
-    const rounded = Math.round(walletBalance); // عدد صحیح
-    field.onChange(rounded.toString());        // ارسال به react-hook-form
-  }}
->
-  {formatPersianNumber(walletBalance)} تومان
-</span>
+                    if (/^\d*$/.test(value)) {
+                      field.onChange(value);
+                    } else {
+                      field.onChange(field.value);
+                    }
+                  }}
+                  type="text"
+                  placeholder="۰ تومان"
+                  className="text-black0 border-gray12"
+                />
+              )}
+            />
 
-      )}
-    />
-  )}
-</div>
-
-
+            <div dir="rtl" className="flex items-center justify-between mb-4 mt-3">
+              <span className="text-gray5 text-md text-[14px] font-normal">موجودی قابل برداشت</span>
+              {isLoading ? (
+                <div className="h-5 w-20 skeleton-bg rounded animate-pulse"></div>
+              ) : (
+                <Controller
+                  name="amount"
+                  control={control}
+                  render={({ field }) => (
+                    <span
+                      className="text-blue2 text-md font-normal text-[14px] cursor-pointer"
+                      onClick={() => {
+                        field.onChange(Math.trunc(walletBalance).toString());
+                      }}
+                    >
+                      {formatPersianNumber(walletBalance)} تومان
+                    </span>
+                  )}
+                />
+              )}
+            </div>
           </div>
 
           <div className="mb-6">
@@ -329,32 +304,20 @@ const toEnglishDigits = (num: string) =>
                     label="کارت بانکی"
                     value={field.value?.id.toString() || ""}
                     onChange={(val) => {
-                      const selected =
-                        listCards.find((c) => c.id === Number(val)) || null;
-                      field.onChange(selected); 
+                      const selected = listCards.find((c) => c.id === Number(val)) || null;
+                      field.onChange(selected);
                       setSelectedCard(selected ? selected.id : null);
                     }}
                     options={listCards.map((card) => ({
                       value: card.id.toString(),
                       label: `${card.bank} - ${card.card}`,
-                      icon: (
-                        <img
-                          src={
-                            getBankLogo(card.bank) ||
-                            "/bank-logos/bank-sayer.png"
-                          }
-                          alt={card.bank}
-                          className="w-6 h-6 object-contain"
-                        />
-                      ),
+                      icon: <img src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"} alt={card.bank} className="w-6 h-6 object-contain" />,
                     }))}
                   />
                 )}
               />
             ) : (
-              <div className="w-full border rounded-lg p-3 text-center text-gray-500 border-gray12">
-                هیچ کارت بانکی موجود نمی‌ باشد
-              </div>
+              <div className="w-full border rounded-lg p-3 text-center text-gray-500 border-gray12">هیچ کارت بانکی موجود نمی‌ باشد</div>
             )}
           </div>
           <div>
@@ -366,9 +329,7 @@ const toEnglishDigits = (num: string) =>
               </div>
               {/* ردیف دوم */}
               <div className="flex items-center justify-between ">
-                <span className=" text-gray5 text-[14px] font-normal">
-                  مبلغ نهایی واریز به کیف پول{" "}
-                </span>
+                <span className=" text-gray5 text-[14px] font-normal">مبلغ نهایی واریز به کیف پول </span>
                 <span className="text-md text-gray-700"></span>
               </div>
             </div>
@@ -379,17 +340,15 @@ const toEnglishDigits = (num: string) =>
           <button
             type="submit"
             disabled={!allFieldsFilled || isSubmitting}
-            className={`w-full py-3 rounded-lg mt-24 font-bold text-[18px] transition-colors duration-300 ${!allFieldsFilled || isSubmitting
-                ? "bg-blue2  text-white cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
-              }`}
+            className={`w-full py-3 rounded-lg mt-24 font-bold text-[18px] transition-colors duration-300 ${
+              !allFieldsFilled || isSubmitting ? "bg-blue2  text-white cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"
+            }`}
           >
             {isSubmitting ? "درحال برداشت وجه" : "برداشت"}
           </button>
         </div>
       </form>
 
-      {/* مودال OTP دقیقاً با همان استایل دوستت */}
       {isOtpModalOpen && (
         <div dir="rtl" className="flex justify-end">
           <OTPInputModal
@@ -412,10 +371,7 @@ const toEnglishDigits = (num: string) =>
 
       {isTradeSuccessModalOpen && (
         <div dir="rtl">
-          <TradeSuccessModal
-            setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen}
-            linkTo={ROUTES.TRANSACTION.TOMAN_HISTORY}
-          />
+          <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} linkTo={ROUTES.TRANSACTION.TOMAN_HISTORY} />
         </div>
       )}
     </>
