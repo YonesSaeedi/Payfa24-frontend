@@ -332,6 +332,25 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
         return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} />;
     }
   };
+  //  انتخاب ارز از روی URL
+useEffect(() => {
+  if (!cryptoListData || cryptoListData.length === 0) return;
+
+  const params = new URLSearchParams(location.search);
+  const coinSymbol = params.get("coin");
+
+  if (coinSymbol) {
+    const found = cryptoListData.find(
+      (c) => c.symbol.toLowerCase() === coinSymbol.toLowerCase()
+    );
+
+    if (found) {
+      setSelectedCrypto(found);
+      return;
+    }
+  }
+}, [location.search, cryptoListData]);
+
 
   return (
     <HeaderLayout>

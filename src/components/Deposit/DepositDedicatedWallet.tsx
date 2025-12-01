@@ -246,7 +246,7 @@ export default function DepositDedicatedWallet({
           </div>
         </div>
       )}
-
+ 
       {!showWalletInfo && (
         <div className="lg:mt-40 mt-8 mb-10">
           <button

@@ -14,7 +14,9 @@ import FilterDropdown from "./FilterDropdown";
 import SkeletonTable from "./SkeletonTable";
 import { filterForOptions, MergedCryptoHistory, statusOptions, TypeCryptoHistory, typeOptions } from "./typeHistory";
 import { formatCryptoAmount } from "../../utils/formatCryptoAmount";
-import { formatPersianNumber } from "../../utils/formatPersianNumber";
+import { formatEnglishNumber } from "../../utils/formatPersianNumber";
+import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
+import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 
 export interface Tx {
   id: string;
@@ -58,7 +60,7 @@ const CryptoPage: React.FC = () => {
   const [selectedFilterFor, setSelectedFilterFor] = useState(filterForOptions[0]);
   const [selectedFilterType, setSelectedFilterType] = useState(typeOptions[0]);
   const [searchText, setSearchText] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
 const [selectedTx, setSelectedTx] = useState<Tx | null>(null);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -170,7 +172,65 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
     return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
   };
 
+const MobileSkeleton = () => (
+  <div className="space-y-4">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <div
+        key={i}
+        className="border rounded-xl p-4 border-gray21"
+      >
+        {/* Header با فاصله دقیق */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="w-10 h-10 rounded-full skeleton-bg"></span>
 
+            <div className="flex flex-col gap-1">
+              <div className="h-4 w-24 rounded skeleton-bg"></div> {/* برابر title واقعی */}
+              <div className="h-3 w-14 rounded skeleton-bg"></div> {/* برابر symbol */}
+            </div>
+          </div>
+
+          <div className="h-6 w-20 rounded-full skeleton-bg"></div> {/* برابر StatusBadge */}
+        </div>
+
+        {/* Info بخش وسط */}
+        <div className="text-sm space-y-1 pt-5">
+
+          {/* مقدار */}
+          <div className="flex justify-between items-center h-6">
+            <span className="h-3 w-14 rounded skeleton-bg"></span>
+            <span className="h-4 w-20 rounded skeleton-bg"></span>
+          </div>
+
+          {/* نوع */}
+          <div className="flex justify-between items-center h-6">
+            <span className="h-3 w-14 rounded skeleton-bg"></span>
+            <span className="h-4 w-16 rounded skeleton-bg"></span>
+          </div>
+
+          {/* قیمت */}
+          <div className="flex justify-between items-center h-6">
+            <span className="h-3 w-14 rounded skeleton-bg"></span>
+            <span className="h-4 w-24 rounded skeleton-bg"></span>
+          </div>
+
+          {/* تاریخ */}
+          <div className="flex justify-between items-center h-6">
+            <span className="h-3 w-14 rounded skeleton-bg"></span>
+            <span className="h-4 w-28 rounded skeleton-bg"></span>
+          </div>
+        </div>
+
+        {/* Footer ثابت، بدون اسکلتون */}
+        <div
+          className="text-blue2 text-sm mt-3 cursor-default border-t pt-3 text-center border-gray21 font-bold text-[14px]"
+        >
+          جزئیات تراکنش
+        </div>
+      </div>
+    ))}
+  </div>
+);
 
   return (
     <div dir="rtl">
@@ -266,10 +326,30 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
                     </div>
                   </div>
              <div className="text-center font-normal text-base">
-  {formatPersianNumber(formatCryptoAmount(tx.amount))}
+  {formatEnglishNumber(formatCryptoAmount(tx.amount))}
              </div>
 
-                  <div className="text-center font-normal text-base">{transactionTypeMap[tx.type] || tx.type}</div>
+               <div className="flex justify-center">
+  <div
+    className={`inline-flex items-center gap-1 w-[108px] h-[29px] justify-center rounded-[4px] ${
+      tx.type === "deposit" ? "bg-green8 text-green-600" : "bg-red7 text-red6"
+    }`}
+  >
+    {tx.type === "deposit" ? (
+      <span className="w-5 h-5 icon-wrapper">
+        <ReceivedIcon />
+      </span>
+    ) : (
+      <span className="w-5 h-5 icon-wrapper">
+        <SendIcon />
+      </span>
+    )}
+    <span className="text-[14px] font-normal">
+      {transactionTypeMap[tx.type ?? ""] || tx.type || "نامشخص"}
+    </span>
+  </div>
+</div>
+
                   <div className="text-center">
                     <StatusBadge text={transactionStatusMap[tx.status] || "نامشخص"} />
                   </div>
@@ -294,7 +374,9 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
         </div>
 
         <div className="block lg:hidden space-y-4 lg:mt-4">
-          {filteredTransactions.length > 0 ? (
+          {isLoading ? (
+    <MobileSkeleton />
+  ) : filteredTransactions.length > 0 ? (
             filteredTransactions.map((tx) => (
               <div key={tx.id} className="border rounded-xl p-4  border-gray21">
                 <div className="flex items-center justify-between mb-2">
@@ -323,12 +405,37 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
 
                 <div className="text-sm space-y-1 pt-5">
                   <p className="flex justify-between">
-                    مقدار: <span className="pb-4 font-normal text-[14px]">{tx.amount}</span>
+                    مقدار: <span className="flex flex-row-reverse pb-4 font-normal text-[14px]">{formatEnglishNumber(tx.amount)} <span className="pl-1">{tx.coin.symbol}</span></span>
                   </p>
-                  <p className="flex justify-between">
-                    نوع: <span className="pb-4 font-normal text-[14px]">{transactionTypeMap[tx.type] || tx.type}</span>
-                  </p>
-                  <p className="flex justify-between">
+                 <p className="flex justify-between items-center">
+  نوع:
+  <div
+    className={`inline-flex items-center gap-1   w-[108px] h-[29px] justify-center rounded-[4px] ${
+      tx.type === "deposit"
+        ? "bg-green8 text-green-600"
+        : "bg-red7 text-red6"
+    }`}
+  >
+    {tx.type === "deposit" ? (
+      <span className="w-5 h-5 icon-wrapper">
+         <ReceivedIcon />
+      </span>
+    ) : (
+      <span className="w-5 h-5 icon-wrapper">
+      
+         <SendIcon />
+      </span>
+    )}
+
+    <span className="text-[14px] font-normal">
+      {transactionTypeMap[tx.type] || tx.type}
+    </span>
+  </div>
+</p>
+
+
+
+                  <p className="flex justify-between pt-5">
                     تاریخ: <span className="pb-4 font-normal text-[14px]">{tx.DateTime ? convertDigitsToPersian(tx.DateTime) : "-"}</span>
                   </p>
                 </div>

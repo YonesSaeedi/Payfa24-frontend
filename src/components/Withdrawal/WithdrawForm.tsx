@@ -158,7 +158,6 @@ export default function WithdrawForm() {
       setIsSubmitting(false);
     }
   };
-
   const handleOtpSubmit = async () => {
     if (!otpCode || !pendingWithdrawData) {
       toast.error("کد OTP وارد نشده است.");
@@ -237,7 +236,6 @@ export default function WithdrawForm() {
               </span>
               <h2 className="font-normal text-blue17">ویدیو آموزشی برداشت تومانی</h2>
             </div>
-
             <span className="w-6 h-6 icon-wrapper  text-blue17 ">
               <IconClose />
             </span>
@@ -254,9 +252,7 @@ export default function WithdrawForm() {
                   value={field.value ? formatPersianInteger(Number(field.value)) : ""}
                   onChange={(e) => {
                     let value = e.target.value;
-
                     value = toEnglishDigits(value.replace(/,/g, ""));
-
                     if (/^\d*$/.test(value)) {
                       field.onChange(value);
                     } else {

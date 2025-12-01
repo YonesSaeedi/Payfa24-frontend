@@ -49,7 +49,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ text }) => {
 
   return (
     <div
-      className={`inline-flex items-center gap-1 px-3 py-1 rounded-[4px] ${status.bgColor}`}
+      className={`inline-flex items-center gap-1  w-[108px] h-[29px] text-center justify-center rounded-[4px] ${status.bgColor}`}
     >
         {status.icon}
       <span className={` text-[14px] font-normal  ${status.textColor}`}>{text}</span>

@@ -6,9 +6,9 @@ export const formatPersianNumber = (input: string | number): string => {
 
   let num = Number(numStr);
 
-  // اعداد بزرگ‌تر از 1 بدون رند کردن
+ 
   if (Math.abs(num) >= 1) {
-  const integerPart = Math.trunc(num)  // قسمت صحیح بدون رند کردن
+  const integerPart = Math.trunc(num)  
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return integerPart.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
@@ -43,30 +43,29 @@ export const formatEnglishNumber = (input: string | number): string => {
   const numStr = String(input).replace(/,/g, "").trim();
   if (numStr === "" || isNaN(Number(numStr))) return "0";
 
-  let num = Number(numStr);
+  const num = Number(numStr);
 
- 
+  // عدد >= 1: بدون rounding، فقط نمایش عدد صحیح با کاما
   if (Math.abs(num) >= 1) {
-    const rounded = Math.round(num).toString();
-    return rounded.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const intPart = Math.trunc(num); // قسمت صحیح عدد
+    return intPart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
- 
+  // عدد بین 0.01 و 1: همان rounding دو رقم اعشار
   if (Math.abs(num) >= 0.01) {
     return num
       .toFixed(2)
       .replace(/0+$/, "")
-      .replace(/\.$/, ""); 
+      .replace(/\.$/, "");
   }
 
-  
+  // عدد کوچک‌تر از 0.01: دو رقم بعد از صفرهای leading
   const match = numStr.match(/^(0\.0*)(\d+)/);
   if (match) {
-    const zeros = match[1];     
-    const digits = match[2];    
+    const zeros = match[1];
+    const digits = match[2];
     return zeros + digits.slice(0, 2);
   }
 
   return "0";
 };
-

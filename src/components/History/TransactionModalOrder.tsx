@@ -3,7 +3,7 @@ import StatusBadge from "../UI/Button/StatusBadge";
 import IconClose from "../../assets/icons/Login/IconClose";
 import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
-import { formatEnglishNumber } from "../../utils/formatPersianNumber";
+import { formatEnglishNumber, formatPersianNumber } from "../../utils/formatPersianNumber";
 import { Tx } from "./CryptoPage";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import { ListDigitalCoin } from "../../constants/ListdigitalCoins";
@@ -224,24 +224,29 @@ const handleCopyVoucher = (voucher?: string) => {
                 {detail.fee !== undefined && (
                   <DetailRow
                     label="قیمت واحد"
-                    value={formatEnglishNumber(detail.fee)}
-                    symbol={detail.coin?.symbol}
+                    value={formatPersianNumber(detail.fee)}
+                    symbol="تومان"
                   />
                 )}
                 {detail.amount !== undefined && (
                   <DetailRow
                     label="قیمت کل"
-                    value={formatEnglishNumber(detail.amount)}
-                    symbol={detail.coin?.symbol}
-                  />
-                )}
-                {detail.wage !== undefined && (
-                  <DetailRow
-                    label="کارمزد"
-                    value={convertDigitsToPersian(detail.wage)}
+                    value={formatPersianNumber(detail.amount)}
                     symbol="تومان"
                   />
                 )}
+                {detail.wage !== undefined && (
+  <DetailRow
+    label="کارمزد"
+    value={
+      detail.type === "sell"
+        ? convertDigitsToPersian(detail.wage) 
+        : formatEnglishNumber(detail.wage)   
+    }
+    symbol={detail.type === "sell" ? "تومان" : detail.coin?.symbol} 
+  />
+)}
+
                  {detail.description && <DetailRow label="توضیحات" value={detail.description} />}
        {getVoucherCode() && (
   <DetailRow
