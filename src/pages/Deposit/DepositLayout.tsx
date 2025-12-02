@@ -18,7 +18,7 @@ const DepositLayout: React.FC<DepositLayoutProps> = ({
     <div className="pt-5 w-full  container-style h-full flex flex-col items-center justify-center">
       {/* بخش اصلی (راست و چپ) */}
       <BreadcrumbNavigation/>
-      <div className=" flex w-full lg:gap-7 lg:flex-row-reverse lg:p-10 flex-col items-start lg:mt-10 mt-4 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl">
+      <div className=" flex w-full lg:gap-7 lg:flex-row-reverse lg:bg-gray25 lg:p-10 flex-col items-start lg:mt-10 mt-4 justify-center lg:shadow-[0_0_12px_0_rgba(0,0,0,0.36)] rounded-2xl">
         
         {/*
           بخش راست - ثابت (ستون انتخاب‌های واریز)

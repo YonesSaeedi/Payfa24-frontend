@@ -39,6 +39,7 @@ interface DepositBankReceiptProps {
   onNext: () => void;
   onFileChange: (file: File | null) => void;
   initialPreviewUrl: string | null;
+  loadingBankCards?:boolean
 }
 
 export function formatPersianCardNumber(input: string | number): string {
@@ -54,7 +55,7 @@ export function formatPersianCardNumber(input: string | number): string {
 
   return persianGrouped;
 }
-export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext, onFileChange, initialPreviewUrl }: DepositBankReceiptProps) {
+export default function DepositBankReceipt({ loadingBankCards,bankCards, receiptAccounts, onNext, onFileChange, initialPreviewUrl }: DepositBankReceiptProps) {
   const amounts = [5, 10, 20, 50];
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(initialPreviewUrl);
@@ -173,16 +174,21 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
           control={control}
           render={({ field }) => {
             const hasCards = bankCards.length > 0;
-            const IsLoadingPlaceholder = bankCards.length === 0;
             return (
               <FloatingSelect
                 placeholder={
-                  IsLoadingPlaceholder ? <span className="skeleton-bg lg:w-44 w-36 h-5 rounded-sm"></span> : hasCards ? "حساب بانکی را انتخاب کنید" : "هیچ کارت ثبت‌ شده‌ای ندارید"
+                  loadingBankCards ? ( 
+                    <span className="skeleton-bg w-40 h-4 rounded-sm"></span>
+                  ) : hasCards ? (
+                    "حساب بانکی را انتخاب کنید"
+                  ) : (
+                    <span className="text-gray5 text-xs lg:text-sm">هیچ کارت ثبت‌ شده‌ای ندارید</span>
+                  )
                 }
                 label="حساب مبدا"
                 value={hasCards ? field.value : ""}
                 onChange={field.onChange}
-                disabled={!hasCards} // ⬅️ این خط مهمه (غیرفعال کن وقتی کارت نیست)
+                disabled={!hasCards} 
                 options={
                   hasCards
                     ? bankCards.map((c) => ({
@@ -210,7 +216,7 @@ export default function DepositBankReceipt({ bankCards, receiptAccounts, onNext,
           control={control}
           render={({ field }) => (
             <FloatingSelect
-              placeholder={receiptAccounts.length ? "حساب مقصد را انتخاب کنید" : "حساب مقصد یافت نشد"}
+              placeholder="حساب مقصد را انتخاب کنید" 
               label="حساب مقصد"
               value={field.value}
               onChange={field.onChange}
