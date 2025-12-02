@@ -37,6 +37,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import WithdrawFiat from "../pages/Withdrawal/WithdrawFiat";
 import WithdrawCrypto from "../pages/Withdrawal/WithdrawCrypto";
 import ScrollToTop from "../components/ScrollToTop";
+import ConvertWalletList from "../pages/ConvertLowStockWallets/ConvertWalletList";
+
 
 
 
@@ -71,6 +73,7 @@ export default function AppRouter() {
         <Route path={ROUTES.BANK_CARDS} element={<ProtectedRoute><BankCardManager /></ProtectedRoute>} />
         <Route path={ROUTES.TICKET.ROOT} element={<ProtectedRoute><TicketsRoute /></ProtectedRoute>} />
         <Route path={ROUTES.TICKET.CREATE} element={<ProtectedRoute><CreateTicketPage /></ProtectedRoute>} />
+        <Route path={ROUTES.WALLET_CONVERT} element={<ProtectedRoute><ConvertWalletList /></ProtectedRoute>}/>
         <Route path={ROUTES.TRADE.ROOT} element={<ProtectedRoute><TradeLayout /></ProtectedRoute>}>
           <Route index element={<Navigate to={ROUTES.TRADE.BUY} replace />} />
           <Route path={ROUTES.TRADE.BUY} element={<Buy />} />
