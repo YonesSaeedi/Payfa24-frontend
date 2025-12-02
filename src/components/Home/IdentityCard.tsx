@@ -115,7 +115,7 @@ const IdentityCard: React.FC<IdentityCardProps> = ({dailyWithdrawalLimit = 0, da
 <div className="flex justify-between items-center gap-2 p-3 border border-gray21 rounded-lg shadow-sm w-full bg-gray27">
   <span className="flex items-center gap-1 text-xs text-black1">
    
-    سقف برداشت روزانه:
+    سقف برداشت روزانه رمزارز:
   </span>
 
   <span className="whitespace-nowrap text-black1 text-sm">

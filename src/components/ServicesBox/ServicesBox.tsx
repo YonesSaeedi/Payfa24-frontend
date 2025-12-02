@@ -73,7 +73,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     {
       label: " برداشت رمزارز",
       icon: <WalletMinesIcon />,
-      route: ROUTES.WITHDRAWAL.FIAT,
+      route: ROUTES.WITHDRAWAL.CRYPTO,
     },
     {
       label: " برداشت تومانی",
@@ -144,6 +144,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     },
     { label: "مقالات", icon: <IconPersonalCard /> },
     { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND },
+     { label: "تبدیل", icon: <IconUserPlus />, route: ROUTES.WALLET_CONVERT}
   ];
 
   const renderSection = (title: string, items: ServiceItem[]) => (
