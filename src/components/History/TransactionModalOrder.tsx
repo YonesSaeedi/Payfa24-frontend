@@ -10,6 +10,8 @@ import { ListDigitalCoin } from "../../constants/ListdigitalCoins";
 import { UnifiedCoin } from "../../types/crypto";
 import IconCopy from "../../assets/icons/AddFriend/IconCopy"; 
 import { toast } from "react-toastify";
+import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
+import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
 
 export interface OrderDetail {
   id: number;
@@ -155,6 +157,9 @@ const handleCopyVoucher = (voucher?: string) => {
 
   if (!tx?.id) return null;
 
+ 
+
+
   return (
     <div
       className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm animate-fadeIn"
@@ -207,13 +212,14 @@ const handleCopyVoucher = (voucher?: string) => {
                     value={<StatusBadge text={transactionStatusMap[detail.status] ?? detail.status} />}
                   />
                 )}
+                {detail.type && (
+                  <DetailRow label="نوع سفارش" value={transactionTypeMap[detail.type] ?? detail.type} />
+                )}
                 {detail.id && <DetailRow label="شناسه سفارش" value={convertDigitsToPersian(detail.id)} />}
                 {detail.dateTime && (
                   <DetailRow label="تاریخ و زمان" value={convertDigitsToPersian(detail.dateTime)} />
                 )}
-                {detail.type && (
-                  <DetailRow label="نوع سفارش" value={transactionTypeMap[detail.type] ?? detail.type} />
-                )}
+                
                 {detail.amount_coin !== undefined && (
                   <DetailRow
                     label="تعداد"
@@ -290,16 +296,46 @@ const DetailRow = ({
   label: string;
   value: React.ReactNode;
   symbol?: string;
-}) => (
-  <div className="flex justify-between items-center">
-    <span className="font-medium text-[16px] text-gray5 whitespace-nowrap">{label}:</span>
-    <div className="flex items-end justify-end gap-1 min-w-[120px] text-left">
-    <div className="flex items-center justify-end gap-1 min-w-[120px] text-left">
-  {value}
-  {symbol && <span>{symbol}</span>}
-</div>
+}) => {
+ 
+  if (label === "نوع سفارش" && typeof value === "string") {
+    const normalizedType = value.toLowerCase();
+    const isBuy = normalizedType === "buy" || normalizedType === "خرید";
+    const isSell = normalizedType === "sell" || normalizedType === "فروش";
+
+    const bgClass = isBuy ? "bg-green8" : isSell ? "bg-red7" : "bg-gray21";
+    const textClass = isBuy ? "text-green-600" : isSell ? "text-red6" : "text-gray-500";
+
+    return (
+      <div className="flex justify-between items-center">
+        <span className="font-medium text-[16px] text-gray5">{label}:</span>
+        <div className={`inline-flex items-center gap-1 w-[108px] h-[29px] justify-center rounded-[4px] ${bgClass} ${textClass}`}>
+          {isBuy &&  <span className="w-5 h-5 icon-wrapper">
+                 <ReceivedIcon />
+            </span>}
+          {isSell &&<span className="w-5 h-5 icon-wrapper">
+        <SendIcon />
+      </span>}
+          <span className="text-[14px] font-normal">{transactionTypeMap[value] || value}</span>
+        </div>
+      </div>
+    );
+  }
+
+  
+  return (
+    <div className="flex justify-between items-center">
+      <span className="font-medium text-[16px] text-gray5 whitespace-nowrap">{label}:</span>
+      <div className="flex items-end justify-end gap-1 min-w-[120px] text-left">
+        <div className="flex items-center justify-end gap-1 min-w-[120px] text-left">
+          {value}
+          {symbol && <span>{symbol}</span>}
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+
 
 export default TransactionModalOrder;

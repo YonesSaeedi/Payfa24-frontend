@@ -59,9 +59,9 @@ const SyncSlider = ({ boxes, isLoading }: SyncSliderProps) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 select-none">
       {boxes.map((box, bIndex) =>
-        <div key={bIndex} className="relative overflow-hidden rounded-2xl bg-gray27 shadow px-4 pt-4 pb-5 border border-gray21">
+        <div key={bIndex} className="relative overflow-hidden rounded-2xl bg-gray27 shadow px-4 pt-4 pb-5 border border-gray21 ">
           <div className="flex flex-row-reverse items-center gap-1 mb-4 pr-2">
             <div className="h-5 w-5">{box?.headerIcon}</div>
             <span className="flex items-center translate-y-1 text-black1 text-lg font-medium">{box?.header}</span>
@@ -78,7 +78,7 @@ const SyncSlider = ({ boxes, isLoading }: SyncSliderProps) => {
             </div>
             {/* === slides (clipped for movement) === */}
             <div
-              className="overflow-hidden relative z-10"
+              className="overflow-hidden relative z-10 "
               onMouseDown={(e) => handleStart(e.clientX)}
               onMouseUp={(e) => handleEnd(e.clientX)}
               onTouchStart={(e) => handleStart(e.touches[0].clientX)}

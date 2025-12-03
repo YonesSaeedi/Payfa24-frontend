@@ -20,6 +20,8 @@ import {
   typeOrderOptions,
 } from "./typeHistory";
 import { formatEnglishNumber, formatPersianNumber } from "../../utils/formatPersianNumber";
+import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
+import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
 
 interface OrdersResponse {
   orders: TypeOrderHistory[];
@@ -313,9 +315,27 @@ const MobileSkeleton = () => (
                     <span>{tx.symbol}</span>
                   </div>
 
-                  <div className="text-center font-normal text-base">
-                    {transactionTypeMap[tx.type ?? ""] || tx.type || "نامشخص"}
-                  </div>
+                <div className="text-center font-normal text-base">
+  <div
+    className={`inline-flex items-center gap-1 w-[108px] h-[29px] justify-center rounded-[4px] ${
+      tx.type === "buy" ? "bg-green8 text-green-600" : tx.type === "sell" ? "bg-red7 text-red6" : "bg-gray-200 text-gray-500"
+    }`}
+  >
+    {tx.type === "buy" ? (
+      <span className="w-5 h-5 icon-wrapper">
+        <ReceivedIcon /> {/* آیکون خرید */}
+      </span>
+    ) : tx.type === "sell" ? (
+      <span className="w-5 h-5 icon-wrapper">
+        <SendIcon /> {/* آیکون فروش */}
+      </span>
+    ) : null}
+    <span className="text-[14px] font-normal">
+      {transactionTypeMap[tx.type ?? ""] || tx.type || "نامشخص"}
+    </span>
+  </div>
+</div>
+
 
                   <div className="text-center font-normal text-base">
                     {formatPersianDigits(tx.amount)} تومان
@@ -419,12 +439,26 @@ const MobileSkeleton = () => (
                    
                   </p>
 
-                  <p className="flex justify-between font-medium text-[12px]">
-                    نوع:
-                    <span className="pb-4 font-normal text-[14px]">
-                      {transactionTypeMap[tx.type ?? ""] || tx.type || "نامشخص"}
-                    </span>
-                  </p>
+                 <p className="flex justify-between font-medium text-[12px] pb-4">
+  نوع:
+  <div
+    className={`inline-flex items-center gap-1 w-[108px] h-[29px] justify-center rounded-[4px] ${
+      tx.type === "buy" ? "bg-green8 text-green-600" : tx.type === "sell" ? "bg-red7 text-red6" : "bg-gray-200 text-gray-500"
+    }`}
+  >
+    {tx.type === "buy" ? (
+      <span className="w-5 h-5 icon-wrapper">
+        <ReceivedIcon />
+      </span>
+    ) : tx.type === "sell" ? (
+      <span className="w-5 h-5 icon-wrapper">
+        <SendIcon />
+      </span>
+    ) : null}
+    <span className=" text-[14px] font-normal">{transactionTypeMap[tx.type ?? ""] || tx.type || "-"}</span>
+  </div>
+</p>
+
 
                   <p className="flex justify-between font-medium text-[12px]">
                     قیمت کل:
