@@ -2,6 +2,8 @@
 import axios, { AxiosRequestConfig, AxiosProgressEvent, AxiosRequestHeaders, AxiosError } from "axios";
 import { ROUTES } from "../routes/routes";
 import { toast } from "react-toastify";
+import { getAuthHeaders } from "./signature";
+
 
 const apiClient = axios.create({
   // baseURL: import.meta.env.DEV ? "" : "https://api.payfa24.org/api/v4",
@@ -95,6 +97,30 @@ apiClient.interceptors.request.use(async (config) => {
     localStorage.removeItem("expiresAt");
     window.location.href = "/login";
   }
+// signature
+  const method = (config.method || "GET").toUpperCase();
+
+  let rawPath = config.url ?? "";
+  rawPath = rawPath.startsWith("/") ? rawPath.slice(1) : rawPath;
+  const pathForSign = rawPath.replace(/^api\/v4\//, "").replace(/^v4\//, "");
+
+  const bodyForSign = config.data ?? [];
+  const paramsForSign = config.params ?? {};
+  console.log("body", bodyForSign);
+  console.log("params", paramsForSign);
+  console.log("signicher", method, pathForSign, bodyForSign, paramsForSign);
+
+  const cleanedParams = Object.fromEntries(
+    Object.entries(paramsForSign)
+      .filter(([_, v]) => v !== null && v !== undefined && v !== "")
+      .map(([k, v]) => [k, String(v)])
+  );
+  config.params = Object.keys(cleanedParams).length ? cleanedParams : undefined;
+
+  const sigHeaders = getAuthHeaders(method, pathForSign, bodyForSign, paramsForSign);
+
+  Object.assign(config.headers, sigHeaders);
+// 
   return config;
 });
 

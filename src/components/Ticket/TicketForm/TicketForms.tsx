@@ -87,6 +87,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
       const response = await apiRequest<TicketNewResponse, FormData>({
         url: "/ticket/new",
         method: "POST",
+        timeout:0,
         data: formData,
         isFormData: true,
         onUploadProgress: (e?: AxiosProgressEvent) => {
