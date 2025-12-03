@@ -149,12 +149,12 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
 
   const renderSection = (title: string, items: ServiceItem[]) => (
     <div dir="rtl" className="mb-6">
-      <h3 dir="rtl" className="text-right text-black1 font-medium mb-3 mt-7">
+      <h3 dir="rtl" className="text-right text-black1 font-medium mb-3 mt-4">
         {title}
       </h3>
       <div className="lg:px-4 flex flex-wrap lg:gap-x-2 lg:gap-y-3 gap-x-2 gap-y-3">
         {items.map((item) => (
-          <div key={item.label}   onClick={() => handleItemClick(item)} className="flex flex-col items-center justify-center  w-[calc(25%-6px)]  h-[60px] lg:h-[72px]  rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition">
+          <div key={item.label}   onClick={() => handleItemClick(item)} className="flex flex-col items-center justify-center  w-[calc(25%-6px)]  h-[60px] lg:h-[72px]  rounded-lg border border-gray21 bg-gray33 hover:border-blue2 cursor-pointer transition ">
             <span className="w-5 h-5 lg:w-[26px] lg:h-[26px] text-blue2 mt-2">{item.icon}</span>
             <div className="flex items-center justify-center gap-2 px-3 py-1.5 max-w-full min-w-[85px]">
               <span
@@ -184,7 +184,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
           <IconCloseButtun />
         </button>
 
-        <div className="overflow-auto flex-1  mt-1">
+        <div className="overflow-y-auto overflow-x-hidden flex-1  mt-1">
           {renderSection("مالی و تراکنش", financeItems)}
           {renderSection("بازار و اطلاعات", marketItems)}
           {renderSection("تاریخچه", historyItems)}
