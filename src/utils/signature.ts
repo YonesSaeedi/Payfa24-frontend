@@ -12,7 +12,6 @@ export function getAuthHeaders(method: string, path: string, body: any = [], par
   // GET → فقط params
   if (method === "GET") {
     const rawParams = params ?? {};
-    console.log("rawParams", rawParams);
 
     const cleanedParams = Object.fromEntries(
       Object.entries(rawParams)
@@ -35,20 +34,12 @@ export function getAuthHeaders(method: string, path: string, body: any = [], par
     }
   }
 
-  console.log("bodyForSign", bodyForSign);
-
-
-  // ❗ پاکسازی و استانداردسازی path
-  // سرور انتظار دارد: api/v4/xxxxx
   let cleanPath = path;
 
   cleanPath = cleanPath.replace(/^\//, ""); // حذف اسلش اول
   if (!cleanPath.startsWith("api/v4/")) {
     cleanPath = "api/v4/" + cleanPath.replace(/^v4\//, "");
   }
-
-  // اکنون cleanPath همیشه این شکل را دارد:
-  // api/v4/wallets/fiat
 
   const dataToSign = `${method} ${cleanPath} ${timestamp} ${JSON.stringify(bodyForSign)}`;
 

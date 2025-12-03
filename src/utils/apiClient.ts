@@ -106,9 +106,6 @@ apiClient.interceptors.request.use(async (config) => {
 
   const bodyForSign = config.data ?? [];
   const paramsForSign = config.params ?? {};
-  console.log("body", bodyForSign);
-  console.log("params", paramsForSign);
-  console.log("signicher", method, pathForSign, bodyForSign, paramsForSign);
 
   const cleanedParams = Object.fromEntries(
     Object.entries(paramsForSign)
