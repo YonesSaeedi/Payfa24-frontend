@@ -97,7 +97,7 @@ apiClient.interceptors.request.use(async (config) => {
     localStorage.removeItem("expiresAt");
     window.location.href = "/login";
   }
-// signature
+  // signature
   const method = (config.method || "GET").toUpperCase();
 
   let rawPath = config.url ?? "";
@@ -117,7 +117,7 @@ apiClient.interceptors.request.use(async (config) => {
   const sigHeaders = getAuthHeaders(method, pathForSign, bodyForSign, paramsForSign);
 
   Object.assign(config.headers, sigHeaders);
-// 
+  // 
   return config;
 });
 
