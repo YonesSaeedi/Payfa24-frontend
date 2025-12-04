@@ -10,7 +10,7 @@ import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";           
 import { CryptoItem } from "../../types/crypto";
 import IconBank from "../../assets/icons/Deposit/IconBank";
 import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";

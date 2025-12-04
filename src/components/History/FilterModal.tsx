@@ -23,9 +23,9 @@ const pageFilters: Record<string, { id: string; label: string; options: OptionTy
       id: "type",
       label: "همه تراکنش ها",
       options: [
-        { id: 1, name: "ترید", value: "trade" },
-        { id: 2, name: "سفارش", value: "order" },
-        { id: 3, name: "کیف پول", value: "wallet" },
+       
+        { id: 1, name: "سفارش", value: "order" },
+        { id: 2, name: "کیف پول", value: "wallet" },
       ],
     },
     {

@@ -19,6 +19,7 @@ import IconNotification from "../../assets/icons/services/IconNotification";
 import IconUserPlus from "../../assets/icons/services/IconUserPlus";
 import CategoryActiveIcon from "../../assets/icons/header/CategoryActiveIcon";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
+import IconConvertCard from "../../assets/icons/Deposit/IconConvertCard";
 
 interface ServiceItem {
   label: string;
@@ -144,7 +145,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     },
     { label: "مقالات", icon: <IconPersonalCard /> },
     { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND },
-     { label: "تبدیل", icon: <IconUserPlus />, route: ROUTES.WALLET_CONVERT}
+     { label: "تبدیل", icon: <IconConvertCard />, route: ROUTES.WALLET_CONVERT}
   ];
 
   const renderSection = (title: string, items: ServiceItem[]) => (

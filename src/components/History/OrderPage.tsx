@@ -323,11 +323,11 @@ const MobileSkeleton = () => (
   >
     {tx.type === "buy" ? (
       <span className="w-5 h-5 icon-wrapper">
-        <ReceivedIcon /> {/* آیکون خرید */}
+        <ReceivedIcon /> 
       </span>
     ) : tx.type === "sell" ? (
       <span className="w-5 h-5 icon-wrapper">
-        <SendIcon /> {/* آیکون فروش */}
+        <SendIcon /> 
       </span>
     ) : null}
     <span className="text-[14px] font-normal">

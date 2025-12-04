@@ -16,11 +16,13 @@ import TomanIcon from "../../../assets/icons/Home/WalletCardIcon/TomanIcon";
 import TransactionMainModal from "../../History/TransactionMainModal";
 import { formatPersianNumber } from "../../../utils/formatPersianNumber";
 import { apiRequest } from "../../../utils/apiClient";
+import IconConvertCard from "../../../assets/icons/Deposit/IconConvertCard";
 
 interface WalletCardProps {
   showBuySell?: boolean;
   walletData?: Wallets;
   isLoading: boolean;
+  showConvert?: boolean;
 }
 interface Wallet {
   balance?: number;
@@ -38,7 +40,7 @@ interface Wallets {
   crypto?: Wallet;
 }
 
-const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardProps) => {
+const WalletCard = ({ showBuySell = true, walletData, isLoading ,showConvert = false }: WalletCardProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
   // const [stateBlure, setStateBlure] = useState<boolean>(true);
@@ -51,17 +53,19 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading }: WalletCardPro
   const [depositMethods, setDepositMethods] = useState<WalletFiatData["depositMethods"] | null>(null);
   // const [depositMethodsLoading, setDepositMethodsLoading] = useState(true);
   // action buttons ===============================================================================================================================
-  const actionButtons = [
-    { label: "تاریخچه", onClick: () => setShowTransactionModal(true), icon: <ReceiptText /> },
-    { label: "برداشت", onClick: () => setShowWithdrawModal(true), icon: <WalletMines /> },
-    { label: "واریز", onClick: () => setShowDepositModal(true), icon: <WalletAdd /> },
-    ...(showBuySell
-      ? [
-          { label: "فروش", route: ROUTES.TRADE.SELL, icon: <SendIcon /> },
-          { label: "خرید", route: ROUTES.TRADE.BUY, icon: <ReceivedIcon /> },
-        ]
-      : []),
-  ];
+ const actionButtons = [
+  ...(showConvert ? [{ label: "تبدیل", route: ROUTES.WALLET_CONVERT, icon: <IconConvertCard /> }] : []),
+  { label: "تاریخچه", onClick: () => setShowTransactionModal(true), icon: <ReceiptText /> },
+  { label: "برداشت", onClick: () => setShowWithdrawModal(true), icon: <WalletMines /> },
+  { label: "واریز", onClick: () => setShowDepositModal(true), icon: <WalletAdd /> },
+  ...(showBuySell
+    ? [
+        { label: "فروش", route: ROUTES.TRADE.SELL, icon: <SendIcon /> },
+        { label: "خرید", route: ROUTES.TRADE.BUY, icon: <ReceivedIcon /> },
+      ]
+    : []),
+];
+
 
   useEffect(() => {
     setBalance(walletData ?? null);

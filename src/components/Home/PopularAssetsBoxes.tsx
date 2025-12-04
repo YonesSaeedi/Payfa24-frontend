@@ -125,7 +125,7 @@ export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }:
                     <div className="skeleton-bg rounded w-2/3 h-4"></div>
                     <div className="skeleton-bg rounded w-1/2 h-4"></div>
                   </div>
-                  <div className="skeleton-bg rounded-lg w-20 h-8"></div>
+                  <div className="skeleton-bg rounded-lg w-20 h-8 mt-auto"></div>
                 </div>
               ) : (
                 <>
