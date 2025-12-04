@@ -38,7 +38,6 @@ interface WalletsResponse {
 }
 
 const sortOptions = [
-  { label: "مرتب سازی  پیش فرض", key: "default" },
   { label: "موجودی (تعداد)", key: "stock" },
   { label: "موجودی (ارزش تومانی)", key: "balance" },
   { label: "قیمت (زیاد به کم)", key: "priceDown" },
@@ -48,7 +47,7 @@ const sortOptions = [
 const WalletAssets: React.FC = () => {
   const [walletsData, setWalletsData] = useState<Wallet[]>([]);
   const [search, setSearch] = useState("");
-  const [selectedSortKey, setSelectedSortKey] = useState("default");
+ const [selectedSortKey, setSelectedSortKey] = useState("balance");
   const [openDropdown, setOpenDropdown] = useState(false);
   const [openModalId, setOpenModalId] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);

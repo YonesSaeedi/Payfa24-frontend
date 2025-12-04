@@ -110,9 +110,8 @@ export const statusOptions = [
 
 export const filterForOptions = [
   { id: 0, name: "همه تراکنش ها", value: "" },
-  { id: 1, name: "ترید", value: "trades" },
-  { id: 2, name: "سفارش", value: "orders" },
-  { id: 3, name: "کیف پول", value: "wallets" },
+  { id: 1, name: "سفارش", value: "orders" },
+  { id: 2, name: "کیف پول", value: "wallets" },
 ];
 
 

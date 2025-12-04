@@ -52,6 +52,7 @@ interface CardToCardTransferProps {
   cardToCardInfo: CardToCardInfo;
   minDeposit: number;
   maxDeposit: number;
+  loadingBankCards?: boolean;
 }
 
 export function formatPersianCardNumber(input: string | number): string {
@@ -74,11 +75,13 @@ export function toPersianDigits(input: string | number): string {
   return String(input).replace(/[0-9]/g, (d) => persianMap[+d]);
 }
 
-const formatTimer = (seconds: number) => {
-  if (seconds < 0) return "00:00";
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+const formatTimer = (seconds: number): string => {
+  if (seconds < 0) return "00:00:00";
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 };
 
 function calculateFee(amount: number): number {
@@ -92,7 +95,7 @@ function calculateFee(amount: number): number {
 }
 
 // --- Component ---
-export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo: initialCardToCardInfo }: CardToCardTransferProps) {
+export default function CardToCardTransfer({ loadingBankCards, cards: initialCards, cardToCardInfo: initialCardToCardInfo }: CardToCardTransferProps) {
   const amounts = [1, 5, 10, 15]; // میلیون تومان
   const [showSummary, setShowSummary] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -244,17 +247,16 @@ export default function CardToCardTransfer({ cards: initialCards, cardToCardInfo
               control={control}
               render={({ field }) => {
                 const hasCards = cards.length > 0;
-                const IsLoadingPlaceholder = cards.length === 0;
                 return (
                   <>
                     <FloatingSelect
                       placeholder={
-                        IsLoadingPlaceholder ? (
-                          <span className="skeleton-bg lg:w-44 w-36 h-5 rounded-sm"></span>
+                        loadingBankCards ? (
+                          <span className="skeleton-bg w-40 h-4 rounded-sm"></span>
                         ) : hasCards ? (
-                          " کارت مبدا را انتخاب کنید"
+                          "کارت مبدا را انتخاب کنید "
                         ) : (
-                          "هیچ کارت ثبت‌ شده‌ای ندارید"
+                          <span className="text-gray5 text-xs lg:text-sm">هیچ کارت ثبت‌ شده‌ای ندارید</span>
                         )
                       }
                       label="انتخاب کارت مبدا"

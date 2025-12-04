@@ -87,6 +87,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
       const response = await apiRequest<TicketNewResponse, FormData>({
         url: "/ticket/new",
         method: "POST",
+        timeout:0,
         data: formData,
         isFormData: true,
         onUploadProgress: (e?: AxiosProgressEvent) => {
@@ -169,7 +170,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
       <div className="flex flex-col gap-5">
         <h2 className="text-2xl font-medium lg:text-center text-right text-black1 mt-10 lg:mb-12 ">ایجاد تیکت جدید</h2>
 
-        {/* عنوان */}
+ 
         <div className="flex flex-col gap-1">
           <Controller
             name="title"
@@ -192,13 +193,9 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
   setSelectedOrder={setSelectedOrder}
   register={register}
   setValue={setValue}
-  orders={apiOrders}           // ارسال داده‌ها
-  isLoading={isOrdersLoading}  // ارسال وضعیت loading
+  orders={apiOrders}          
+  isLoading={isOrdersLoading} 
 />
-
-
-
-        {/* توضیحات */}
         <div className="relative w-full lg:bg-gray37">
           <Controller
             name="description"
@@ -218,7 +215,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
           />
         </div>
 
-        {/* فایل پیوست */}
+     
         <div className="relative w-full">
           <label className={`absolute right-3 text-xs -top-2 px-1 z-40 bg-gray38 lg:bg-gray43 transition-colors duration-200 ${isFileFocused ? "text-blue2" : "text-gray12"}`}>
             فایل پیوست
@@ -247,7 +244,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
   const file = e.target.files?.[0];
   if (!file) return;
 
-  const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+  const MAX_FILE_SIZE = 20 * 1024 * 1024; 
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "video/mp4", "video/mpeg"];
 
   if (!allowedTypes.includes(file.type)) {
@@ -272,7 +269,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
             )}
           />
 
-          {/* نمایش جزئیات فایل */}
+          
         {watchedFields[2] && watchedFields[2].length > 0 && (
   <div className="flex items-center justify-between mt-2 text-sm text-gray12 bg-gray38 p-2 rounded-lg py-4">
     <span>
@@ -291,7 +288,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
         </div>
       </div>
 
-      {/* دکمه ارسال */}
+      
       <button
         type="submit"
         disabled={!isFormComplete || isSubmitting}

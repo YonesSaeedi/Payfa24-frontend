@@ -554,7 +554,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
             {isLoading ?
               <span className="skeleton-bg h-3 w-16 rounded-sm"></span>
               :
-              <span className="text-black1">{formatPersianDigits(TomanBalance ?? 0)} تومان</span>
+              <span className="text-black1">{formatPersianDigits(removeDecs(TomanBalance) ?? 0)} تومان</span>
             }
           </Link>
           <button onClick={handleFillAmount} className="text-blue2 text-sm font-normal hover:underline">تمام موجودی</button>

@@ -10,7 +10,7 @@ import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";           
 import { CryptoItem } from "../../types/crypto";
 import IconBank from "../../assets/icons/Deposit/IconBank";
 import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
@@ -87,6 +87,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
   const [isCreatingIdentifier, setIsCreatingIdentifier] = useState(false);
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoItem | null>(null);
+  const [loadingBankCards, setLoadingBankCards] = useState(true); // اضافه کن
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const type = params.get("type");
@@ -112,28 +113,38 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   }, [location.search]);
 
-  // لود اطلاعات fiat
   useEffect(() => {
-    const fetchFiatData = async () => {
-      try {
-        const response = await apiRequest<WalletFiatData>({
-          url: "/wallets/fiat",
-          method: "GET",
+  const fetchFiatData = async () => {
+    try {
+      setLoadingBankCards(true); // شروع لودینگ
+      const response = await apiRequest<WalletFiatData>({
+        url: "/wallets/fiat",
+        method: "GET",
+      });
+      setFiatData(response);
+      setDepositMethods(response.depositMethods);
+
+      if (response.deposit_id || response.list_deposit_id) {
+        setIdentifierData({
+          destination_bank: response.deposit_id?.destination_bank || "",
+          destination_owner_name: response.deposit_id?.destination_owner_name || "",
+          destination_iban: response.deposit_id?.destination_iban || "",
+          destination_account_number: response.deposit_id?.destination_account_number || "",
+          deposit_id: response.deposit_id?.deposit_id || "",
+          list_deposit_id: response.list_deposit_id,
         });
-        setFiatData(response);
-        setDepositMethods(response.depositMethods);
-        if (response.deposit_id) {
-          setIdentifierData({
-            ...response.deposit_id,
-            list_deposit_id: response.list_deposit_id,
-          });
-        }
-      } catch (err: any) {
-        toast.error("خطا در بارگذاری اطلاعات واریز");
       }
-    };
-    fetchFiatData();
-  }, []);
+    } catch (err: any) {
+      toast.error("خطا در بارگذاری اطلاعات واریز");
+    } finally {
+      setLoadingBankCards(false); // پایان لودینگ — مهم!
+    }
+  };
+  fetchFiatData();
+}, []);
+
+
+
   useEffect(() => {
     setIsDepositCoinsLoading(true);
     const fetchCryptoData = async () => {
@@ -290,7 +301,6 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     setIsCryptoListModalOpen(true);
   };
   const handleCryptoSelect = (crypto: CryptoItem) => {
-    console.log("ارز انتخاب شد:", crypto);
     setSelectedCrypto(crypto);
     setIsCryptoListModalOpen(false);
   };
@@ -299,12 +309,12 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       case "closeDeal":
         return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} isDataLoaded={!!fiatData} />;
       case "Identifier":
-        return <DepositwithIdentifier cards={bankCards} identifierData={identifierData} onCreateIdentifier={handleCreateIdentifier} isCreating={isCreatingIdentifier} />;
+        return <DepositwithIdentifier loadingBankCards={loadingBankCards} cards={bankCards} identifierData={identifierData} onCreateIdentifier={handleCreateIdentifier} isCreating={isCreatingIdentifier} />;
       case "CardToCard":
-        return <CardToCardTransfer cards={bankCards} cardToCardInfo={cardToCardInfo} minDeposit={minDeposit} maxDeposit={maxDeposit} />;
+        return <CardToCardTransfer loadingBankCards={loadingBankCards} cards={bankCards} cardToCardInfo={cardToCardInfo} minDeposit={minDeposit} maxDeposit={maxDeposit} />;
       case "Bank Receipt:":
         return (
-          <DepositBankReceipt bankCards={bankCards} receiptAccounts={receiptAccounts} onNext={() => setIdentifierData(null)} onFileChange={() => {}} initialPreviewUrl={null} />
+          <DepositBankReceipt loadingBankCards={loadingBankCards} bankCards={bankCards} receiptAccounts={receiptAccounts} onNext={() => setIdentifierData(null)} onFileChange={() => {}} initialPreviewUrl={null} />
         );
       case "DedicatedWallet":
         return (

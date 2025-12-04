@@ -30,6 +30,7 @@ interface DepositWithIdentifierProps {
   identifierData?: DepositIdentifierResponse | null;
   onCreateIdentifier: (cardId: number) => Promise<void>;
   isCreating?: boolean;
+  loadingBankCards?: boolean;
 }
 
 const copyToClipboard = (text: string | number, label: string) => {
@@ -51,7 +52,7 @@ export function formatPersianCardNumber(input: string | number): string {
 
   return persianGrouped;
 }
-export default function DepositWithIdentifier({ cards = [], identifierData = null, onCreateIdentifier, isCreating = false }: DepositWithIdentifierProps) {
+export default function DepositWithIdentifier({ cards = [], identifierData = null, onCreateIdentifier, isCreating = false, loadingBankCards }: DepositWithIdentifierProps) {
   const { control, watch } = useForm<{ bank?: string }>();
   const selectedCardId = Number(watch("bank"));
   const [currentIdentifier, setCurrentIdentifier] = useState<DepositIdentifierResponse | null>(null);
@@ -110,11 +111,16 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
           render={({ field }) => {
             const hasCards = cards.length > 0;
 
-            const IsLoadingPlaceholder = cards.length === 0;
             return (
               <FloatingSelect
                 placeholder={
-                  IsLoadingPlaceholder ? <span className="skeleton-bg lg:w-44 w-36 h-5 rounded-sm"></span> : hasCards ? "حساب بانکی را انتخاب کنید" : "هیچ کارت ثبت‌ شده‌ای ندارید"
+                  loadingBankCards ? ( 
+                    <span className="skeleton-bg w-40 h-4 rounded-sm"></span>
+                  ) : hasCards ? (
+                    "حساب بانکی را انتخاب کنید"
+                  ) : (
+                    <span className="text-gray5 text-xs lg:text-sm">هیچ کارت ثبت‌ شده‌ای ندارید</span>
+                  )
                 }
                 label="کارت بانکی"
                 value={hasCards ? field.value : ""}
@@ -160,7 +166,7 @@ export default function DepositWithIdentifier({ cards = [], identifierData = nul
               <span>{currentIdentifier.destination_owner_name}</span>
               <div className="flex gap-1 items-center  cursor-pointer group hover:text-blue2" onClick={() => copyToClipboard(currentIdentifier.destination_iban, "شبا")}>
                 <span>{toPersianDigits(currentIdentifier.destination_iban)}</span>
-                <button className="icon-wrapper w-5 h-5 text-gray5 group-hover:text-blue2" >
+                <button className="icon-wrapper w-5 h-5 text-gray5 group-hover:text-blue2">
                   <IconCopy />
                 </button>
               </div>

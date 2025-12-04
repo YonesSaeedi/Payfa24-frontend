@@ -32,7 +32,14 @@ export default function Wallet() {
         <div className="container-style lg:px-4 w-full  pt-16 flex flex-col lg:flex-row-reverse gap-[33px] overflow-visible">
           <div className="w-full lg:w-5/12 text-right">
           <div>
-            <WalletCard showBuySell={false} isLoading={isLoadingDashboard} walletData={dashboardData?.wallets} />
+        <WalletCard
+  isLoading={isLoadingDashboard}
+  walletData={dashboardData?.wallets}
+  showConvert={true}  // نمایش دکمه تبدیل
+  showBuySell={false} // مخفی کردن دکمه‌های خرید و فروش
+/>
+
+
           </div>
             
           </div>
