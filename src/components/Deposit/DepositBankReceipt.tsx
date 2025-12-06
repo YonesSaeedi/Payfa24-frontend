@@ -13,6 +13,8 @@ import { getBankLogo } from "../../utils/bankLogos";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import { toPersianDigits } from "./CardToCardTransfer";
 import IconClose from "../../assets/icons/Login/IconClose";
+import { UserCard } from "../../pages/Deposit/DepositPage";
+import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 
 // ---------- validation ----------
 const schema = yup.object().shape({
@@ -22,24 +24,20 @@ const schema = yup.object().shape({
 });
 
 // ---------- props ----------
-interface BankCard {
-  id: number;
-  bank: string;
-  card: string;
-}
-interface ReceiptAccount {
+interface ReceiptCard {
+  account_name: string;
+  account_number: string;
   iban_number: string;
   name_bank: string;
-  account_name: string;
-  account_number?: string;
+  card_number: string;
 }
 interface DepositBankReceiptProps {
-  bankCards: BankCard[];
-  receiptAccounts: ReceiptAccount[];
+  bankCards: UserCard[];
+  receiptAccounts: ReceiptCard[];
   onNext: () => void;
   onFileChange: (file: File | null) => void;
   initialPreviewUrl: string | null;
-  loadingBankCards?:boolean
+  loadingBankCards?: boolean;
 }
 
 export function formatPersianCardNumber(input: string | number): string {
@@ -55,7 +53,7 @@ export function formatPersianCardNumber(input: string | number): string {
 
   return persianGrouped;
 }
-export default function DepositBankReceipt({ loadingBankCards,bankCards, receiptAccounts, onNext, onFileChange, initialPreviewUrl }: DepositBankReceiptProps) {
+export default function DepositBankReceipt({ loadingBankCards, bankCards, receiptAccounts, onNext, onFileChange, initialPreviewUrl }: DepositBankReceiptProps) {
   const amounts = [5, 10, 20, 50];
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(initialPreviewUrl);
@@ -152,6 +150,8 @@ export default function DepositBankReceipt({ loadingBankCards,bankCards, receipt
     }
   };
 
+  const selectedDestination = receiptAccounts.find((acc) => acc.iban_number === watchAll.destinationBank);
+
   return (
     <div className="w-full" dir="rtl">
       {/* ویدیو */}
@@ -177,7 +177,7 @@ export default function DepositBankReceipt({ loadingBankCards,bankCards, receipt
             return (
               <FloatingSelect
                 placeholder={
-                  loadingBankCards ? ( 
+                  loadingBankCards ? (
                     <span className="skeleton-bg w-40 h-4 rounded-sm"></span>
                   ) : hasCards ? (
                     "حساب بانکی را انتخاب کنید"
@@ -188,7 +188,7 @@ export default function DepositBankReceipt({ loadingBankCards,bankCards, receipt
                 label="حساب مبدا"
                 value={hasCards ? field.value : ""}
                 onChange={field.onChange}
-                disabled={!hasCards} 
+                disabled={!hasCards}
                 options={
                   hasCards
                     ? bankCards.map((c) => ({
@@ -216,27 +216,90 @@ export default function DepositBankReceipt({ loadingBankCards,bankCards, receipt
           control={control}
           render={({ field }) => (
             <FloatingSelect
-              placeholder="حساب مقصد را انتخاب کنید" 
+              placeholder="حساب مقصد را انتخاب کنید"
               label="حساب مقصد"
               value={field.value}
               onChange={field.onChange}
               options={receiptAccounts.map((a) => ({
                 value: a.iban_number,
-                label: (
-                  <div className="flex items-center justify-between w-full py-1 rounded-md">
-                    <span className="lg:text-sm text-xs text-black0">{a.account_name}</span>
-                    <span className="lg:text-sm text-xs text-black0">{toPersianDigits(a.account_number || a.iban_number)}</span>
+                label: a.account_name,
+                content: (
+                  <div className="flex items-center justify-between w-full py-2 gap-1">
+                    {/* چپ: آیکون + نام حساب */}
+                    <div className="flex items-center gap-1">
+                      <img src={getBankLogo(a.name_bank) || "/bank-logos/bank-sayer.png"} alt={a.name_bank} className="w-6 h-6 object-contain rounded-full" />
+                      <span className="lg:text-sm text-xs text-black0">{a.account_name}</span>
+                    </div>
+                    {/* راست: شماره کارت یا حساب */}
+                    {a.account_number && <span className="text-xs lg:text-sm text-black0">{toPersianDigits(a.account_number)}</span>}
                   </div>
                 ),
-                icon: <img src={getBankLogo(a.name_bank) || "/bank-logos/bank-sayer.png"} alt={a.name_bank} className="w-6 h-6 object-contain" />,
+                // icon: (
+                //   <img
+                //     src={getBankLogo(a.name_bank) || "/bank-logos/bank-sayer.png"}
+                //     alt={a.name_bank}
+                //     className="w-[22px] h-[22px] object-contain rounded-full"
+                //   />
+                // ),
               }))}
             />
           )}
         />
+
         {errors.destinationBank && <p className="text-red1 text-xs pt-2">{errors.destinationBank.message}</p>}
       </div>
 
-      <p className="text-gray5 text-sm">حداقل واریز با فیش بانکی، ۱,۰۰۰,۰۰۰ تومان می‌باشد.</p>
+      {selectedDestination && (
+        <div className="bg-gray47 shadow-sm  p-4 rounded-lg my-6">
+          <div className="space-y-2 text-sm lg:text-base text-black0">
+            <div className="flex justify-between items-center">
+              <span>شماره کارت</span>
+              <div
+                onClick={() => {
+                  navigator.clipboard.writeText(selectedDestination.card_number);
+                  toast.info(" کپی شد");
+                }}
+                className="flex items-center gap-1  cursor-pointer hover:text-blue2"
+              >
+                <p>{formatPersianCardNumber(selectedDestination.card_number)}</p>
+                <span className="icon-wrapper w-5 h-5 text-gray12">
+                  <IconCopy />
+                </span>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>شماره حساب</span>
+              <div
+                onClick={() => {
+                  navigator.clipboard.writeText(selectedDestination.account_number);
+                  toast.info("کپی شد");
+                }}
+                className="flex items-center gap-1 hover:text-blue2 cursor-pointer"
+              >
+                <p>{toPersianDigits(selectedDestination.account_number)}</p>
+                <span className="icon-wrapper w-5 h-5 text-gray12">
+                  <IconCopy />
+                </span>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>شماره شبا</span>
+              <div
+                onClick={() => {
+                  navigator.clipboard.writeText(selectedDestination.account_number);
+                  toast.info("کپی شد");
+                }}
+                className="flex items-center gap-1 hover:text-blue2 cursor-pointer"
+              >
+                <p>{toPersianDigits(selectedDestination.iban_number)}</p>
+                <span className="icon-wrapper w-5 h-5 text-gray12">
+                  <IconCopy />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* مقدار واریزی */}
       <div className="mb-1.5 mt-8">
@@ -258,7 +321,8 @@ export default function DepositBankReceipt({ loadingBankCards,bankCards, receipt
             />
           )}
         />
-        {errors.amount && <p className="text-red1 text-xs py-3 pt-2">مبلغ عددی صحیح وارد کنید</p>}
+        <p className="text-gray5 text-sm mt-2">حداقل واریز با فیش بانکی، ۱,۰۰۰,۰۰۰ تومان می‌باشد.</p>
+        {/* {errors.amount && <p className="text-red1 text-xs py-3 pt-2">مبلغ عددی صحیح وارد کنید</p>} */}
       </div>
 
       {/* دکمه‌های مبلغ پیشنهادی */}

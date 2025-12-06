@@ -8,6 +8,7 @@ interface Option {
   icon?: React.ReactNode;
   disabled?: boolean;
   hideIndicator?: boolean;
+  content?: React.ReactNode;
 }
 
 interface FloatingSelectProps {
@@ -30,7 +31,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
   options,
   onChange,
   placeholder = "گزینه‌ای را انتخاب کنید",
-  placeholderColor = "text-gray12 ",
+  placeholderColor = "text-gray12",
   onOpen,
   placeholderIcon,
   placeholderClasses,
@@ -77,7 +78,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
         <span className={`flex items-center gap-3 w-full text-xs lg:text-sm ${placeholderClasses || placeholderColor}`}>
           {!selected && placeholderIcon && <span className="w-6 h-6">{placeholderIcon}</span>}
           {selected ? (
-            <div className="flex items-center justify-between w-full ">
+            <div className="flex items-center justify-between w-full text-black0">
               {selected.icon && <span className="w-6 h-6 flex-shrink-0 ml-2">{selected.icon}</span>}
               {selected.label}
             </div>
@@ -120,9 +121,18 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
                   {value === option.value && <span className="absolute w-2 h-2 top-1/2 left-1/2 bg-blue2 -translate-x-1/2 -translate-y-1/2 rounded-full"></span>}
                 </span>
               )}
-              <div className="flex items-center justify-end w-full flex-row-reverse text-black0 lg:text-sm text-xs">
-                {option.label}
-                {option.icon && <span className="w-5 h-5 ml-2">{option.icon}</span>}
+              <div className="flex items-center justify-between w-full gap-4">
+                {option.icon && <span className="w-8 h-8 flex-shrink-0">{option.icon}</span>}
+
+                <div className="flex-1 text-right">
+                  {/* اگر content داشت، اونو نشون بده (داخل لیست) */}
+                  {option.content ? (
+                    option.content
+                  ) : (
+                    // اگر نداشت، فقط label رو نشون بده (وقتی انتخاب شده)
+                    <span className="text-sm font-medium">{option.label}</span>
+                  )}
+                </div>
               </div>
             </button>
           ))}

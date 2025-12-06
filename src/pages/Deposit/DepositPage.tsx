@@ -22,39 +22,117 @@ import IconLink from "../../assets/icons/Deposit/IconLink";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import CryptoListModal from "../../components/trade/CryptoListModal";
 
-interface WalletFiatData {
-  wallet?: { internal?: { min_deposit: string | number; max_deposit: string | number } };
-  list_cards?: Array<{ id: number; card: string; bank: string; iban: string | null }>;
-  receipt?: { list_cards?: Array<any> };
-  cardToCard?: any;
-  list_deposit_id?: Array<{ deposit_id: string; id_card: number }>;
-  deposit_id?: {
-    destination_bank: string;
-    destination_owner_name: string;
-    destination_iban: string;
-    destination_account_number: string;
-    deposit_id: number | string;
-  };
-  depositMethods: {
-    gateway: { isDisable: boolean; isHidden: boolean };
-    card: { isDisable: boolean; isHidden: boolean };
-    receipt: { isDisable: boolean; isHidden: boolean };
-    gatewayId: { isDisable: boolean; isHidden: boolean };
-  };
+// ---------- کارت‌های رسید واریز (Receipt) ----------
+interface ReceiptCard {
+  account_name: string;
+  account_number: string;
+  iban_number: string;
+  name_bank: string;
+  card_number: string;
 }
-interface DepositIdentifierResponse {
+
+interface ReceiptData {
+  status: boolean;
+  list_cards: ReceiptCard[]; // همیشه آرایه است (حتی اگر خالی باشه)
+}
+
+// ---------- کارت‌های کاربر (لیست کارت‌های ثبت‌شده) ----------
+interface UserCard {
+  id: number;
+  card: string;        // شماره کارت
+  bank: string;        // نام بانک
+  iban: string | null; // شماره شبا
+}
+
+// ---------- محدودیت‌های کیف پول داخلی ----------
+interface WalletLimits {
+  min_deposit: string | number;
+  max_deposit: string | number;
+}
+
+// ---------- تنظیمات فعال/غیرفعال بودن روش‌های واریز ----------
+interface DepositMethodStatus {
+  isDisable: boolean;
+  isHidden: boolean;
+}
+
+interface DepositMethods {
+  gateway: DepositMethodStatus;
+  card: DepositMethodStatus;
+  receipt: DepositMethodStatus;
+  gatewayId: DepositMethodStatus;
+}
+
+// ---------- پاسخ شناسه واریز (deposit_id) ----------
+interface DepositIdentifier {
   destination_bank: string;
   destination_owner_name: string;
   destination_iban: string;
   destination_account_number: string;
   deposit_id: number | string;
-  list_deposit_id?: Array<{ deposit_id: string; id_card: number }>;
 }
+
+interface DepositIdentifierResponse extends DepositIdentifier {
+  list_deposit_id?: Array<{
+    deposit_id: string;
+    id_card: number;
+  }>;
+}
+
+// ---------- داده کامل صفحه واریز فیات ----------
+interface WalletFiatData {
+  wallet?: {
+    internal?: WalletLimits;
+  };
+
+  list_cards?: UserCard[];
+
+  receipt?: ReceiptData;
+
+  cardToCard?: any; // اگر ساختار مشخصی داره بعداً تایپش کن
+
+  list_deposit_id?: Array<{
+    deposit_id: string;
+    id_card: number;
+  }>;
+
+  deposit_id?: DepositIdentifier;
+
+  depositMethods: DepositMethods;
+}
+
+// ---------- پراپس صفحه واریز ----------
+type DepositTab =
+  | "gateway"
+  | "identifier"
+  | "card"
+  | "receipt"
+  | "wallet"
+  | "txid";
 
 interface DepositPageProps {
-  selected?: "gateway" | "identifier" | "card" | "receipt" | "wallet" | "txid";
+  selected?: DepositTab;
 }
 
+// ---------- والت کریپتو (برای شبکه‌های مختلف) ----------
+interface Wallet {
+  address: string;
+  address_tag: string | null;
+  id_coin: number;
+  id_net: number;
+}
+
+export type {
+  WalletFiatData,
+  ReceiptCard,
+  ReceiptData,
+  UserCard,
+  DepositMethods,
+  DepositIdentifierResponse,
+  DepositTab,
+  DepositPageProps,
+  Wallet,
+};
 export default function DepositPage({ selected = "gateway" }: DepositPageProps) {
   const [depositNetworks, setDepositNetworks] = useState<[]>([]);
   const [depositWalletsTxid, setDepositWalletsTxid] = useState<[]>([]);
@@ -88,6 +166,8 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoItem | null>(null);
   const [loadingBankCards, setLoadingBankCards] = useState(true); // اضافه کن
+
+  const [wallets, setWallets] = useState<Wallet[]>([]);
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const type = params.get("type");
@@ -113,37 +193,80 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   }, [location.search]);
 
+  // این تابع رو جایگزین کن (دقیقاً همین!)
+const refreshData = async () => {
+  console.log("### fetch new wallets data ###");
+  try {
+    const res = await apiRequest<any>({ url: "/wallets/crypto/deposit", method: "GET" });
+    
+    // آپدیت لیست ارزها (coins)
+    const depositCoins = res?.coins ?? [];
+    const infoCoins = generalInfo?.cryptocurrency ?? [];
+    
+    const merged = depositCoins.map((coin: any) => {
+      const info = infoCoins.find((i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase());
+      return {
+        ...info,
+        id: coin.id,
+        symbol: coin.symbol || "UNK",
+        name: info?.locale?.fa?.name || coin.symbol || "نام ناشناس",
+        icon: info?.icon || "",
+        balance: coin.balance || "0",
+        balance_available: coin.balance_available || "0",
+        network: coin.network || [],
+        isFont: info?.isFont || false,
+        color: info?.color || "#000",
+        priceBuy: coin.price || info?.priceBuy || "0",
+      } as CryptoItem & { id: number; network: any[] };
+    });
+
+    // همه stateها رو یکجا آپدیت کن
+    setCryptoListData(merged);
+    setDepositNetworks(res?.networks ?? []);
+    setDepositWalletsTxid(res?.wallets_txid ?? []); 
+    setWallets(res?.wallets ?? []); // این مهمه!
+    
+    console.log("New wallets list:", res?.wallets);
+    console.log("Total wallets found:", res?.wallets?.length || 0);
+
+  } catch (err) {
+    console.error("خطا در رفرش داده‌های واریز", err);
+  }
+};
+
+
+
+ 
   useEffect(() => {
-  const fetchFiatData = async () => {
-    try {
-      setLoadingBankCards(true); // شروع لودینگ
-      const response = await apiRequest<WalletFiatData>({
-        url: "/wallets/fiat",
-        method: "GET",
-      });
-      setFiatData(response);
-      setDepositMethods(response.depositMethods);
-
-      if (response.deposit_id || response.list_deposit_id) {
-        setIdentifierData({
-          destination_bank: response.deposit_id?.destination_bank || "",
-          destination_owner_name: response.deposit_id?.destination_owner_name || "",
-          destination_iban: response.deposit_id?.destination_iban || "",
-          destination_account_number: response.deposit_id?.destination_account_number || "",
-          deposit_id: response.deposit_id?.deposit_id || "",
-          list_deposit_id: response.list_deposit_id,
+    const fetchFiatData = async () => {
+      try {
+        setLoadingBankCards(true); // شروع لودینگ
+        const response = await apiRequest<WalletFiatData>({
+          url: "/wallets/fiat",
+          method: "GET",
         });
+        setFiatData(response);
+        setDepositMethods(response.depositMethods);
+
+        if (response.deposit_id || response.list_deposit_id) {
+          setIdentifierData({
+            destination_bank: response.deposit_id?.destination_bank || "",
+            destination_owner_name: response.deposit_id?.destination_owner_name || "",
+            destination_iban: response.deposit_id?.destination_iban || "",
+            destination_account_number: response.deposit_id?.destination_account_number || "",
+            deposit_id: response.deposit_id?.deposit_id || "",
+            list_deposit_id: response.list_deposit_id,
+            // ListCard:response.receipt?.list_cards?.
+          });
+        }
+      } catch (err: any) {
+        toast.error("خطا در بارگذاری اطلاعات واریز");
+      } finally {
+        setLoadingBankCards(false); // پایان لودینگ — مهم!
       }
-    } catch (err: any) {
-      toast.error("خطا در بارگذاری اطلاعات واریز");
-    } finally {
-      setLoadingBankCards(false); // پایان لودینگ — مهم!
-    }
-  };
-  fetchFiatData();
-}, []);
-
-
+    };
+    fetchFiatData();
+  }, []);
 
   useEffect(() => {
     setIsDepositCoinsLoading(true);
@@ -152,8 +275,9 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       try {
         const res = await apiRequest<any>({ url: "/wallets/crypto/deposit", method: "GET" });
         const depositCoins = res?.coins ?? [];
+        const walletsData = res?.wallets ?? [];
+        setWallets(walletsData);
         const infoCoins = generalInfo?.cryptocurrency ?? [];
-
         const merged = depositCoins.map((coin: any) => {
           const info = infoCoins.find((i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase());
           return {
@@ -267,7 +391,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       methodKey: "card" as const,
       Icon: <IconConvertCard />,
       Title: "واریز تومانی با کارت به کارت",
-      description: `واریز تا سقف ${formatPersianDigits(15)} میلیون تومان`,
+      description: "واریز وجه به صورت نامحدود",
       button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
       IconMore: <IconArrowRight />,
     },
@@ -309,12 +433,27 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       case "closeDeal":
         return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} isDataLoaded={!!fiatData} />;
       case "Identifier":
-        return <DepositwithIdentifier loadingBankCards={loadingBankCards} cards={bankCards} identifierData={identifierData} onCreateIdentifier={handleCreateIdentifier} isCreating={isCreatingIdentifier} />;
+        return (
+          <DepositwithIdentifier
+            loadingBankCards={loadingBankCards}
+            cards={bankCards}
+            identifierData={identifierData}
+            onCreateIdentifier={handleCreateIdentifier}
+            isCreating={isCreatingIdentifier}
+          />
+        );
       case "CardToCard":
         return <CardToCardTransfer loadingBankCards={loadingBankCards} cards={bankCards} cardToCardInfo={cardToCardInfo} minDeposit={minDeposit} maxDeposit={maxDeposit} />;
       case "Bank Receipt:":
         return (
-          <DepositBankReceipt loadingBankCards={loadingBankCards} bankCards={bankCards} receiptAccounts={receiptAccounts} onNext={() => setIdentifierData(null)} onFileChange={() => {}} initialPreviewUrl={null} />
+          <DepositBankReceipt
+            loadingBankCards={loadingBankCards}
+            bankCards={bankCards}
+            receiptAccounts={receiptAccounts}
+            onNext={() => setIdentifierData(null)}
+            onFileChange={() => {}}
+            initialPreviewUrl={null}
+          />
         );
       case "DedicatedWallet":
         return (
@@ -323,8 +462,10 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
             selectedCrypto={selectedCrypto}
             cryptoDepositData={cryptoListData}
             networks={depositNetworks}
-            walletsTxid={depositWalletsTxid}
+            // walletsTxid={depositWalletsTxid}
             isDepositCoinsLoading={isDepositCoinsLoading}
+            onRefreshData={refreshData}
+            wallets={wallets}
           />
         );
       case "DepositWithTxID":
@@ -353,7 +494,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
             const visible = option.methodKey ? isMethodisHidden(option.methodKey) : true;
             const disabled = option.methodKey ? isMethodDisabled(option.methodKey) : false;
 
-            if (!visible) return null; 
+            if (!visible) return null;
 
             return (
               <div key={option.id} className={`mt-4 ${disabled ? "pointer-events-none" : "cursor-pointer"}`} onClick={() => !disabled && setSelectedOption(option.id)}>
