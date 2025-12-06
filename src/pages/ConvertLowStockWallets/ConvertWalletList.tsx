@@ -150,31 +150,52 @@ export default function ConvertPage() {
 
           <div dir="rtl" className="base-style gap-5 lg:bg-gray25 rounded-2xl w-full lg:shadow-[0_0_12px_0_#00000029] lg:px-16 pt-12 pb-28 lg:flex-row lg:gap-10">
             <div className="flex justify-between ">
-               <h1 className="md:text-xl text-sm font-bold  text-black1">تبدیل موجودی‌های اندک</h1>
-              <button
-                  onClick={handleConvert}
-                  className="border-blue2 border text-blue2 hover:bg-blue2 hover:text-white  px-11 py-2 rounded-lg "
-                >
-                  تبدیل موجودی
-                </button>
+               <h1 className="lg:text-xl text-sm font-bold  text-black1">تبدیل موجودی‌های اندک</h1>
+             <button
+  onClick={handleConvert}
+  disabled={wallets.length === 0}
+  className={`
+    hidden lg:block
+    rounded-lg px-11 py-2 lg:py-2.5 text-base font-medium lg:text-lg lg:font-bold
+    bg-blue2 text-white2 transition duration-300
+    ${wallets.length === 0 ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"}
+  `}
+>
+  تبدیل موجودی
+</button>
+
             </div>
            
 
             <div className="w-full h-full rounded-2xl  flex flex-col gap-8">
               {/* توضیحات و دکمه */}
               <div className="lg:flex items-center justify-between">
-                <ol className=" lg:p-6  p-4 flex flex-col  gap-2 list-disc">
+                <ol className=" lg:p-6   flex flex-col  gap-2 list-disc">
 
 
                   <div className="pr-4 pb-2">
-                    <li className="text-black1 text-sm">
+                    <li className="text-black1  lg:text-sm mt-4 text-xs lg:mt-1">
                       شما می‌توانید رمزارزهای با موجودی کمتر از 10,000 تومان خود را مستقیماً به تومان تبدیل کنید.
                     </li>
-                    <li className="text-black1 text-sm mt-1">
+                    <li className="text-black1 lg:text-sm mt-4 text-xs lg:mt-1">
                       دقت کنید که ارزش نمایش داده شده به صورت تقریبی است.
                     </li>
                   </div>
                 </ol>
+                <div className="lg:hidden px-4 mt-3 flex justify-end">
+  <button
+    onClick={handleConvert}
+    disabled={wallets.length === 0}
+    className={`
+       rounded-lg px-6 py-2  font-bold 
+      bg-blue2 text-white2 transition duration-300 text-sm
+      ${wallets.length === 0 ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"}
+    `}
+  >
+    تبدیل موجودی
+  </button>
+</div>
+
 
               
               </div>

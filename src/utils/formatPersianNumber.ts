@@ -36,7 +36,6 @@ export const formatPersianNumber = (input: string | number): string => {
 };
 
 
-
 export const formatEnglishNumber = (input: string | number): string => {
   if (input === null || input === undefined) return "0";
 
@@ -45,13 +44,20 @@ export const formatEnglishNumber = (input: string | number): string => {
 
   const num = Number(numStr);
 
-  // عدد >= 1: بدون rounding، فقط نمایش عدد صحیح با کاما
+  // ⭐ اگر >= 1: اعشار حذف نشود، همان را با کاما چاپ کن
   if (Math.abs(num) >= 1) {
-    const intPart = Math.trunc(num); // قسمت صحیح عدد
-    return intPart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    // اگر اعشار ندارد → فقط صحیح را چاپ کن
+    if (Number.isInteger(num)) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // اگر اعشار دارد → کامل چاپ کن
+    const [intPart, decimalPart] = numStr.split(".");
+    const formattedInt = Number(intPart).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return `${formattedInt}.${decimalPart}`;
   }
 
-  // عدد بین 0.01 و 1: همان rounding دو رقم اعشار
+  // عدد بین 0.01 و 1: دو رقم اعشار
   if (Math.abs(num) >= 0.01) {
     return num
       .toFixed(2)
@@ -59,7 +65,7 @@ export const formatEnglishNumber = (input: string | number): string => {
       .replace(/\.$/, "");
   }
 
-  // عدد کوچک‌تر از 0.01: دو رقم بعد از صفرهای leading
+  // عدد کوچک‌تر از 0.01
   const match = numStr.match(/^(0\.0*)(\d+)/);
   if (match) {
     const zeros = match[1];
