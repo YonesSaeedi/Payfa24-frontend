@@ -145,7 +145,7 @@ const ServicesBox: React.FC<ServicesBoxProps> = ({ onClose }) => {
     },
     { label: "مقالات", icon: <IconPersonalCard /> },
     { label: "دعوت دوستان", icon: <IconUserPlus />, route: ROUTES.ADD_FRIEND },
-     { label: "تبدیل", icon: <IconConvertCard />, route: ROUTES.WALLET_CONVERT}
+     { label: "تبدیل اندک ", icon: <IconConvertCard />, route: ROUTES.WALLET_CONVERT}
   ];
 
   const renderSection = (title: string, items: ServiceItem[]) => (

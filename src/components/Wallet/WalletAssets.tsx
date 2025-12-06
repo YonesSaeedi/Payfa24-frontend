@@ -15,7 +15,7 @@ import Pagination from "../History/Pagination";
 import IconEmptyWallet from "./../../assets/icons/Home/WalletCardIcon/iconEmptyWallet";
 import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
 import CurrencyToggle from "../Home/WalletCard/CurrencyToggle";
-import { formatPersianNumber } from "../../utils/formatPersianNumber";
+import { formatEnglishNumber, formatPersianNumber } from "../../utils/formatPersianNumber";
 
 interface Wallet {
   name: string;
@@ -146,9 +146,7 @@ const WalletAssets: React.FC = () => {
     };
   });
 
-  const formatNumber = (num: number, decimals = 8) => {
-    return formatPersianNumber(Number(num.toFixed(decimals)).toString());
-  };
+ 
 
   return (
     <div className="flex flex-col gap-6">
@@ -170,7 +168,7 @@ const WalletAssets: React.FC = () => {
             />
           </div>
           <div className="flex items-center justify-between lg:mb-6 mb-3">
-            <div className="relative w-1/2">
+            <div className="relative max-w-[50%] pl-2">
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
                 <IconSearch />
               </span>
@@ -186,17 +184,27 @@ const WalletAssets: React.FC = () => {
               />
             </div>
             <div className="relative inline-block text-right max-w-[50%]" ref={dropdownRef}>
-              <button
-                onClick={() => setOpenDropdown(!openDropdown)}
-                className={`border rounded-lg px-3 py-2 flex items-center gap-2 text-sm w-full sm:w-36 lg:w-52 justify-between text-black1 transition-colors duration-200 ${
-                  openDropdown ? "border-blue2" : "border-gray19"
-                }`}
-              >
-                {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
-                <span className={`w-4 h-4 transition-transform duration-200 text-gray12 ${openDropdown ? "rotate-180" : ""}`}>
-                  <IconChervDown />
-                </span>
-              </button>
+<button
+  onClick={() => setOpenDropdown(!openDropdown)}
+  className={`
+    border rounded-lg px-3 py-2 flex items-center gap-2 text-sm 
+    w-full sm:w-36 lg:w-52 justify-between text-black1 
+    transition-colors duration-200
+    ${openDropdown ? "border-blue2" : "border-gray19"}
+  `}
+>
+  <span className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%] block">
+    {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
+  </span>
+
+  <span
+    className={`w-4 h-4 transition-transform duration-200 text-gray12 ${
+      openDropdown ? "rotate-180" : ""
+    }`}
+  >
+    <IconChervDown />
+  </span>
+</button>
               {openDropdown && (
                 <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col border border-gray21">
                   {sortOptions.map((option) => (
@@ -288,12 +296,12 @@ const WalletAssets: React.FC = () => {
                       {formatPersianNumber(item.fee_toman.toLocaleString())}
                     </span>
                     <span className="px-4 py-3 whitespace-nowrap hidden lg:flex justify-center items-center text-sm font-normal">
-                      {formatNumber(item.balance, 8)} {item.symbol}
+                      {formatEnglishNumber(item.balance)} {item.symbol}
                     </span>
                     <div className="px-2 py-3 text-center relative whitespace-nowrap group flex items-center justify-between">
                       <span></span>
                       <div className="flex flex-col items-end justify-end text-xs lg:text-sm font-normal">
-                        <span className="whitespace-nowrap">{formatPersianNumber(item.price * item.balance)} دلار</span>
+                        <span className="whitespace-nowrap">{formatEnglishNumber(item.price * item.balance)} دلار</span>
                         <span className="whitespace-nowrap lg:hidden">معادل {item.balance} تومان</span>
                       </div>
                       <button
