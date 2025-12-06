@@ -16,6 +16,7 @@ export const ROUTES = {
   CONNECTED_DEVICES: "/connected-devices",
   FAQ: "/faq",
   BANK_CARDS: "/bank-cards",
+  WALLET_CONVERT: "/wallet/convert",
   WITHDRAWAL: {
   ROOT: "/withdraw",
   FIAT: "/withdraw/fiat",
@@ -23,6 +24,7 @@ export const ROUTES = {
 },
 
   MARKET_VIEW: '/market-view',
+
   TRADE: {
     ROOT: "/trade",
     BUY: "/trade/buy",

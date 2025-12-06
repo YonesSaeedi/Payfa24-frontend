@@ -14,8 +14,8 @@ interface OrderSelectorProps {
   setSelectedOrder: (order: Order | null) => void;
   register: UseFormRegister<TicketFormInputs>;
   setValue: UseFormSetValue<TicketFormInputs>;
-  orders: Order[];      // اضافه کردن این
-  isLoading: boolean;   // اضافه کردن این
+  orders: Order[];     
+  isLoading: boolean;  
 }
 
 
@@ -121,8 +121,8 @@ const orderDivRef = useRef<HTMLButtonElement | null>(null);
   typeof document !== "undefined" &&
   createPortal(
     <OrderModal
-      orders={orders}       // استفاده از prop
-      isLoading={isLoading} // استفاده از prop
+      orders={orders}       
+      isLoading={isLoading}
       onSelectOrder={handleSelectOrder}
       onClose={() => setIsModalOpen(false)}
     />,

@@ -85,7 +85,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [isDark, setIsDark] = useState(false);
 
- useEffect(() => {
+  useEffect(() => {
     // بررسی کلاس dark روی <html>
     const updateTheme = () => {
       setIsDark(document.documentElement.classList.contains("dark"));
@@ -127,14 +127,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
 
   const fetchFileAsDataUrl = async (fileToken: string) => {
     const filePath = `/image/${fileToken}`;
-    const timestamp = Math.floor(Date.now() / 1000).toString();
 
     try {
       const blob = await apiRequest<Blob>({
         url: filePath,
         method: "GET",
         responseType: "blob",
-        headers: { "x-timestamp": timestamp },
       });
 
       return URL.createObjectURL(blob);
@@ -220,7 +218,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
               method: "GET",
             });
 
-const lastMsg = updated.ticket_message[updated.ticket_message.length - 1];
+            const lastMsg = updated.ticket_message[updated.ticket_message.length - 1];
 
             if (lastMsg?.file) {
               const fileUrl = await fetchFileAsDataUrl(lastMsg.file);
@@ -275,7 +273,7 @@ const lastMsg = updated.ticket_message[updated.ticket_message.length - 1];
       <div className=" relative border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
         {ticket && <ChatHeader ticket={ticket} />}
 
-        <div className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center" style={{  backgroundImage: `url(${isDark ? bgchatDark : bgChat })` }}>
+        <div className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center" style={{ backgroundImage: `url(${isDark ? bgchatDark : bgChat})` }}>
           <div className="relative z-10 flex flex-col gap-4">
             {loading ? (
               <>
@@ -293,11 +291,10 @@ const lastMsg = updated.ticket_message[updated.ticket_message.length - 1];
                 <div key={msg.id} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
                   <div
                     dir="rtl"
-                    className={`shadow px-3 w-[379px] relative flex-col ${
-                      msg.isUser
-                        ? "bg-black4 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-bl-[8px]"
-                        : "bg-gray40 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px]"
-                    }`}
+                    className={`shadow px-3 w-[379px] relative flex-col ${msg.isUser
+                      ? "bg-black4 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-bl-[8px]"
+                      : "bg-gray40 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px]"
+                      }`}
                   >
                     {!msg.isUser && (
                       <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
@@ -337,35 +334,35 @@ const lastMsg = updated.ticket_message[updated.ticket_message.length - 1];
               ))
             )}
           </div>
-           {selectedFile && (
-          <div dir="rtl" className="mt-4 mb-2 mx-3">
-            <div className="flex flex-col rounded-2xl w-64 shadow bg-blue-100 p-3 gap-2">
-              <div className="flex relative gap-2 items-center">
-                <div className="w-full text-sm break-all">{selectedFile.name}</div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedFile(null);
-                    if (fileInputRef.current) fileInputRef.current.value = "";
-                  }}
-                  className="flex text-xs bg-red-500 text-white rounded-full w-5 h-5 items-center justify-center hover:bg-red-600"
-                  title="حذف فایل"
-                >
-                  <span className="w-4 h-4 icon-wrapper">
-                    <IconCloseButtun />
-                  </span>
-                </button>
-              </div>
-              {isSending && uploadProgress !== null && (
-                <div className="w-full h-1 bg-gray-300 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+          {selectedFile && (
+            <div dir="rtl" className="mt-4 mb-2 mx-3">
+              <div className="flex flex-col rounded-2xl w-64 shadow bg-blue-100 p-3 gap-2">
+                <div className="flex relative gap-2 items-center">
+                  <div className="w-full text-sm break-all">{selectedFile.name}</div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedFile(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                    }}
+                    className="flex text-xs bg-red-500 text-white rounded-full w-5 h-5 items-center justify-center hover:bg-red-600"
+                    title="حذف فایل"
+                  >
+                    <span className="w-4 h-4 icon-wrapper">
+                      <IconCloseButtun />
+                    </span>
+                  </button>
                 </div>
-              )}
+                {isSending && uploadProgress !== null && (
+                  <div className="w-full h-1 bg-gray-300 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
-       
+
         <div dir="rtl" className="p-3 flex gap-2 bg-white8">
           <input
             type="text"

@@ -37,7 +37,7 @@ const TradeLayout = () => {
                     <h4 className="text-sm lg:text-lg font-medium text-text3">توجه داشته باشید</h4>
                   </div>
                   <ul className="font-normal text-xs lg:text-base text-black1 list-disc pr-6">
-                    <li className="">سقف خرید و فروش از این بخش 5 میلیون تومان است.</li>
+                    <li className="">سقف خرید و فروش این بخش نامحدود است.</li>
                     <li className="">کارمزد پی‌فا 24 برای معاملات آسان همیشه 0 است.</li>
                   </ul>
                 </div>

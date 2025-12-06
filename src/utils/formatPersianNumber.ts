@@ -6,13 +6,15 @@ export const formatPersianNumber = (input: string | number): string => {
 
   let num = Number(numStr);
 
-  if (Math.abs(num) >= 1) {
-    const rounded = Math.round(num).toString();
-    const withCommas = rounded.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return withCommas.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
-  }
-
  
+  if (Math.abs(num) >= 1) {
+  const integerPart = Math.trunc(num)  
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return integerPart.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+}
+
+
   if (Math.abs(num) >= 0.01) {
     const fixed = num.toFixed(2)
       .replace(/0+$/, "")
@@ -40,30 +42,36 @@ export const formatEnglishNumber = (input: string | number): string => {
   const numStr = String(input).replace(/,/g, "").trim();
   if (numStr === "" || isNaN(Number(numStr))) return "0";
 
-  let num = Number(numStr);
+  const num = Number(numStr);
 
- 
+  // ⭐ اگر >= 1: اعشار حذف نشود، همان را با کاما چاپ کن
   if (Math.abs(num) >= 1) {
-    const rounded = Math.round(num).toString();
-    return rounded.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    // اگر اعشار ندارد → فقط صحیح را چاپ کن
+    if (Number.isInteger(num)) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // اگر اعشار دارد → کامل چاپ کن
+    const [intPart, decimalPart] = numStr.split(".");
+    const formattedInt = Number(intPart).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return `${formattedInt}.${decimalPart}`;
   }
 
- 
+  // عدد بین 0.01 و 1: دو رقم اعشار
   if (Math.abs(num) >= 0.01) {
     return num
       .toFixed(2)
       .replace(/0+$/, "")
-      .replace(/\.$/, ""); 
+      .replace(/\.$/, "");
   }
 
-  
+  // عدد کوچک‌تر از 0.01
   const match = numStr.match(/^(0\.0*)(\d+)/);
   if (match) {
-    const zeros = match[1];     
-    const digits = match[2];    
+    const zeros = match[1];
+    const digits = match[2];
     return zeros + digits.slice(0, 2);
   }
 
   return "0";
 };
-

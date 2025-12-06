@@ -10,7 +10,7 @@ import DepositBankReceipt from "../../components/Deposit/DepositBankReceipt";
 import { apiRequest } from "../../utils/apiClient";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";
+import useGetGeneralInfo from "../../hooks/useGetGeneralInfo";           
 import { CryptoItem } from "../../types/crypto";
 import IconBank from "../../assets/icons/Deposit/IconBank";
 import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
@@ -483,6 +483,25 @@ const refreshData = async () => {
         return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} />;
     }
   };
+  //  انتخاب ارز از روی URL
+useEffect(() => {
+  if (!cryptoListData || cryptoListData.length === 0) return;
+
+  const params = new URLSearchParams(location.search);
+  const coinSymbol = params.get("coin");
+
+  if (coinSymbol) {
+    const found = cryptoListData.find(
+      (c) => c.symbol.toLowerCase() === coinSymbol.toLowerCase()
+    );
+
+    if (found) {
+      setSelectedCrypto(found);
+      return;
+    }
+  }
+}, [location.search, cryptoListData]);
+
 
   return (
     <HeaderLayout>

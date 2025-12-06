@@ -1,7 +1,7 @@
 
 import React from "react";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
-import IconArrowRight from "../../assets/icons/Deposit/IconArrowRight";
+import IconArrow from "../../assets/icons/Deposit/IconArrowRight";
 
 
 interface PaginationProps {
@@ -48,10 +48,10 @@ const Pagination: React.FC<PaginationProps> = ({ current, total, onPageChange })
         className={`${baseClass} ${
           current === 1
             ? "text-gray-300 bg-gray33"
-            : "text-black1 bg-gray27 border border-gray21 hover:bg-gray-200 rotate-180"
+            : "text-black1 bg-gray27 border border-gray21 hover:bg-gray-200"
         }`}
       >
-        <IconArrowRight/>
+            <IconArrow direction="left" />
       </button>
 
       {/* Numbers */}
@@ -88,7 +88,8 @@ const Pagination: React.FC<PaginationProps> = ({ current, total, onPageChange })
             : "text-black1 bg-gray27 border border-gray21 hover:bg-gray-200 "
         }`}
       >
-        <IconArrowRight/>
+ 
+         <IconArrow direction="right" />
       </button>
     </div>
   );

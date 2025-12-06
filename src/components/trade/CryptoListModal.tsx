@@ -50,7 +50,7 @@ const CryptoListModal = ({ setIsCryptoListModalOpen, cryptoListData, setCurrentC
       : isDollarCurrencies
         ? digitalCryptoListData ?? [] // safe fallback
         : cryptoListData;
-
+  
   return (
     <div onClick={() => setIsCryptoListModalOpen(false)} className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.3)] backdrop-blur-sm flex items-center justify-center">
       <div onClick={handleModalClick} className="bg-white8 rounded-2xl border border-white6 pt-4 px-4 lg:pt-8 lg:px-6 flex flex-col gap-5 w-[328px] lg:w-[480px]">

@@ -291,7 +291,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
                             src={`https://api.payfa24.org/images/currency/${item.icon}`}
                             className="w-8 h-8 rounded-full"
                             alt={symbol}
-                           
+                            
                           />
                         )}
                       </span>

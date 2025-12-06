@@ -35,6 +35,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   'receipt': "فیش بانکی",
   'wallet': "ولت اختصاصی",
   'txid': "TxID",
+  'convert':"تبدیل موجودی"
 };
 
 const BreadcrumbNavigation = () => {

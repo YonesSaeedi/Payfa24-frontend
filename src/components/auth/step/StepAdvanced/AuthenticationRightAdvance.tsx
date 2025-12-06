@@ -13,7 +13,7 @@ interface Props {
 export default function AuthenticationRightAdvance({ step, onStart, isAdvanced }: Props) {
   return (
     <div className={`w-full h-full flex flex-col gap-6 items-end ${step === 0 ? "flex" : "hidden lg:flex"}`}>
-      {/* سطح ۱ — همیشه سبز */}
+   
       <div className="lg:w-5/6 w-full border-gray49 rounded-lg border md:flex flex-col lg:p-6 px-4 py-5 justify-center sm:justify-end">
         <div className="flex flex-row-reverse justify-between mb-5 items-center">
           <h1 className="text-right text-blue2 font-medium lg:text-xl text-sm">سطح {toPersianDigits(1)} : احراز هویت پایه</h1>
@@ -53,12 +53,12 @@ export default function AuthenticationRightAdvance({ step, onStart, isAdvanced }
         </div>
       </div>
 
-      {/* سطح ۲ */}
+    
       <div className={`lg:w-5/6 w-full rounded-lg border md:flex flex-col p-6 justify-center sm:justify-end ${isAdvanced ? "border-gray49" : "border-blue2 border-[1px]"}`}>
         <div className="flex flex-row-reverse justify-between items-center mb-5">
           <h1 className="text-right text-blue2 font-medium lg:text-xl text-sm">سطح {toPersianDigits(2)} : احراز هویت پیشرفته</h1>
 
-          {/* فقط وقتی احراز شده → تیک سبز */}
+         
           {isAdvanced && (
             <div className="bg-green10 text-green2 lg:w-[115px] lg:h-[36px] w-[87px] h-[32px] flex gap-1 rounded-sm items-center justify-center">
               <span className="lg:text-sm text-xs font-medium">احراز شده</span>

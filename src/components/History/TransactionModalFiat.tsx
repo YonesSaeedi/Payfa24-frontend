@@ -5,6 +5,8 @@ import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
 import ImageIran from "./../../assets/images/Transaction/iran.png";
 import { formatPersianNumber } from "../../utils/formatPersianNumber";
+import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
+import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
 
 export interface FiatDetail {
   id: string;
@@ -114,10 +116,11 @@ const TransactionModalFiat: React.FC<TransactionModalFiatProps> = ({ tx, onClose
                     value={<StatusBadge text={transactionStatusMap[detail.status] || detail.status} />}
                   />
                 )}
+                {detail.type && <DetailRow label="نوع" value={transactionTypeMap[detail.type] || detail.type} />}
                 {detail.id && <DetailRow label="شناسه تراکنش" value={convertDigitsToPersian(`${detail.id}`)} />}
                 {detail.DateTime && <DetailRow label="تاریخ تراکنش" value={convertDigitsToPersian(detail.DateTime)} />}
-                {detail.type && <DetailRow label="نوع" value={transactionTypeMap[detail.type] || detail.type} />}
-                {detail.amount && <DetailRow label="مقدار" value={formatPersianNumber(detail.amount)} symbol="تومان" />}
+                
+                {detail.amount && <DetailRow label="قیمت کل" value={formatPersianNumber(detail.amount)} symbol="تومان" />}
                 {detail.stock && (
                   <DetailRow
                     label="موجودی پس از تراکنش"
@@ -144,16 +147,45 @@ const TransactionModalFiat: React.FC<TransactionModalFiatProps> = ({ tx, onClose
   );
 };
 
-const DetailRow = ({ label, value, symbol }: { label: string; value: React.ReactNode; symbol?: string }) => (
-  <div className="flex justify-between items-center">
-    <span className="font-medium text-[16px] text-gray5">{label}:</span>
-    <div className="flex items-end justify-end gap-1 min-w-[120px] text-left">
-      <span className={`break-words ${typeof value === "string" && value.length > 20 ? "break-all" : ""}`}>
-        {value}
-      </span>
-      {symbol && <span>{symbol}</span>}
-    </div>
-  </div>
-);
+const DetailRow = ({ label, value, symbol }: { label: string; value: React.ReactNode; symbol?: string }) => {
+  // حالت مخصوص نوع تراکنش
+  if (label === "نوع" && typeof value === "string") {
+    const isDeposit = value === "deposit" || value === "واریز"; // یا mapping مناسب شما
 
+    return (
+      <div className="flex justify-between items-center">
+        <span className="font-medium text-[16px] text-gray5">{label}:</span>
+        <div
+          className={`inline-flex items-center gap-1 w-[108px] h-[29px] justify-center rounded-[4px] ${
+            isDeposit ? "bg-green8 text-green-600" : "bg-red7 text-red6"
+          }`}
+        >
+          {isDeposit ? (
+            <span className="w-5 h-5 icon-wrapper">
+                 <ReceivedIcon />
+            </span>
+          ) : (
+            <span className="w-5 h-5 icon-wrapper">
+              <SendIcon />
+            </span>
+          )}
+          <span className="text-[14px] font-normal">{transactionTypeMap[value] || value}</span>
+        </div>
+      </div>
+    );
+  }
+
+  // حالت عادی برای بقیه فیلدها
+  return (
+    <div className="flex justify-between items-center">
+      <span className="font-medium text-[16px] text-gray5">{label}:</span>
+      <div className="flex items-end justify-end gap-1 min-w-[120px] text-left">
+        <span className={`break-words ${typeof value === "string" && value.length > 20 ? "break-all" : ""}`}>
+          {value}
+        </span>
+        {symbol && <span>{symbol}</span>}
+      </div>
+    </div>
+  );
+};
 export default TransactionModalFiat;

@@ -76,30 +76,19 @@ const handleLogoutConfirm = async () => {
     window.location.replace("/login");
   }
 };
-
-
-
-
-
   return (
     <>
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-20"
           onClick={onClose}
         />
       )}
 
     <div
-  className={`fixed top-0 right-0 h-full  ${
-    open ? "translate-x-0" : "translate-x-full" } max-h-screen z-50 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 overflow-y-auto`}
-  dir="rtl"
->
+  className={`fixed top-0 right-0 h-full  ${open ? "translate-x-0" : "translate-x-full" } max-h-screen z-30 w-72 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 p-3 overflow-y-auto`}dir="rtl">
 
-        <div
-          dir="rtl"
-          className=" py-4 px-3 flex-col items-center justify-between border shadow-md m-4 rounded-[20px] mt-8"
-        >
+        <div dir="rtl" className=" py-4 px-3 flex-col items-center justify-between border shadow-md m-4 rounded-[20px] mt-8">
           <div className="flex  ">
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
@@ -111,23 +100,11 @@ const handleLogoutConfirm = async () => {
       : `${userData?.user.name || ""} ${userData?.user.family || ""}`}
   </p>
  <p className="text-xs text-gray-500 pt-1">
-  {isLoading
-    ? ""
-    : `سطح احراز هویت ${
-        userData?.user.level_kyc === "advanced"
-          ? "پیشرفته"
-          : userData?.user.level_kyc === "basic"
-          ? "پایه"
-          : "—"
-      }`}
+  {isLoading ? "": `سطح احراز هویت ${userData?.user.level_kyc === "advanced"? "پیشرفته": userData?.user.level_kyc === "basic"? "پایه": "—"}`}
 </p>
-
 </div>
-
           </div>
-        
-        </div>
-
+          </div>
         <nav className="flex flex-col gap-6 p-4 space-y-3 text-right">
    <div className="flex items-center justify-start gap-2">
   <Link to="/" className="flex items-center gap-2 group">
@@ -139,16 +116,9 @@ const handleLogoutConfirm = async () => {
     </span>
   </Link>
 </div>
-
-
-          <div className="flex items-center justify-start gap-2">
-  <button
-    onClick={() => {
-      onClose();
-      onOpenServicesModal();
-    }}
-    className="flex items-center gap-2 group"
-  >
+  <div className="flex items-center justify-start gap-2">
+  <button onClick={() => {onClose();onOpenServicesModal();}}
+    className="flex items-center gap-2 group">
     <span className="flex items-center justify-center w-6 h-6 transition-colors duration-200 group-hover:text-blue2">
       <CategoryIcon />
     </span>
@@ -158,7 +128,6 @@ const handleLogoutConfirm = async () => {
   </button>
 </div>
 
-{/* تاریخچه */}
 <li className="flex flex-col cursor-pointer">
   <details className="w-full group">
     <summary className="flex items-center justify-between cursor-pointer">
@@ -422,9 +391,7 @@ const handleLogoutConfirm = async () => {
     </span>
   </button>
 </div>
-
       </div>
-
      {isLogoutModalOpen && (
   <ModalLogout
   open={isLogoutModalOpen}
@@ -433,9 +400,6 @@ const handleLogoutConfirm = async () => {
 />
 
 )}
-
-
-
     </>
 
     

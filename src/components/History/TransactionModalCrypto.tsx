@@ -5,6 +5,9 @@ import { apiRequest } from "../../utils/apiClient";
 import { transactionStatusMap, transactionTypeMap } from "../../utils/statusMap";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import { Tx } from "./CryptoPage";
+import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
+import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
+import { formatEnglishNumber } from "../../utils/formatPersianNumber";
 
 export interface CryptoDetail {
   id: string;
@@ -163,14 +166,15 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
 
               <div className="grid grid-cols-1 gap-6 text-sm">
                 {detail.status && <DetailRow label="وضعیت" value={<StatusBadge text={transactionStatusMap[detail.status] || detail.status} />} />}
+                {detail.type && <DetailRow label="نوع" value={transactionTypeMap[detail.type] || detail.type} />}
                 {detail.id && <DetailRow label="شناسه تراکنش" value={convertDigitsToPersian(`${detail.id}`)} />}
                 {detail.DateTime && <DetailRow label="تاریخ تراکنش" value={convertDigitsToPersian(detail.DateTime)} />}
-                {detail.type && <DetailRow label="نوع" value={transactionTypeMap[detail.type] || detail.type} />}
+                
                 {detail.amount && <DetailRow label="مقدار" value={detail.amount} symbol={detail.symbol} />}
                 {detail.amount_toman && <DetailRow label="مبلغ به تومان" value={formatPersianDigits(detail.amount_toman)} symbol="تومان" />}
                 {detail.fee && <DetailRow label="کارمزد" value={formatPersianDigits(detail.fee)} symbol={detail.symbol} />}
                 {detail.withdrawFee && <DetailRow label="کارمزد برداشت" value={detail.withdrawFee} symbol={detail.symbol} />}
-                {detail.stock && <DetailRow label="موجودی پس از تراکنش" value={formatPersianDigits(detail.stock)} symbol={detail.symbol} />}
+                {detail.stock && <DetailRow label="موجودی پس از تراکنش" value={formatEnglishNumber(detail.stock)} symbol={detail.symbol} />}
                 {detail.description && <DetailRow label="توضیحات" value={detail.description} />}
                 {detail.destination && <DetailRow label="آدرس مقصد" value={detail.destination} />}
                 {detail.destinationTag && <DetailRow label="Destination Tag" value={detail.destinationTag} />}
@@ -191,14 +195,47 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
   );
 };
 
-const DetailRow = ({ label, value, symbol }: { label: string; value: React.ReactNode; symbol?: string }) => (
-  <div className="flex justify-between items-center">
-    <span className="font-medium text-[16px] text-gray5">{label}:</span>
-    <div className="flex items-end justify-end gap-1 min-w-[120px] text-left">
-      <span className={`break-words ${typeof value === "string" && value.length > 20 ? "break-all" : ""}`}>{value}</span>
-      {symbol && <span>{symbol}</span>}
+
+const DetailRow = ({ label, value, symbol }: { label: string; value: React.ReactNode; symbol?: string }) => {
+  // حالت مخصوص نوع تراکنش
+  if (label === "نوع" && typeof value === "string") {
+    const isDeposit = value === "deposit" || value === "واریز"; // یا mapping مناسب شما
+
+    return (
+      <div className="flex justify-between items-center">
+        <span className="font-medium text-[16px] text-gray5">{label}:</span>
+        <div
+          className={`inline-flex items-center gap-1 w-[108px] h-[29px] justify-center rounded-[4px] ${
+            isDeposit ? "bg-green8 text-green-600" : "bg-red7 text-red6"
+          }`}
+        >
+          {isDeposit ? (
+            <span className="w-5 h-5 icon-wrapper">
+              <ReceivedIcon />
+            </span>
+          ) : (
+            <span className="w-5 h-5 icon-wrapper">
+              <SendIcon />
+            </span>
+          )}
+          <span className="text-[14px] font-normal">{transactionTypeMap[value] || value}</span>
+        </div>
+      </div>
+    );
+  }
+
+  // حالت عادی برای بقیه فیلدها
+  return (
+    <div className="flex justify-between items-center">
+      <span className="font-medium text-[16px] text-gray5">{label}:</span>
+      <div className="flex items-end justify-end gap-1 min-w-[120px] text-left">
+        <span className={`break-words ${typeof value === "string" && value.length > 20 ? "break-all" : ""}`}>
+          {value}
+        </span>
+        {symbol && <span>{symbol}</span>}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default TransactionModalCrypto;
