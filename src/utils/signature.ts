@@ -23,15 +23,25 @@ export function getAuthHeaders(method: string, path: string, body: any = [], par
   } else {
     // POST → JSON or FormData
     if (body instanceof FormData) {
-    const jsonObj: any = {};
-    body.forEach((val, key) => {
-      if (val instanceof File) return; // ← فایل ها را نادیده بگیر
-      jsonObj[key] = val;
-    });
-    bodyForSign = Object.keys(jsonObj).length ? jsonObj : [];
-    } else {
-      bodyForSign = body && Object.keys(body).length ? body : [];
+      const jsonObj: Record<string, any> = {};
+      body.forEach((val, key) => {
+        if (val instanceof File) return; // ← فایل ها را نادیده بگیر
+        if (val !== "" && val !== null && val !== undefined) jsonObj[key] = val;
+      });
+      bodyForSign = Object.keys(jsonObj).length ? jsonObj : [];
+    } else if (body && typeof body === 'object') {
+      // Remove empty values for plain objects
+      const cleanedBody = Object.fromEntries(
+        Object.entries(body).filter(
+          ([_, v]) => v !== "" && v !== null && v !== undefined
+        )
+      );
+      bodyForSign = Object.keys(cleanedBody).length ? cleanedBody : [];
     }
+    else {
+      bodyForSign = [];
+    }
+    console.log('body for sign: ', bodyForSign);
   }
 
   let cleanPath = path;
