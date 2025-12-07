@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Dashboard } from "../../types/api/dashboard";
 import { apiRequest } from "../../utils/apiClient";
+import WalletPieChart from "../../components/Wallet/WalletPieChart";
 
 export default function Wallet() {
   const [dashboardData, setDashboardData] = useState<Dashboard | null>(null);
@@ -29,7 +30,7 @@ export default function Wallet() {
   return (
     <div className="h-full w-full">
       <HeaderLayout>
-        <div className="container-style lg:px-4 w-full  pt-16 flex flex-col lg:flex-row-reverse gap-[33px] overflow-visible">
+        <div className="container-style lg:px-4 w-full  pt-10 flex flex-col lg:flex-row-reverse gap-[33px] overflow-visible">
           <div className="w-full lg:w-5/12 text-right">
           <div>
         <WalletCard
@@ -39,7 +40,7 @@ export default function Wallet() {
   showBuySell={false} // مخفی کردن دکمه‌های خرید و فروش
 />
 
-
+ <WalletPieChart  />
           </div>
             
           </div>

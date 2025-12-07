@@ -40,6 +40,8 @@ interface Wallets {
   crypto?: Wallet;
 }
 
+
+
 const WalletCard = ({ showBuySell = true, walletData, isLoading ,showConvert = false }: WalletCardProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
@@ -87,8 +89,24 @@ const WalletCard = ({ showBuySell = true, walletData, isLoading ,showConvert = f
   }, []);
   // specify displayed balance currency ==========================================================================================================
   const displayBalance = selectedCurrency === "tether" ? balance?.crypto?.balance : balance?.toman?.balance;
+  const formatTether = (value: number) => {
+  const str = String(value); // اعشار کامل حفظ می‌شود
+  return str.replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[+d]);
+};
 
-  const shownBalance = showBalance ? formatPersianNumber(displayBalance ?? 0) : formatPersianNumber(1234567);
+ const formatBalance = (value: number, currency: "tether" | "toman") => {
+  if (currency === "toman") {
+    return formatPersianNumber(Math.floor(value));
+  }
+
+  // تتر → چاپ کامل اعشار بدون حذف
+  return formatTether(value);
+};
+
+  const shownBalance = showBalance
+  ? formatBalance(displayBalance ?? 0, selectedCurrency)
+  : formatPersianNumber(1234567);
+
 
   const handleToggleBalance = () => {
     setIsAnimating(true);
