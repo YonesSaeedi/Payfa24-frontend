@@ -406,6 +406,15 @@ const CryptoWithdrawForm: FC = () => {
   };
 
 
+
+  
+useEffect(() => {
+  setAmount(""); 
+  setAddress(""); 
+  setTag("");   
+}, [activeTab]);
+
+
   return (
     <>
       <form
@@ -519,9 +528,16 @@ const CryptoWithdrawForm: FC = () => {
                         {isDataLoading ? (
                           <span className="skeleton-bg h-5 w-24 lg:w-32 rounded"></span>
                         ) : (
-                      <span dir="ltr" className="font-medium text-black0 text-sm">
-                       {formatEnglishNumber(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0")} {crypto}
-                     </span>
+                      <span
+  dir="ltr"
+  className="font-medium text-black0 text-sm cursor-pointer"
+  onClick={() => {
+    const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
+    setAmount(available); // مقدار را در فیلد input قرار می‌دهد
+  }}
+>
+  {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0")} {crypto}
+</span>
 
 
                         )}
@@ -626,12 +642,20 @@ const CryptoWithdrawForm: FC = () => {
                   />
 
                   <div className="text-md text-gray5 mt-3 space-y-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-normal text-sm">موجودی قابل برداشت</span>
-                      <span dir="ltr" className="font-medium text-black0 text-sm">
-                      {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toString()} {crypto}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between mb-2">
+  <span className="font-normal text-sm">موجودی قابل برداشت</span>
+  <span
+    dir="ltr"
+    className="font-medium text-black0 text-sm cursor-pointer"
+    onClick={() => {
+      const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
+      setAmount(available); // مقدار را در فیلد input قرار می‌دهد
+    }}
+  >
+    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toString()} {crypto}
+  </span>
+</div>
+
                     <div className="flex items-center justify-between">
                       <span className="font-normal text-sm">مقدار برداشت روزانه معادل</span>
                       <span className="font-medium text-black0 text-sm">{levelUsed.daily_withdrawal_crypto ? toPersianDigits(levelUsed.daily_withdrawal_crypto) : "۰"} تومان</span>

@@ -66,7 +66,7 @@ const CurrencyToggle: FC<Props> = ({
   };
 
   return (
-    <div className="flex gap-2 rounded-lg border p-1 w-fit bg-backgroundMain2 border-gray19">
+    <div className="flex gap-2 rounded-lg border p-1 lg:w-fit w-fit bg-backgroundMain2 border-gray19">
       {options.map((opt) => (
         <button
           key={opt.value}
@@ -74,7 +74,7 @@ const CurrencyToggle: FC<Props> = ({
           className={`flex items-center gap-1 px-3 py-1 rounded transition text-[10px] lg:text-sm
             ${selected === opt.value ? "bg-blue-500 text-white font-medium" : "bg-transparent text-gray12 font-normal"}`}
         >
-          <span className="text-sm">{opt.label}</span>
+          <span className="lg:text-sm text-xs">{opt.label}</span>
           {showIcons && opt.icon && (
             <span className="w-[18px] h-[18px] inline-block">{opt.icon}</span>
           )}
