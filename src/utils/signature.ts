@@ -41,7 +41,6 @@ export function getAuthHeaders(method: string, path: string, body: any = [], par
     else {
       bodyForSign = [];
     }
-    console.log('body for sign: ', bodyForSign);
   }
 
   let cleanPath = path;
