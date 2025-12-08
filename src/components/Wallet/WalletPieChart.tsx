@@ -29,7 +29,7 @@ export default function WalletPieChart() {
         const response = await apiRequest<PieChartResponse>({
           url: "/wallets/crypto/portfolio/pie-chart",
         });
-        // فقط مقادیر بزرگتر از صفر نگه داشته می‌شوند
+
         const filteredData = response.balance_pie_chart.filter(item => item.value > 0);
         setData(filteredData);
       } catch (err) {
@@ -62,14 +62,56 @@ export default function WalletPieChart() {
 
   const gradientColors = generateBlueGradient(data.length);
 
+  const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        className="bg-white shadow-md p-2 rounded-md border"
+        style={{
+          position: "absolute",
+          right: "-150px",   
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 1000,
+        }}
+      >
+        <p className="font-bold">{payload[0].name}</p>
+        <p>{payload[0].value.toLocaleString()}</p>
+      </div>
+    );
+  }
+  return null;
+};
+if (!isLoading && data.length === 0) {
+  return null;
+}
+const ChartSkeleton = () => (
+  <div className="w-[400px] h-[350px] flex items-center justify-center">
+    <div className="w-48 h-48 rounded-full bg-gray-200 animate-pulse"></div>
+  </div>
+);
+const ListSkeleton = () => (
+  <div className="mt-4 lg:mt-0 lg:w-1/2 grid grid-cols-2 lg:grid-cols-1 gap-x-6 gap-y-3">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <div key={i} className="flex  justify-center w-full gap-2">
+        <div className="w-6 h-6 rounded-full bg-gray-300 animate-pulse flex-shrink-0"></div>
+        <div className="h-3 w-48 bg-gray-300 rounded animate-pulse"></div>
+
+      </div>
+    ))}
+  </div>
+);
+
+
+
   return (
-    <div className="mt-6 flex flex-col items-center">
-      <h3 className="text-xl font-bold mb-4 text-right w-full">ترکیب دارایی‌ها</h3>
-      <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-1 pb-4">
+    <div className="mt-6 flex flex-col items-center  border border-gray21 rounded-xl shadow p-4 overflow-hidden">
+      <h3 className="text-sm lg:text-lg lg:font-bold font-bold mb-4 text-right w-full m-2 lg:px-8 ">ترکیب دارایی‌ها</h3>
+      <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-1 ">
         {isLoading ? (
-        " "
+          <ChartSkeleton />
         ) : (
-          <PieChart width={450} height={350}>
+          <PieChart width={400} height={350}>
            <Pie
   data={data}
   dataKey="value"
@@ -77,9 +119,9 @@ export default function WalletPieChart() {
   cx="50%"
   cy="50%"
   outerRadius={130}
-  paddingAngle={8}
+  paddingAngle={3}
   label={({ percent }) =>
-    percent && percent > 0.01 // فقط اگر درصد بیشتر از 1٪ باشد
+    percent && percent > 0.01 
       ? `${(percent * 100).toFixed(0)}%`
       : ""
   }
@@ -94,9 +136,8 @@ export default function WalletPieChart() {
   ))}
 </Pie>
 
-            <Tooltip
-              formatter={(value: number) => new Intl.NumberFormat().format(value)}
-            />
+           <Tooltip content={<CustomTooltip />} />
+
           </PieChart>
         )}
 
@@ -108,9 +149,9 @@ export default function WalletPieChart() {
           `}
         >
           {isLoading
-            ? Array.from({ length: 5 }).map(() => (
-                " "
-              ))
+            ?  (
+                 <ListSkeleton />
+              )
             : data.map((item, index) => (
                 <div
                   key={item.name}

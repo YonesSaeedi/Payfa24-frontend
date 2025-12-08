@@ -36,8 +36,8 @@ export default function Wallet() {
         <WalletCard
   isLoading={isLoadingDashboard}
   walletData={dashboardData?.wallets}
-  showConvert={true}  // نمایش دکمه تبدیل
-  showBuySell={false} // مخفی کردن دکمه‌های خرید و فروش
+  showConvert={true} 
+  showBuySell={false} 
 />
 
  <WalletPieChart  />
@@ -45,7 +45,7 @@ export default function Wallet() {
             
           </div>
           <div className="w-full lg:w-7/12">
-            {/* <p className="text-black2 lg:pb-7 pb-3 text-right align-middle text-lg font-bold">دارایی های شما</p> */}
+          
 
             <WalletAssets />
           </div>

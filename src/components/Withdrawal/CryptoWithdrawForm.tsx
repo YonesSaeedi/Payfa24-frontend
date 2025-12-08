@@ -414,6 +414,14 @@ useEffect(() => {
   setTag("");   
 }, [activeTab]);
 
+const formatWithSlash = (value: string | number) => {
+  const strValue = value.toString();
+  const cleaned = strValue.replace(/\D/g, ""); 
+  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, "/");
+};
+
+
+
 
   return (
     <>
@@ -512,36 +520,40 @@ useEffect(() => {
               {selectedNetworkId && (
                 <div className="mt-4 relative z-10 flex flex-col gap-10">
                   <div>
-                    <FloatingInput
-                      label="مقدار"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      type="number"
-                      className="border border-gray12 mb-6"
-                      labelClassName="!font-normal !text-sm"
-                      placeholder="0"
-                    />
+                   <FloatingInput
+  label="مقدار"
+  value={amount}
+  onChange={(e) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    setAmount(formatWithSlash(raw));
+  }}
+  type="text" 
+  className="border border-gray12 mb-2"
+  labelClassName="!font-normal !text-sm"
+  placeholder="0"
+/>
+<div className="flex justify-end text-sm font-normal pb-2">
+  <button
+    type="button"
+    className="text-blue2 text-sm font-normal hover:underline"
+    onClick={() => {
+      const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
+      const decimalPlaces = currentCryptoCurrency?.percent ?? 2; // تعداد اعشار دلخواه
+      const formattedAmount = parseFloat(available).toFixed(decimalPlaces);
+      setAmount(formattedAmount); // مقدار را در input قرار می‌دهد
+    }}
+  >
+    تمام موجودی
+  </button>
+</div>
 
                     <div className="text-md text-gray5 mt-3 space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[14px] font-normal">موجودی قابل برداشت</span>
-                        {isDataLoading ? (
-                          <span className="skeleton-bg h-5 w-24 lg:w-32 rounded"></span>
-                        ) : (
-                      <span
-  dir="ltr"
-  className="font-medium text-black0 text-sm cursor-pointer"
-  onClick={() => {
-    const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
-    setAmount(available); // مقدار را در فیلد input قرار می‌دهد
-  }}
->
-  {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0")} {crypto}
-</span>
-
-
-                        )}
-                      </div>
+                     <div className="flex items-center justify-between mb-2">
+  <span className="font-normal text-sm">موجودی قابل برداشت</span>
+  <span dir="ltr" className="font-medium text-black0 text-sm">
+    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0").toFixed(currentCryptoCurrency?.percent ?? 2)} {crypto}
+  </span>
+</div>
 
                       <div className="flex items-center justify-between">
                         <span className="font-normal text-sm">مقدار برداشت روزانه معادل</span>
@@ -566,6 +578,17 @@ useEffect(() => {
 
                         )}
                       </div>
+
+                      <div className="flex items-center justify-between mb-2">
+  <span className="font-normal text-sm">کارمزد برداشت</span>
+  {isDataLoading ? (
+    <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
+  ) : (
+    <span dir="ltr" className="font-medium text-black0 text-sm">
+      {formatEnglishNumber(selectedNetwork?.withdraw_fee  ?? "0")} {crypto}
+    </span>
+  )}
+</div>
                     </div>
                   </div>
 

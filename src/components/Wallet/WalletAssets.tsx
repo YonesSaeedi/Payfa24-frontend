@@ -106,8 +106,12 @@ const WalletAssets: React.FC = () => {
   }, []);
 
   useEffect(() => {
+  const timeout = setTimeout(() => {
     fetchData(search, selectedSortKey, page, filterMode);
-  }, [search, selectedSortKey, page, filterMode, fetchData]);
+  }, 800);
+
+  return () => clearTimeout(timeout);
+}, [search, selectedSortKey, page, filterMode, fetchData]);
 
   const handleSort = (key: string) => {
     setSelectedSortKey(key);
