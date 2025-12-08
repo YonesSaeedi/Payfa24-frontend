@@ -70,6 +70,7 @@ interface FullNetwork {
 }
 
 const CryptoWithdrawForm: FC = () => {
+  const [amountError, setAmountError] = useState(false);
   const [crypto, setCrypto] = useState<string>("");
   const [selectedNetworkId, setSelectedNetworkId] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -248,68 +249,77 @@ const CryptoWithdrawForm: FC = () => {
 
   //  ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  e.preventDefault();
+  setIsLoading(true);
+  setAmountError(false);
 
-    if (!selectedNetwork) {
-      toast.error("لطفاً شبکه را انتخاب کنید");
-      setIsLoading(false);
-      return;
-    }
+  if (!selectedNetwork) {
+    toast.error("لطفاً شبکه را انتخاب کنید");
+    setIsLoading(false);
+    return;
+  }
 
-    const withdrawAmount = parseFloat(amount);
-    if (!amount || isNaN(withdrawAmount)) {
-      toast.error("لطفاً مقدار برداشت را وارد کنید");
-      setIsLoading(false);
-      return;
-    }
+  const withdrawAmount = parseFloat(amount.replace(/\D/g, ""));
+  if (!amount || isNaN(withdrawAmount)) {
+    toast.error("لطفاً مقدار برداشت را وارد کنید");
+    setIsLoading(false);
+    return;
+  }
 
-    try {
-      const response = await apiRequest<
-        WithdrawApiResponse,
-        {
-          coin: string;
-          network: string;
-          withdrawAmount: number;
-          withdrawAddressWallet: string;
-          withdrawAddressWalletTag: string;
-        }
-      >({
-        url: "/wallets/crypto/withdraw/request",
-        method: "POST",
-        data: {
-          coin: crypto,
-          network: selectedNetwork?.symbol || "",
-          withdrawAmount,
-          withdrawAddressWallet: address,
-          withdrawAddressWalletTag: tag,
-        },
-      });
+const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
+ if (withdrawAmount < minWithdraw) {
+  toast.error(
+    `مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.  `
+  );
+  setAmountError(true);
+  setIsLoading(false);
+  return;
+}
 
-      if (!response.transaction_id) {
-        toast.error("شناسه تراکنش از سرور دریافت نشد.");
-        setIsLoading(false);
-        return;
-      }
-
-      //============================================================================================== ذخیره داده‌ها برای مرحله بعد
-      setWithdrawData({
-        transactionId: response.transaction_id,
-        network: selectedNetwork.symbol,
+  try {
+    const response = await apiRequest<WithdrawApiResponse, {
+      coin: string;
+      network: string;
+      withdrawAmount: number;
+      withdrawAddressWallet: string;
+      withdrawAddressWalletTag: string;
+    }>({
+      url: "/wallets/crypto/withdraw/request",
+      method: "POST",
+      data: {
+        coin: crypto,
+        network: selectedNetwork?.symbol || "",
         withdrawAmount,
         withdrawAddressWallet: address,
         withdrawAddressWalletTag: tag,
-      });
+      },
+    });
 
-  
-      setResendCodeTimeLeft(120);
-      setIsOtpModalOpen(true);
-    } catch (err) {
-      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "ارسال درخواست برداشت با مشکل مواجه شد.");
-    } finally {
+    if (!response.transaction_id) {
+      toast.error("شناسه تراکنش از سرور دریافت نشد.");
       setIsLoading(false);
+      return;
     }
-  };
+
+    setWithdrawData({
+      transactionId: response.transaction_id,
+      network: selectedNetwork.symbol,
+      withdrawAmount,
+      withdrawAddressWallet: address,
+      withdrawAddressWalletTag: tag,
+    });
+
+    setResendCodeTimeLeft(120);
+    setIsOtpModalOpen(true);
+  } catch (err) {
+    toast.error(
+      (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
+        "ارسال درخواست برداشت با مشکل مواجه شد."
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
 
 
   //  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
@@ -404,6 +414,23 @@ const CryptoWithdrawForm: FC = () => {
   const toPersianDigits = (num: string | number) => {
     return num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
   };
+
+
+
+  
+useEffect(() => {
+  setAmount(""); 
+  setAddress(""); 
+  setTag("");   
+}, [activeTab]);
+
+const formatWithSlash = (value: string | number) => {
+  const strValue = value.toString();
+  const cleaned = strValue.replace(/\D/g, ""); 
+  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, "/");
+};
+
+
 
 
   return (
@@ -503,29 +530,42 @@ const CryptoWithdrawForm: FC = () => {
               {selectedNetworkId && (
                 <div className="mt-4 relative z-10 flex flex-col gap-10">
                   <div>
-                    <FloatingInput
-                      label="مقدار"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      type="number"
-                      className="border border-gray12 mb-6"
-                      labelClassName="!font-normal !text-sm"
-                      placeholder="0"
-                    />
+<FloatingInput
+  label="مقدار"
+  value={amount}
+  onChange={(e) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    setAmount(formatWithSlash(raw));
+    if (amountError) setAmountError(false); // اگر کاربر دوباره مقدار را تغییر داد، خطا برداشته شود
+  }}
+  type="text"
+  className={`border mb-2 ${amountError ? "border-red-500 shadow-red-700" : "border-gray12"}`}
+  labelClassName="!font-normal !text-sm"
+  placeholder="0"
+/>
+
+<div className="flex justify-end text-sm font-normal pb-2">
+  <button
+    type="button"
+    className="text-blue2 text-sm font-normal hover:underline"
+    onClick={() => {
+      const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
+      const decimalPlaces = currentCryptoCurrency?.percent ?? 2; // تعداد اعشار دلخواه
+      const formattedAmount = parseFloat(available).toFixed(decimalPlaces);
+      setAmount(formattedAmount); // مقدار را در input قرار می‌دهد
+    }}
+  >
+    تمام موجودی
+  </button>
+</div>
 
                     <div className="text-md text-gray5 mt-3 space-y-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[14px] font-normal">موجودی قابل برداشت</span>
-                        {isDataLoading ? (
-                          <span className="skeleton-bg h-5 w-24 lg:w-32 rounded"></span>
-                        ) : (
-                      <span dir="ltr" className="font-medium text-black0 text-sm">
-                       {formatEnglishNumber(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0")} {crypto}
-                     </span>
-
-
-                        )}
-                      </div>
+                     <div className="flex items-center justify-between mb-2">
+  <span className="font-normal text-sm">موجودی قابل برداشت</span>
+  <span dir="ltr" className="font-medium text-black0 text-sm">
+    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0").toFixed(currentCryptoCurrency?.percent ?? 2)} {crypto}
+  </span>
+</div>
 
                       <div className="flex items-center justify-between">
                         <span className="font-normal text-sm">مقدار برداشت روزانه معادل</span>
@@ -550,6 +590,17 @@ const CryptoWithdrawForm: FC = () => {
 
                         )}
                       </div>
+
+                      <div className="flex items-center justify-between mb-2">
+  <span className="font-normal text-sm">کارمزد برداشت</span>
+  {isDataLoading ? (
+    <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
+  ) : (
+    <span dir="ltr" className="font-medium text-black0 text-sm">
+      {formatEnglishNumber(selectedNetwork?.withdraw_fee  ?? "0")} {crypto}
+    </span>
+  )}
+</div>
                     </div>
                   </div>
 
@@ -626,12 +677,20 @@ const CryptoWithdrawForm: FC = () => {
                   />
 
                   <div className="text-md text-gray5 mt-3 space-y-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-normal text-sm">موجودی قابل برداشت</span>
-                      <span dir="ltr" className="font-medium text-black0 text-sm">
-                      {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toString()} {crypto}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between mb-2">
+  <span className="font-normal text-sm">موجودی قابل برداشت</span>
+  <span
+    dir="ltr"
+    className="font-medium text-black0 text-sm cursor-pointer"
+    onClick={() => {
+      const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
+      setAmount(available); // مقدار را در فیلد input قرار می‌دهد
+    }}
+  >
+    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toString()} {crypto}
+  </span>
+</div>
+
                     <div className="flex items-center justify-between">
                       <span className="font-normal text-sm">مقدار برداشت روزانه معادل</span>
                       <span className="font-medium text-black0 text-sm">{levelUsed.daily_withdrawal_crypto ? toPersianDigits(levelUsed.daily_withdrawal_crypto) : "۰"} تومان</span>

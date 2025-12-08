@@ -75,3 +75,18 @@ export const formatEnglishNumber = (input: string | number): string => {
 
   return "0";
 };
+
+
+export const formatCoinAmount = (
+  amount: number,
+  percent?: number,
+  lang: "fa" | "en" = "fa"
+) => {
+  // تعداد اعشار = درصد اگر موجود باشه، در غیر اینصورت 2
+  const decimals = percent !== undefined ? percent : 2;
+  const formatted = amount.toFixed(decimals);
+
+  return lang === "fa" 
+    ? formatPersianNumber(formatted) 
+    : formatEnglishNumber(formatted);
+};

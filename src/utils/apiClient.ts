@@ -114,6 +114,12 @@ apiClient.interceptors.request.use(async (config) => {
   );
   config.params = Object.keys(cleanedParams).length ? cleanedParams : undefined;
 
+  const cleanedBody = Object.fromEntries(
+    Object.entries(bodyForSign)
+      .filter(([_, v]) => v !== null && v !== undefined && v !== "")
+  );
+  config.data = Object.keys(cleanedBody).length ? cleanedBody : undefined;
+
   const sigHeaders = getAuthHeaders(method, pathForSign, bodyForSign, paramsForSign);
 
   Object.assign(config.headers, sigHeaders);

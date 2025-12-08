@@ -106,8 +106,12 @@ const WalletAssets: React.FC = () => {
   }, []);
 
   useEffect(() => {
+  const timeout = setTimeout(() => {
     fetchData(search, selectedSortKey, page, filterMode);
-  }, [search, selectedSortKey, page, filterMode, fetchData]);
+  }, 800);
+
+  return () => clearTimeout(timeout);
+}, [search, selectedSortKey, page, filterMode, fetchData]);
 
   const handleSort = (key: string) => {
     setSelectedSortKey(key);
@@ -146,14 +150,17 @@ const WalletAssets: React.FC = () => {
     };
   });
 
- 
+ const formatEquivalent = (value: number) => {
+  return value === 0 ? "0" : value.toFixed(2);
+};
+
 
   return (
     <div className="flex flex-col gap-6">
       <div dir="rtl" className="lg:p-6 bg-white1 rounded-xl lg:border border-gray21 w-full overflow-visible">
         <div className="flex-col items-center justify-between lg:mb-6 mb-3">
           <div className="flex items-center justify-between lg:mb-2 mb-3">
-            <p className="text-black2 lg:pb-7 pb-3 text-right align-middle text-lg font-bold">دارایی های شما</p>
+            <p className="text-black2 lg:pb-7 pb-3 text-right align-middle text-lg lg:font-bold font-medium text-[16px]">دارایی های شما</p>
             <CurrencyToggle
               defaultValue="all"
               showIcons={false}
@@ -167,59 +174,66 @@ const WalletAssets: React.FC = () => {
               }}
             />
           </div>
-          <div className="flex items-center justify-between lg:mb-6 mb-3">
-            <div className="relative max-w-[50%] pl-2">
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
-                <IconSearch />
-              </span>
-              <input
-                type="text"
-                placeholder="جستجو..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                className="border border-gray19 text-black1 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
-              />
-            </div>
-            <div className="relative inline-block text-right max-w-[50%]" ref={dropdownRef}>
-<button
-  onClick={() => setOpenDropdown(!openDropdown)}
-  className={`
-    border rounded-lg px-3 py-2 flex items-center gap-2 text-sm 
-    w-full sm:w-36 lg:w-52 justify-between text-black1 
-    transition-colors duration-200
-    ${openDropdown ? "border-blue2" : "border-gray19"}
-  `}
->
-  <span className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%] block">
-    {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
-  </span>
+   <div className="flex items-center justify-between lg:mb-6 mb-3 gap-1">
+  <div className="relative flex-1 max-w-[50%] pl-2">
+    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5">
+      <IconSearch />
+    </span>
+    <input
+      type="text"
+      placeholder="جستجو..."
+      value={search}
+      onChange={(e) => {
+        setSearch(e.target.value);
+        setPage(1);
+      }}
+      className="border border-gray19 text-black1 rounded-lg pr-10 pl-3 py-2 text-sm w-full bg-white1 focus:border-blue2 focus:outline-none focus:ring-1 focus:ring-blue2 transition-all duration-200"
+    />
+  </div>
 
-  <span
-    className={`w-4 h-4 transition-transform duration-200 text-gray12 ${
-      openDropdown ? "rotate-180" : ""
-    }`}
+  <div
+    className="relative flex-1 lg:flex-none lg:w-52 text-right"
+    ref={dropdownRef}
   >
-    <IconChervDown />
-  </span>
-</button>
-              {openDropdown && (
-                <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col border border-gray21">
-                  {sortOptions.map((option) => (
-                    <button
-                      key={option.key}
-                      onClick={() => handleSort(option.key)}
-                      className="w-full text-right px-3 py-2 hover:bg-gray27 hover:text-blue2 text-sm text-black1 whitespace-nowrap"
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+    <button
+      onClick={() => setOpenDropdown(!openDropdown)}
+      className={`
+        border rounded-lg px-3 py-2 flex items-center gap-2 text-sm 
+        w-full justify-between text-black1 
+        transition-colors duration-200
+        ${openDropdown ? "border-blue2" : "border-gray19"}
+      `}
+    >
+      <span className="truncate max-w-[80%] block">
+        {sortOptions.find((opt) => opt.key === selectedSortKey)?.label || "گزینه‌ها"}
+      </span>
+
+      <span
+        className={`w-4 h-4 transition-transform duration-200 text-gray12 ${
+          openDropdown ? "rotate-180" : ""
+        }`}
+      >
+        <IconChervDown />
+      </span>
+    </button>
+
+    {openDropdown && (
+      <div className="absolute left-0 mt-1 w-52 bg-white6 text-black1 rounded-lg shadow-md z-10 flex flex-col border border-gray21">
+        {sortOptions.map((option) => (
+          <button
+            key={option.key}
+            onClick={() => handleSort(option.key)}
+            className="w-full text-right px-3 py-2 hover:bg-gray27 hover:text-blue2 text-sm whitespace-nowrap"
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
+
+
         </div>
 
         <div>
@@ -301,7 +315,10 @@ const WalletAssets: React.FC = () => {
                     <div className="px-2 py-3 text-center relative whitespace-nowrap group flex items-center justify-between">
                       <span></span>
                       <div className="flex flex-col items-end justify-end text-xs lg:text-sm font-normal">
-                        <span className="whitespace-nowrap">{formatEnglishNumber(item.price * item.balance)} دلار</span>
+                      <span className="whitespace-nowrap">
+  {formatEquivalent(item.price * item.balance)} دلار
+</span>
+
                         <span className="whitespace-nowrap lg:hidden">معادل {item.balance} تومان</span>
                       </div>
                       <button
