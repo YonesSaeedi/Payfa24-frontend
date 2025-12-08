@@ -13,6 +13,7 @@ import { getBankLogo } from "../../utils/bankLogos";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import IconClose from "../../assets/icons/Login/IconClose";
+import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 
 // --- Interfaces ---
 interface CreditCard {
@@ -34,12 +35,14 @@ interface CardToCardInfo {
     card: string;
     bank: string;
     iban: string | null;
+    account: string | null;
   } | null;
 }
 
 interface CardToCardRequestData extends Record<string, any> {
   amount: number;
   card: number;
+  // iban: number;
 }
 
 interface CardToCardResponse {
@@ -89,7 +92,6 @@ function calculateFee(amount: number): number {
   const feePercentage = 0.001; // 0.1%
   const minFee = 1000;
   const calculatedFee = amount * feePercentage;
-  // گرد کردن و سپس مقایسه با مینیمم
   const finalFee = Math.max(Math.round(calculatedFee), minFee);
   return finalFee;
 }
@@ -213,199 +215,243 @@ export default function CardToCardTransfer({ loadingBankCards, cards: initialCar
       <img src={getBankLogo(finalSourceCard.bank) || "/bank-logos/bank-sayer.png"} alt={finalSourceCard.bank} className="w-7 h-7 object-contain" />
     ) : null,
 
-    toCard: cardToCardData?.card?.card || "—",
-    toBank: cardToCardData?.card?.bank || "",
+    toCard: cardToCardData?.card?.card || " ",
+    toBank: cardToCardData?.card?.bank || " ",
     owner: cardToCardData?.card?.name || "گروه فرهنگی و هنری",
     amount: finalAmount,
     fee: computedFee,
     finalAmountWithFee: computedFinalAmountAfterFee,
+    iban: cardToCardData?.card?.iban,
+    account: cardToCardData?.card?.account,
   };
 
   if (showSummary && !cardToCardData?.card) return <div className="text-center py-8 text-red1">خطا: اطلاعات کارت مقصد ناقص است. لطفاً با پشتیبانی تماس بگیرید.</div>;
 
   return (
-    <div className="w-full" dir="rtl">
-      {!showSummary ? (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Video guide */}
-          <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2 justify-between">
-            <div className="flex items-center gap-2">
-              <span className="icon-wrapper w-6 h-6 text-blue2">
-                <IconVideo />
+    <>
+      <div className="w-full" dir="rtl">
+        {!showSummary ? (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Video guide */}
+            <div className="mb-8 bg-blue14 text-blue2 flex items-center p-3 rounded-lg gap-2 justify-between">
+              <div className="flex items-center gap-2">
+                <span className="icon-wrapper w-6 h-6 text-blue2">
+                  <IconVideo />
+                </span>
+                <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با درگاه پرداخت</span>
+              </div>
+              <span className="icon-wrapper w-5 h-5 text-blue2">
+                <IconClose />
               </span>
-              <span className="lg:text-sm text-xs">ویدیو آموزشی واریز با درگاه پرداخت</span>
             </div>
-            <span className="icon-wrapper w-5 h-5 text-blue2">
-              <IconClose />
-            </span>
-          </div>
 
-          {/* Card select */}
-          <div className="mb-12 w-full">
-            <Controller
-              name="card"
-              control={control}
-              render={({ field }) => {
-                const hasCards = cards.length > 0;
-                return (
-                  <>
-                    <FloatingSelect
-                      placeholder={
-                        loadingBankCards ? (
-                          <span className="skeleton-bg w-40 h-4 rounded-sm"></span>
-                        ) : hasCards ? (
-                          "کارت مبدا را انتخاب کنید "
-                        ) : (
-                          <span className="text-gray5 text-xs lg:text-sm">هیچ کارت ثبت‌ شده‌ای ندارید</span>
-                        )
-                      }
-                      label="انتخاب کارت مبدا"
-                      value={hasCards ? field.value?.toString() || "" : ""}
-                      onChange={field.onChange}
-                      disabled={!hasCards}
-                      options={
-                        hasCards
-                          ? cards.map((card) => ({
-                              value: card.id.toString(),
-                              label: (
-                                <div className="flex items-center justify-between w-full py-1 rounded-md">
-                                  <span className="lg:text-sm text-xs text-black0">{card.bank}</span>
-                                  <span className="lg:text-sm text-xs text-black0">{formatPersianCardNumber(card.card)}</span>
-                                </div>
-                              ),
-                              icon: <img src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"} alt={card.bank} className="w-6 h-6 object-contain" />,
-                            }))
-                          : []
-                      }
-                    />
+            {/* Card select */}
+            <div className="mb-12 w-full">
+              <Controller
+                name="card"
+                control={control}
+                render={({ field }) => {
+                  const hasCards = cards.length > 0;
+                  return (
+                    <>
+                      <FloatingSelect
+                        placeholder={
+                          loadingBankCards ? (
+                            <span className="skeleton-bg w-40 h-4 rounded-sm"></span>
+                          ) : hasCards ? (
+                            "کارت مبدا را انتخاب کنید "
+                          ) : (
+                            <span className="text-gray5 text-xs lg:text-sm">هیچ کارت ثبت‌ شده‌ای ندارید</span>
+                          )
+                        }
+                        label="انتخاب کارت مبدا"
+                        value={hasCards ? field.value?.toString() || "" : ""}
+                        onChange={field.onChange}
+                        disabled={!hasCards}
+                        options={
+                          hasCards
+                            ? cards.map((card) => ({
+                                value: card.id.toString(),
+                                label: (
+                                  <div className="flex items-center justify-between w-full py-1 rounded-md">
+                                    <span className="lg:text-sm text-xs text-black0">{card.bank}</span>
+                                    <span className="lg:text-sm text-xs text-black0">{formatPersianCardNumber(card.card)}</span>
+                                  </div>
+                                ),
+                                icon: <img src={getBankLogo(card.bank) || "/bank-logos/bank-sayer.png"} alt={card.bank} className="w-6 h-6 object-contain" />,
+                              }))
+                            : []
+                        }
+                      />
 
-                    {errors.card && <p className="text-red1 text-sm mt-1">{errors.card.message}</p>}
-                  </>
-                );
-              }}
-            />
-          </div>
+                      {errors.card && <p className="text-red1 text-sm mt-1">{errors.card.message}</p>}
+                    </>
+                  );
+                }}
+              />
+            </div>
 
-          {/* Amount input */}
-          <div dir="rtl" className="mb-1.5 mt-8">
-            <Controller
-              name="amount"
-              control={control}
-              render={({ field }) => (
-                <FloatingInput
-                  label="مقدار واریزی (تومان)"
-                  value={formatPersianDigits(field.value?.toString() ?? "")}
-                  type="text"
-                  onChange={(e) => {
-                    const rawValue = e.target.value;
-                    const englishValue = rawValue.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString()).replace(/[^0-9]/g, "");
-                    field.onChange(englishValue ? Number(englishValue) : undefined);
-                    trigger("amount");
-                  }}
-                  placeholder="۰ تومان"
-                  placeholderColor="text-black0"
-                />
-              )}
-            />
-          </div>
-          {errors.amount && <p className="text-red1 text-xs py-3">{errors.amount.message}</p>}
+            {/* Amount input */}
+            <div dir="rtl" className="mb-1.5 mt-8">
+              <Controller
+                name="amount"
+                control={control}
+                render={({ field }) => (
+                  <FloatingInput
+                    label="مقدار واریزی (تومان)"
+                    value={formatPersianDigits(field.value?.toString() ?? "")}
+                    type="text"
+                    onChange={(e) => {
+                      const rawValue = e.target.value;
+                      const englishValue = rawValue.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString()).replace(/[^0-9]/g, "");
+                      field.onChange(englishValue ? Number(englishValue) : undefined);
+                      trigger("amount");
+                    }}
+                    placeholder="۰ تومان"
+                    placeholderColor="text-black0"
+                  />
+                )}
+              />
+            </div>
+            {errors.amount && <p className="text-red1 text-xs py-3">{errors.amount.message}</p>}
 
-          {/* Preset amounts */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
-            {amounts.map((amount, index) => (
+            {/* Preset amounts */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center mb-12 flex-wrap justify-center mt-4 lg:mt-6">
+              {amounts.map((amount, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setPresetAmount(amount)}
+                  className="border border-gray12 rounded-lg w-full py-2 lg:text-sm text-xs transition-all text-gray12 hover:text-blue2 hover:border-blue2"
+                >
+                  {formatPersianDigits(amount)} میلیون
+                </button>
+              ))}
+            </div>
+
+            {/* Submit */}
+            <div className="mt-40">
               <button
-                key={index}
-                type="button"
-                onClick={() => setPresetAmount(amount)}
-                className="border border-gray12 rounded-lg w-full py-2 lg:text-sm text-xs transition-all text-gray12 hover:text-blue2 hover:border-blue2"
-              >
-                {formatPersianDigits(amount)} میلیون
-              </button>
-            ))}
-          </div>
-
-          {/* Submit */}
-          <div className="mt-40">
-            <button
-              type="submit"
-              disabled={isApiLoading || !isValid || cards.length === 0}
-              className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
+                type="submit"
+                disabled={isApiLoading || !isValid || cards.length === 0}
+                className={`text-white2 bg-blue2 w-full py-3 font-bold text-lg rounded-lg transition-all 
                 ${isApiLoading || !isValid || cards.length === 0 ? "opacity-60 cursor-not-allowed" : "opacity-100 hover:bg-blue1"}`}
-            >
-              {isApiLoading ? "در حال ثبت درخواست..." : "درخواست کارت به کارت"}
-            </button>
+              >
+                {isApiLoading ? "در حال ثبت درخواست..." : "درخواست کارت به کارت"}
+              </button>
 
-            {/* Accordion guide */}
-            <div className="mt-4" dir="ltr">
-              <Accordion title="راهنمای واریز کارت به کارت">
-                <ul className="list-disc pr-5 space-y-2 text-black1">
-                  <li>از صحت شماره کارت مقصد (صرافی) واریز مطمئن شوید.</li>
-                  <li>پس از ثبت درخواست، فرصت محدودی (۳۰ دقیقه) برای انجام کارت به کارت خواهید داشت.</li>
-                  <li>واریز باید حتماً از کارت انتخابی شما انجام شود.</li>
-                </ul>
-              </Accordion>
+              {/* Accordion guide */}
+              <div className="mt-4" dir="ltr">
+                <Accordion title="راهنمای واریز کارت به کارت">
+                  <ul className="list-disc pr-5 space-y-2 text-black1">
+                    <li>واریز فقط از کارت‌های ثبت‌شده در حساب کاربری قابل پذیرش است.</li>
+                    <li>شما می‌توانید از طریق کارت‌به‌کارت، حساب‌به‌حساب، پایا، ساتنا و پل واریز خود را انجام دهید.</li>
+                    <li>پس از ثبت واریز، حساب شما حداکثر تا ۱۰ دقیقه به‌صورت خودکار شارژ می‌شود و نیازی به ارسال تیکت نیست.</li>
+                  </ul>
+                </Accordion>
+              </div>
             </div>
-          </div>
-        </form>
-      ) : (
-        <>
-          {/* Summary */}
-          <div className="rounded-lg text-black0 space-y-8">
-            <div className="flex flex-col gap-3 text-black0 rounded-xl  py-4 items-center bg-gray47">
-              <span className=" lg:text-base text-sm">فرصت باقی مانده برای انجام کارت به کارت</span>
-              <span className="font-bold lg:text-xl text-base ">{toPersianDigits(formatTimer(timer))}</span>
-            </div>
+          </form>
+        ) : (
+          <>
+            {/* Summary */}
+            <div className="rounded-lg text-black0 space-y-8">
+              <div className="flex flex-col gap-3 text-black0 rounded-xl  py-4 items-center bg-gray47">
+                <span className=" lg:text-base text-sm">فرصت باقی مانده برای انجام کارت به کارت</span>
+                <span className="font-bold lg:text-xl text-base ">{toPersianDigits(formatTimer(timer))}</span>
+              </div>
 
-            <div className="space-y-6 ">
-              <div className="flex justify-between items-center">
-                <span className="text-gray5 lg:text-lg text-sm">کارت مبدا</span>
-                <div className="flex gap-2 items-center">
-                  <span className="text-sm lg:text-base">{transactionData.fromCard}</span>
-                  <span className="icon-wrapper lg:w-7 lg:h-7 w-6 h-6">{transactionData.fromBankIcon}</span>
+              <div className="space-y-6 ">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray5 lg:text-lg text-sm">کارت مبدا</span>
+                  <div className="flex gap-2 items-center">
+                    <span className="text-sm lg:text-base">{transactionData.fromCard}</span>
+                    <span className="icon-wrapper lg:w-7 lg:h-7 w-6 h-6">{transactionData.fromBankIcon}</span>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-gray5 lg:text-lg text-sm">مبلغ تراکنش</span>
+                  <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.amount ?? 0)} تومان</span>
+                </div>
+
+                <div
+                  onClick={() => {
+                    navigator.clipboard.writeText(transactionData.toCard);
+                    toast.info(" کپی شد");
+                  }}
+                  className="flex justify-between items-center cursor-pointer"
+                >
+                  <span className="text-gray5 lg:text-lg text-sm">شماره کارت مقصد</span>
+                  <div className="flex gap-1 items-center hover:text-blue2">
+                    <span className="text-sm lg:text-base">{formatPersianCardNumber(transactionData.toCard)}</span>
+                    <span className="w-5 h-5 icon-wrapper text-gray12"><IconCopy/></span>
+                  </div>
+                </div>
+                <div 
+                  onClick={() => {
+                    navigator.clipboard.writeText(transactionData.account || "");
+                    toast.info(" کپی شد");
+                  }}
+                  className="flex justify-between items-center cursor-pointer hover:text-blue2"
+                >
+                  <span className="text-gray5 lg:text-lg text-sm">شماره حساب مقصد </span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm lg:text-base">{toPersianDigits(transactionData.account || "")}</span>
+                    <span className="w-5 h-5 icon-wrapper text-gray12 ">
+                      <IconCopy />
+                    </span>
+                  </div>
+                </div>
+                <div
+                  onClick={() => {
+                    navigator.clipboard.writeText(transactionData.iban || "");
+                    toast.info(" کپی شد");
+                  }}
+                  className="flex justify-between items-center cursor-pointer "
+                >
+                  <span className="text-gray5 lg:text-lg text-sm">شماره شبا مقصد </span>
+                  <div className="flex items-center gap-1 hover:text-blue2">
+                    <span className="text-sm lg:text-base">{toPersianDigits(transactionData.iban || "")}</span>
+                    <span className="w-5 h-5 icon-wrapper text-gray12 ">
+                      <IconCopy />
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray5 lg:text-lg text-sm"> نام صاحب کارت مقصد</span>
+                  <span className="text-sm lg:text-base">{transactionData.owner}</span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-gray5 lg:text-lg text-sm">کارمزد</span>
+                  <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.fee)} تومان</span>
+                </div>
+                <div className="flex justify-between items-center lg:pb-52">
+                  <span className="text-gray5 lg:text-lg text-sm">مبلغ نهایی با کسر کارمزد</span>
+                  <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.finalAmountWithFee)} تومان</span>
                 </div>
               </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-gray5 lg:text-lg text-sm">مبلغ تراکنش</span>
-                <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.amount ?? 0)} تومان</span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-gray5 lg:text-lg text-sm">شماره کارت مقصد</span>
-                <span className="text-sm lg:text-base">{formatPersianCardNumber(transactionData.toCard)}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray5 lg:text-lg text-sm">شماره کارت مقصد</span>
-                <span className="text-sm lg:text-base">{transactionData.owner}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray5 lg:text-lg text-sm">کارمزد</span>
-                <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.fee)} تومان</span>
-              </div>
-              <div className="flex justify-between items-center lg:pb-52">
-                <span className="text-gray5 lg:text-lg text-sm">مبلغ نهایی با کسر کارمزد</span>
-                <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.finalAmountWithFee)} تومان</span>
-              </div>
-            </div>
-            {/* <button type="button" onClick={() => setShowSummary(false)} className="mt-8 text-blue2 bg-gray-100 w-full py-3 font-bold text-lg rounded-lg">
+              {/* <button type="button" onClick={() => setShowSummary(false)} className="mt-8 text-blue2 bg-gray-100 w-full py-3 font-bold text-lg rounded-lg">
               بازگشت
             </button> */}
-          </div>
-
-          <div dir="rtl" className="bg-orange5 rounded-xl p-4 text-sm text-left mt-8">
-            <div className="flex text-orange1 gap-1 font-medium items-center">
-              <span className="icon-wrapper w-4 h-4">
-                <IconAlert />
-              </span>
-              <span>توجه داشته باشید</span>
             </div>
-            <ul className="text-right pt-2 lg:pt-4 list-disc list-inside text-black0 lg:text-[16px] leading-relaxed text-xs space-y-2">
-              <li>حتما بایستی از کارت مقصدی که انتخاب کرده‌اید و مبلغی که درج کرده‌اید تراکنش انجام شود.</li>
-              <li>پس از انجام کارت به کارت به صورت خودکار کیف پول تومانی شما شارژ می‌شود.</li>
-            </ul>
-          </div>
-        </>
-      )}
-    </div>
+
+            <div dir="rtl" className="bg-orange5 rounded-xl p-4 text-sm text-left mt-8">
+              <div className="flex text-orange1 gap-1 font-medium items-center">
+                <span className="icon-wrapper w-4 h-4">
+                  <IconAlert />
+                </span>
+                <span>توجه داشته باشید</span>
+              </div>
+              <ul className="text-right pt-2 lg:pt-4 list-disc list-inside text-black0 lg:text-[16px] leading-relaxed text-xs space-y-2">
+                <li>حتما بایستی از کارت مقصدی که انتخاب کرده‌اید و مبلغی که درج کرده‌اید تراکنش انجام شود.</li>
+                <li>پس از انجام کارت به کارت به صورت خودکار کیف پول تومانی شما پس از {toPersianDigits(10)} دقیقه شارژ می‌شود.</li>
+              </ul>
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }
