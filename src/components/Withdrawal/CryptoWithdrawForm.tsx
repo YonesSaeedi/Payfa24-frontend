@@ -70,6 +70,7 @@ interface FullNetwork {
 }
 
 const CryptoWithdrawForm: FC = () => {
+  const [amountError, setAmountError] = useState(false);
   const [crypto, setCrypto] = useState<string>("");
   const [selectedNetworkId, setSelectedNetworkId] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -248,68 +249,77 @@ const CryptoWithdrawForm: FC = () => {
 
   //  ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  e.preventDefault();
+  setIsLoading(true);
+  setAmountError(false);
 
-    if (!selectedNetwork) {
-      toast.error("لطفاً شبکه را انتخاب کنید");
-      setIsLoading(false);
-      return;
-    }
+  if (!selectedNetwork) {
+    toast.error("لطفاً شبکه را انتخاب کنید");
+    setIsLoading(false);
+    return;
+  }
 
-    const withdrawAmount = parseFloat(amount);
-    if (!amount || isNaN(withdrawAmount)) {
-      toast.error("لطفاً مقدار برداشت را وارد کنید");
-      setIsLoading(false);
-      return;
-    }
+  const withdrawAmount = parseFloat(amount.replace(/\D/g, ""));
+  if (!amount || isNaN(withdrawAmount)) {
+    toast.error("لطفاً مقدار برداشت را وارد کنید");
+    setIsLoading(false);
+    return;
+  }
 
-    try {
-      const response = await apiRequest<
-        WithdrawApiResponse,
-        {
-          coin: string;
-          network: string;
-          withdrawAmount: number;
-          withdrawAddressWallet: string;
-          withdrawAddressWalletTag: string;
-        }
-      >({
-        url: "/wallets/crypto/withdraw/request",
-        method: "POST",
-        data: {
-          coin: crypto,
-          network: selectedNetwork?.symbol || "",
-          withdrawAmount,
-          withdrawAddressWallet: address,
-          withdrawAddressWalletTag: tag,
-        },
-      });
+const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
+ if (withdrawAmount < minWithdraw) {
+  toast.error(
+    `مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.  `
+  );
+  setAmountError(true);
+  setIsLoading(false);
+  return;
+}
 
-      if (!response.transaction_id) {
-        toast.error("شناسه تراکنش از سرور دریافت نشد.");
-        setIsLoading(false);
-        return;
-      }
-
-      //============================================================================================== ذخیره داده‌ها برای مرحله بعد
-      setWithdrawData({
-        transactionId: response.transaction_id,
-        network: selectedNetwork.symbol,
+  try {
+    const response = await apiRequest<WithdrawApiResponse, {
+      coin: string;
+      network: string;
+      withdrawAmount: number;
+      withdrawAddressWallet: string;
+      withdrawAddressWalletTag: string;
+    }>({
+      url: "/wallets/crypto/withdraw/request",
+      method: "POST",
+      data: {
+        coin: crypto,
+        network: selectedNetwork?.symbol || "",
         withdrawAmount,
         withdrawAddressWallet: address,
         withdrawAddressWalletTag: tag,
-      });
+      },
+    });
 
-  
-      setResendCodeTimeLeft(120);
-      setIsOtpModalOpen(true);
-    } catch (err) {
-      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "ارسال درخواست برداشت با مشکل مواجه شد.");
-    } finally {
+    if (!response.transaction_id) {
+      toast.error("شناسه تراکنش از سرور دریافت نشد.");
       setIsLoading(false);
+      return;
     }
-  };
+
+    setWithdrawData({
+      transactionId: response.transaction_id,
+      network: selectedNetwork.symbol,
+      withdrawAmount,
+      withdrawAddressWallet: address,
+      withdrawAddressWalletTag: tag,
+    });
+
+    setResendCodeTimeLeft(120);
+    setIsOtpModalOpen(true);
+  } catch (err) {
+    toast.error(
+      (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
+        "ارسال درخواست برداشت با مشکل مواجه شد."
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
 
 
   //  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
@@ -520,18 +530,20 @@ const formatWithSlash = (value: string | number) => {
               {selectedNetworkId && (
                 <div className="mt-4 relative z-10 flex flex-col gap-10">
                   <div>
-                   <FloatingInput
+<FloatingInput
   label="مقدار"
   value={amount}
   onChange={(e) => {
     const raw = e.target.value.replace(/\D/g, "");
     setAmount(formatWithSlash(raw));
+    if (amountError) setAmountError(false); // اگر کاربر دوباره مقدار را تغییر داد، خطا برداشته شود
   }}
-  type="text" 
-  className="border border-gray12 mb-2"
+  type="text"
+  className={`border mb-2 ${amountError ? "border-red-500 shadow-red-700" : "border-gray12"}`}
   labelClassName="!font-normal !text-sm"
   placeholder="0"
 />
+
 <div className="flex justify-end text-sm font-normal pb-2">
   <button
     type="button"
