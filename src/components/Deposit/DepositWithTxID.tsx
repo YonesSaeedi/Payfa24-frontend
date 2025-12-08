@@ -44,9 +44,9 @@ interface WalletTxid {
   address_tag: string | null;
 }
 
+
 export default function DepositWithTxID({ openCryptoModal, selectedCrypto, networks: networksFromParent, walletsTxid, isDepositCoinsLoading }: DepositWithTxIDProps) {
   const networks = networksFromParent;
-
   const [selectedCurrency, setSelectedCurrency] = useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
@@ -142,7 +142,6 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
 
       toast.success("تراکنش با موفقیت ثبت شد");
 
-      // آدرس رو از props بگیریم (نه API جدید!)
       const wallet = walletsTxid.find((w) => w.id_coin === selectedCurrency.id && w.id_net === Number(selectedNetwork));
       if (wallet?.address) setWalletAddress(wallet.address);
     } catch (err: any) {
@@ -153,6 +152,22 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
   const toggleTxidModal = () => {
     setShowTxidModalText((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (selectedCurrency.id) {
+      setWalletAddress(null);
+      setValue("network", "");
+    }
+  }, [selectedCurrency.id, setValue]);
+
+  useEffect(() => {
+    if (!selectedCurrency.id || !selectedNetwork) return;
+    if (selectedNetwork === "") return;
+
+    const wallet = walletsTxid.find((w) => w.id_coin === selectedCurrency.id && w.id_net === Number(selectedNetwork));
+    setWalletAddress(wallet?.address || null);
+  }, [selectedCurrency.id, selectedNetwork, walletsTxid]);
+
   return (
     <div className="w-full" dir="rtl">
       <div className="mb-10">
@@ -271,6 +286,13 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
         </div>
       </div>
 
+      {selectedCurrency.id && selectedNetwork && !isDepositCoinsLoading && !walletAddress && (
+        <div className="mb-5 lg:text-sm text-xs  text-red1 ">
+          امکان ثبت تراکنش با TXID در حال حاضر فعال نیست.
+        </div>
+      )}
+
+
       {walletAddress && (
         <div className="mb-10">
           <div className="rounded-lg border border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
@@ -287,7 +309,7 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
                 }}
                 className="mt-1 flex items-center gap-1 cursor-pointer"
               >
-                <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
+                <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray12">
                   <IconCopy />
                 </span>
                 <span className="text-black0 lg:text-sm text-xs break-all hover:text-blue2">{walletAddress}</span>
@@ -307,8 +329,8 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
               type={showPassword ? "text" : "password"}
               onIconClick={() => setShowPassword((prev) => !prev)}
               {...field}
-              labelBgClass="lg:bg-gray43 bg-white4 "
-              inputBgClass="lg:bg-gray43 bg-white4 border border-gray12 !rounded-lg"
+              labelBgClass="lg:bg-gray43 bg-white4"
+              inputBgClass="lg:bg-gray43 bg-white4 border !border-gray12 !rounded-lg"
             />
           )}
         />

@@ -195,7 +195,6 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
 
   // این تابع رو جایگزین کن (دقیقاً همین!)
 const refreshData = async () => {
-  console.log("### fetch new wallets data ###");
   try {
     const res = await apiRequest<any>({ url: "/wallets/crypto/deposit", method: "GET" });
     
@@ -220,7 +219,6 @@ const refreshData = async () => {
       } as CryptoItem & { id: number; network: any[] };
     });
 
-    // همه stateها رو یکجا آپدیت کن
     setCryptoListData(merged);
     setDepositNetworks(res?.networks ?? []);
     setDepositWalletsTxid(res?.wallets_txid ?? []); 
@@ -234,9 +232,6 @@ const refreshData = async () => {
   }
 };
 
-
-
- 
   useEffect(() => {
     const fetchFiatData = async () => {
       try {
