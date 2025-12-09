@@ -149,10 +149,19 @@ const WalletAssets: React.FC = () => {
       percent: generalItem?.percent ?? wallet.percent,
     };
   });
+const formatEquivalent = (value: number) => {
+  if (!value) return "0";
 
- const formatEquivalent = (value: number) => {
-  return value === 0 ? "0" : value.toFixed(2);
+  // اگر عدد صحیح بود
+  if (Number.isInteger(value)) {
+    return String(value);
+  }
+
+  // اگر اعشار داشت ولی آخرش 00 بود حذف کن
+  const fixed = value.toFixed(2);
+  return fixed.replace(/\.00$/, "");
 };
+
 
 
   return (

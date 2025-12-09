@@ -72,8 +72,8 @@ export default function WithdrawForm() {
     const fetchCards = async () => {
       try {
         const response = await apiRequest<WalletResponse>({
-          url: "/wallets/fiat?withdraw=true",
-          method: "GET",
+          url: "/wallets/fiat",
+          params: { withdraw: 'true' }
         });
         setListCards(response.list_cards || []);
         setWalletBalance(Number(response.wallet.balance_available) || 0);
@@ -336,9 +336,8 @@ export default function WithdrawForm() {
           <button
             type="submit"
             disabled={!allFieldsFilled || isSubmitting}
-            className={`w-full py-3 rounded-lg mt-24 font-bold text-[18px] transition-colors duration-300 ${
-              !allFieldsFilled || isSubmitting ? "bg-blue2  text-white cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"
-            }`}
+            className={`w-full py-3 rounded-lg mt-24 font-bold text-[18px] transition-colors duration-300 ${!allFieldsFilled || isSubmitting ? "bg-blue2  text-white cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"
+              }`}
           >
             {isSubmitting ? "درحال برداشت وجه" : "برداشت"}
           </button>

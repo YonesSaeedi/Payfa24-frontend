@@ -14,7 +14,8 @@ import useGetUser from "../../hooks/useGetUser";
 import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import FrameActiveIcon from "../../assets/icons/header/FrameActiveIcon";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
-import Logout from  "../../assets/images/logout.png";
+import Logout from "../../assets/images/logout.png";
+import CryptoJS from "crypto-js";
 
 interface ProfileMenuProps {
   themeContext: {
@@ -49,79 +50,86 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
   const handleKYCClick = () => {
     if (kycLoading) return;
     if (!kycInfo?.level_kyc) {
-      navigate(ROUTES.AUTHENTICATION_BASIC); 
+      navigate(ROUTES.AUTHENTICATION_BASIC);
     } else if (kycInfo.level_kyc === "basic") {
-      navigate(ROUTES.AUTHENTICATION_ADVANCED); 
+      navigate(ROUTES.AUTHENTICATION_ADVANCED);
     } else {
-     navigate(ROUTES.AUTHENTICATION_ADVANCED);
+      navigate(ROUTES.AUTHENTICATION_ADVANCED);
     }
-    setOpen(false); 
+    setOpen(false);
   };
 
-const handleLogout = () => {
-  const token = localStorage.getItem("accessToken");
+  const handleLogout = () => {
+    const token = localStorage.getItem("accessToken");
 
-  localStorage.clear();
-  window.location.replace("/login");
+    localStorage.removeItem('_grecaptcha');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('expiresAt');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('fcmToken');
+    window.location.replace("/login");
+    const timestamp = Math.floor(Date.now() / 1000).toString()
+    const dataToSign = `POST api/v4/auth/logout ${timestamp} []`
+    const signature = CryptoJS.HmacSHA256(dataToSign, "V65HMX2FHYVQCFT33WX3PCPY7H59MIBDOMCOWQ4LALMYCYBY4HJIGAN51JOEK590").toString(CryptoJS.enc.Hex)
+    console.log(dataToSign);
+    fetch("https://api.payfa24.org/api/v4/auth/logout", {
+      method: "POST",
+      headers: {
+        "Authorization": token ? `Bearer ${token}` : "",
+        "Content-Type": "application/json",
+        "X-Signature": signature,
+        "X-Timestamp": timestamp,
+        "X-Device": "website",
+      },
+      keepalive: true,
+      credentials: "include",
+    }).catch(() => { });
+  };
 
-  fetch("https://api.payfa24.org/api/v4/auth/logout", {
-    method: "POST",
-    headers: {
-      "Authorization": token ? `Bearer ${token}` : "",
-      "Content-Type": "application/json",
-      "X-Device": "website",
-    },
-    keepalive: true,
-    credentials: "include",
-  }).catch(() => {});
-};
 
- 
   return (
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen(!open)}
-        className={`hover:text-blue2 transition flex items-center ${
-          currentPath === "/login" ? (themeContext.theme === "dark" ? "text-primary" : "text-blue2 font-semibold") : "text-header-items"
-        }`}
+        className={`hover:text-blue2 transition flex items-center ${currentPath === "/login" ? (themeContext.theme === "dark" ? "text-primary" : "text-blue2 font-semibold") : "text-header-items"
+          }`}
         aria-label="Profile"
       >
         <span className="w-9 h-9 icon-wrapper">{open ? <FrameActiveIcon /> : <FrameIcon />}</span>
       </button>
 
       <div
-        className={`hidden lg:block absolute top-full left-0 mt-2 w-[326px] rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${
-          open ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
-        }`}
+        className={`hidden lg:block absolute top-full left-0 mt-2 w-[326px] rounded-2xl shadow-lg bg-white8 text-sm z-50 overflow-hidden transition-transform duration-300 origin-top ${open ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
+          }`}
       >
         <div dir="rtl" className="bg-gray33 py-2 px-3 flex items-center justify-between border border-gray21 mx-4 mt-4 rounded-[8px]">
           <div className="flex ">
             <span className="w-[40px] h-[40px] icon-wrapper flex self-center text-center ml-1">
               <IconUser />
             </span>
-          <div className="flex flex-col">
-  {isLoading ? (
-    <div className="flex flex-col gap-1">
-      <div className="h-3 w-20 rounded skeleton-bg mt-2 pt-2"></div>
-      <div className="h-2 w-10 rounded skeleton-bg mt-1"></div>
-    </div>
-  ) : (
-    <>
-      <p className="font-semibold text-black1">
-        {userData?.user.name || ""} {userData?.user.family || ""}
-      </p>
-      <p className="text-xs text-gray-500 pt-1">
-  سطح کاربری{" "}
-  {userData?.user.level_kyc === "advanced"
-    ? "پیشرفته"
-    : userData?.user.level_kyc === "basic"
-    ? "پایه"
-    : "—"}
-</p>
+            <div className="flex flex-col">
+              {isLoading ? (
+                <div className="flex flex-col gap-1">
+                  <div className="h-3 w-20 rounded skeleton-bg mt-2 pt-2"></div>
+                  <div className="h-2 w-10 rounded skeleton-bg mt-1"></div>
+                </div>
+              ) : (
+                <>
+                  <p className="font-semibold text-black1">
+                    {userData?.user.name || ""} {userData?.user.family || ""}
+                  </p>
+                  <p className="text-xs text-gray-500 pt-1">
+                    سطح کاربری{" "}
+                    {userData?.user.level_kyc === "advanced"
+                      ? "پیشرفته"
+                      : userData?.user.level_kyc === "basic"
+                        ? "پایه"
+                        : "—"}
+                  </p>
 
-    </>
-  )}
-</div>
+                </>
+              )}
+            </div>
           </div>
         </div>
         <ul dir="rtl" className="p-6 space-y-3 font-medium">
@@ -158,15 +166,15 @@ const handleLogout = () => {
             )}
           </li>
 
-   <li
-      onClick={handleKYCClick}
-      className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
-    >
-      <span className="w-6 h-6">
-        <IconAuthentication />
-      </span>
-      احراز هویت
-    </li>
+          <li
+            onClick={handleKYCClick}
+            className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm"
+          >
+            <span className="w-6 h-6">
+              <IconAuthentication />
+            </span>
+            احراز هویت
+          </li>
 
           <Link to={ROUTES.BANK_CARDS} className="flex items-center gap-2 w-full">
             <li className="flex items-center gap-2 hover:text-blue2 cursor-pointer pt-2 text-black1 font-medium text-sm">
@@ -233,9 +241,9 @@ const handleLogout = () => {
                 <button onClick={() => setIsModal(false)} className="w-1/2 lg:py-3 py-2 border border-blue2 rounded-xl text-blue2  font-bold">
                   انصراف
                 </button>
-                  <button onClick={handleLogout} className="w-1/2 lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-xl ">
-                    خروج
-                  </button>
+                <button onClick={handleLogout} className="w-1/2 lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-xl ">
+                  خروج
+                </button>
               </div>
             </div>
           </div>

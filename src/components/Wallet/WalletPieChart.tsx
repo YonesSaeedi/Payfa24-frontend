@@ -52,36 +52,40 @@ export default function WalletPieChart() {
   }, [data]);
 
   const generateBlueGradient = (num: number) => {
-    const colors = [];
-    for (let i = 0; i < num; i++) {
-      const lightness = 80 - (i * 50) / (num - 1);
-      colors.push(`hsl(210, 100%, ${lightness}%)`);
-    }
-    return colors;
-  };
+  if (num === 1) return ["hsl(210, 100%, 70%)"]; // رنگ روشن‌تر برای فقط یک داده
+
+  const colors = [];
+  for (let i = 0; i < num; i++) {
+    const lightness = 80 - (i * 50) / (num - 1);
+    colors.push(`hsl(210, 100%, ${lightness}%)`);
+  }
+  return colors;
+};
+
 
   const gradientColors = generateBlueGradient(data.length);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
       <div
         className="bg-white shadow-md p-2 rounded-md border"
         style={{
           position: "absolute",
-          right: "-150px",   
+          right: "-150px",
           top: "50%",
           transform: "translateY(-50%)",
           zIndex: 1000,
         }}
       >
-        <p className="font-bold">{payload[0].name}</p>
-        <p>{payload[0].value.toLocaleString()}</p>
+
+        <p >{payload[0].value.toLocaleString()} تومان</p>
       </div>
     );
   }
   return null;
 };
+
 if (!isLoading && data.length === 0) {
   return null;
 }
@@ -144,7 +148,7 @@ const ListSkeleton = () => (
         <div
           className={`
             mt-4 lg:mt-0 lg:w-1/2
-            grid grid-cols-2 lg:grid-cols-1 gap-x-6 gap-y-3
+            grid grid-cols-2 lg:grid-cols-1 gap-x-1  justify-items-start  gap-y-3
             overflow-hidden
           `}
         >
@@ -156,7 +160,7 @@ const ListSkeleton = () => (
                 <div
                   key={item.name}
                   className={`
-                    flex items-center gap-2 transform transition-all duration-500 min-w-0
+                    flex items-center gap-2 transform transition-all duration-500 min-w-0 
                     ${showItems ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
                   `}
                   style={{ transitionDelay: `${index * 100}ms` }}
