@@ -5,10 +5,9 @@ import StepperComponent from "../Stepper";
 import IconCloseChervon from "../../../../assets/icons/authentication/IconCloseChervon";
 import IconOpenChervon from "../../../../assets/icons/authentication/IconOpenChervon";
 import IconClose from "../../../../assets/icons/Login/IconClose";
-import previewURLImage2 from "../../../../assets/previewURLImage (2).png";
+import previewURLImage2 from "../../../../assets/images/kvc-img.jpg";
 import { toast } from "react-toastify";
 import { toPersianDigits } from "../../../Deposit/CardToCardTransfer";
-import ArrowLeftIcon from "../../../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 
 type IdentityVerificationProps = {
   handleUploadImageFiles: (key: "idCardImageFile" | "identityVerifyImageFile", imageFile: File | undefined) => void;
@@ -53,12 +52,6 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
     <div className="w-full">
       <form className="lg:bg-gray9 lg:rounded-2xl lg:px-8 w-full">
         <div className="flex flex-col text-right">
-          <div className="relative flex items-center w-full justify-center sm:hidden mb-7 mt-5 text-black0">
-            <span className="text-base font-medium text-center">احراز هویت پیشرفته</span>
-            <span className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 rotate-180 ">
-              <ArrowLeftIcon />
-            </span>
-          </div>
           <StepperComponent currentStep={1} isAdvance={true} />
           <p className="lg:text-xl text-sm font-medium text-black1  lg:flex self-end mb-5">لطفا مدرک شناسایی خود را بارگذاری کنید</p>
           <div className="bg-orange4 flex flex-col pr-6 pl-2 py-4 gap-2 lg:mb-6 mb-4 rounded-lg">
@@ -109,7 +102,7 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
             </div>
             {isOpenAccordion && (
               <div>
-                <img src={previewURLImage2} alt="تعهد نامه" className="w-full h-64 object-fill rounded-lg mb-2 px-4" />
+                <img src={previewURLImage2} alt="تعهد نامه" className="w-full h-56 object-fill rounded-lg mb-2 px-4" />
               </div>
             )}
           </div>
@@ -117,15 +110,9 @@ export default function IdentityVerification({ handleSubmit, uploadProgress, han
         <button
           onClick={handleProceed}
           type="submit"
-          disabled={uploadProgress !== null || !previewImage} 
+          disabled={uploadProgress !== null || !previewImage}
           className={`relative mt-1 text-lg font-bold mb-6 w-full lg:h-[56px] h-10 rounded-lg border border-transparent transition duration-300 ease-in overflow-hidden
-    ${
-      uploadProgress !== null
-        ? "bg-blue2  cursor-not-allowed"
-        : previewImage
-        ? "bg-blue2 text-white2 hover:bg-blue1"
-        : "bg-blue2 text-white2 opacity-60 cursor-not-allowed"
-    }`}
+    ${uploadProgress !== null ? "bg-blue2  cursor-not-allowed" : previewImage ? "bg-blue2 text-white2 hover:bg-blue1" : "bg-blue2 text-white2 opacity-60 cursor-not-allowed"}`}
         >
           {uploadProgress !== null && <span className="absolute left-0 top-0 bottom-0 bg-green-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />}
           <span className="relative z-10">{uploadProgress !== null ? `در حال ارسال ${uploadProgress}%` : "ثبت و ارسال"}</span>

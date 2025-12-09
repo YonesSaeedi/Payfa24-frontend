@@ -22,9 +22,9 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
       {/* image section */}
       <div className="w-full ">
         {image && (
-          <div className={`flex h-full flex-col items-center justify-around lg:rounded-e-2xl  ${theme === "dark" ? "bg-gray0" : "lg:bg-gray0 bg-none"} `}>
+          <div className={`flex h-full flex-col items-center justify-around lg:rounded-e-2xl  ${theme === "dark" ? "lg:bg-gray0" : "lg:bg-gray0 bg-none"} `}>
             {/* logo && button (Icon)*/}
-            <div className="flex justify-between items-center w-full lg:px-16 px-4 py-8 flex-row-reverse">
+            <div className="flex justify-between items-center w-full lg:px-16 px-4 pt-8 flex-row-reverse">
               <div>
                 <img src={Logo} alt="Logo" className="lg:w-[57px] lg:h-[51px] w-[32px] h-[28px]" />
               </div>
@@ -50,7 +50,7 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
             <img
               src={image}
               alt="Authentication Visual"
-              className="object-fill lg:object-contain lg:w-[915px] lg:h-[608px] w-[312px] h-[207px] "
+              className="object-fill lg:object-contain hidden lg:block lg:w-[915px] lg:h-[608px] w-[250px] h-[170px] "
               onError={(e) => console.error("Failed to load image:", image, e)}
             />
           </div>

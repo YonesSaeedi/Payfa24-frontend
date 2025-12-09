@@ -115,10 +115,10 @@ export default function StepInvite({ onNext }: { onNext: () => void }) {
   }, [resendCodeTimeLeft])
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-full max-w-md px-4">
+    <div className="flex items-center justify-center lg:max-w-md w-full">
+      <div className="w-full px-4">
         <form onSubmit={handleSubmit(onSubmit)} dir="rtl" className="w-full mx-auto">
-          <h1 className="text-[28px] font-bold text-blue2 mb-2 text-center">ثبت نام در پی‌فا24</h1>
+          <h1 className="lg:text-[28px] text-xl font-bold text-blue2 mb-2 text-center">ثبت نام در پی‌فا24</h1>
           <p className="font-normal mb-10 lg:text-lg text-sm text-center text-black1">برای ثبت نام ایمیل یا شماره همراه خود را وارد کنید</p>
           <Controller
             name="email"
