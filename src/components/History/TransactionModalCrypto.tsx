@@ -8,6 +8,10 @@ import { Tx } from "./CryptoPage";
 import ReceivedIcon from "../../assets/icons/Home/WalletCardIcon/ReceivedIcon";
 import SendIcon from "../../assets/icons/Home/WalletCardIcon/SendIcon";
 import { formatEnglishNumber } from "../../utils/formatPersianNumber";
+import IconCopy from "../../assets/icons/AddFriend/IconCopy";
+import { toast } from "react-toastify";
+
+
 
 export interface CryptoDetail {
   id: string;
@@ -53,6 +57,19 @@ interface TransactionModalCryptoProps {
 const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onClose, coinData }) => {
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState<CryptoDetail | null>(null);
+  const [copied, setCopied] = useState(false);
+
+const handleCopy = async (text: string) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    toast.info("لینک کپی شد");
+
+    setTimeout(() => setCopied(false), 1200);
+  } catch {
+    toast.error("خطا در کپی کردن");
+  }
+};
 
   useEffect(() => {
     if (!tx.id) return;
@@ -179,7 +196,29 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
                 {detail.destination && <DetailRow label="آدرس مقصد" value={detail.destination} />}
                 {detail.destinationTag && <DetailRow label="Destination Tag" value={detail.destinationTag} />}
                 {detail.network && <DetailRow label="شبکه" value={detail.network} />}
-                {detail.txid && <DetailRow label="TXID" value={detail.txid} />}
+    {detail.txid && (
+  <DetailRow
+    label="TXID"
+    value={
+      <div className="flex items-center  max-w-[300px]">
+        <span className="break-all text-[13px] leading-5">{detail.txid}</span>
+
+        <span
+          onClick={() => handleCopy(detail.txid!)}
+          className={`cursor-pointer  transition w-8 h-8 mr-2 ${
+            copied ? "text-blue-500 scale-110" : "text-gray-600"
+          }`}
+        >
+         <IconCopy />
+          
+        </span>
+        
+      </div>
+    }
+  />
+)}
+
+
                 {detail.reason && <DetailRow label="دلیل" value={detail.reason} />}
                 {detail.file && <DetailRow label="فایل" value={detail.file} />}
               </div>
@@ -197,9 +236,9 @@ const TransactionModalCrypto: React.FC<TransactionModalCryptoProps> = ({ tx, onC
 
 
 const DetailRow = ({ label, value, symbol }: { label: string; value: React.ReactNode; symbol?: string }) => {
-  // حالت مخصوص نوع تراکنش
+ 
   if (label === "نوع" && typeof value === "string") {
-    const isDeposit = value === "deposit" || value === "واریز"; // یا mapping مناسب شما
+    const isDeposit = value === "deposit" || value === "واریز";
 
     return (
       <div className="flex justify-between items-center">
@@ -224,7 +263,7 @@ const DetailRow = ({ label, value, symbol }: { label: string; value: React.React
     );
   }
 
-  // حالت عادی برای بقیه فیلدها
+
   return (
     <div className="flex justify-between items-center">
       <span className="font-medium text-[16px] text-gray5">{label}:</span>

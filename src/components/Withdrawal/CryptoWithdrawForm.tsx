@@ -71,6 +71,7 @@ interface FullNetwork {
 
 const CryptoWithdrawForm: FC = () => {
   const [amountError, setAmountError] = useState(false);
+  
   const [crypto, setCrypto] = useState<string>("");
   const [selectedNetworkId, setSelectedNetworkId] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -411,11 +412,6 @@ const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
     }
   };
 
-  const toPersianDigits = (num: string | number) => {
-    return num.toString().replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
-  };
-
-
 
   
 useEffect(() => {
@@ -424,12 +420,11 @@ useEffect(() => {
   setTag("");   
 }, [activeTab]);
 
-const formatWithSlash = (value: string | number) => {
+const formatWithComma = (value: string | number) => {
   const strValue = value.toString();
-  const cleaned = strValue.replace(/\D/g, ""); 
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, "/");
+  const cleaned = strValue.replace(/\D/g, "");
+  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
-
 
 
 
@@ -534,37 +529,51 @@ const formatWithSlash = (value: string | number) => {
   label="مقدار"
   value={amount}
   onChange={(e) => {
-    const raw = e.target.value.replace(/\D/g, "");
-    setAmount(formatWithSlash(raw));
-    if (amountError) setAmountError(false); // اگر کاربر دوباره مقدار را تغییر داد، خطا برداشته شود
-  }}
+  const raw = e.target.value.replace(/\D/g, "");
+  setAmount(formatWithComma(raw));
+  if (amountError) setAmountError(false);
+}}
+
   type="text"
   className={`border mb-2 ${amountError ? "border-red-500 shadow-red-700" : "border-gray12"}`}
   labelClassName="!font-normal !text-sm"
   placeholder="0"
 />
 
-<div className="flex justify-end text-sm font-normal pb-2">
+<div className="flex justify-end items-center text-sm font-normal pb-2 gap-1">
+
   <button
     type="button"
     className="text-blue2 text-sm font-normal hover:underline"
     onClick={() => {
       const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
-      const decimalPlaces = currentCryptoCurrency?.percent ?? 2; // تعداد اعشار دلخواه
+      const decimalPlaces = currentCryptoCurrency?.percent ?? 2;
       const formattedAmount = parseFloat(available).toFixed(decimalPlaces);
-      setAmount(formattedAmount); // مقدار را در input قرار می‌دهد
+      setAmount(formattedAmount);
     }}
   >
-    تمام موجودی
+    تمام موجودی:
   </button>
+
+  <span className="text-blue2" dir="ltr">
+    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0")
+      .toFixed(currentCryptoCurrency?.percent ?? 2)}
+  </span>
+
 </div>
 
+
                     <div className="text-md text-gray5 mt-3 space-y-2">
-                     <div className="flex items-center justify-between mb-2">
-  <span className="font-normal text-sm">موجودی قابل برداشت</span>
-  <span dir="ltr" className="font-medium text-black0 text-sm">
-    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0").toFixed(currentCryptoCurrency?.percent ?? 2)} {crypto}
-  </span>
+                    
+                      <div className="flex items-center justify-between mb-2">
+  <span className="font-normal text-sm">کارمزد برداشت</span>
+  {isDataLoading ? (
+    <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
+  ) : (
+    <span dir="ltr" className="font-medium text-black0 text-sm">
+      {formatEnglishNumber(selectedNetwork?.withdraw_fee  ?? "0")} {crypto}
+    </span>
+  )}
 </div>
 
                       <div className="flex items-center justify-between">
@@ -591,15 +600,12 @@ const formatWithSlash = (value: string | number) => {
                         )}
                       </div>
 
-                      <div className="flex items-center justify-between mb-2">
-  <span className="font-normal text-sm">کارمزد برداشت</span>
-  {isDataLoading ? (
-    <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
-  ) : (
-    <span dir="ltr" className="font-medium text-black0 text-sm">
-      {formatEnglishNumber(selectedNetwork?.withdraw_fee  ?? "0")} {crypto}
-    </span>
-  )}
+                    
+ <div className="flex items-center justify-between mb-2">
+  <span className="font-normal text-sm">موجودی قابل برداشت</span>
+  <span dir="ltr" className="font-medium text-black0 text-sm">
+    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0").toFixed(currentCryptoCurrency?.percent ?? 2)} {crypto}
+  </span>
 </div>
                     </div>
                   </div>
@@ -684,7 +690,7 @@ const formatWithSlash = (value: string | number) => {
     className="font-medium text-black0 text-sm cursor-pointer"
     onClick={() => {
       const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
-      setAmount(available); // مقدار را در فیلد input قرار می‌دهد
+      setAmount(available);
     }}
   >
     {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toString()} {crypto}
@@ -693,7 +699,8 @@ const formatWithSlash = (value: string | number) => {
 
                     <div className="flex items-center justify-between">
                       <span className="font-normal text-sm">مقدار برداشت روزانه معادل</span>
-                      <span className="font-medium text-black0 text-sm">{levelUsed.daily_withdrawal_crypto ? toPersianDigits(levelUsed.daily_withdrawal_crypto) : "۰"} تومان</span>
+                      <span className="font-medium text-black0 text-sm">{formatPersianNumber(levelUsed.daily_withdrawal_crypto || 0)} تومان
+</span>
                     </div>
                   </div>
                 </div>
