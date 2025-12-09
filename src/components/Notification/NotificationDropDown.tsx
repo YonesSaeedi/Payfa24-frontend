@@ -57,7 +57,7 @@ export default function NotificationsDropdown() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await apiRequest<NotificationItem[]>({ url: "/notifications?seen=unseen" });
+      const response = await apiRequest<NotificationItem[]>({ url: "/notifications", params: { seen: 'unseen' } });
       const formatted = response.map((n) => ({ ...n, formattedTime: formatTime(n.time) }));
       setNotifications(formatted);
     } catch (error) { toast.error((error as AxiosError<{ msg?: string }>)?.response?.data?.msg || 'در دریافت اعلانات مشکلی پیش آمد.') }
