@@ -101,33 +101,49 @@ apiClient.interceptors.request.use(async (config) => {
   }
   // signature
   const method = (config.method || "GET").toUpperCase();
-
   let rawPath = config.url ?? "";
   rawPath = rawPath.startsWith("/") ? rawPath.slice(1) : rawPath;
   const pathForSign = rawPath.replace(/^api\/v4\//, "").replace(/^v4\//, "");
-
-  const bodyForSign = config.data ?? [];
   const paramsForSign = config.params ?? {};
-
   const cleanedParams = Object.fromEntries(
     Object.entries(paramsForSign)
       .filter(([_, v]) => v !== null && v !== undefined && v !== "")
       .map(([k, v]) => [k, String(v)])
   );
   config.params = Object.keys(cleanedParams).length ? cleanedParams : undefined;
-
-  const cleanedBody = Object.fromEntries(
-    Object.entries(bodyForSign)
-      .filter(([_, v]) => v !== null && v !== undefined && v !== "")
-  );
-  config.data = Object.keys(cleanedBody).length ? cleanedBody : undefined;
-
-  const sigHeaders = getAuthHeaders(method, pathForSign, bodyForSign, paramsForSign);
-
+  // BODY CLEANING
+  let bodyForSign: any = [];
+  if (config.data instanceof FormData) {
+    // --- FormData handling: keep files, remove empty non-file fields ---
+    const fd = config.data;
+    const jsonForSign: Record<string, any> = {};
+    fd.forEach((value, key) => {
+      if (value instanceof File) {
+        // keep it in request payload, but DO NOT include in signature
+        return;
+      }
+      if (value !== "" && value !== null && value !== undefined) {
+        jsonForSign[key] = value;
+      } else {
+        fd.delete(key); // remove empty values from request
+      }
+    });
+    bodyForSign = jsonForSign; // Signature only uses non-file fields
+  }
+  else if (config.data && typeof config.data === "object") {
+    // --- Normal JSON body ---
+    const cleanedBody = Object.fromEntries(
+      Object.entries(config.data)
+        .filter(([_, v]) => v !== null && v !== undefined && v !== "")
+    );
+    config.data = Object.keys(cleanedBody).length ? cleanedBody : undefined;
+    bodyForSign = config.data ?? [];
+  }
+  const sigHeaders = getAuthHeaders(method, pathForSign, bodyForSign, cleanedParams);
   Object.assign(config.headers, sigHeaders);
-  // 
   return config;
 });
+
 
 // ---------- response interceptor: retry once on 401 ----------
 apiClient.interceptors.response.use(

@@ -28,11 +28,14 @@ interface Network {
   name: string;
   locale?: { fa?: { name: string } };
 }
-type CreateWalletData = Record<string, any> & {
-  symbol: string;
-  network: number;
-};
 
+
+
+interface CreateWalletResponse {
+  status: boolean;
+  msg?: string;
+
+}
 interface CoinNetwork {
   id: number;
   deposit_min: string;
@@ -86,15 +89,19 @@ export default function DepositDedicatedWallet({
       setSelectedCurrency(newCurrency);
       setValue("currency", selectedCrypto.symbol);
       setSelectedNetworkId("");
+      setValue("network", "");
       setWalletAddress("");
       setWalletTag("");
-
       const options = (newCurrency.network || []).map((net: any) => {
         const networkInfo = allNetworks.find((n) => n.id === net.id);
-        const networkName = networkInfo?.locale?.fa?.name || `شبکه ${net.id}`;
+
+        const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || `شبکه ${net.id}`;
+
+        const networkSymbol = networkInfo?.name || ""; // مثل ERC20 , TRC20
+
         return {
           value: net.id.toString(),
-          label: networkName,
+          label: `${networkName} (${networkSymbol})`,
         };
       });
 
@@ -147,70 +154,26 @@ export default function DepositDedicatedWallet({
     try {
       const networkIdNum = Number(selectedNetworkId);
 
-      console.log("API Request:", {
-        symbol: selectedCurrency.symbol,
-        network: networkIdNum,
-      });
-
-      // 1. API ساخت آدرس رو صدا بزن
-      const response = await apiRequest<any, CreateWalletData>({
-        // 💡 اینجا نوع CreateWalletData را اضافه کنید
+      const response = await apiRequest<CreateWalletResponse >({
         url: "/wallets/crypto/deposit/create-wallet",
         method: "POST",
         data: {
           symbol: selectedCurrency.symbol,
           network: networkIdNum,
-        } as CreateWalletData, // 💡 برای اطمینان بیشتر، اینجا هم Type Assertion انجام دهید
+        }as any,
       });
 
-      console.log("Full API response object:", response);
-
       if (response.status === true) {
-        toast.success(response.msg || "آدرس با موفقیت ساخته شد");
+        toast.success(response.msg || "آدرس ساخته شد");
 
-        // 3. فوراً wallets رو refresh کن
         if (onRefreshData) {
-          console.log("Refreshing wallets to get new address...");
-
-          // کمی تاخیر بده تا سرور آدرس رو ذخیره کنه
-          setTimeout(async () => {
-            try {
-              await onRefreshData();
-              console.log("Wallets refreshed after successful creation");
-
-              // 4. بعد از refresh، از wallets آدرس رو بگیر
-              setTimeout(() => {
-                const newWallet = wallets.find((w) => w.id_coin === selectedCurrency.id && w.id_net === networkIdNum);
-
-                if (newWallet?.address) {
-                  console.log("Found new address in wallets:", newWallet.address);
-                  setWalletAddress(newWallet.address);
-                  setWalletTag(newWallet.address_tag || "");
-                } else {
-                  console.log("Address not found in wallets yet, checking again...");
-                  // اگر پیدا نشد، دوباره چک کن
-                  checkForExistingAddress();
-                }
-              }, 500);
-            } catch (refreshError) {
-              console.error("Error refreshing:", refreshError);
-            }
-          }, 1000);
+          await onRefreshData(); // فقط این کافی است
         }
       } else {
         toast.error(response.msg || "خطا در ساخت آدرس");
       }
-    } catch (error: any) {
-      console.error("Full error object:", error);
-
-      let errorMessage = "خطا در ساخت آدرس";
-      if (error.response?.status === 400) {
-        errorMessage = error.response.data?.msg || "این ارز/شبکه پشتیبانی نمی‌شود";
-      } else if (error.response?.data?.msg) {
-        errorMessage = error.response.data.msg;
-      }
-
-      toast.error(errorMessage);
+    } catch (err: any) {
+      toast.error("خطا در ساخت آدرس");
     } finally {
       setIsLoading(false);
     }
@@ -218,19 +181,26 @@ export default function DepositDedicatedWallet({
 
   // وقتی wallets آپدیت شد، چک کن آیا آدرس جدید اومده
   useEffect(() => {
-    console.log("wallets updated in child, length:", wallets.length);
+    console.log("wallets updated in child, length:", wallets?.length);
 
-    if (selectedCurrency.id && selectedNetworkId && !walletAddress) {
-      const networkIdNum = Number(selectedNetworkId);
-      const existing = wallets.find((w) => w.id_coin === selectedCurrency.id && w.id_net === networkIdNum);
+    // اگر ارزی انتخاب نشده یا شبکه انتخاب نشده یا آدرس قبلاً ست شده، کاری نکن
+    if (!selectedCurrency?.id || !selectedNetworkId) return;
+    if (walletAddress) return;
 
-      if (existing?.address) {
-        console.log("Auto-setting address from wallets update:", existing.address);
-        setWalletAddress(existing.address);
-        setWalletTag(existing.address_tag || "");
-      }
+    const networkIdNum = Number(selectedNetworkId);
+
+    // پیدا کردن والت بر اساس id_coin و id_net (مطابق ساختار والد)
+    const existing = wallets.find((w) => w.id_coin === selectedCurrency.id && w.id_net === networkIdNum && !!w.address);
+
+    if (existing) {
+      console.log("Auto-setting address from wallets update:", existing.address);
+      setWalletAddress(existing.address);
+      setWalletTag(existing.address_tag || "");
+    } else {
+      console.log("No wallet found for coin", selectedCurrency.id, "net", networkIdNum);
     }
-  }, [wallets]);
+  }, [wallets, selectedCurrency?.id, selectedNetworkId, walletAddress]);
+
   // حالت‌های مختلف UI
   const hasAddress = !!walletAddress;
   const hasSelectedNetwork = !!selectedNetworkId;
@@ -347,60 +317,69 @@ export default function DepositDedicatedWallet({
 
       {isLoading && !hasAddress ? null : null}
 
-      {hasAddress && (
+      {isLoading ? (
         <div className="rounded-lg border mb-10 border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
-          <QRCode value={walletAddress} size={128} bgColor={theme === "dark" ? "#000000" : "#FFFFFF"} fgColor={theme === "dark" ? "#FFFFFF" : "#000000"} />
-
-          <div className="flex justify-between w-full items-center">
-            <span className="text-gray5 text-xs lg:text-sm">آدرس کیف پول</span>
-
-            <div
-              onClick={() => {
-                navigator.clipboard.writeText(walletAddress);
-                toast.info("کپی شد");
-              }}
-              className="flex items-center gap-1 justify-between cursor-pointer"
-            >
-              <span className="block text-black0 lg:text-sm text-xs break-all max-w-sm text-end">{walletAddress}</span>
-              <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
-                <IconCopy />
-              </span>
-            </div>
+          <div className="py-5 px-6  items-center flex justify-center">
+            <div className="skeleton-bg w-32 h-32 rounded-md"></div>
           </div>
 
-          {walletTag && (
-            <div className="w-full">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-gray5 text-sm">Tag</span>
-
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(walletTag);
-                    toast.info("Tag کپی شد");
-                  }}
-                  className="text-blue2 text-sm flex items-center gap-1"
-                >
-                  <span className="w-4 h-4 icon-wrapper">
-                    <IconCopy />
-                  </span>
-                  کپی
-                </button>
-              </div>
-
-              <div className="text-black0 p-3 rounded text-sm font-mono break-all">{walletTag}</div>
-            </div>
-          )}
+          <div className="flex justify-between gap-2 w-full items-center">
+            <span className="skeleton-bg w-20 h-4 rounded-sm"></span>
+            <div className="skeleton-bg w-2/3 h-4 rounded-sm"></div>
+          </div>
         </div>
+      ) : (
+        hasAddress && (
+          <div className="rounded-lg border mb-10 border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
+            <QRCode value={walletAddress} size={128} bgColor={theme === "dark" ? "#000000" : "#FFFFFF"} fgColor={theme === "dark" ? "#FFFFFF" : "#000000"} />
+            <div className="flex justify-between w-full items-center">
+              <span className="text-gray5 text-xs lg:text-sm">آدرس کیف پول</span>
+              <div
+                onClick={() => {
+                  navigator.clipboard.writeText(walletAddress);
+                  toast.info("کپی شد");
+                }}
+                className="flex items-center gap-1 justify-between cursor-pointer"
+              >
+                <span className="block text-black0 lg:text-sm text-xs break-all max-w-sm text-end">{walletAddress}</span>
+                <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray5">
+                  <IconCopy />
+                </span>
+              </div>
+            </div>
+
+            {walletTag && (
+              <div className="w-full">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray5 text-sm">Tag</span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(walletTag);
+                      toast.info("Tag کپی شد");
+                    }}
+                    className="text-blue2 text-sm flex items-center gap-1"
+                  >
+                    <span className="w-4 h-4 icon-wrapper">
+                      <IconCopy />
+                    </span>
+                    کپی
+                  </button>
+                </div>
+                <div className="text-black0 p-3 rounded text-sm font-mono break-all">{walletTag}</div>
+              </div>
+            )}
+          </div>
+        )
       )}
 
       {!hasAddress && (
-        <div className="lg:mt-40 mt-8 mb-10">
+        <div className={`lg:mt-${isLoading ? "5" : "40"} mt-16 mb-10`}>
           <button
             onClick={handleCreateWallet}
             disabled={!hasSelectedCurrency || !hasSelectedNetwork || isLoading}
             className={`
-        w-full py-3 text-lg font-bold rounded-lg transition-all 
-        flex items-center justify-center text-white2
+        w-full py-3  lg:font-bold font-medium rounded-lg transition-all  
+        flex items-center justify-center text-white2 lg:text-lg text-base
         ${
           !hasSelectedCurrency || !hasSelectedNetwork
             ? "bg-blue2 opacity-60 cursor-not-allowed"
