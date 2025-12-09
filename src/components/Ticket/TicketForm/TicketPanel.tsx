@@ -24,7 +24,7 @@ function TicketPanel() {
    
       />
 
-      <div className="flex flex-col items-center justify-center flex-1 pb-5 px-4 overflow-x-hidden">
+      <div className="flex flex-col items-center justify-center flex-1 pb-5  overflow-x-hidden">
         <img src={TicketImage} alt="Empty Ticket" className="mb-6 w-52 md:w-80" />
 
         <h2 className="text-center md:text-[24px]  text-black1 mb-4 max-w-[600px] mx-auto font-medium text-[16px]">
