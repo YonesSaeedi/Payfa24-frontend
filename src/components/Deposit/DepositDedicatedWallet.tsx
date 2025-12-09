@@ -162,7 +162,7 @@ const handleCreateWallet = async () => {
       toast.success(response.msg || "آدرس ساخته شد");
       
       if (response.wallet) {
-    
+        // const newWallet: Wallet = {
         //   address: response.wallet.address,
         //   address_tag: response.wallet.address_tag || null,
         //   id_coin: selectedCurrency.id!,
