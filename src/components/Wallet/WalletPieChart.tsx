@@ -144,7 +144,7 @@ const ListSkeleton = () => (
         <div
           className={`
             mt-4 lg:mt-0 lg:w-1/2
-            grid grid-cols-2 lg:grid-cols-1 gap-x-6 gap-y-3
+            grid grid-cols-2 lg:grid-cols-1 gap-x-1  justify-items-start  gap-y-3
             overflow-hidden
           `}
         >
@@ -156,7 +156,7 @@ const ListSkeleton = () => (
                 <div
                   key={item.name}
                   className={`
-                    flex items-center gap-2 transform transition-all duration-500 min-w-0
+                    flex items-center gap-2 transform transition-all duration-500 min-w-0 
                     ${showItems ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
                   `}
                   style={{ transitionDelay: `${index * 100}ms` }}
