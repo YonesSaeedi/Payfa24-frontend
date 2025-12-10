@@ -129,12 +129,9 @@ useEffect(() => {
 
       if (existingWallet?.address) {
         // آدرس وجود داره - فوراً نمایش بده
-        console.log("Found existing address, showing immediately:", existingWallet.address);
         setWalletAddress(existingWallet.address);
         setWalletTag(existingWallet.address_tag || "");
-      } else {
-        console.log("No existing address found");
-      }
+      } 
     }, 300);
   };
 
@@ -162,22 +159,17 @@ const handleCreateWallet = async () => {
       toast.success(response.msg || "آدرس ساخته شد");
       
       if (response.wallet) {
-        // const newWallet: Wallet = {
-        //   address: response.wallet.address,
-        //   address_tag: response.wallet.address_tag || null,
-        //   id_coin: selectedCurrency.id!,
-        //   id_net: networkIdNum,
-        // };
+       
         
         // مستقیماً آدرس را ست کن
         setWalletAddress(response.wallet.address);
         setWalletTag(response.wallet.address_tag || "");
         
-        if (onRefreshData) {
-          setTimeout(() => {
-            onRefreshData();
-          }, 500);
-        }
+        // if (onRefreshData) {
+        //   setTimeout(() => {
+        //     onRefreshData();
+        //   }, 500);
+        // }
       } else {
         if (onRefreshData) {
           await onRefreshData();
@@ -194,7 +186,6 @@ const handleCreateWallet = async () => {
 };
 
   useEffect(() => {
-    console.log("wallets updated in child, length:", wallets?.length);
 
     if (!selectedCurrency?.id || !selectedNetworkId) return;
     if (walletAddress) return;
@@ -208,7 +199,7 @@ const handleCreateWallet = async () => {
       setWalletAddress(existing.address);
       setWalletTag(existing.address_tag || "");
     } else {
-      console.log("No wallet found for coin", selectedCurrency.id, "net", networkIdNum);
+      // console.log("No wallet found for coin", selectedCurrency.id, "net", networkIdNum);
     }
   }, [wallets, selectedCurrency?.id, selectedNetworkId, walletAddress]);
 
