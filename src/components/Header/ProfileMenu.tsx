@@ -71,7 +71,7 @@ export default function ProfileMenu({ themeContext, currentPath }: ProfileMenuPr
     const timestamp = Math.floor(Date.now() / 1000).toString()
     const dataToSign = `POST api/v4/auth/logout ${timestamp} []`
     const signature = CryptoJS.HmacSHA256(dataToSign, "V65HMX2FHYVQCFT33WX3PCPY7H59MIBDOMCOWQ4LALMYCYBY4HJIGAN51JOEK590").toString(CryptoJS.enc.Hex)
-    console.log(dataToSign);
+  
     fetch("https://api.payfa24.org/api/v4/auth/logout", {
       method: "POST",
       headers: {
