@@ -38,8 +38,8 @@ export default function AddFriend() {
   const [selectedPercent, setSelectedPercent] = useState<number>(15);
   const [transactions, setTransactions] = useState<TransactionItemExt[]>([]);
   const [invitedUsers, setInvitedUsers] = useState<InvitedUserItem[]>([]);
-  const [currentPage, _setCurrentPage] = useState<number>(1);
-  const [_totalTransactionPages, setTotalTransactionPages] = useState<number>(1);
+  // const [currentPage, _setCurrentPage] = useState<number>(1);
+  // const [_totalTransactionPages, setTotalTransactionPages] = useState<number>(1);
   const [referralReport, setReferralReport] = useState<ReferralReport | null>(null);
 
   const maxPercent = 30;
@@ -63,17 +63,17 @@ export default function AddFriend() {
       toast.error("خطا در دریافت گزارش رفرال.");
       setInvitedUsers([]);
     } finally {
-      setIsLoading(false); // ✅ حتما false می‌شه!
+      setIsLoading(false);
     }
   };
 
   const fetchTransactionsData = async () => {
     setIsLoading(true);
     try {
-      const response = await getReferralTransactions(currentPage);
+      const response = await getReferralTransactions();
       if (response && response.lists) {
         setTransactions(response.lists);
-        setTotalTransactionPages(Math.ceil(response.total / 10));
+        // setTotalTransactionPages(Math.ceil(response.total / 10));
       } else {
         setTransactions([]);
       }
@@ -81,7 +81,7 @@ export default function AddFriend() {
       toast.error("خطا در دریافت لیست تراکنش‌ها.");
       setTransactions([]);
     } finally {
-      setIsLoading(false); // ✅ حتما false می‌شه!
+      setIsLoading(false); 
     }
   };
 
@@ -112,12 +112,10 @@ export default function AddFriend() {
     }
   };
 
-  // ✅ فقط 1 بار لود کن
   useEffect(() => {
     fetchReferralReportData();
   }, []);
 
-  // ✅ تب عوض شد → داده‌ها رو لود کن
   useEffect(() => {
     if (activeTab === "transactions") {
       fetchTransactionsData();
@@ -164,7 +162,7 @@ export default function AddFriend() {
     {
       img: gitImg,
       title: "دریافت پاداش",
-      description: "دوستان شما زمانی که با کد دعوت اختصاصی شما ثبت نام کنند واحراز هویت خودر را تکمیل و شروع به معامله کنند.",
+      description: "دوستان شما زمانی که با کد دعوت اختصاصی شما ثبت نام کنند واحراز هویت خود را تکمیل و شروع به معامله کنند.",
     },
   ];
 
@@ -217,7 +215,7 @@ export default function AddFriend() {
                         </div>
                       ) : (
                         <>
-                          <div className="hover:text-blue2 flex gap-1 items-center px-3 py-1.5 mt-2 rounded-lg border border-gray5 hover:border-blue2">
+                          <div className="hover:text-blue2 flex gap-1 items-center px-3 py-1.5 mt-2 rounded-lg border border-gray12 hover:border-blue2">
                             <span>{toPersianDigits(e.Link)}</span>
                             <span className="icon-wrapper lg:w-6 lg:h-6 w-4 h-4">{e.Icon}</span>
                           </div>
@@ -379,7 +377,6 @@ export default function AddFriend() {
                         ))}
                       </>
                     ) : transactions.length === 0 ? (
-                      // حالت 2: لود تموم شده ولی داده‌ای نیست
                       <div
                         style={{
                           backgroundImage: `url(${Gift})`,
@@ -390,7 +387,6 @@ export default function AddFriend() {
                         <p className="lg:text-lg text-md text-gray5 text-center">با دعوت از دوستانتان از تراکنش‌های آن‌ها پاداش دریافت کنید.</p>
                       </div>
                     ) : (
-                      // حالت 3: داده وجود دارد → جدول واقعی
                       transactions.map((item) => (
                         <div
                           key={item.id}
@@ -494,7 +490,7 @@ export default function AddFriend() {
         {IsOpenModal && (
           <>
             <div className="fixed inset-0 bg-black/25 z-30 cursor-pointer"></div>
-            <div onClick={() => setIsOpenModal(false)} className="fixed inset-0 flex items-center justify-center z-50">
+            <div  onClick={() => setIsOpenModal(false)} className="fixed inset-0 flex items-center justify-center z-50">
               <div onClick={(e) => e.stopPropagation()} className="bg-white8 w-full max-w-md rounded-xl shadow-lg overflow-hidden lg:py-6 py-4 px-7 mx-2">
                 <div className="flex justify-between items-center border-b border-gray21 pb-4">
                   <span className="icon-wrapper w-6 h-6 cursor-pointer text-gray12 hover:text-blue2" onClick={() => setIsOpenModal(false)}>
@@ -504,7 +500,7 @@ export default function AddFriend() {
                 </div>
                 <p className="text-black0 text-xs lg:text-sm text-end mt-6">. میزان سود خود و دوستتان را از کارمزد معاملات مشخص کنید</p>
                 <div className="mt-14">
-                  <ReferralPercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
+                  <ReferralPercentBar  selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
                 </div>
                 <div className="flex flex-col items-center mt-14 mb-14">
                   <div className="grid grid-cols-2 w-full text-center gap-y-2">
@@ -518,7 +514,7 @@ export default function AddFriend() {
                   </div>
                 </div>
                 <button onClick={handleSaveCommissionSplit} disabled={isLoading} className="w-full font-bold text-sm text-white2 bg-blue2 lg:py-3 py-2 rounded-lg">
-                  {isLoading ? "درحال ذخیره..." : "تایید"}
+                  {isLoading ? "درحال ذخیره ..." : "تایید"}
                 </button>
               </div>
             </div>

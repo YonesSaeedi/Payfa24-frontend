@@ -44,7 +44,6 @@ interface WalletTxid {
   address_tag: string | null;
 }
 
-
 export default function DepositWithTxID({ openCryptoModal, selectedCrypto, networks: networksFromParent, walletsTxid, isDepositCoinsLoading }: DepositWithTxIDProps) {
   const networks = networksFromParent;
   const [selectedCurrency, setSelectedCurrency] = useState<Partial<CryptoItem & { network?: CoinNetwork[] }>>({});
@@ -122,7 +121,7 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
     const wallet = walletsTxid.find((w) => w.id_coin === selectedCurrency.id && w.id_net === Number(selectedNetwork));
 
     setWalletAddress(wallet?.address || null);
-     setWalletTag(wallet?.address_tag || null);
+    setWalletTag(wallet?.address_tag || null);
   }, [selectedCurrency, selectedNetwork, walletsTxid]);
 
   const openModalFromChild = () => {
@@ -168,7 +167,7 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
 
     const wallet = walletsTxid.find((w) => w.id_coin === selectedCurrency.id && w.id_net === Number(selectedNetwork));
     setWalletAddress(wallet?.address || null);
-     setWalletTag(wallet?.address_tag || null); 
+    setWalletTag(wallet?.address_tag || null);
   }, [selectedCurrency.id, selectedNetwork, walletsTxid]);
 
   return (
@@ -290,61 +289,58 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
       </div>
 
       {selectedCurrency.id && selectedNetwork && !isDepositCoinsLoading && !walletAddress && (
-        <div className="mb-5 lg:text-sm text-xs  text-red1 ">
-          امکان ثبت تراکنش با TXID در حال حاضر فعال نیست.
-        </div>
+        <div className="mb-5 lg:text-sm text-xs text-red1 lg:py-3 py-2 px-2 rounded-md border border-red1 bg-red2"> ولتی برای TXId این ارز وجود نداره و در حال حاضر غیر فعال است.</div>
       )}
 
+      {walletAddress && (
+        <div className="mb-10">
+          <div className="rounded-lg border border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
+            <QRCode value={walletAddress} size={128} bgColor={theme === "dark" ? "#000000" : "#FFFFFF"} fgColor={theme === "dark" ? "#FFFFFF" : "#000000"} />
 
-{walletAddress && (
-  <div className="mb-10">
-    <div className="rounded-lg border border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
-      <QRCode value={walletAddress} size={128} bgColor={theme === "dark" ? "#000000" : "#FFFFFF"} fgColor={theme === "dark" ? "#FFFFFF" : "#000000"} />
-      
-      {/* آدرس کیف پول */}
-      <div className="w-full items-center flex justify-between">
-        <span className="text-gray5 text-xs lg:text-sm w-2/4 lg:w-2/4 xl:w-1/4 ">آدرس کیف پول</span>
-        <div
-          dir="ltr"
-          onClick={() => {
-            if (walletAddress) {
-              navigator.clipboard.writeText(walletAddress);
-              toast.info("کپی شد");
-            }
-          }}
-          className="mt-1 flex items-center gap-1 cursor-pointer"
-        >
-          <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray12">
-            <IconCopy />
-          </span>
-          <span className="text-black0 lg:text-sm text-xs break-all hover:text-blue2">{walletAddress}</span>
-        </div>
-      </div>
+            {/* آدرس کیف پول */}
+            <div className="w-full items-center flex justify-between">
+              <span className="text-gray5 text-xs lg:text-sm w-2/4 lg:w-2/4 xl:w-1/4 ">آدرس کیف پول</span>
+              <div
+                dir="ltr"
+                onClick={() => {
+                  if (walletAddress) {
+                    navigator.clipboard.writeText(walletAddress);
+                    toast.info("کپی شد");
+                  }
+                }}
+                className="mt-1 flex items-center gap-1 cursor-pointer"
+              >
+                <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray12">
+                  <IconCopy />
+                </span>
+                <span className="text-black0 lg:text-sm text-xs break-all hover:text-blue2">{walletAddress}</span>
+              </div>
+            </div>
 
-      {/* نمایش Tag (اگر وجود داشته باشد) */}
-      {walletTag && (
-          <div className="w-full items-center flex justify-between">
-        <span className="text-gray5 text-xs lg:text-sm w-2/4 lg:w-1/5">تگ</span>
-        <div
-          dir="ltr"
-          onClick={() => {
-            if (walletAddress) {
-              navigator.clipboard.writeText(walletAddress);
-              toast.info("کپی شد");
-            }
-          }}
-          className="mt-1 flex items-center gap-1 cursor-pointer"
-        >
-          <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray12">
-            <IconCopy />
-          </span>
-          <span className="text-black0 lg:text-sm text-xs break-all hover:text-blue2">{walletTag}</span>
+            {/* نمایش Tag (اگر وجود داشته باشد) */}
+            {walletTag && (
+              <div className="w-full items-center flex justify-between">
+                <span className="text-gray5 text-xs lg:text-sm w-2/4 lg:w-1/5">تگ</span>
+                <div
+                  dir="ltr"
+                  onClick={() => {
+                    if (walletAddress) {
+                      navigator.clipboard.writeText(walletAddress);
+                      toast.info("کپی شد");
+                    }
+                  }}
+                  className="mt-1 flex items-center gap-1 cursor-pointer"
+                >
+                  <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray12">
+                    <IconCopy />
+                  </span>
+                  <span className="text-black0 lg:text-sm text-xs break-all hover:text-blue2">{walletTag}</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
       )}
-    </div>
-  </div>
-)}
 
       <div>
         <Controller
@@ -379,8 +375,16 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
         <div className="mt-4" dir="ltr">
           <Accordion title="TxID راهنمای واریز رمز ارز با ">
             <ul className="list-disc pr-5 space-y-2 text-black1">
-              <li>از صحت آدرس صفحه‌ی پرداخت و بودن در یکی از سایت‌های سامانه‌ی شاپرک مطمئن شوید.</li>
-              <li>مطمئن شوید مبلغ نمایش‌داده‌شده در صفحه‌ی پرداخت درست باشد.</li>
+              <li>ممکن است TxID را کمی با تأخیر دریافت نمایید، لذا پس از انجام تراکنش چند دقیقه صبر کرده و پس از دریافت درخواست را ثبت نمایید.</li>
+              <li>
+                دقت نمایید کیف پولی که ازش استفاده میکنید بهتون لینک تراکنش میدهد یا خیر در صورتی که لینک تراکنش نداد از انتقال به کیف پول برنامه ما جددا خودداری کنید چون امکان
+                رهگیری و اعتبار سنجی وجود نخواهد داشت .
+              </li>
+              <li>
+                چنان چه TxID را به درستی وارد نکرده باشید امکان صحت سنجی وجود نخواهد داشت . دقت نمایید هنگامی که شما انتقال را انجام می دهید، مقداری نیز به عنوان کارمزد توسط سرویس
+                دهنده کیف پول شما کسر می شود، شما می بایست مقداری که به کیف پول برنامه ما انتقال شده را وارد نمایید.
+              </li>
+              <li>از ثبت سفارش بیش از یک بار جددا خودداری فرمایید ، چون سیستم قبول نخواهد کرد .</li>
             </ul>
           </Accordion>
         </div>

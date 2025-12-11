@@ -56,6 +56,7 @@ interface CardToCardTransferProps {
   minDeposit: number;
   maxDeposit: number;
   loadingBankCards?: boolean;
+  refreshFiatData: () => Promise<void>;
 }
 
 export function formatPersianCardNumber(input: string | number): string {
@@ -78,6 +79,7 @@ export function toPersianDigits(input: string | number): string {
   return String(input).replace(/[0-9]/g, (d) => persianMap[+d]);
 }
 
+
 const formatTimer = (seconds: number): string => {
   if (seconds < 0) return "00:00:00";
 
@@ -97,8 +99,8 @@ function calculateFee(amount: number): number {
 }
 
 // --- Component ---
-export default function CardToCardTransfer({ loadingBankCards, cards: initialCards, cardToCardInfo: initialCardToCardInfo }: CardToCardTransferProps) {
-  const amounts = [1, 5, 10, 15]; // میلیون تومان
+export default function CardToCardTransfer({ refreshFiatData, loadingBankCards, cards: initialCards, cardToCardInfo: initialCardToCardInfo }: CardToCardTransferProps) {
+  const amounts = [1, 5, 10, 15];
   const [showSummary, setShowSummary] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isApiLoading, setIsApiLoading] = useState(false);
@@ -172,25 +174,10 @@ export default function CardToCardTransfer({ loadingBankCards, cards: initialCar
       if (response.status) {
         toast.success(response.msg || "درخواست واریز با موفقیت ثبت شد. ✅");
 
-        const updatedResponse = await apiRequest<{
-          status: boolean;
-          cardToCard: CardToCardInfo;
-        }>({
-          url: "/wallets/fiat",
-          method: "GET",
-        });
-        if (updatedResponse.status && updatedResponse.cardToCard.transaction) {
-          setCardToCardData(updatedResponse.cardToCard);
-          reset({ amount: 0, card: 0 });
+        await refreshFiatData(); 
 
-          const transactionDate = new Date(updatedResponse.cardToCard.transaction.date);
-          const endTime = transactionDate.getTime() + 30 * 60 * 1000;
-          const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
-          setTimer(remaining);
-          setShowSummary(remaining > 0);
-        } else {
-          setShowSummary(false);
-        }
+        setShowSummary(true);
+        reset({ amount: 0, card: 0 });
       } else {
         toast.error(response.msg || "خطا: درخواست ثبت نشد. 🚫");
       }
@@ -200,7 +187,7 @@ export default function CardToCardTransfer({ loadingBankCards, cards: initialCar
     } finally {
       // setIsSubmitting(false);
     }
-  }; // --- Transaction summary data ---
+  };
 
   const summarySourceCard = cards.find((c) => c.id === cardToCardData?.transaction?.card);
   const finalSourceCard = showSummary ? summarySourceCard : selectedCard;
@@ -385,10 +372,12 @@ export default function CardToCardTransfer({ loadingBankCards, cards: initialCar
                   <span className="text-gray5 lg:text-lg text-sm">شماره کارت مقصد</span>
                   <div className="flex gap-1 items-center hover:text-blue2">
                     <span className="text-sm lg:text-base">{formatPersianCardNumber(transactionData.toCard)}</span>
-                    <span className="w-5 h-5 icon-wrapper text-gray12"><IconCopy/></span>
+                    <span className="w-5 h-5 icon-wrapper text-gray12">
+                      <IconCopy />
+                    </span>
                   </div>
                 </div>
-                <div 
+                <div
                   onClick={() => {
                     navigator.clipboard.writeText(transactionData.account || "");
                     toast.info(" کپی شد");
