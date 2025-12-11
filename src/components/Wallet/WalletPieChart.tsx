@@ -69,7 +69,7 @@ const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
       <div
-        className="bg-white shadow-md p-2 rounded-md border"
+        className="bg-gray27 text-black1 border border-gray21 shadow-md p-2 rounded-md"
         style={{
           position: "absolute",
           right: "-150px",
@@ -110,7 +110,7 @@ const ListSkeleton = () => (
 
   return (
     <div className="mt-6 flex flex-col items-center  border border-gray21 rounded-xl shadow p-4 overflow-hidden">
-      <h3 className="text-sm lg:text-lg lg:font-bold font-bold mb-4 text-right w-full m-2 lg:px-8 ">ترکیب دارایی‌ها</h3>
+      <h3 className="text-sm lg:text-lg lg:font-bold font-bold mb-4 text-right w-full m-2 lg:px-8 text-black1 ">ترکیب دارایی‌ها</h3>
       <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-1 ">
         {isLoading ? (
           <ChartSkeleton />
@@ -169,7 +169,7 @@ const ListSkeleton = () => (
                     className="w-4 h-4 rounded-full flex-shrink-0"
                     style={{ backgroundColor: gradientColors[index] }}
                   ></span>
-                  <span className="text-gray-700 font-medium truncate break-words">{item.name}</span>
+                  <span className="text-black1 font-medium truncate break-words">{item.name}</span>
                   <span className="text-gray-500 ml-1 flex-shrink-0">({item.value.toLocaleString()})</span>
                 </div>
               ))}
