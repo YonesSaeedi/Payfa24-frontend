@@ -289,7 +289,7 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
       </div>
 
       {selectedCurrency.id && selectedNetwork && !isDepositCoinsLoading && !walletAddress && (
-        <div className="mb-5 lg:text-sm text-xs  text-red1 ">امکان ثبت تراکنش با TXID در حال حاضر فعال نیست.</div>
+        <div className="mb-5 lg:text-sm text-xs text-red1 lg:py-3 py-2 px-2 rounded-md border border-red1 bg-red2"> ولتی برای TXId این ارز وجود نداره و در حال حاضر غیر فعال است.</div>
       )}
 
       {walletAddress && (

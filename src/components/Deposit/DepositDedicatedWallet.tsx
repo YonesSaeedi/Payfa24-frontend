@@ -120,12 +120,7 @@ useEffect(() => {
 
       const existingWallet = wallets.find((w) => w.id_coin === selectedCurrency.id && w.id_net === networkIdNum);
 
-      console.log("Checking for existing address:", {
-        id_coin: selectedCurrency.id,
-        id_net: networkIdNum,
-        walletsCount: wallets.length,
-        existingWallet,
-      });
+
 
       if (existingWallet?.address) {
         // آدرس وجود داره - فوراً نمایش بده
@@ -195,12 +190,9 @@ const handleCreateWallet = async () => {
     const existing = wallets.find((w) => w.id_coin === selectedCurrency.id && w.id_net === networkIdNum && !!w.address);
 
     if (existing) {
-      console.log("Auto-setting address from wallets update:", existing.address);
       setWalletAddress(existing.address);
       setWalletTag(existing.address_tag || "");
-    } else {
-      // console.log("No wallet found for coin", selectedCurrency.id, "net", networkIdNum);
-    }
+    } 
   }, [wallets, selectedCurrency?.id, selectedNetworkId, walletAddress]);
 
   // حالت‌های مختلف UI

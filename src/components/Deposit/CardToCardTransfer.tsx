@@ -79,6 +79,7 @@ export function toPersianDigits(input: string | number): string {
   return String(input).replace(/[0-9]/g, (d) => persianMap[+d]);
 }
 
+
 const formatTimer = (seconds: number): string => {
   if (seconds < 0) return "00:00:00";
 
