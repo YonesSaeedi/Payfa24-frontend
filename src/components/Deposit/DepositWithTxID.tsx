@@ -58,6 +58,7 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
   const selectedNetwork = watch("network");
   const txidValue = watch("txid");
   const isButtonActive = !!selectedCurrency.symbol && !!selectedNetwork && !!txidValue;
+  const [walletTag, setWalletTag] = useState<string | null>(null);
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
@@ -121,6 +122,7 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
     const wallet = walletsTxid.find((w) => w.id_coin === selectedCurrency.id && w.id_net === Number(selectedNetwork));
 
     setWalletAddress(wallet?.address || null);
+     setWalletTag(wallet?.address_tag || null);
   }, [selectedCurrency, selectedNetwork, walletsTxid]);
 
   const openModalFromChild = () => {
@@ -166,6 +168,7 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
 
     const wallet = walletsTxid.find((w) => w.id_coin === selectedCurrency.id && w.id_net === Number(selectedNetwork));
     setWalletAddress(wallet?.address || null);
+     setWalletTag(wallet?.address_tag || null); 
   }, [selectedCurrency.id, selectedNetwork, walletsTxid]);
 
   return (
@@ -293,31 +296,55 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
       )}
 
 
-      {walletAddress && (
-        <div className="mb-10">
-          <div className="rounded-lg border border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
-            <QRCode value={walletAddress} size={128} bgColor={theme === "dark" ? "#000000" : "#FFFFFF"} fgColor={theme === "dark" ? "#FFFFFF" : "#000000"} />
-            <div className="w-full items-center flex justify-between">
-              <span className="text-gray5 text-xs lg:text-sm w-2/4 lg:w-1/5">آدرس کیف پول</span>
-              <div
-                dir="ltr"
-                onClick={() => {
-                  if (walletAddress) {
-                    navigator.clipboard.writeText(walletAddress);
-                    toast.info("کپی شد");
-                  }
-                }}
-                className="mt-1 flex items-center gap-1 cursor-pointer"
-              >
-                <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray12">
-                  <IconCopy />
-                </span>
-                <span className="text-black0 lg:text-sm text-xs break-all hover:text-blue2">{walletAddress}</span>
-              </div>
-            </div>
-          </div>
+{walletAddress && (
+  <div className="mb-10">
+    <div className="rounded-lg border border-gray19 py-6 px-4 flex flex-col justify-center items-center gap-6">
+      <QRCode value={walletAddress} size={128} bgColor={theme === "dark" ? "#000000" : "#FFFFFF"} fgColor={theme === "dark" ? "#FFFFFF" : "#000000"} />
+      
+      {/* آدرس کیف پول */}
+      <div className="w-full items-center flex justify-between">
+        <span className="text-gray5 text-xs lg:text-sm w-2/4 lg:w-2/4 xl:w-1/4 ">آدرس کیف پول</span>
+        <div
+          dir="ltr"
+          onClick={() => {
+            if (walletAddress) {
+              navigator.clipboard.writeText(walletAddress);
+              toast.info("کپی شد");
+            }
+          }}
+          className="mt-1 flex items-center gap-1 cursor-pointer"
+        >
+          <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray12">
+            <IconCopy />
+          </span>
+          <span className="text-black0 lg:text-sm text-xs break-all hover:text-blue2">{walletAddress}</span>
         </div>
+      </div>
+
+      {/* نمایش Tag (اگر وجود داشته باشد) */}
+      {walletTag && (
+          <div className="w-full items-center flex justify-between">
+        <span className="text-gray5 text-xs lg:text-sm w-2/4 lg:w-1/5">تگ</span>
+        <div
+          dir="ltr"
+          onClick={() => {
+            if (walletAddress) {
+              navigator.clipboard.writeText(walletAddress);
+              toast.info("کپی شد");
+            }
+          }}
+          className="mt-1 flex items-center gap-1 cursor-pointer"
+        >
+          <span className="icon-wrapper lg:w-5 lg:h-5 w-4 h-4 text-gray12">
+            <IconCopy />
+          </span>
+          <span className="text-black0 lg:text-sm text-xs break-all hover:text-blue2">{walletTag}</span>
+        </div>
+      </div>
       )}
+    </div>
+  </div>
+)}
 
       <div>
         <Controller

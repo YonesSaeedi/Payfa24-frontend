@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react"; // useRef و useCallback اضافه شد
 import HeaderLayout from "../../layouts/HeaderLayout";
 import DepositLayout from "./DepositLayout";
 import DepositForm from "../../components/Deposit/DepositForm";
@@ -133,6 +133,7 @@ export type {
   DepositPageProps,
   Wallet,
 };
+
 export default function DepositPage({ selected = "gateway" }: DepositPageProps) {
   const [depositNetworks, setDepositNetworks] = useState<[]>([]);
   const [depositWalletsTxid, setDepositWalletsTxid] = useState<[]>([]);
@@ -165,9 +166,12 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
   const [isCreatingIdentifier, setIsCreatingIdentifier] = useState(false);
   const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoItem | null>(null);
-  const [loadingBankCards, setLoadingBankCards] = useState(true); // اضافه کن
-
+  const [loadingBankCards, setLoadingBankCards] = useState(true);
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  
+  const hasFetchedCryptoData = useRef(false);
+  const hasFetchedFiatData = useRef(false);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const type = params.get("type");
@@ -193,13 +197,16 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   }, [location.search]);
 
-  // این تابع رو جایگزین کن (دقیقاً همین!)
-const refreshData = async () => {
+
+const refreshData = useCallback(async () => {
   try {
-    const res = await apiRequest<any>({ url: "/wallets/crypto/deposit", method: "GET" });
+    const res = await apiRequest<any>({ 
+      url: "/wallets/crypto/deposit", 
+      method: "GET" 
+    });
     
-    // آپدیت لیست ارزها (coins)
     const depositCoins = res?.coins ?? [];
+    const walletsData = res?.wallets ?? [];
     const infoCoins = generalInfo?.cryptocurrency ?? [];
     
     const merged = depositCoins.map((coin: any) => {
@@ -221,120 +228,121 @@ const refreshData = async () => {
 
     setCryptoListData(merged);
     setDepositNetworks(res?.networks ?? []);
-    setDepositWalletsTxid(res?.wallets_txid ?? []); 
-    setWallets(res?.wallets ?? []); // این مهمه!
+    setDepositWalletsTxid(res?.wallets_txid ?? []);
+    setWallets(walletsData);
     
-    console.log("New wallets list:", res?.wallets);
-    console.log("Total wallets found:", res?.wallets?.length || 0);
-
   } catch (err) {
     console.error("خطا در رفرش داده‌های واریز", err);
   }
-};
-
-  useEffect(() => {
-    const fetchFiatData = async () => {
-      try {
-        setLoadingBankCards(true); // شروع لودینگ
-        const response = await apiRequest<WalletFiatData>({
-          url: "/wallets/fiat",
-          method: "GET",
-        });
-        setFiatData(response);
-        setDepositMethods(response.depositMethods);
-
-        if (response.deposit_id || response.list_deposit_id) {
-          setIdentifierData({
-            destination_bank: response.deposit_id?.destination_bank || "",
-            destination_owner_name: response.deposit_id?.destination_owner_name || "",
-            destination_iban: response.deposit_id?.destination_iban || "",
-            destination_account_number: response.deposit_id?.destination_account_number || "",
-            deposit_id: response.deposit_id?.deposit_id || "",
-            list_deposit_id: response.list_deposit_id,
-            // ListCard:response.receipt?.list_cards?.
-          });
-        }
-      } catch (err: any) {
-        toast.error("خطا در بارگذاری اطلاعات واریز");
-      } finally {
-        setLoadingBankCards(false); // پایان لودینگ — مهم!
-      }
-    };
-    fetchFiatData();
-  }, []);
-
-  useEffect(() => {
-    setIsDepositCoinsLoading(true);
-    const fetchCryptoData = async () => {
-      setIsDepositCoinsLoading(true);
-      try {
-        const res = await apiRequest<any>({ url: "/wallets/crypto/deposit", method: "GET" });
-        const depositCoins = res?.coins ?? [];
-        const walletsData = res?.wallets ?? [];
-        setWallets(walletsData);
-        const infoCoins = generalInfo?.cryptocurrency ?? [];
-        const merged = depositCoins.map((coin: any) => {
-          const info = infoCoins.find((i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase());
-          return {
-            ...info,
-            id: coin.id,
-            symbol: coin.symbol || "UNK",
-            name: info?.locale?.fa?.name || coin.symbol || "نام ناشناس",
-            icon: info?.icon || "",
-            balance: coin.balance || "0",
-            network: coin.network || [],
-            isFont: info?.isFont || false,
-            color: info?.color || "#000",
-            priceBuy: coin.price || info?.priceBuy || "0",
-          } as CryptoItem & { id: number; network: any[] };
-        });
-
-        setCryptoListData(merged);
-        setDepositNetworks(res?.networks ?? []);
-        setDepositWalletsTxid(res?.wallets_txid ?? []);
-
-        // این قسمت مهمه: اولین ارز رو به عنوان پیش‌فرض انتخاب کن
-        if (!selectedCrypto && merged.length > 0) {
-          setSelectedCrypto(merged[0] as CryptoItem);
-        }
-      } catch (err) {
-        console.error(err);
-        toast.error("خطا در بارگذاری لیست ارزها");
-      } finally {
-        setIsDepositCoinsLoading(false);
-      }
-    };
-
-    fetchCryptoData();
-  }, [generalInfo, cryptoListData.length]);
-  // تابع باز کردن مدال مشترک
-
-  const handleCreateIdentifier = async (cardId: number) => {
-    setIsCreatingIdentifier(true);
+}, [generalInfo]);
+useEffect(() => {
+  if (hasFetchedFiatData.current) return;
+  
+  const fetchFiatData = async () => {
     try {
-      const res = await apiRequest<DepositIdentifierResponse, { id: number }>({
-        url: "/wallets/fiat/deposit/gateway-id",
-        method: "POST",
-        data: { id: cardId },
+      setLoadingBankCards(true);
+      const response = await apiRequest<WalletFiatData>({
+        url: "/wallets/fiat",
+        method: "GET",
+      });
+      setFiatData(response);
+      setDepositMethods(response.depositMethods);
+
+      if (response.deposit_id || response.list_deposit_id) {
+        setIdentifierData({
+          destination_bank: response.deposit_id?.destination_bank || "",
+          destination_owner_name: response.deposit_id?.destination_owner_name || "",
+          destination_iban: response.deposit_id?.destination_iban || "",
+          destination_account_number: response.deposit_id?.destination_account_number || "",
+          deposit_id: response.deposit_id?.deposit_id || "",
+          list_deposit_id: response.list_deposit_id,
+        });
+      }
+      
+      hasFetchedFiatData.current = true;
+    } catch (err: any) {
+      toast.error("خطا در بارگذاری اطلاعات واریز");
+    } finally {
+      setLoadingBankCards(false);
+    }
+  };
+  fetchFiatData();
+}, []);
+
+  useEffect(() => {
+  if (hasFetchedCryptoData.current || !generalInfo) return;
+  
+  const fetchCryptoData = async () => {
+    setIsDepositCoinsLoading(true);
+    try {
+      const res = await apiRequest<any>({ url: "/wallets/crypto/deposit", method: "GET" });
+      
+      const depositCoins = res?.coins ?? [];
+      const walletsData = res?.wallets ?? [];
+      setWallets(walletsData);
+      
+      const infoCoins = generalInfo?.cryptocurrency ?? [];
+      const merged = depositCoins.map((coin: any) => {
+        const info = infoCoins.find((i: any) => i.symbol.toLowerCase() === coin.symbol.toLowerCase());
+        return {
+          ...info,
+          id: coin.id,
+          symbol: coin.symbol || "UNK",
+          name: info?.locale?.fa?.name || coin.symbol || "نام ناشناس",
+          icon: info?.icon || "",
+          balance: coin.balance || "0",
+          network: coin.network || [],
+          isFont: info?.isFont || false,
+          color: info?.color || "#000",
+          priceBuy: coin.price || info?.priceBuy || "0",
+        } as CryptoItem & { id: number; network: any[] };
       });
 
-      const data = res.deposit_id || res;
-      if (typeof data === "object" && data !== null && "deposit_id" in data && data.deposit_id !== undefined && data.deposit_id !== null) {
-        setIdentifierData(data as DepositIdentifierResponse);
-        toast.success("شناسه واریز ساخته شد");
-      } else {
-        setIdentifierData(null);
-        toast.success("شناسه واریز ساخته شد");
+      setCryptoListData(merged);
+      setDepositNetworks(res?.networks ?? []);
+      setDepositWalletsTxid(res?.wallets_txid ?? []);
+
+      if (!selectedCrypto && merged.length > 0) {
+        setSelectedCrypto(merged[0] as CryptoItem);
       }
-    } catch (err: any) {
-      toast.error(err.response?.data?.msg || "قبلاً شناسه ساخته شده");
+      
+      hasFetchedCryptoData.current = true;
+    } catch (err) {
+      console.error(err);
+      toast.error("خطا در بارگذاری لیست ارزها");
     } finally {
-      setIsCreatingIdentifier(false);
+      setIsDepositCoinsLoading(false);
     }
   };
 
+  fetchCryptoData();
+}, [generalInfo]);
+ const handleCreateIdentifier = useCallback(async (cardId: number) => {
+  setIsCreatingIdentifier(true);
+  try {
+    const res = await apiRequest<DepositIdentifierResponse, { id: number }>({
+      url: "/wallets/fiat/deposit/gateway-id",
+      method: "POST",
+      data: { id: cardId },
+    });
+
+    const data = res.deposit_id || res;
+    if (typeof data === "object" && data !== null && "deposit_id" in data && data.deposit_id !== undefined && data.deposit_id !== null) {
+      setIdentifierData(data as DepositIdentifierResponse);
+      toast.success("شناسه واریز ساخته شد");
+    } else {
+      setIdentifierData(null);
+      toast.success("شناسه واریز ساخته شد");
+    }
+  } catch (err: any) {
+    toast.error(err.response?.data?.msg || "قبلاً شناسه ساخته شده");
+  } finally {
+    setIsCreatingIdentifier(false);
+  }
+}, []);
+
   const handleStart = () => setStarted(true);
-  // این فانکشن رو قبل از return بذار
+  
   const isMethodisHidden = (method: keyof WalletFiatData["depositMethods"]) => {
     return depositMethods?.[method]?.isHidden !== true;
   };
@@ -342,6 +350,7 @@ const refreshData = async () => {
   const isMethodDisabled = (method: keyof WalletFiatData["depositMethods"]) => {
     return depositMethods?.[method]?.isDisable === true;
   };
+  
   const depositFormMessages = [
     "تاکید می‌شود که از دریافت وجه ریالی از افراد ناشناس و انتقال رمزارز به آنها خودداری نمایید، چراکه درصورت بروز هرگونه مشکل احتمالی، مسئولیت قضایی ناشی از این امر به عهده کاربر است و ارز هشت مسئولیتی در این زمینه ندارد.",
     "جهت واریز وجه، حتما باید از کارت‌های بانکی به نام خودتان که در بخش کاربری ثبت و تایید شده است، استفاده نمایید.",
@@ -416,13 +425,16 @@ const refreshData = async () => {
       IconMore: <IconArrowRight />,
     },
   ];
+  
   const openCryptoModal = () => {
     setIsCryptoListModalOpen(true);
   };
+  
   const handleCryptoSelect = (crypto: CryptoItem) => {
     setSelectedCrypto(crypto);
     setIsCryptoListModalOpen(false);
   };
+  
   const renderStep = () => {
     switch (selectedOption) {
       case "closeDeal":
@@ -457,7 +469,6 @@ const refreshData = async () => {
             selectedCrypto={selectedCrypto}
             cryptoDepositData={cryptoListData}
             networks={depositNetworks}
-            // walletsTxid={depositWalletsTxid}
             isDepositCoinsLoading={isDepositCoinsLoading}
             onRefreshData={refreshData}
             wallets={wallets}
@@ -478,25 +489,24 @@ const refreshData = async () => {
         return <DepositForm minDeposit={minDeposit} maxDeposit={maxDeposit} />;
     }
   };
-  //  انتخاب ارز از روی URL
-useEffect(() => {
-  if (!cryptoListData || cryptoListData.length === 0) return;
+  
+  useEffect(() => {
+    if (!cryptoListData || cryptoListData.length === 0) return;
 
-  const params = new URLSearchParams(location.search);
-  const coinSymbol = params.get("coin");
+    const params = new URLSearchParams(location.search);
+    const coinSymbol = params.get("coin");
 
-  if (coinSymbol) {
-    const found = cryptoListData.find(
-      (c) => c.symbol.toLowerCase() === coinSymbol.toLowerCase()
-    );
+    if (coinSymbol) {
+      const found = cryptoListData.find(
+        (c) => c.symbol.toLowerCase() === coinSymbol.toLowerCase()
+      );
 
-    if (found) {
-      setSelectedCrypto(found);
-      return;
+      if (found) {
+        setSelectedCrypto(found);
+        return;
+      }
     }
-  }
-}, [location.search, cryptoListData]);
-
+  }, [location.search, cryptoListData]);
 
   return (
     <HeaderLayout>
@@ -524,7 +534,6 @@ useEffect(() => {
                     <div className="flex flex-col gap-1">
                       <h2 className={`font-medium flex items-center gap-2 lg:text-base xl:text-lg   ${disabled ? "text-gray5" : "text-black0"}`}>
                         {option.Title}
-                        {/* {disabled && <span className="text-xs  text-gray5">(به زودی)</span>} */}
                       </h2>
                       <p className="text-sm text-gray5">{option.description}</p>
                     </div>

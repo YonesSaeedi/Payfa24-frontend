@@ -72,7 +72,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
         className={`
           flex items-center justify-between w-full px-4 lg:h-[56px] h-[48px] rounded-lg
           lg:bg-gray43
-          ${disabled ? "border border-gray-300 text-gray-400 cursor-pointer focus:border-gray-300 focus:ring-0" : isOpen ? "border border-blue2" : "border border-gray12"}
+          ${disabled ? "border border-gray12 text-gray-400 cursor-pointer focus:border-gray-300 focus:ring-0" : isOpen ? "border border-blue2" : "border border-gray12"}
         `}
       >
         <span className={`flex items-center gap-3 w-full text-xs lg:text-sm ${placeholderClasses || placeholderColor}`}>

@@ -3,7 +3,6 @@ import UploadImage from "../../../../assets/icons/authentication/UploadImage";
 import IconAlert from "../../../../assets/icons/Login/IconAlert";
 import { toast } from "react-toastify";
 import StepperComponent from "../Stepper";
-import ArrowLeftIcon from "../../../../assets/icons/Home/CryptoTableIcon/ArrowLeftIcon";
 
 type IdentificationDocumentProps = {
   handleUploadImageFiles: (key: "idCardImageFile" | "identityVerifyImageFile", imageFile: File | undefined) => void;
@@ -45,12 +44,7 @@ export default function IdentificationDocument({ handleUploadImageFiles, setStep
     <div className="w-full">
       <form className="lg:bg-gray9 lg:rounded-2xl lg:px-8 w-full">
         <div className="flex flex-col text-right">
-          <div className="relative flex items-center w-full justify-center sm:hidden mb-7 mt-5 text-black0">
-            <span className="text-base font-medium text-center">احراز هویت پیشرفته</span>
-            <span className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 rotate-180 ">
-              <ArrowLeftIcon />
-            </span>
-          </div>
+    
 
           <StepperComponent currentStep={0} isAdvance={true} />
           <p className="lg:text-xl text-sm font-medium text-black0 lg:mt mb-5">لطفا مدرک شناسایی خود را بارگذاری کنید</p>

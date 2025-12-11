@@ -31,11 +31,6 @@ interface Network {
 
 
 
-interface CreateWalletResponse {
-  status: boolean;
-  msg?: string;
-
-}
 interface CoinNetwork {
   id: number;
   deposit_min: string;
@@ -75,41 +70,42 @@ export default function DepositDedicatedWallet({
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
 
-  // وقتی ارز عوض شد
-  useEffect(() => {
-    if (selectedCrypto) {
-      const newCurrency = {
-        id: selectedCrypto.id,
-        symbol: selectedCrypto.symbol,
-        name: selectedCrypto.locale?.fa?.name || selectedCrypto.symbol,
-        balance: selectedCrypto.balance,
-        network: (selectedCrypto as any).network || [],
-      };
+useEffect(() => {
+  if (selectedCrypto) {
+    const newCurrency = {
+      id: selectedCrypto.id,
+      symbol: selectedCrypto.symbol,
+      name: selectedCrypto.locale?.fa?.name || selectedCrypto.symbol,
+      balance: selectedCrypto.balance,
+      network: (selectedCrypto as any).network || [],
+    };
 
+    if (selectedCurrency.id !== selectedCrypto.id) {
       setSelectedCurrency(newCurrency);
       setValue("currency", selectedCrypto.symbol);
-      setSelectedNetworkId("");
+      setSelectedNetworkId(""); 
       setValue("network", "");
       setWalletAddress("");
       setWalletTag("");
-      const options = (newCurrency.network || []).map((net: any) => {
-        const networkInfo = allNetworks.find((n) => n.id === net.id);
-
-        const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || `شبکه ${net.id}`;
-
-        const networkSymbol = networkInfo?.name || ""; // مثل ERC20 , TRC20
-
-        return {
-          value: net.id.toString(),
-          label: `${networkName} (${networkSymbol})`,
-        };
-      });
-
-      setNetworkOptions(options);
+    } else {
+      setSelectedCurrency(newCurrency);
+      setValue("currency", selectedCrypto.symbol);
     }
-  }, [selectedCrypto, allNetworks, setValue]);
 
-  // وقتی شبکه عوض شد - بررسی کن آیا آدرس از قبل وجود داره
+    const options = (newCurrency.network || []).map((net: any) => {
+      const networkInfo = allNetworks.find((n) => n.id === net.id);
+      const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || `شبکه ${net.id}`;
+      const networkSymbol = networkInfo?.name || "";
+
+      return {
+        value: net.id.toString(),
+        label: `${networkName} (${networkSymbol})`,
+      };
+    });
+
+    setNetworkOptions(options);
+  }
+}, [selectedCrypto, allNetworks, setValue]);
   useEffect(() => {
     if (selectedCurrency.id && selectedNetworkId) {
       checkForExistingAddress();
@@ -122,7 +118,6 @@ export default function DepositDedicatedWallet({
     setTimeout(() => {
       const networkIdNum = Number(selectedNetworkId);
 
-      // بررسی آیا آدرس از قبل وجود داره
       const existingWallet = wallets.find((w) => w.id_coin === selectedCurrency.id && w.id_net === networkIdNum);
 
       console.log("Checking for existing address:", {
@@ -143,53 +138,69 @@ export default function DepositDedicatedWallet({
     }, 300);
   };
 
-  const handleCreateWallet = async () => {
-    if (!selectedCurrency.id || !selectedNetworkId || !selectedCurrency.symbol) {
-      toast.error("لطفاً ارز و شبکه را انتخاب کنید");
-      return;
-    }
+const handleCreateWallet = async () => {
+  if (!selectedCurrency.id || !selectedNetworkId || !selectedCurrency.symbol) {
+    toast.error("لطفاً ارز و شبکه را انتخاب کنید");
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      const networkIdNum = Number(selectedNetworkId);
+  try {
+    const networkIdNum = Number(selectedNetworkId);
 
-      const response = await apiRequest<CreateWalletResponse >({
-        url: "/wallets/crypto/deposit/create-wallet",
-        method: "POST",
-        data: {
-          symbol: selectedCurrency.symbol,
-          network: networkIdNum,
-        }as any,
-      });
+    const response = await apiRequest<any>({
+      url: "/wallets/crypto/deposit/create-wallet",
+      method: "POST",
+      data: {
+        symbol: selectedCurrency.symbol,
+        network: networkIdNum,
+      } as any,
+    });
 
-      if (response.status === true) {
-        toast.success(response.msg || "آدرس ساخته شد");
-
+    if (response.status === true) {
+      toast.success(response.msg || "آدرس ساخته شد");
+      
+      if (response.wallet) {
+        // const newWallet: Wallet = {
+        //   address: response.wallet.address,
+        //   address_tag: response.wallet.address_tag || null,
+        //   id_coin: selectedCurrency.id!,
+        //   id_net: networkIdNum,
+        // };
+        
+        // مستقیماً آدرس را ست کن
+        setWalletAddress(response.wallet.address);
+        setWalletTag(response.wallet.address_tag || "");
+        
         if (onRefreshData) {
-          await onRefreshData(); // فقط این کافی است
+          setTimeout(() => {
+            onRefreshData();
+          }, 500);
         }
       } else {
-        toast.error(response.msg || "خطا در ساخت آدرس");
+        if (onRefreshData) {
+          await onRefreshData();
+        }
       }
-    } catch (err: any) {
-      toast.error("خطا در ساخت آدرس");
-    } finally {
-      setIsLoading(false);
+    } else {
+      toast.error(response.msg || "خطا در ساخت آدرس");
     }
-  };
+  } catch (err: any) {
+    toast.error("در حال حاضر ادرسی وجود ندارد.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  // وقتی wallets آپدیت شد، چک کن آیا آدرس جدید اومده
   useEffect(() => {
     console.log("wallets updated in child, length:", wallets?.length);
 
-    // اگر ارزی انتخاب نشده یا شبکه انتخاب نشده یا آدرس قبلاً ست شده، کاری نکن
     if (!selectedCurrency?.id || !selectedNetworkId) return;
     if (walletAddress) return;
 
     const networkIdNum = Number(selectedNetworkId);
 
-    // پیدا کردن والت بر اساس id_coin و id_net (مطابق ساختار والد)
     const existing = wallets.find((w) => w.id_coin === selectedCurrency.id && w.id_net === networkIdNum && !!w.address);
 
     if (existing) {
