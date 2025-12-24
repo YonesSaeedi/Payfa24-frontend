@@ -35,7 +35,7 @@ jobs:
             BRANCH="dev"
           fi
 
-          ssh -o StrictHostKeyChecking=no -p 22 root@45.159.114.231 "
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "
             set -e
             cd ${TARGET_DIR}
 
