@@ -22,39 +22,38 @@ jobs:
         run: |
           set -e
 
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            BRANCH="main"
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
-            CONTAINER_NAME="react-main"
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            BRANCH=main
+            TARGET_DIR=/home/payfa24/domains/payfa24.org/panel/main
+            CONTAINER_NAME=react-main
             PORT=3200
-          elif [[ "${GITHUB_REF}" == "refs/heads/dev" ]]; then
-            BRANCH="dev"
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
-            CONTAINER_NAME="react-dev"
+          elif [[ "$GITHUB_REF" == "refs/heads/dev" ]]; then
+            BRANCH=dev
+            TARGET_DIR=/home/payfa24/domains/payfa24.org/panel/dev
+            CONTAINER_NAME=react-dev
             PORT=3300
           else
             exit 0
           fi
 
-          ssh -T -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 << EOF
-            set -e
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 << EOF
+          set -e
+          cd ${TARGET_DIR}
 
-            cd ${TARGET_DIR}
+          git fetch origin
+          git reset --hard origin/${BRANCH}
+          git clean -fdx
 
-            git fetch origin
-            git reset --hard origin/${BRANCH}
-            git clean -fdx
+          docker stop ${CONTAINER_NAME} 2>/dev/null || true
+          docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
-            docker stop ${CONTAINER_NAME} 2>/dev/null || true
-            docker rm ${CONTAINER_NAME} 2>/dev/null || true
+          docker build --no-cache -t ${CONTAINER_NAME}:latest .
 
-            docker build --no-cache -t ${CONTAINER_NAME}:latest .
+          docker run -d \
+            --name ${CONTAINER_NAME} \
+            -p ${PORT}:80 \
+            --restart unless-stopped \
+            ${CONTAINER_NAME}:latest
 
-            docker run -d \
-              --name ${CONTAINER_NAME} \
-              -p ${PORT}:80 \
-              --restart unless-stopped \
-              ${CONTAINER_NAME}:latest
-
-            docker image prune -f
+          docker image prune -f
           EOF
