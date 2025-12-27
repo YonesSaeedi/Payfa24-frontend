@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # آپدیت به آخرین نسخه
+        uses: actions/checkout@v4
 
       - name: Install SSH key
-        uses: webfactory/ssh-agent@v0.8.0 # آپدیت نسخه
+        uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
@@ -45,14 +45,12 @@ jobs:
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
-            echo 'Building new Docker image with BuildKit...'
-            # فعال‌سازی BuildKit برای مدیریت بهتر رم و سرعت بیشتر
-            export DOCKER_BUILDKIT=1
+            echo 'Building new Docker image...'
+            # غیرفعال کردن BuildKit برای سازگاری با نسخه قدیمی داکر سرور
+            export DOCKER_BUILDKIT=0
             
-            # حذف --no-cache برای استفاده از کش و کاهش فشار به سرور
-            # اگر حتما نیاز به بیلد تازه دارید، بگذارید بماند اما رم بیشتری می‌خواهد
-            docker build \
-              -t ${CONTAINER_NAME} .
+            # بیلد کردن بدون --no-cache برای استفاده از لایه‌های قبلی و کاهش مصرف منابع
+            docker build -t ${CONTAINER_NAME} .
 
             echo 'Starting new container...'
             docker run -d \
@@ -61,7 +59,7 @@ jobs:
               --restart unless-stopped \
               ${CONTAINER_NAME}
 
-            echo 'Cleaning up old images...'
+            echo 'Cleaning up dangling images...'
             docker image prune -f
 
             echo 'Deployment completed successfully!'
