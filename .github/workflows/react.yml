@@ -23,35 +23,21 @@ jobs:
       - name: Deploy to Server
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
-            CONTAINER_NAME="react-main"
-            PORT=3200
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/public_html/panel"
           else
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
-            CONTAINER_NAME="react-dev"
-            PORT=3300
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/public_html/dev-panel"
           fi
 
-          # ۱. ایجاد پوشه
+          # ۱. ایجاد پوشه در صورت عدم وجود
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
-          
-          # ۲. انتقال فایل‌های بیلد شده + فایل nginx.conf خودت
+
+          # ۲. پاکسازی فایل‌های قدیمی (به جز پوشه .git)
+          # این دستور تمام فایل‌ها و پوشه‌های مخفی و غیرمخفی را به جز .git حذف می‌کند
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "find ${TARGET_DIR} -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +"
+
+          # ۳. انتقال فایل‌های جدید بیلد شده
           scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
-          scp -P 3031 nginx.conf root@45.159.114.231:${TARGET_DIR}/nginx.conf
 
-          # ۳. اجرای کانتینر با متصل کردن فایل تنظیمات
-          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "
-            docker stop ${CONTAINER_NAME} 2>/dev/null || true
-            docker rm ${CONTAINER_NAME} 2>/dev/null || true
-
-            chmod -R 755 ${TARGET_DIR}
-
-            echo 'Starting container with your custom nginx.conf...'
-            docker run -d \
-              --name ${CONTAINER_NAME} \
-              -p ${PORT}:80 \
-              -v ${TARGET_DIR}:/usr/share/nginx/html:ro \
-              -v ${TARGET_DIR}/nginx.conf:/etc/nginx/conf.d/default.conf:ro \
-              --restart unless-stopped \
-              nginx:alpine
-          "
+          # ۴. اصلاح مالکیت فایل‌ها برای جلوگیری از تداخل با دایرکت ادمین
+          # جایگزین کردن payfa24 با نام کاربری واقعی دایرکت ادمین شما
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "chown -R payfa24:payfa24 ${TARGET_DIR} && chmod -R 755 ${TARGET_DIR}"
