@@ -32,23 +32,26 @@ jobs:
             PORT=3300
           fi
 
-          # ایجاد پوشه و انتقال فایل‌ها
+          # ۱. ایجاد پوشه
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
+          
+          # ۲. انتقال فایل‌های بیلد شده + فایل nginx.conf خودت
           scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
+          scp -P 3031 nginx.conf root@45.159.114.231:${TARGET_DIR}/nginx.conf
 
-          # اجرای کانتینر
+          # ۳. اجرای کانتینر با متصل کردن فایل تنظیمات
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
-            # تغییر دسترسی فایل‌ها در خودِ سرور لینوکس قبل از وصل کردن به داکر
             chmod -R 755 ${TARGET_DIR}
 
-            echo 'Starting container on port ${PORT}...'
+            echo 'Starting container with your custom nginx.conf...'
             docker run -d \
               --name ${CONTAINER_NAME} \
               -p ${PORT}:80 \
-              -v ${TARGET_DIR}:/usr/share/nginx/html \
+              -v ${TARGET_DIR}:/usr/share/nginx/html:ro \
+              -v ${TARGET_DIR}/nginx.conf:/etc/nginx/conf.d/default.conf:ro \
               --restart unless-stopped \
               nginx:alpine
           "
