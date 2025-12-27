@@ -32,40 +32,26 @@ jobs:
             PORT=3300
             BRANCH="dev"
           fi
-
-          # ابتدا فایل‌ها را کپی کنید
-          echo "Copying files to server..."
-          scp -o StrictHostKeyChecking=no -o ConnectTimeout=30 -r -P 3031 \
-            ./* root@45.159.114.231:${TARGET_DIR}/
-
-          # سپس دستورات کوتاه‌تر را اجرا کنید
+      
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ServerAliveInterval=60 -p 3031 root@45.159.114.231 "
             set -e
             cd ${TARGET_DIR}
             
-            # حذف node_modules قدیمی برای جلوگیری از conflicts
-            rm -rf node_modules package-lock.json
+            echo 'Updating code from Git...'
+            git fetch origin
+            git reset --hard origin/${BRANCH}
+            
+            # فقط فایل‌های git-ignored را پاک کنید، نه فایل‌های ضروری
+            git clean -fd
             
             echo 'Stopping old container...'
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
             
-            # Build با timeout و در background
-            echo 'Building new Docker image (this may take a while)...'
-            timeout 600 docker build --no-cache -t ${CONTAINER_NAME} . &
-            BUILD_PID=\$!
-            
-            # مانیتور کردن process
-            wait \$BUILD_PID
-            BUILD_EXIT=\$?
-            
-            if [ \$BUILD_EXIT -eq 124 ]; then
-              echo 'Build timed out! Trying with cache...'
-              docker build -t ${CONTAINER_NAME} .
-            elif [ \$BUILD_EXIT -ne 0 ]; then
-              echo 'Build failed!'
-              exit 1
-            fi
+            echo 'Building new Docker image...'
+            docker build \
+              --no-cache \
+              -t ${CONTAINER_NAME} . || { echo 'Docker build failed'; exit 1; }
             
             echo 'Starting new container...'
             docker run -d \
@@ -73,9 +59,6 @@ jobs:
               -p ${PORT}:80 \
               --restart unless-stopped \
               ${CONTAINER_NAME}
-            
-            echo 'Cleaning up...'
-            docker system prune -f --filter \"until=24h\"
             
             echo 'Deployment completed successfully!'
           "
