@@ -2,63 +2,45 @@ name: React Panel Deployment
 
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main, dev]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Install & Build
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
 
       - name: Install SSH key
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to server
+      - name: Deploy to Server
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
-            CONTAINER_NAME="react-main"
             PORT=3200
-            BRANCH="main"
-          elif [ "${GITHUB_REF}" == "refs/heads/dev" ]; then
+          else
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
-            CONTAINER_NAME="react-dev"
             PORT=3300
-            BRANCH="dev"
           fi
 
+          # ایجاد پوشه در سرور اگر وجود ندارد
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
+
+          # انتقال فایل‌های بیلد شده به سرور
+          scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
+
+          # اجرای یک Nginx ساده روی سرور برای نمایش فایل‌ها
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "
-            set -e
-            cd ${TARGET_DIR}
-
-            echo 'Cleaning up code and pulling latest...'
-            git fetch origin
-            git reset --hard origin/${BRANCH}
-            git clean -fd
-
-            echo 'Stopping old container...'
-            docker stop ${CONTAINER_NAME} 2>/dev/null || true
-            docker rm ${CONTAINER_NAME} 2>/dev/null || true
-
-            echo 'Pruning old docker cache to free RAM/Disk...'
-            docker builder prune -f
-            
-            echo 'Building new image...'
-            export DOCKER_BUILDKIT=0
-            docker build -t ${CONTAINER_NAME} .
-
-            echo 'Starting new container...'
-            docker run -d \
-              --name ${CONTAINER_NAME} \
-              -p ${PORT}:80 \
-              --restart unless-stopped \
-              ${CONTAINER_NAME}
-
-            echo 'Final cleanup...'
-            docker image prune -f
+            docker stop react-${GITHUB_REF_NAME} 2>/dev/null || true
+            docker rm react-${GITHUB_REF_NAME} 2>/dev/null || true
+            docker run -d --name react-${GITHUB_REF_NAME} \
+              -v ${TARGET_DIR}:/usr/share/nginx/html:ro \
+              -p ${PORT}:80 --restart unless-stopped nginx:alpine
           "
