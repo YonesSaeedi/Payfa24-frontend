@@ -36,26 +36,29 @@ jobs:
             set -e
             cd ${TARGET_DIR}
 
-            echo 'Cleaning up old files...'
+            echo 'Cleaning up code and pulling latest...'
             git fetch origin
             git reset --hard origin/${BRANCH}
             git clean -fd
 
-            echo 'Stopping and removing old container...'
+            echo 'Stopping old container...'
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
-            echo 'Building new image (Standard Mode)...'
+            echo 'Pruning old docker cache to free RAM/Disk...'
+            docker builder prune -f
+            
+            echo 'Building new image...'
             export DOCKER_BUILDKIT=0
             docker build -t ${CONTAINER_NAME} .
 
-            echo 'Starting container...'
+            echo 'Starting new container...'
             docker run -d \
               --name ${CONTAINER_NAME} \
               -p ${PORT}:80 \
               --restart unless-stopped \
               ${CONTAINER_NAME}
 
-            echo 'Removing unused images...'
+            echo 'Final cleanup...'
             docker image prune -f
           "
