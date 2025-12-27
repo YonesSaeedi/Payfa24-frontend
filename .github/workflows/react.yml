@@ -17,43 +17,47 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy
+      - name: Set variables
         shell: bash
         run: |
-          set -e
-
           if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
-            BRANCH=main
-            TARGET_DIR=/home/payfa24/domains/payfa24.org/panel/main
-            CONTAINER_NAME=react-main
-            PORT=3200
-          elif [[ "$GITHUB_REF" == "refs/heads/dev" ]]; then
-            BRANCH=dev
-            TARGET_DIR=/home/payfa24/domains/payfa24.org/panel/dev
-            CONTAINER_NAME=react-dev
-            PORT=3300
+            echo "BRANCH=main" >> $GITHUB_ENV
+            echo "TARGET_DIR=/home/payfa24/domains/payfa24.org/panel/main" >> $GITHUB_ENV
+            echo "CONTAINER_NAME=react-main" >> $GITHUB_ENV
+            echo "PORT=3200" >> $GITHUB_ENV
           else
-            exit 0
+            echo "BRANCH=dev" >> $GITHUB_ENV
+            echo "TARGET_DIR=/home/payfa24/domains/payfa24.org/panel/dev" >> $GITHUB_ENV
+            echo "CONTAINER_NAME=react-dev" >> $GITHUB_ENV
+            echo "PORT=3300" >> $GITHUB_ENV
           fi
 
+      - name: Deploy to Server
+        shell: bash
+        run: |
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 << EOF
-          set -e
-          cd ${TARGET_DIR}
+            set -e
+            cd \$TARGET_DIR
 
-          git fetch origin
-          git reset --hard origin/${BRANCH}
-          git clean -fdx
+            echo "Updating code"
+            git fetch origin
+            git reset --hard origin/\$BRANCH
+            git clean -fdx
 
-          docker stop ${CONTAINER_NAME} 2>/dev/null || true
-          docker rm ${CONTAINER_NAME} 2>/dev/null || true
+            echo "Stopping old container"
+            docker stop \$CONTAINER_NAME 2>/dev/null || true
+            docker rm \$CONTAINER_NAME 2>/dev/null || true
 
-          docker build --no-cache -t ${CONTAINER_NAME}:latest .
+            echo "Building new Docker image"
+            docker build --no-cache -t \$CONTAINER_NAME:latest .
 
-          docker run -d \
-            --name ${CONTAINER_NAME} \
-            -p ${PORT}:80 \
-            --restart unless-stopped \
-            ${CONTAINER_NAME}:latest
+            echo "Starting container"
+            docker run -d \
+              --name \$CONTAINER_NAME \
+              -p \$PORT:80 \
+              --restart unless-stopped \
+              \$CONTAINER_NAME:latest
 
-          docker image prune -f
+            echo "Cleaning up dangling images"
+            docker image prune -f
           EOF
