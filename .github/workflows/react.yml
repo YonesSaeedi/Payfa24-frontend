@@ -24,23 +24,32 @@ jobs:
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
+            CONTAINER_NAME="react-main"
             PORT=3200
           else
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
+            CONTAINER_NAME="react-dev"
             PORT=3300
           fi
 
-          # ایجاد پوشه در سرور اگر وجود ندارد
+          # ایجاد پوشه و انتقال فایل‌ها
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
-
-          # انتقال فایل‌های بیلد شده به سرور
           scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
 
-          # اجرای یک Nginx ساده روی سرور برای نمایش فایل‌ها
+          # اجرای کانتینر با بررسی سلامت داکر
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "
-            docker stop react-${GITHUB_REF_NAME} 2>/dev/null || true
-            docker rm react-${GITHUB_REF_NAME} 2>/dev/null || true
-            docker run -d --name react-${GITHUB_REF_NAME} \
+            # اگر داکر با iptables مشکل داشت، تلاش برای رفع (اختیاری اما کمک‌کننده)
+            # sudo systemctl restart docker (اگر دسترسی sudo دارید و لازم شد)
+
+            echo 'Removing old container...'
+            docker stop ${CONTAINER_NAME} 2>/dev/null || true
+            docker rm ${CONTAINER_NAME} 2>/dev/null || true
+
+            echo 'Starting new container...'
+            # استفاده از ایمیج آماده nginx برای سبک شدن فرآیند
+            docker run -d --name ${CONTAINER_NAME} \
               -v ${TARGET_DIR}:/usr/share/nginx/html:ro \
-              -p ${PORT}:80 --restart unless-stopped nginx:alpine
+              -p ${PORT}:80 \
+              --restart unless-stopped \
+              nginx:alpine
           "
