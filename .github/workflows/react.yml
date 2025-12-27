@@ -11,11 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup SSH Agent
-        uses: webfactory/ssh-agent@v0.9.0
+      - uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
@@ -24,49 +22,34 @@ jobs:
         run: |
           set -e
 
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            BRANCH="main"
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
-            CONTAINER_NAME="react-main"
-            PORT=3200
-          elif [[ "${GITHUB_REF}" == "refs/heads/dev" ]]; then
-            BRANCH="dev"
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
-            CONTAINER_NAME="react-dev"
-            PORT=3300
-          else
-            echo "Unsupported branch"
-            exit 1
-          fi
+          case "${GITHUB_REF}" in
+            refs/heads/main)
+              BRANCH="main"
+              TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
+              CONTAINER_NAME="react-main"
+              PORT=3200
+              ;;
+            refs/heads/dev)
+              BRANCH="dev"
+              TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
+              CONTAINER_NAME="react-dev"
+              PORT=3300
+              ;;
+            *)
+              exit 0
+              ;;
+          esac
 
-          echo "Deploying branch: ${BRANCH}"
-
-          ssh -T -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 << EOF
+          ssh -T -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 << 'EOF'
             set -e
 
-            cd ${TARGET_DIR}
+            cd '"$TARGET_DIR"'
 
-            echo "Updating code"
             git fetch origin
-            git reset --hard origin/${BRANCH}
+            git reset --hard origin/'"$BRANCH"'
             git clean -fdx
 
-            echo "Stopping old container"
-            docker stop ${CONTAINER_NAME} 2>/dev/null || true
-            docker rm ${CONTAINER_NAME} 2>/dev/null || true
+            docker stop '"$CONTAINER_NAME"' 2>/dev/null || true
+            docker rm '"$CONTAINER_NAME"' 2>/dev/null || true
 
-            echo "Building image"
-            docker build --no-cache -t ${CONTAINER_NAME}:latest .
-
-            echo "Running container"
-            docker run -d \
-              --name ${CONTAINER_NAME} \
-              -p ${PORT}:80 \
-              --restart unless-stopped \
-              ${CONTAINER_NAME}:latest
-
-            echo "Cleanup"
-            docker image prune -f
-
-            echo "Done"
-          EOF
+            docker build --no-cache -t '"$CONTAINER_NAME"':latest .
