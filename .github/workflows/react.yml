@@ -9,63 +9,67 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
-      - name: Install SSH key
-        uses: webfactory/ssh-agent@v0.5.0
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to server
+        shell: bash
         run: |
-          if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
+          set -e
+
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
             CONTAINER_NAME="react-main"
             PORT=3200
-
             BRANCH="main"
 
-          elif [ "${GITHUB_REF}" == "refs/heads/dev" ]; then
+          elif [[ "${GITHUB_REF}" == "refs/heads/dev" ]]; then
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
             CONTAINER_NAME="react-dev"
             PORT=3300
-
             BRANCH="dev"
+
+          else
+            echo "Unsupported branch"
+            exit 1
           fi
 
-          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "
+          echo "Deploying branch: ${BRANCH}"
+
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 << EOF
             set -e
+
+            echo "📂 Moving to project directory"
             cd ${TARGET_DIR}
 
-            echo 'Updating code from Git...'
+            echo "🔄 Updating code from Git"
             git fetch origin
             git reset --hard origin/${BRANCH}
-            git clean -fd -x
+            git clean -fdx
 
-            echo 'Stopping old container...'
+            echo "🛑 Stopping old container (if exists)"
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
-        
+            echo "🐳 Building Docker image"
+            docker build --no-cache -t ${CONTAINER_NAME}:latest .
 
-            echo 'Building new Docker image...'
-            docker build \
-              --no-cache \
-              -t ${CONTAINER_NAME} . || { echo 'Docker build failed'; exit 1; }
-
-            echo 'Starting new container...'
-
+            echo "🚀 Starting new container"
             docker run -d \
               --name ${CONTAINER_NAME} \
               -p ${PORT}:80 \
               --restart unless-stopped \
-              ${CONTAINER_NAME}
+              ${CONTAINER_NAME}:latest
 
+            echo "🧹 Cleaning dangling images"
+            docker image prune -f
 
-            echo 'Cleaning up dangling images...'
-            docker system prune -f
-
-            echo 'Deployment completed successfully!'
-          "
+            echo "✅ Deployment completed successfully"
+          EOF
