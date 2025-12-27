@@ -36,19 +36,19 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
           scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
 
-          # اجرای کانتینر با تنظیمات فیکس شده
+          # اجرای کانتینر
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
+            # تغییر دسترسی فایل‌ها در خودِ سرور لینوکس قبل از وصل کردن به داکر
+            chmod -R 755 ${TARGET_DIR}
+
             echo 'Starting container on port ${PORT}...'
             docker run -d \
               --name ${CONTAINER_NAME} \
-              -p 0.0.0.0:${PORT}:80 \
-              -v ${TARGET_DIR}:/usr/share/nginx/html:ro \
+              -p ${PORT}:80 \
+              -v ${TARGET_DIR}:/usr/share/nginx/html \
               --restart unless-stopped \
               nginx:alpine
-
-            # یک حرکت حیاتی: اصلاح دسترسی فایل‌ها برای Nginx
-            docker exec ${CONTAINER_NAME} chmod -R 755 /usr/share/nginx/html
           "
