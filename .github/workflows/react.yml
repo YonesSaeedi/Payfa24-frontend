@@ -1,26 +1,4 @@
-name: React Panel Deployment
-
-on:
-  push:
-    branches: [main, dev]
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install & Build
-        run: |
-          npm install --legacy-peer-deps
-          npm run build
-
-      - name: Install SSH key
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy to Server
+- name: Deploy to Server
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
@@ -36,20 +14,19 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
           scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
 
-          # اجرای کانتینر با بررسی سلامت داکر
+          # اجرای کانتینر با تنظیمات فیکس شده
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "
-            # اگر داکر با iptables مشکل داشت، تلاش برای رفع (اختیاری اما کمک‌کننده)
-            # sudo systemctl restart docker (اگر دسترسی sudo دارید و لازم شد)
-
-            echo 'Removing old container...'
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
-            echo 'Starting new container...'
-            # استفاده از ایمیج آماده nginx برای سبک شدن فرآیند
-            docker run -d --name ${CONTAINER_NAME} \
+            echo 'Starting container on port ${PORT}...'
+            docker run -d \
+              --name ${CONTAINER_NAME} \
+              -p 0.0.0.0:${PORT}:80 \
               -v ${TARGET_DIR}:/usr/share/nginx/html:ro \
-              -p ${PORT}:80 \
               --restart unless-stopped \
               nginx:alpine
+
+            # یک حرکت حیاتی: اصلاح دسترسی فایل‌ها برای Nginx
+            docker exec ${CONTAINER_NAME} chmod -R 755 /usr/share/nginx/html
           "
