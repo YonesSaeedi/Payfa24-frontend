@@ -36,31 +36,26 @@ jobs:
             set -e
             cd ${TARGET_DIR}
 
-            echo 'Updating code from Git...'
+            echo 'Cleaning up old files...'
             git fetch origin
             git reset --hard origin/${BRANCH}
             git clean -fd
 
-            echo 'Stopping old container...'
+            echo 'Stopping and removing old container...'
             docker stop ${CONTAINER_NAME} 2>/dev/null || true
             docker rm ${CONTAINER_NAME} 2>/dev/null || true
 
-            echo 'Building new Docker image...'
-            # غیرفعال کردن BuildKit برای سازگاری با نسخه قدیمی داکر سرور
+            echo 'Building new image (Standard Mode)...'
             export DOCKER_BUILDKIT=0
-            
-            # بیلد کردن بدون --no-cache برای استفاده از لایه‌های قبلی و کاهش مصرف منابع
             docker build -t ${CONTAINER_NAME} .
 
-            echo 'Starting new container...'
+            echo 'Starting container...'
             docker run -d \
               --name ${CONTAINER_NAME} \
               -p ${PORT}:80 \
               --restart unless-stopped \
               ${CONTAINER_NAME}
 
-            echo 'Cleaning up dangling images...'
+            echo 'Removing unused images...'
             docker image prune -f
-
-            echo 'Deployment completed successfully!'
           "
