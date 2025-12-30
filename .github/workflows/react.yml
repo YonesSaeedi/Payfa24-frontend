@@ -23,9 +23,9 @@ jobs:
       - name: Deploy to Server
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/public_html/panel/main"
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
           else
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/public_html/panel/dev"
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
           fi
 
           # ۱. ایجاد پوشه در صورت عدم وجود
