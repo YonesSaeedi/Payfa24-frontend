@@ -19,6 +19,7 @@ import { AxiosError } from "axios";
 type FormData = {
   email: string;
 };
+
 interface ForgotPasswordResponse {
   status: boolean;
   msg?: string;
@@ -32,7 +33,6 @@ export default function ForgotPasswordPage() {
   const context = useContext(ThemeContext);
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
-
   const navigate = useNavigate();
   const { executeRecaptcha } = useGoogleReCaptcha();
   const schema = getForgotPasswordSchema();
@@ -41,17 +41,22 @@ export default function ForgotPasswordPage() {
   const [otpCode, setOtpCode] = useState("");
   const [contactMethod, setContactMethod] = useState<"phone" | "email">("email");
   const [formData, setFormData] = useState<FormData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+
+  // دو state جداگانه برای لودینگ
+  const [isSubmittingMain, setIsSubmittingMain] = useState(false); // دکمه "ادامه"
+  const [isSubmittingOTP, setIsSubmittingOTP] = useState(false);   // دکمه "تایید" داخل مدال
+
   const [resendTimer, setResendTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
-
   const [disableButton, setDisableButton] = useState(false);
   const [disableTimer, setDisableTimer] = useState(0);
 
-  const { handleSubmit, control, formState: { errors }, getValues } = useForm<FormData>({
+  const { handleSubmit, control, formState: { errors }, getValues, watch } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: { email: "" },
   });
+
+  const emailValue = watch("email");
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const iranMobileRegex = /^09\d{9}$/;
@@ -80,7 +85,7 @@ export default function ForgotPasswordPage() {
     }
   }, []);
 
-  // 🔁 تایمر دکمه
+  // 🔁 تایمر دکمه اصلی
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (disableButton && disableTimer > 0) {
@@ -112,24 +117,21 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = async (data: FormData) => {
     if (!executeRecaptcha) return;
-    setIsLoading(true);
+    setIsSubmittingMain(true);
     try {
       const recaptchaToken = await executeRecaptcha("forgot_password");
       setFormData(data);
       const payload = buildPayload(data.email, recaptchaToken, "");
-
       const response = await apiRequest<ForgotPasswordResponse, Record<string, string>>({
         url: "/auth/forget",
         method: "POST",
         data: payload,
       });
-
       if (response?.status) {
         setContactMethod(emailRegex.test(data.email) ? "email" : "phone");
         setIsOpen(true);
         setResendTimer(120);
         setCanResend(false);
-
         const expireTime = Date.now() + DISABLE_DURATION * 1000;
         localStorage.setItem(STORAGE_KEY, expireTime.toString());
         setDisableButton(true);
@@ -140,23 +142,21 @@ export default function ForgotPasswordPage() {
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || "خطا در ارسال");
     } finally {
-      setIsLoading(false);
+      setIsSubmittingMain(false);
     }
   };
 
   const handleConfirm = async () => {
     if (!executeRecaptcha || !formData || otpCode.length !== 6) return;
-    setIsLoading(true);
+    setIsSubmittingOTP(true);
     try {
       const recaptchaToken = await executeRecaptcha("forgot_password_confirm");
       const payload = buildPayload(formData.email, recaptchaToken, otpCode);
-
       const response = await apiRequest<ForgotPasswordResponse, Record<string, string>>({
         url: "/auth/forget",
         method: "POST",
         data: payload,
       });
-
       if (response?.status) {
         setIsOpen(false);
         navigate("/forgot-password-set-password", {
@@ -171,7 +171,7 @@ export default function ForgotPasswordPage() {
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>).response?.data?.msg || "تایید کد با مشکل مواجه شد!");
     } finally {
-      setIsLoading(false);
+      setIsSubmittingOTP(false);
     }
   };
 
@@ -182,46 +182,47 @@ export default function ForgotPasswordPage() {
     await onSubmit(formData);
   };
 
+  // چک کردن پر بودن فیلد برای دکمه ادامه
+  const isEmailFilled = emailValue?.trim().length > 0;
+
   return (
     <AuthLayout image={theme === "dark" ? imageForgetDark : imageForgetLight}>
       <div className="flex items-center justify-center pb-8 w-full " dir="rtl">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="w-full flex items-center flex-col lg:max-w-md lg:px-0 px-4  "
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full flex items-center flex-col lg:max-w-md lg:px-0 px-4 "
+        >
+          <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
+            فراموشی رمز عبور
+          </h1>
+          <p className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1">
+            برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید
+          </p>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="ایمیل یا شماره همراه"
+                type="text"
+                error={errors.email?.message}
+                {...field}
+                labelBgClass="bg-white4"
+              />
+            )}
+          />
+          <button
+            type="submit"
+            disabled={!isEmailFilled || disableButton || isSubmittingMain}
+            className={`h-[48px] w-full rounded-xl font-bold text-lg text-white transition-colors duration-300 ${
+              !isEmailFilled || disableButton
+                ? "bg-blue2 opacity-50 cursor-not-allowed"
+                : "bg-blue2 opacity-100"
+            } lg:mt-14 mt-12`}
           >
-            <h1 className="lg:text-[28px] text-[20px] font-bold text-blue2 mb-3 text-center">
-              فراموشی رمز عبور
-            </h1>
-            <p className="font-normal lg:mb-10 mb-6 lg:text-[18px] text-[14px] text-black1">
-              برای بازیابی رمز عبور ایمیل یا شماره همراه خود را وارد کنید
-            </p>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label="ایمیل یا شماره همراه"
-                  type="text"
-                  error={errors.email?.message}
-                  {...field}
-                  labelBgClass="bg-white4"
-                />
-              )}
-            />
-            <button
-              type="submit"
-              disabled={disableButton || isLoading}
-              className={`h-[48px] w-full rounded-xl font-bold text-lg text-white transition-colors duration-300 ${
-                disableButton ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
-              } lg:mt-14 mt-12`}
-            >
-              {isLoading
-                ? "در حال بررسی..."
-                : disableButton
-                ? `لطفا ${disableTimer} ثانیه صبر کنید`
-                : "ادامه"}
-            </button>
-          </form>
+            {isSubmittingMain ? "در حال ارسال ..." : "ادامه"}
+          </button>
+        </form>
       </div>
 
       {isOpen && (
@@ -232,7 +233,7 @@ export default function ForgotPasswordPage() {
             onClick={() => setIsOpen(false)}
           >
             <div
-              className="lg:max-w-md max-w-sm  rounded-lg lg:p-6 p-4 relative bg-white8"
+              className="lg:max-w-md max-w-sm rounded-lg lg:p-6 p-4 relative bg-white8"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center flex-row-reverse justify-between">
@@ -243,15 +244,12 @@ export default function ForgotPasswordPage() {
                   <IconClose />
                 </span>
               </div>
-
               <p className="lg:mt-12 mt-8 mb-6 lg:text-lg text-sm text-center text-gray24" dir="rtl">
                 لطفا کد ارسالی به {contactMethod === "phone" ? `شماره ${getValues("email")}` : `ایمیل ${getValues("email")}`} را وارد کنید.
               </p>
-
               <div className="mt-[32px] mb-[48px] ">
                 <OTPModal length={6} onChange={(val: string) => setOtpCode(val)} />
               </div>
-
               <div className="flex justify-between flex-row-reverse mb-4">
                 <button
                   className={`flex items-center gap-1 text-gray12 ${canResend ? "cursor-pointer" : "cursor-not-allowed"}`}
@@ -261,12 +259,10 @@ export default function ForgotPasswordPage() {
                   ارسال مجدد
                   <span className="icon-wrapper h-5 w-5"><IconAgain /></span>
                 </button>
-
                 <p className="text-gray12">
                   ارسال مجدد کد تا {Math.floor(resendTimer / 60)}:{String(resendTimer % 60).padStart(2, "0")}
                 </p>
               </div>
-
               <div className="flex gap-2 mb-8">
                 <button
                   onClick={() => setIsOpen(false)}
@@ -274,15 +270,17 @@ export default function ForgotPasswordPage() {
                 >
                   {contactMethod === "phone" ? "ویرایش موبایل" : "ویرایش ایمیل"}
                 </button>
-
                 <button
+                dir="rtl"
                   onClick={handleConfirm}
-                  disabled={otpCode.length !== 6}
+                  disabled={otpCode.length !== 6 || isSubmittingOTP}
                   className={`mt-4 w-[200px] h-[48px] font-bold text-white2 rounded-lg transition-colors duration-300 ${
-                    otpCode.length !== 6 ? "bg-gray5 cursor-not-allowed" : "bg-blue2"
+                    otpCode.length !== 6
+                      ? "bg-blue2 opacity-50 cursor-not-allowed"
+                      : "bg-blue2 opacity-100"
                   }`}
                 >
-                  تایید
+                  {isSubmittingOTP ?"در حال بررسی ..." : "تایید"}
                 </button>
               </div>
             </div>

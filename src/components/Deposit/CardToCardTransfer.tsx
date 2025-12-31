@@ -129,7 +129,7 @@ export default function CardToCardTransfer({ refreshFiatData, loadingBankCards, 
   useEffect(() => {
     if (initialCardToCardInfo.transaction) {
       const transactionDate = new Date(initialCardToCardInfo.transaction.date);
-      const endTime = transactionDate.getTime() + 30 * 60 * 1000; // 30 دقیقه بعد
+      const endTime = transactionDate.getTime() + 10 * 60 * 1000; // 10 دقیقه بعد
       const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
       setTimer(remaining);
       setShowSummary(remaining > 0);
