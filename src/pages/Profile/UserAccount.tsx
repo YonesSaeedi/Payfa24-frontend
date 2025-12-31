@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { apiRequest } from "../../utils/apiClient";
-import EmailIcon from "../../assets/icons/authentication/EmailIcon";
 import IconcardBank from "../../assets/icons/authentication/IconcardBank";
 import IconUserOctagon from "../../assets/icons/authentication/IconUserOctagon";
 import HeaderLayout from "../../layouts/HeaderLayout";
@@ -189,12 +188,7 @@ export default function UserAccount() {
     kycContent = (
       <form className="lg:w-[498px] w-full border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-5 dark:text-white justify-center sm:justify-end">
         <h1 className="text-right mb-5 text-blue2">سطح ۱ : احراز هویت پایه</h1>
-        <div className="flex flex-row items-center justify-end">
-          <span className="mr-2 text-black1">ثبت ایمیل</span>
-          <span className="icon-wrapper w-7 h-7 text-blue2">
-            <EmailIcon />
-          </span>
-        </div>
+       
         <div className="flex flex-row items-center justify-end">
           <span className="mr-2 text-black1">مشخصات فردی</span>
           <span className="icon-wrapper w-7 h-7 text-blue2">

@@ -163,7 +163,7 @@ export default function MultiFactor() {
           </div>
         </div>
       </HeaderLayout>
-      {isOpen && <TwoFactorModal type={modalType ?? undefined} closeModal={() => setIsOpen(false)} />}
+      {isOpen && <TwoFactorModal type={modalType ?? undefined} closeModal={() => setIsOpen(false)} userMobile={userData?.user?.mobile} userEmail={userData?.user?.email} />}
       {/* otp modal for deactivating 2fa ============================================================================= */}
       {isOpenActive && (
         <OTPInputModal

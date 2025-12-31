@@ -28,7 +28,7 @@ export default function AuthenticationLayoutAdvance({ text1, text2, step, setSte
       <div className="w-full flex flex-col md:flex-row container-style">
 
         <div className={`w-full h-full flex items-center justify-center ${step === 0 ? "lg:w-1/2 lg:flex hidden" : "lg:w-full flex"}`}>
-          {step === 0 
+          {step === 2 
             ? <AuthenticationLeft step={step} text1={text1} text2={text2} /> 
             : <div className="flex flex-col items-center justify-center gap-6 w-full">{children}</div>
           }
