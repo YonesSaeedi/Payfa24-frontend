@@ -1,5 +1,4 @@
 
-import EmailIcon from "../assets/icons/authentication/EmailIcon";
 import IconUserOctagon from "../assets/icons/authentication/IconUserOctagon";
 import IconcardBank from "../assets/icons/authentication/IconcardBank";
 import IdentyIcon from "../assets/icons/authentication/IdentyIcon";
@@ -22,12 +21,7 @@ export default function AuthenticationRight({ onStart, step }: Props) {
       <div className="lg:w-5/6 w-full  py-5 lg:py-6 border-solid border-blue2 rounded-lg border flex flex-col ">
         <h1 className="text-right mb-5 lg:pe-6 pe-5 text-blue2 font-medium lg:text-xl text-lg">سطح {toPersianDigits(1)} : احراز هویت پایه</h1>
 
-        <div className="flex mb-2 lg:pe-6 pe-5 flex-row items-center justify-end lg:gap-2 gap-[6px]">
-          <span className="mr-2 text-black1">ثبت ایمیل</span>
-          <span className="icon-wrapper w-7 h-7 text-blue2">
-            <EmailIcon />
-          </span>
-        </div>
+      
         <div className="flex mb-2 lg:pe-6 pe-5 flex-row items-center justify-end lg:gap-2 gap-[6px]">
           <span className="mr-2 text-black1">مشخصات فردی</span>
           <span className="icon-wrapper w-7 h-7 text-blue2">

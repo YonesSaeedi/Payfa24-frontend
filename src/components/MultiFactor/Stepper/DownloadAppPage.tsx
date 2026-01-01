@@ -12,7 +12,7 @@ export default function DownloadAppPage({ onNext }: DownloadAppPageProps) {
         در صورت نصب نداشتن برنامه Google Authenticator بر روی گوشی خود میتوانید
         از طریق لینک زیر دانلود کنید.
       </p>
-      <div className="w-full flex flex-col gap-4 mb-0 lg:mt-8 mt-48 lg:px-8">
+      <div className="w-full flex flex-col gap-4 mb-0 lg:mt-8 mt-[90px] lg:px-8">
         <a
           href='https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2'
           target="_blank"

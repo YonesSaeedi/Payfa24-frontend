@@ -66,11 +66,11 @@ const OTPInputModal = ({
         <div className="w-full flex items-center gap-2">
           <button
             onClick={onSubmit}
-            className={`w-full flex-1 text-base font-bold rounded-lg py-2.5 lg:py-3 border border-transparent transition duration-200 ease-in
-                  ${resendCodeIsSubmitting || !isOtpComplete ? 'text-black1 bg-gray2' : 'bg-blue2 text-white hover:border-blue2 hover:text-blue2 hover:bg-transparent'}`}
+            className={`w-full flex-1 text-base font-bold text-white2 rounded-lg py-2.5 lg:py-3 border border-transparent transition duration-200 ease-in
+                  ${resendCodeIsSubmitting || !isOtpComplete ? ' bg-blue2 opacity-60 cursor-not-allowed' : 'bg-blue2  hover:border-blue2 hover:text-blue2 hover:bg-transparent'}`}
             disabled={resendCodeIsSubmitting || !isOtpComplete || isSubmitting}
           >
-            {isSubmitting ? isSubmittingText : submitButtonText}
+            {isSubmitting ? isSubmittingText : submitButtonText} 
           </button>
           {handleEdit &&
             <button
