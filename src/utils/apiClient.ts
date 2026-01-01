@@ -3,6 +3,7 @@ import axios, { AxiosRequestConfig, AxiosProgressEvent, AxiosRequestHeaders, Axi
 import { ROUTES } from "../routes/routes";
 import { toast } from "react-toastify";
 import { getAuthHeaders } from "./signature";
+import CryptoJS from "crypto-js";
 
 
 const apiClient = axios.create({
@@ -26,11 +27,21 @@ function isTokenExpiringSoon(): boolean {
 // ---------- single-flight token refresh ----------
 let refreshingPromise: Promise<string | null> | null = null;
 async function refreshAccessToken(): Promise<string | null> {
+
   if (!refreshingPromise) {
     refreshingPromise = (async () => {
       try {
+        const timestamp = Math.floor(Date.now() / 1000).toString()
+        const dataToSign = `POST api/v4/auth/refresh-token ${timestamp} ${JSON.stringify({ refreshToken: localStorage.getItem("refreshToken") })}`
+        const signature = CryptoJS.HmacSHA256(dataToSign, "V65HMX2FHYVQCFT33WX3PCPY7H59MIBDOMCOWQ4LALMYCYBY4HJIGAN51JOEK590").toString(CryptoJS.enc.Hex)
         const refreshToken = localStorage.getItem("refreshToken");
-        const res = await axios.post(apiClient.defaults.baseURL + "/auth/refresh-token", { refreshToken });
+        const res = await axios.post(apiClient.defaults.baseURL + "/auth/refresh-token", { refreshToken }, {
+          headers: {
+            "X-Signature": signature,
+            "X-Timestamp": timestamp,
+            "X-Device": "website",
+          }
+        });
         if (res?.data?.access_token) {
           localStorage.setItem("accessToken", res.data.access_token);
           localStorage.setItem("expiresAt", String(res.data.expires_in));
