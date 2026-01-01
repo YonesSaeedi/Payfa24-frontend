@@ -194,7 +194,7 @@ export default function LoginPage() {
         />
         <Link to={"/forgot-password"}>
           <div className="flex justify-between items-center lg:mb-10 mb-[49px] lg:mt-[10px] mt-2">
-            <p className="text-gray12 text-sm font-normal">رمز عبور خود را فراموش کرده‌اید؟</p>
+            <p className="text-gray12 text-sm font-normal">رمز عبور  را فراموش کرده‌اید؟</p>
             <span className="font-normal text-blue2 cursor-pointer text-[14px]">بازیابی رمز عبور</span>
           </div>
         </Link>

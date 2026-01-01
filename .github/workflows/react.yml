@@ -2,71 +2,45 @@ name: React Panel Deployment
 
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main, dev]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Install & Build
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
 
       - name: Install SSH key
-        uses: webfactory/ssh-agent@v0.5.0
+        uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to server
+      - name: Deploy to Server
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
-            CONTAINER_NAME="react-main"
-            PORT=3200
-
-            BRANCH="main"
-
-          elif [ "${GITHUB_REF}" == "refs/heads/dev" ]; then
+          else
             TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
-            CONTAINER_NAME="react-dev"
-            PORT=3300
-
-            BRANCH="dev"
           fi
 
-          ssh -o StrictHostKeyChecking=no -p 22 root@45.159.114.231 "
-            set -e
-            cd ${TARGET_DIR}
+          # ۱. ایجاد پوشه در صورت عدم وجود
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
 
-            echo 'Updating code from Git...'
-            git fetch origin
-            git reset --hard origin/${BRANCH}
-            git clean -fd -x
+          # ۲. پاکسازی فایل‌های قدیمی (حذف همه چیز به جز خود پوشه اصلی)
+          # استفاده از rsync برای پاکسازی ایمن‌تر
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "cd ${TARGET_DIR} && rm -rf *"
 
-            echo 'Stopping old container...'
-            docker stop ${CONTAINER_NAME} 2>/dev/null || true
-            docker rm ${CONTAINER_NAME} 2>/dev/null || true
+          # ۳. انتقال فایل‌های جدید بیلد شده
+          scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
 
-        
+          # ۴. اصلاح مالکیت فایل‌ها
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "chown -R payfa24:payfa24 ${TARGET_DIR} && chmod -R 755 ${TARGET_DIR}"
 
-            echo 'Building new Docker image...'
-            docker build \
-              --no-cache \
-              -t ${CONTAINER_NAME} . || { echo 'Docker build failed'; exit 1; }
-
-            echo 'Starting new container...'
-
-            docker run -d \
-              --name ${CONTAINER_NAME} \
-              -p ${PORT}:80 \
-              --restart unless-stopped \
-              ${CONTAINER_NAME}
-
-
-            echo 'Cleaning up dangling images...'
-            docker system prune -f
-
-            echo 'Deployment completed successfully!'
-          "
-
+          # ۵. تایید انتقال فایل‌ها
+          echo "Deployment completed to: ${TARGET_DIR}"
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "ls -la ${TARGET_DIR}/"

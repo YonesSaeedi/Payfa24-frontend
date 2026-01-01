@@ -54,8 +54,9 @@ async function refreshAccessToken(): Promise<string | null> {
 }
 
 
-
-// ---------- request interceptor ----------
+// ----------===================================================== request interceptor =====================================================----------
+// ----------===================================================== request interceptor =====================================================----------
+// ----------===================================================== request interceptor =====================================================----------
 apiClient.interceptors.request.use(async (config) => {
   // allow auth routes through
   // Define public endpoints — use patterns for dynamic parts
@@ -82,22 +83,23 @@ apiClient.interceptors.request.use(async (config) => {
     /\/list-cryptocurrencies$/,
     /\/list-cryptocurrencies\/[^/]+$/, // matches /list-cryptocurrencies/{symbol}
   ];
-  if (config.url && PUBLIC_ENDPOINT_PATTERNS.some((regex) => regex.test(config.url ?? ''))) {
-    return config;
-  }
-  let token = localStorage.getItem("accessToken");
-  if (!token) token = await refreshAccessToken() // try to refresh token if there isn't one
-  if (isTokenExpiringSoon()) token = await refreshAccessToken();
-  // ensure headers object exists and has the right type
-  if (!config.headers) config.headers = {} as AxiosRequestHeaders;
-  if (token) {
-    // config.headers may be AxiosRequestHeaders or plain object; cast to any-safe set
-    (config.headers).Authorization = `Bearer ${token}`;
-  } else {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("expiresAt");
-    window.location.href = "/login";
+  // =================================================== Token logic, excluding public endpoints ===================================================
+  const isPublic = config.url && PUBLIC_ENDPOINT_PATTERNS.some(regex => regex.test(config.url ?? ''))
+  if (!isPublic) {
+    let token = localStorage.getItem("accessToken");
+    if (!token) token = await refreshAccessToken() // try to refresh token if there isn't one
+    if (isTokenExpiringSoon()) token = await refreshAccessToken();
+    // ensure headers object exists and has the right type
+    if (!config.headers) config.headers = {} as AxiosRequestHeaders;
+    if (token) {
+      // config.headers may be AxiosRequestHeaders or plain object; cast to any-safe set
+      (config.headers).Authorization = `Bearer ${token}`;
+    } else {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("expiresAt");
+      window.location.href = "/login";
+    }
   }
   // signature
   const method = (config.method || "GET").toUpperCase();
@@ -140,6 +142,9 @@ apiClient.interceptors.request.use(async (config) => {
     bodyForSign = config.data ?? [];
   }
   const sigHeaders = getAuthHeaders(method, pathForSign, bodyForSign, cleanedParams);
+
+  if (!config.headers) config.headers = {} as AxiosRequestHeaders
+
   Object.assign(config.headers, sigHeaders);
   return config;
 });
