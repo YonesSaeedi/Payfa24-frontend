@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import AuthenticationLayout from "../../layouts/AuthenticationLayoutBasic";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import StepEmail from "../../components/auth/step/StepBasic/StepEmail";
 import StepPersonal from "../../components/auth/step/StepBasic/StepPersonal";
 import StepCard from "../../components/auth/step/StepBasic/StepCard";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
@@ -27,7 +26,7 @@ export default function AuthenticationBasic() {
 
   const handleStart = () => {
     setStarted(true);
-    setStep(1);
+    setStep(2);
   };
 
   // اگر لودینگ یا دیتا نیومده
@@ -73,7 +72,7 @@ export default function AuthenticationBasic() {
 
   // ۴. حالت عادی: کاربر هنوز شروع نکرده یا در حال انجام مراحل عادی
   const renderStep = () => {
-    if (step === 1) return <StepEmail onNext={() => setStep(2)} userInfo={userInfo} />;
+    // if (step === 1) return <StepEmail onNext={() => setStep(2)} userInfo={userInfo} />;
     if (step === 2) return <StepPersonal onNext={() => setStep(3)} userInfo={userInfo} />;
     if (step === 3) return <StepCard  userInfo={userInfo} />;
     return null;
