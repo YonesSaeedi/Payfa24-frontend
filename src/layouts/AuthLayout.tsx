@@ -2,9 +2,8 @@ import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import MoonIcon from "../assets/icons/HeaderLogin/MoonIcon";
 import SupportIcon from "../assets/icons/HeaderLogin/SupportIcon";
-import pfIcon from "../../../images/HeaderIcon/pf.png";
-import groupIcon from "../../../images/HeaderIcon/Group 71185 (1).png";
-
+import pfIcon from "../../../payfa24-user-panel/src/assets/images/HeaderIcon/pf.png";
+import groupIcon from "../../../payfa24-user-panel/src/assets/images/HeaderIcon/Group 71185 (1).png";
 interface AuthLayoutProps {
   children: React.ReactNode;
   image?: string;
