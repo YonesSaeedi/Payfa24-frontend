@@ -27,7 +27,7 @@ export default function AuthenticationBasic() {
 
   const handleStart = () => {
     setStarted(true);
-    setStep(2);
+    setStep(1);
   };
 
   // اگر لودینگ یا دیتا نیومده

@@ -1,0 +1,110 @@
+[33m0b50fa3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mshybaniii[m[33m, [m[1;31morigin/shybaniii[m[33m)[m HEAD@{0}: commit: fixed : remove Email in
+[33m4ccd8da[m HEAD@{1}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m84dd703[m HEAD@{2}: commit: fixed :cart to cart
+[33m9f65a80[m HEAD@{3}: commit: fised: DepositBankReceipt
+[33m4307dd4[m HEAD@{4}: pull origin dev: Fast-forward
+[33m4d399df[m HEAD@{5}: commit (merge): Merge branch 'simin' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m0a86b4f[m HEAD@{6}: commit: fixed : Deposit card to card
+[33m50397c8[m HEAD@{7}: commit: fixed:test
+[33mfe4067c[m HEAD@{8}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m247b588[m HEAD@{9}: commit: test
+[33m9c6bd28[m HEAD@{10}: pull origin dev: updating HEAD
+[33m9c6bd28[m HEAD@{11}: commit: fixed: test api
+[33m9a05912[m HEAD@{12}: reset: moving to origin/shybaniii
+[33m99f7ce8[m HEAD@{13}: reset: moving to ORIG_HEAD
+[33m9a05912[m HEAD@{14}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m99f7ce8[m HEAD@{15}: commit: fixed : deposit--
+[33m7e7722c[m HEAD@{16}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33mee7052b[m HEAD@{17}: commit: fixed : deposit
+[33m058db77[m HEAD@{18}: reset: moving to ORIG_HEAD
+[33m058db77[m HEAD@{19}: commit: fixed : test
+[33me4e0fa1[m HEAD@{20}: commit: fixed:test
+[33me6868d2[m HEAD@{21}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33mdc03264[m HEAD@{22}: commit: fixed : test
+[33mf322ab4[m HEAD@{23}: commit: fixed : deposit & kvc
+[33m68c67a1[m HEAD@{24}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m53e22d1[m HEAD@{25}: commit: fixed:deposit identifir
+[33m318030c[m HEAD@{26}: commit: fixed:Logout..
+[33m2ac33b0[m HEAD@{27}: commit: fixed:kvc check
+[33maf7d1e9[m HEAD@{28}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33me71ecb5[m HEAD@{29}: commit: fixed: deposit
+[33m2e4b91b[m HEAD@{30}: commit: fixed : resolve errore
+[33m2c75796[m HEAD@{31}: commit: fixed: kvc
+[33ma9d9ba9[m HEAD@{32}: commit (merge): Merge branch 'simin' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m3b10372[m HEAD@{33}: commit: fixed:test
+[33m382681f[m HEAD@{34}: commit (merge): Merge branch 'simin' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33mf057845[m HEAD@{35}: commit: fixed:test
+[33m61aa48e[m HEAD@{36}: commit: fixed:ui
+[33m554505f[m HEAD@{37}: commit (merge): Merge branch 'simin' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m1bbfe69[m HEAD@{38}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33ma0252a5[m HEAD@{39}: commit: fixed : Deposit
+[33m089fb62[m HEAD@{40}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33mcac688d[m HEAD@{41}: commit: fixed : resolve erorr
+[33m03d6b93[m HEAD@{42}: commit: fixed : change number en==>fa
+[33mcb3831e[m HEAD@{43}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m7d1d3da[m HEAD@{44}: commit: fixed: kvc
+[33m4cedc43[m HEAD@{45}: commit: fixed:kvc-basic
+[33m82404fe[m HEAD@{46}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m8930bab[m HEAD@{47}: commit: fixed: kvc-basic
+[33m94408d7[m HEAD@{48}: commit: fixed:test
+[33mc2e20ea[m HEAD@{49}: commit: fixed:Login change ui
+[33md99acce[m HEAD@{50}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m840cdf0[m HEAD@{51}: commit: fixed: resolve kvc/basic
+[33m360859c[m HEAD@{52}: commit: fixed:deposit
+[33m773e19d[m HEAD@{53}: commit: fixed: deposit
+[33m930c769[m HEAD@{54}: commit: fixed: resolve ui in the LoginPage
+[33ma63fc0d[m HEAD@{55}: commit: fixed:userAccount resolve ui && loading
+[33m12e3348[m HEAD@{56}: commit: fixed:Deposit card to csrd
+[33med360fe[m HEAD@{57}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33ma8940fb[m HEAD@{58}: commit: fixed:test api
+[33m0539f40[m HEAD@{59}: commit: fixed:test
+[33m683f339[m HEAD@{60}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m4f3e378[m HEAD@{61}: reset: moving to ORIG_HEAD
+[33m4f3e378[m HEAD@{62}: commit: fixed: change floating input
+[33m1ee1344[m HEAD@{63}: commit: fixed:test
+[33mcc2f61a[m HEAD@{64}: reset: moving to ORIG_HEAD
+[33mcc2f61a[m HEAD@{65}: reset: moving to ORIG_HEAD
+[33mcc2f61a[m HEAD@{66}: commit: fixed:test
+[33mcab28c6[m HEAD@{67}: commit: fixed : change deposit
+[33mddf8932[m HEAD@{68}: commit: fixed: Solving apparent problems of inviting friends
+[33m0b95352[m HEAD@{69}: commit: fixed:addfreind ui
+[33mbca5059[m HEAD@{70}: commit (merge): Merge branch 'dev' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m74b4d3b[m HEAD@{71}: commit: fixed : test
+[33ma94eb42[m HEAD@{72}: commit: fixed: test kvc && change kvc
+[33mf14dd03[m HEAD@{73}: commit: fixed:test
+[33mfd00106[m HEAD@{74}: commit: fixed:test
+[33m86b7eba[m HEAD@{75}: commit: fixed:change ui
+[33m0dc3324[m HEAD@{76}: commit: fixed: end errore
+[33m475783d[m HEAD@{77}: pull origin aliakbar2: Fast-forward
+[33m1d7091e[m HEAD@{78}: commit (merge): Merge branch 'aliakbar2' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m09b6bfe[m HEAD@{79}: commit: fixed:error types
+[33mc6f74f4[m HEAD@{80}: pull origin aliakbar2: Fast-forward
+[33m83c2436[m HEAD@{81}: reset: moving to ORIG_HEAD
+[33mc6f74f4[m HEAD@{82}: pull origin aliakbar2: Fast-forward
+[33m83c2436[m HEAD@{83}: commit: fixed:resolveErrore && remove Addfrein mistake
+[33m59738b6[m HEAD@{84}: commit (merge): Merge branch 'aliakbar2' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33mac8f4b0[m HEAD@{85}: commit: fixed: resolve errore deposit
+[33m0e6844e[m HEAD@{86}: commit (merge): Merge branch 'aliakbar2' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m9172940[m HEAD@{87}: commit: fixed : resolve errore
+[33m92127c6[m HEAD@{88}: pull origin simin: Fast-forward
+[33mee9196b[m HEAD@{89}: reset: moving to HEAD
+[33mee9196b[m HEAD@{90}: commit: fixed : text
+[33m6d1438c[m HEAD@{91}: commit (merge): Merge branch 'simin' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33md286426[m HEAD@{92}: commit: fixed: for pull simin
+[33m3c22960[m HEAD@{93}: commit: fixed : breadcrumbnavigat
+[33m71369f8[m HEAD@{94}: commit: fixed: create Root
+[33md77cae5[m HEAD@{95}: commit (merge): fixed: test
+[33mebf8fad[m HEAD@{96}: commit: fixed: change leather icon
+[33m622cfd4[m HEAD@{97}: commit: fixed : test change push after
+[33m5909c72[m HEAD@{98}: commit (merge): Merge branch 'aliakbar2' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33md9a2c35[m HEAD@{99}: commit: fixed:fix-Error
+[33m49b7479[m HEAD@{100}: commit: fixed:ui change
+[33mc81e166[m HEAD@{101}: commit (merge): Merge branch 'simin' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m6f39c34[m HEAD@{102}: commit: fixed: last edit
+[33m054e7fc[m HEAD@{103}: commit: fixet:route
+[33m79c153a[m HEAD@{104}: commit (merge): Merge branch 'simin' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33m81204d2[m HEAD@{105}: commit (merge): Merge branch 'simin' of https://github.com/YonesSaeedi/Payfa24-frontend into shybaniii
+[33mc02f983[m HEAD@{106}: commit: fixed: remove lucide-react
+[33m6a9c5cd[m HEAD@{107}: commit: fixed: style DEposit && uploadprosser
+[33mdc62a94[m HEAD@{108}: commit (merge): fised:pull origin simin and change file
+[33m27d3ec6[m HEAD@{109}: commit: fix
