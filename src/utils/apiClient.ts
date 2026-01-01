@@ -1,4 +1,4 @@
-// apiClient.ts
+
 import axios, { AxiosRequestConfig, AxiosProgressEvent, AxiosRequestHeaders, AxiosError } from "axios";
 import { ROUTES } from "../routes/routes";
 import { toast } from "react-toastify";
@@ -52,6 +52,7 @@ async function refreshAccessToken(): Promise<string | null> {
   }
   return refreshingPromise;
 }
+
 
 // ----------===================================================== request interceptor =====================================================----------
 // ----------===================================================== request interceptor =====================================================----------
@@ -141,7 +142,9 @@ apiClient.interceptors.request.use(async (config) => {
     bodyForSign = config.data ?? [];
   }
   const sigHeaders = getAuthHeaders(method, pathForSign, bodyForSign, cleanedParams);
+
   if (!config.headers) config.headers = {} as AxiosRequestHeaders
+
   Object.assign(config.headers, sigHeaders);
   return config;
 });
