@@ -23,21 +23,24 @@ jobs:
       - name: Deploy to Server
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/public_html/panel"
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
           else
-            TARGET_DIR="/home/payfa24/domains/payfa24.org/public_html/dev-panel"
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
           fi
 
           # ۱. ایجاد پوشه در صورت عدم وجود
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
 
-          # ۲. پاکسازی فایل‌های قدیمی (به جز پوشه .git)
-          # این دستور تمام فایل‌ها و پوشه‌های مخفی و غیرمخفی را به جز .git حذف می‌کند
-          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "find ${TARGET_DIR} -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +"
+          # ۲. پاکسازی فایل‌های قدیمی (حذف همه چیز به جز خود پوشه اصلی)
+          # استفاده از rsync برای پاکسازی ایمن‌تر
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "cd ${TARGET_DIR} && rm -rf *"
 
           # ۳. انتقال فایل‌های جدید بیلد شده
           scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
 
-          # ۴. اصلاح مالکیت فایل‌ها برای جلوگیری از تداخل با دایرکت ادمین
-          # جایگزین کردن payfa24 با نام کاربری واقعی دایرکت ادمین شما
+          # ۴. اصلاح مالکیت فایل‌ها
           ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "chown -R payfa24:payfa24 ${TARGET_DIR} && chmod -R 755 ${TARGET_DIR}"
+
+          # ۵. تایید انتقال فایل‌ها
+          echo "Deployment completed to: ${TARGET_DIR}"
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "ls -la ${TARGET_DIR}/"
