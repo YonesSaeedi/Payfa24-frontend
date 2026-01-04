@@ -531,30 +531,36 @@ export default function StepPersonal({ onNext, userInfo }: Props) {
   }, [userInfo, setValue, onNext]);
 
   // ثبت اطلاعات
-  const submitMutation = useMutation<ApiResponse, AxiosError<{ msg: string }>, FormData>({
-    mutationFn: (data) =>
-      apiRequest<ApiResponse, FormData>({
-        url: "/kyc/basic/level2",
-        method: "POST",
-        data,
-      }),
-    onSuccess: (data) => {
-      if (data.status) {
-        toast.success("اطلاعات با موفقیت ثبت شد.");
-        refetch();
-        onNext();
-      } else if (data.msg?.includes("قبلا این اطلاعات را ثبت کرده‌اید")) {
-        toast.info("اطلاعات شما قبلا ثبت شده است.");
-        onNext();
-      } else toast.error(data.msg || "خطا در ثبت اطلاعات.");
-    },
-    onError: (error) => {
-      const msg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
-      if (msg.includes("قبلا این اطلاعات را ثبت کرده اید")) toast.info("اطلاعات شما قبلا ثبت شده است.");
-      else toast.error(msg);
+ const submitMutation = useMutation<ApiResponse, AxiosError<{ msg: string }>, FormData>({
+  mutationFn: (data) =>
+    apiRequest<ApiResponse, FormData>({
+      url: "/kyc/basic/level2",
+      method: "POST",
+      data,
+    }),
+  onSuccess: (data) => {
+    if (data.status) {
+      toast.success("اطلاعات با موفقیت ثبت شد.");
+      refetch();
       onNext();
-    },
-  });
+    } else if (data.msg?.includes("قبلا این اطلاعات را ثبت کرده‌اید")) {
+      toast.info("اطلاعات شما قبلا ثبت شده است.");
+      onNext();
+    } else {
+      toast.error(data.msg || "خطا در ثبت اطلاعات.");
+    }
+  },
+  onError: (error) => {
+    const msg = error.response?.data?.msg || "خطا در ارتباط با سرور.";
+
+    if (msg.includes("قبلا این اطلاعات را ثبت کرده اید")) {
+      toast.info("اطلاعات شما قبلا ثبت شده است.");
+      onNext();
+    } else {
+      toast.error(msg);
+    }
+  },
+});
 
   // const onSubmit = (data: FormData) => {
   //   // بررسی تاریخ

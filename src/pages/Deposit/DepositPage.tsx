@@ -139,23 +139,23 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
     }
   });
 
-  const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
-  const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
-  const [depositMethods, setDepositMethods] = useState<WalletFiatData["depositMethods"] | null>(null);
   const { data: generalInfo } = useGetGeneralInfo();
 
   const location = useLocation();
   const [fiatData, setFiatData] = useState<WalletFiatData | null>(null);
   const [identifierData, setIdentifierData] = useState<DepositIdentifierResponse | null>(null);
   const [isCreatingIdentifier, setIsCreatingIdentifier] = useState(false);
-  const [isCryptoListModalOpen, setIsCryptoListModalOpen] = useState(false);
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoItem | null>(null);
   const [loadingBankCards, setLoadingBankCards] = useState(true);
   const [wallets, setWallets] = useState<Wallet[]>([]);
-
+  const [isDedicatedWalletModalOpen, setIsDedicatedWalletModalOpen] = useState(false);
+  const [isTxidModalOpen, setIsTxidModalOpen] = useState(false);
   const hasFetchedCryptoData = useRef(false);
   const hasFetchedFiatData = useRef(false);
-
+  const [cryptoListData, setCryptoListData] = useState<CryptoItem[]>([]);
+  const filteredCryptoForDedicatedWallet = cryptoListData.filter((crypto) => crypto.symbol === "USDT" || crypto.symbol === "TRX");
+  const [isDepositCoinsLoading, setIsDepositCoinsLoading] = useState(false);
+  const [depositMethods, setDepositMethods] = useState<WalletFiatData["depositMethods"] | null>(null);
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const type = params.get("type");
@@ -217,44 +217,51 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       console.error("خطا در رفرش داده‌های واریز", err);
     }
   }, [generalInfo]);
-// 1. تابع را خارج از useEffect تعریف کن (در والد)
-const fetchFiatData = async () => {
-  try {
-    setLoadingBankCards(true);
-    const response = await apiRequest<WalletFiatData>({
-      url: "/wallets/fiat",
-      method: "GET",
-    });
-
-    setFiatData(response);
-    setDepositMethods(response.depositMethods);
-
-    if (response.deposit_id || response.list_deposit_id) {
-      setIdentifierData({
-        destination_bank: response.deposit_id?.destination_bank || "",
-        destination_owner_name: response.deposit_id?.destination_owner_name || "",
-        destination_iban: response.deposit_id?.destination_iban || "",
-        destination_account_number: response.deposit_id?.destination_account_number || "",
-        deposit_id: response.deposit_id?.deposit_id || "",
-        list_deposit_id: response.list_deposit_id,
+  // 1. تابع را خارج از useEffect تعریف کن (در والد)
+  const fetchFiatData = async () => {
+    try {
+      setLoadingBankCards(true);
+      const response = await apiRequest<WalletFiatData>({
+        url: "/wallets/fiat",
+        method: "GET",
       });
+
+      setFiatData(response);
+      setDepositMethods(response.depositMethods);
+
+      if (response.deposit_id || response.list_deposit_id) {
+        setIdentifierData({
+          destination_bank: response.deposit_id?.destination_bank || "",
+          destination_owner_name: response.deposit_id?.destination_owner_name || "",
+          destination_iban: response.deposit_id?.destination_iban || "",
+          destination_account_number: response.deposit_id?.destination_account_number || "",
+          deposit_id: response.deposit_id?.deposit_id || "",
+          list_deposit_id: response.list_deposit_id,
+        });
+      }
+
+      hasFetchedFiatData.current = true;
+    } catch (err) {
+      toast.error("خطا در بارگذاری اطلاعات واریز");
+    } finally {
+      setLoadingBankCards(false);
     }
+  };
 
-    hasFetchedFiatData.current = true;
+  const openDedicatedWalletModal = () => {
+    setIsDedicatedWalletModalOpen(true);
+  };
 
-  } catch (err) {
-    toast.error("خطا در بارگذاری اطلاعات واریز");
-  } finally {
-    setLoadingBankCards(false);
-  }
-};
+  const openTxidModal = () => {
+    setIsTxidModalOpen(true);
+  };
 
-// 2. useEffect فقط یک بار تابع را صدا بزند
-useEffect(() => {
-  if (!hasFetchedFiatData.current) {
-    fetchFiatData();
-  }
-}, []);
+  // 2. useEffect فقط یک بار تابع را صدا بزند
+  useEffect(() => {
+    if (!hasFetchedFiatData.current) {
+      fetchFiatData();
+    }
+  }, []);
 
   useEffect(() => {
     if (hasFetchedCryptoData.current || !generalInfo) return;
@@ -289,10 +296,6 @@ useEffect(() => {
         setDepositNetworks(res?.networks ?? []);
         setDepositWalletsTxid(res?.wallets_txid ?? []);
 
-        if (!selectedCrypto && merged.length > 0) {
-          setSelectedCrypto(merged[0] as CryptoItem);
-        }
-
         hasFetchedCryptoData.current = true;
       } catch (err) {
         console.error(err);
@@ -304,6 +307,23 @@ useEffect(() => {
 
     fetchCryptoData();
   }, [generalInfo]);
+
+  useEffect(() => {
+    if (!cryptoListData.length) return;
+
+    if (selectedOption === "DepositWithTxID") {
+      setSelectedCrypto(cryptoListData[0]);
+    }
+
+    if (selectedOption === "DedicatedWallet") {
+      const dedicatedList = cryptoListData.filter((c) => c.symbol === "USDT" || c.symbol === "TRON");
+
+      if (dedicatedList.length > 0) {
+        setSelectedCrypto(dedicatedList[0]); 
+      }
+    }
+  }, [selectedOption, cryptoListData]);
+
   const handleCreateIdentifier = useCallback(async (cardId: number) => {
     setIsCreatingIdentifier(true);
     try {
@@ -353,7 +373,7 @@ useEffect(() => {
   else if (selectedOption === "Identifier") currentAlertMessages = DepositWithIdentifierMessages;
 
   const minDeposit = Number(fiatData?.wallet?.internal?.min_deposit ?? 200000);
-  const maxDeposit = Number(fiatData?.wallet?.internal?.max_deposit ?? 25000000);
+  const maxDeposit = Number(fiatData?.wallet?.internal?.max_deposit ?? 200000000);
   const bankCards = fiatData?.list_cards ?? [];
   const receiptAccounts = fiatData?.receipt?.list_cards ?? [];
   const cardToCardInfo = fiatData?.cardToCard ?? { transaction: null, card: null };
@@ -382,7 +402,7 @@ useEffect(() => {
       methodKey: "card" as const,
       Icon: <IconConvertCard />,
       Title: "واریز تومانی با کارت به کارت",
-      description: "واریز وجه به صورت نامحدود",
+      description: `واریز حداکثر تا ${formatPersianDigits((maxDeposit / 1_000_000).toString())} میلیون تومان`,
       button: `پرداخت در ${formatPersianDigits(30)} دقیقه`,
       IconMore: <IconArrowRight />,
     },
@@ -413,13 +433,10 @@ useEffect(() => {
     },
   ];
 
-  const openCryptoModal = () => {
-    setIsCryptoListModalOpen(true);
-  };
+
 
   const handleCryptoSelect = (crypto: CryptoItem) => {
     setSelectedCrypto(crypto);
-    setIsCryptoListModalOpen(false);
   };
 
   const renderStep = () => {
@@ -437,7 +454,16 @@ useEffect(() => {
           />
         );
       case "CardToCard":
-        return <CardToCardTransfer   refreshFiatData={fetchFiatData} loadingBankCards={loadingBankCards} cards={bankCards} cardToCardInfo={cardToCardInfo} minDeposit={minDeposit} maxDeposit={maxDeposit} />;
+        return (
+          <CardToCardTransfer
+            refreshFiatData={fetchFiatData}
+            loadingBankCards={loadingBankCards}
+            cards={bankCards}
+            cardToCardInfo={cardToCardInfo}
+            minDeposit={minDeposit}
+            maxDeposit={maxDeposit}
+          />
+        );
       case "Bank Receipt:":
         return (
           <DepositBankReceipt
@@ -452,9 +478,9 @@ useEffect(() => {
       case "DedicatedWallet":
         return (
           <DepositDedicatedWallet
-            openCryptoModal={openCryptoModal}
+            openCryptoModal={openDedicatedWalletModal} // تغییر اینجا
             selectedCrypto={selectedCrypto}
-            cryptoDepositData={cryptoListData}
+            cryptoDepositData={filteredCryptoForDedicatedWallet} // تغییر اینجا
             networks={depositNetworks}
             isDepositCoinsLoading={isDepositCoinsLoading}
             onRefreshData={refreshData}
@@ -464,9 +490,9 @@ useEffect(() => {
       case "DepositWithTxID":
         return (
           <DepositWithTxID
-            openCryptoModal={openCryptoModal}
+            openCryptoModal={openTxidModal} // تغییر اینجا
             selectedCrypto={selectedCrypto}
-            cryptoDepositData={cryptoListData}
+            cryptoDepositData={cryptoListData} // لیست کامل (بدون تغییر)
             networks={depositNetworks}
             walletsTxid={depositWalletsTxid}
             isDepositCoinsLoading={isDepositCoinsLoading}
@@ -567,10 +593,19 @@ useEffect(() => {
       </DepositLayout>
 
       <div dir="rtl">
-        {isCryptoListModalOpen && (
+        {isDedicatedWalletModalOpen && (
           <CryptoListModal
-            setIsCryptoListModalOpen={setIsCryptoListModalOpen}
-            cryptoListData={cryptoListData}
+            setIsCryptoListModalOpen={setIsDedicatedWalletModalOpen}
+            cryptoListData={filteredCryptoForDedicatedWallet} // فقط TRON و USDT
+            setCurrentCryptoCurrency={handleCryptoSelect}
+            isCryptoListLoading={isDepositCoinsLoading}
+          />
+        )}
+
+        {isTxidModalOpen && (
+          <CryptoListModal
+            setIsCryptoListModalOpen={setIsTxidModalOpen}
+            cryptoListData={cryptoListData} // همه ارزها
             setCurrentCryptoCurrency={handleCryptoSelect}
             isCryptoListLoading={isDepositCoinsLoading}
           />

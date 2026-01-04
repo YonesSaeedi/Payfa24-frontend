@@ -79,7 +79,6 @@ export function toPersianDigits(input: string | number): string {
   return String(input).replace(/[0-9]/g, (d) => persianMap[+d]);
 }
 
-
 const formatTimer = (seconds: number): string => {
   if (seconds < 0) return "00:00:00";
 
@@ -130,7 +129,8 @@ export default function CardToCardTransfer({ refreshFiatData, loadingBankCards, 
     if (initialCardToCardInfo.transaction) {
       const transactionDate = new Date(initialCardToCardInfo.transaction.date);
       const endTime = transactionDate.getTime() + 10 * 60 * 1000; // 10 دقیقه بعد
-      const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      const remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+
       setTimer(remaining);
       setShowSummary(remaining > 0);
     }
@@ -174,7 +174,7 @@ export default function CardToCardTransfer({ refreshFiatData, loadingBankCards, 
       if (response.status) {
         toast.success(response.msg || "درخواست واریز با موفقیت ثبت شد. ✅");
 
-        await refreshFiatData(); 
+        await refreshFiatData();
 
         setShowSummary(true);
         reset({ amount: 0, card: 0 });
@@ -183,7 +183,7 @@ export default function CardToCardTransfer({ refreshFiatData, loadingBankCards, 
       }
     } catch (error: any) {
       const axiosError = error as AxiosError<{ msg?: string }>;
-      toast.error(axiosError.response?.data?.msg || "خطا در اتصال به سرور. دوباره امتحان کنید. ⚠️");
+      toast.error(axiosError.response?.data?.msg || "خطا در اتصال به سرور دوباره امتحان کنید. ⚠️");
     } finally {
       // setIsSubmitting(false);
     }
@@ -362,45 +362,47 @@ export default function CardToCardTransfer({ refreshFiatData, loadingBankCards, 
                   <span className="text-sm lg:text-base">{formatPersianDigits(transactionData.amount ?? 0)} تومان</span>
                 </div>
 
-                <div
-                  onClick={() => {
-                    navigator.clipboard.writeText(transactionData.toCard);
-                    toast.info(" کپی شد");
-                  }}
-                  className="flex justify-between items-center cursor-pointer"
-                >
+                <div className="flex justify-between items-center">
                   <span className="text-gray5 lg:text-lg text-sm">شماره کارت مقصد</span>
-                  <div className="flex gap-1 items-center hover:text-blue2">
-                    <span className="text-sm lg:text-base">{formatPersianCardNumber(transactionData.toCard)}</span>
-                    <span className="w-5 h-5 icon-wrapper text-gray12">
-                      <IconCopy />
-                    </span>
+                  <div className="flex gap-1 items-center">
+                    <div
+                      className="flex justify-between items-center cursor-pointer  gap-1  hover:text-blue2"
+                      onClick={() => {
+                        navigator.clipboard.writeText(transactionData.toCard);
+                        toast.info(" کپی شد");
+                      }}
+                    >
+                      <span className="text-sm lg:text-base">{formatPersianCardNumber(transactionData.toCard)}</span>
+                      <span className="w-5 h-5 icon-wrapper text-gray12">
+                        <IconCopy />
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div
-                  onClick={() => {
-                    navigator.clipboard.writeText(transactionData.account || "");
-                    toast.info(" کپی شد");
-                  }}
-                  className="flex justify-between items-center cursor-pointer hover:text-blue2"
-                >
+                <div className="flex justify-between items-center ">
                   <span className="text-gray5 lg:text-lg text-sm">شماره حساب مقصد </span>
-                  <div className="flex items-center gap-1">
+                  <div
+                    onClick={() => {
+                      navigator.clipboard.writeText(transactionData.account || "");
+                      toast.info(" کپی شد");
+                    }}
+                    className="flex items-center gap-1 cursor-pointer hover:text-blue2"
+                  >
                     <span className="text-sm lg:text-base">{toPersianDigits(transactionData.account || "")}</span>
                     <span className="w-5 h-5 icon-wrapper text-gray12 ">
                       <IconCopy />
                     </span>
                   </div>
                 </div>
-                <div
-                  onClick={() => {
-                    navigator.clipboard.writeText(transactionData.iban || "");
-                    toast.info(" کپی شد");
-                  }}
-                  className="flex justify-between items-center cursor-pointer "
-                >
+                <div className="flex justify-between items-center ">
                   <span className="text-gray5 lg:text-lg text-sm">شماره شبا مقصد </span>
-                  <div className="flex items-center gap-1 hover:text-blue2">
+                  <div
+                    onClick={() => {
+                      navigator.clipboard.writeText(transactionData.iban || "");
+                      toast.info(" کپی شد");
+                    }}
+                    className="flex items-center gap-1 hover:text-blue2  cursor-pointer"
+                  >
                     <span className="text-sm lg:text-base">{toPersianDigits(transactionData.iban || "")}</span>
                     <span className="w-5 h-5 icon-wrapper text-gray12 ">
                       <IconCopy />

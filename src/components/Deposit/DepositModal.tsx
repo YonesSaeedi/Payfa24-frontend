@@ -35,9 +35,9 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, depositMet
   const methods = [
     { type: "gateway", key: "gateway" as const, title: "واریز با درگاه پرداخت", description: "واریز حداکثر تا ۲۵ میلیون تومان", buttonText: "پرداخت در لحظه" },
     { type: "identifier", key: "gatewayId" as const, title: "واریز با شناسه", description: "واریز وجه به صورت نامحدود", buttonText: "پرداخت در ۲۰ دقیقه" },
-    { type: "card", key: "card" as const, title: "واریز کارت به کارت", description: "واریز تا سقف ۲۵ میلیون تومان", buttonText: "پرداخت در ۳۰ دقیقه" },
+    { type: "card", key: "card" as const, title: "واریز کارت به کارت", description: "واریز تا سقف ۲۰۰ میلیون تومان", buttonText: "پرداخت در ۱۰ دقیقه" },
     { type: "receipt", key: "receipt" as const, title: "فیش بانکی", description: "واریز وجه به صورت نامحدود", buttonText: "پرداخت در ۲۰ دقیقه" },
-    { type: "wallet", key: null, title: "واریز با والت اختصاصی", description: "سریع‌ترین روش واریز ارز", buttonText: "واریز خودکار و سریع" },
+    { type: "wallet", key: null, title: "واریز با ولت اختصاصی", description: "سریع‌ترین روش واریز ارز", buttonText: "واریز خودکار و سریع" },
     { type: "txid", key: null, title: " TXID واریز با", description: "برای واریز از سایر کیف پول‌ها", buttonText: "واریز دستی" },
   ];
 
