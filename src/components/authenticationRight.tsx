@@ -35,7 +35,7 @@ export default function AuthenticationRight({ onStart, step }: Props) {
           </span>
         </div>
         <div dir="rtl">
-          <p className="text-right lg:mt-5 mt-4 lg:pr-6 pr-5 lg:mb-[6px] mb-1 lg:text-lg text-base font-medium">دسترسی ها :</p>
+          <p className="text-right text-black1 lg:mt-5 mt-4 lg:pr-6 pr-5 lg:mb-[6px] mb-1 lg:text-lg text-base font-medium">دسترسی ها :</p>
 
           <ul className="list-disc list-inside text-right text-gray15 lg:pr-6 pr-5">
             <li>مشاهده قیمت‌ها</li>
