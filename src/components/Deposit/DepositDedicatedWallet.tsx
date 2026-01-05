@@ -29,8 +29,6 @@ interface Network {
   locale?: { fa?: { name: string } };
 }
 
-
-
 interface CoinNetwork {
   id: number;
   deposit_min: string;
@@ -70,42 +68,42 @@ export default function DepositDedicatedWallet({
   if (!context) throw new Error("ThemeContext is undefined");
   const { theme } = context;
 
-useEffect(() => {
-  if (selectedCrypto) {
-    const newCurrency = {
-      id: selectedCrypto.id,
-      symbol: selectedCrypto.symbol,
-      name: selectedCrypto.locale?.fa?.name || selectedCrypto.symbol,
-      balance: selectedCrypto.balance,
-      network: (selectedCrypto as any).network || [],
-    };
-
-    if (selectedCurrency.id !== selectedCrypto.id) {
-      setSelectedCurrency(newCurrency);
-      setValue("currency", selectedCrypto.symbol);
-      setSelectedNetworkId(""); 
-      setValue("network", "");
-      setWalletAddress("");
-      setWalletTag("");
-    } else {
-      setSelectedCurrency(newCurrency);
-      setValue("currency", selectedCrypto.symbol);
-    }
-
-    const options = (newCurrency.network || []).map((net: any) => {
-      const networkInfo = allNetworks.find((n) => n.id === net.id);
-      const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || `شبکه ${net.id}`;
-      const networkSymbol = networkInfo?.name || "";
-
-      return {
-        value: net.id.toString(),
-        label: `${networkName} (${networkSymbol})`,
+  useEffect(() => {
+    if (selectedCrypto) {
+      const newCurrency = {
+        id: selectedCrypto.id,
+        symbol: selectedCrypto.symbol,
+        name: selectedCrypto.locale?.fa?.name || selectedCrypto.symbol,
+        balance: selectedCrypto.balance,
+        network: (selectedCrypto as any).network || [],
       };
-    });
 
-    setNetworkOptions(options);
-  }
-}, [selectedCrypto, allNetworks, setValue]);
+      if (selectedCurrency.id !== selectedCrypto.id) {
+        setSelectedCurrency(newCurrency);
+        setValue("currency", selectedCrypto.symbol);
+        setSelectedNetworkId("");
+        setValue("network", "");
+        setWalletAddress("");
+        setWalletTag("");
+      } else {
+        setSelectedCurrency(newCurrency);
+        setValue("currency", selectedCrypto.symbol);
+      }
+
+      const options = (newCurrency.network || []).map((net: any) => {
+        const networkInfo = allNetworks.find((n) => n.id === net.id);
+        const networkName = networkInfo?.locale?.fa?.name || networkInfo?.name || `شبکه ${net.id}`;
+        const networkSymbol = networkInfo?.name || "";
+
+        return {
+          value: net.id.toString(),
+          label: `${networkName} (${networkSymbol})`,
+        };
+      });
+
+      setNetworkOptions(options);
+    }
+  }, [selectedCrypto, allNetworks, setValue]);
   useEffect(() => {
     if (selectedCurrency.id && selectedNetworkId) {
       checkForExistingAddress();
@@ -120,68 +118,63 @@ useEffect(() => {
 
       const existingWallet = wallets.find((w) => w.id_coin === selectedCurrency.id && w.id_net === networkIdNum);
 
-
-
       if (existingWallet?.address) {
         // آدرس وجود داره - فوراً نمایش بده
         setWalletAddress(existingWallet.address);
         setWalletTag(existingWallet.address_tag || "");
-      } 
+      }
     }, 300);
   };
 
-const handleCreateWallet = async () => {
-  if (!selectedCurrency.id || !selectedNetworkId || !selectedCurrency.symbol) {
-    toast.error("لطفاً ارز و شبکه را انتخاب کنید");
-    return;
-  }
-
-  setIsLoading(true);
-
-  try {
-    const networkIdNum = Number(selectedNetworkId);
-
-    const response = await apiRequest<any>({
-      url: "/wallets/crypto/deposit/create-wallet",
-      method: "POST",
-      data: {
-        symbol: selectedCurrency.symbol,
-        network: networkIdNum,
-      } as any,
-    });
-
-    if (response.status === true) {
-      toast.success(response.msg || "آدرس ساخته شد");
-      
-      if (response.wallet) {
-       
-        
-        // مستقیماً آدرس را ست کن
-        setWalletAddress(response.wallet.address);
-        setWalletTag(response.wallet.address_tag || "");
-        
-        // if (onRefreshData) {
-        //   setTimeout(() => {
-        //     onRefreshData();
-        //   }, 500);
-        // }
-      } else {
-        if (onRefreshData) {
-          await onRefreshData();
-        }
-      }
-    } else {
-      toast.error(response.msg || "خطا در ساخت آدرس");
+  const handleCreateWallet = async () => {
+    if (!selectedCurrency.id || !selectedNetworkId || !selectedCurrency.symbol) {
+      toast.error("لطفاً ارز و شبکه را انتخاب کنید");
+      return;
     }
-  } catch (err: any) {
-    toast.error("در حال حاضر ادرسی وجود ندارد.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+
+    setIsLoading(true);
+
+    try {
+      const networkIdNum = Number(selectedNetworkId);
+
+      const response = await apiRequest<any>({
+        url: "/wallets/crypto/deposit/create-wallet",
+        method: "POST",
+        data: {
+          symbol: selectedCurrency.symbol,
+          network: networkIdNum,
+        } as any,
+      });
+
+      if (response.status === true) {
+        toast.success(response.msg || "آدرس ساخته شد");
+
+        if (response.wallet) {
+          // مستقیماً آدرس را ست کن
+          setWalletAddress(response.wallet.address);
+          setWalletTag(response.wallet.address_tag || "");
+
+          // if (onRefreshData) {
+          //   setTimeout(() => {
+          //     onRefreshData();
+          //   }, 500);
+          // }
+        } else {
+          if (onRefreshData) {
+            await onRefreshData();
+          }
+        }
+      } else {
+        toast.error(response.msg || "خطا در ساخت آدرس");
+      }
+    } catch (err: any) {
+      toast.error("در حال حاضر ادرسی وجود ندارد.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-
     if (!selectedCurrency?.id || !selectedNetworkId) return;
     if (walletAddress) return;
 
@@ -192,13 +185,15 @@ const handleCreateWallet = async () => {
     if (existing) {
       setWalletAddress(existing.address);
       setWalletTag(existing.address_tag || "");
-    } 
+    }
   }, [wallets, selectedCurrency?.id, selectedNetworkId, walletAddress]);
 
   // حالت‌های مختلف UI
   const hasAddress = !!walletAddress;
   const hasSelectedNetwork = !!selectedNetworkId;
   const hasSelectedCurrency = !!selectedCurrency.id;
+
+  // فیلتر کردن ارزها برای ولت اختصاصی (فقط TRON و USDT)
 
   return (
     <div className="w-full" dir="rtl">

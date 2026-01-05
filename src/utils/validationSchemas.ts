@@ -57,37 +57,22 @@ export const emailValidation = (
 
 // schema برای صفحه Login
 export const getLoginSchema = () => {
-  return yup.object().shape({
-    email: emailValidation(
-      "ایمیل یا شماره همراه الزامی است.",
-      "ورودی نامعتبر است. لطفاً ایمیل یا شماره تلفن معتبر وارد کنید.",
-      "ایمیل وارد شده معتبر نیست.",
-      "شماره تلفن وارد شده معتبر نیست.",
-      "ایمیل باید شامل دامنه معتبر (مثل .com یا .ir) باشد."
-    ),
-    password: yup
-      .string()
-      .required("رمز عبور الزامی است.")
-      .matches(
-        /^.{6,}$/,
-        "رمز عبور باید حداقل ۸ کاراکتر باشد."
-      ),
+  return yup.object({
+    mobile: yup.string().required("شماره همراه الزامی است"),
+    password: yup.string().required("رمز عبور الزامی است"),
   });
 };
 
 
 
 
-// schema برای صفحه ForgotPassword
+// ForgotPasswordS
 export const getForgotPasswordSchema = () => {
-  return yup.object().shape({
-    email: emailValidation(
-      "لطفا ایمیل یا شماره همراه خود را وارد کنید.",
-      "لطفاً ایمیل یا شماره تلفن معتبر وارد کنید.",
-      "ایمیل وارد شده معتبر نیست.",
-      "شماره تلفن وارد شده معتبر نیست.",
-      "ایمیل باید شامل دامنه معتبر (مثل .com یا .ir) باشد."
-    ),
+  return yup.object({
+    mobile: yup
+      .string()
+      .required("شماره همراه الزامی است")
+      .matches(/^09[0-9]{9}$/, "شماره همراه معتبر نیست"), 
   });
 };
 
@@ -95,17 +80,13 @@ export const getForgotPasswordSchema = () => {
 // schema برای صفحه StepInvite
 export const getStepInviteSchema = () => {
   return yup.object().shape({
-    email: emailValidation(
-      "ایمیل یا شماره همراه الزامی است.",
-      "فرمت ایمیل یا شماره همراه معتبر نیست.",
-      "ایمیل وارد شده معتبر نیست.",
-      "شماره تلفن وارد شده معتبر نیست.",
-      "ایمیل باید شامل دامنه معتبر (مثل .com یا .ir) باشد."
-    ),
+    mobile: yup
+      .string()
+      .required("شماره همراه الزامی است.")
+      .matches(/^09[0-9]{9}$/, "شماره همراه معتبر نیست. فرمت صحیح: 09123456789"),
     inviteCode: yup.string().optional(),
   });
 };
-
 
 
 
@@ -165,7 +146,7 @@ export const getValidationSchemaCardtoCard = () => {
       .typeError("مبلغ باید عدد باشد")
       .required("وارد کردن مبلغ الزامی است")
       .min(200000, "حداقل مبلغ واریز ۲۰۰٬۰۰۰ تومان است")
-      .max(25000000, "حداکثر مبلغ واریز ۲۵٬۰۰۰٬۰۰۰ تومان است"),
+      .max(200000000, "حداکثر مبلغ واریز ۲۰۰٬۰۰۰٬۰۰۰ تومان است"),
     card: yup
       .number()
       .min(1, "لطفاً یک کارت معتبر انتخاب کنید")

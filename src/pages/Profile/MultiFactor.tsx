@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 import HeaderLayout from "../../layouts/HeaderLayout";
-import EmailIcon from "../../assets/icons/authentication/EmailIcon";
 import MultiFactorCard from "../../components/MultiFactor/MultiFactorCard";
 import Google from "../../assets/icons/MultiFactor/Google.png";
 import MessagesIcon from "../../assets/icons/MultiFactor/Iconmessages";
@@ -43,13 +42,6 @@ export default function MultiFactor() {
         button: "فعال کردن",
         Title: "تایید دو مرحله‌ای پیامک",
         text: `فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به شماره ${toPersianDigits(userData?.user?.mobile ?? "...")} ارسال شده است.`,
-      },
-      {
-        type: "email",
-        icon: <EmailIcon />,
-        button: "فعال کردن",
-        Title: "تایید دو مرحله‌ای ایمیل",
-        text: `فعال سازی ورود دو مرحله ای با استفاده از پیامکی که به ایمیل ${userData?.user?.email ?? "..."} ارسال شده است.`,
       },
     ],
     [twoFAData, userData]
@@ -163,7 +155,7 @@ export default function MultiFactor() {
           </div>
         </div>
       </HeaderLayout>
-      {isOpen && <TwoFactorModal type={modalType ?? undefined} closeModal={() => setIsOpen(false)} />}
+      {isOpen && <TwoFactorModal type={modalType ?? undefined} closeModal={() => setIsOpen(false)} userMobile={userData?.user?.mobile} userEmail={userData?.user?.email} />}
       {/* otp modal for deactivating 2fa ============================================================================= */}
       {isOpenActive && (
         <OTPInputModal

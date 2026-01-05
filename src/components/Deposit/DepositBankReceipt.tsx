@@ -20,9 +20,13 @@ import IconCopy from "../../assets/icons/AddFriend/IconCopy";
 const schema = yup.object().shape({
   bank: yup.string().required("حساب مبدا الزامی است"),
   destinationBank: yup.string().required("حساب مقصد الزامی است"),
-  amount: yup.number().min(1_000_000, "حداقل ۱ میلیون تومان").required("مقدار واریزی الزامی است"),
+  amount: yup
+    .number()
+    .typeError("مبلغ باید عدد باشد")
+    .required("مقدار واریزی الزامی است")
+    .min(1_000_000, "حداقل مبلغ واریزی ۱ میلیون تومان است")
+    .max(500_000_000, "حداکثر مبلغ قابل واریز ۵۰۰ میلیون تومان است"),
 });
-
 // ---------- props ----------
 interface ReceiptCard {
   account_name: string;
@@ -66,9 +70,9 @@ export default function DepositBankReceipt({ loadingBankCards, bankCards, receip
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    mode: "onSubmit", // تغییر به onSubmit برای چک فقط بعد از سابمیت
     defaultValues: { amount: undefined, bank: "", destinationBank: "" },
   });
 
@@ -110,12 +114,10 @@ export default function DepositBankReceipt({ loadingBankCards, bankCards, receip
       setSelectedFile(file);
       setPreviewURL(URL.createObjectURL(file));
       onFileChange(file);
-      // setValue("amount", 0, { shouldValidate: true });
     } else {
       setSelectedFile(null);
       setPreviewURL(null);
       onFileChange(null);
-      // setValue("amount", 0, { shouldValidate: true });
     }
   };
 
@@ -127,13 +129,22 @@ export default function DepositBankReceipt({ loadingBankCards, bankCards, receip
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      if (!selectedFile) throw new Error("لطفاً فیش را انتخاب کنید");
+      if (!selectedFile) {
+        toast.error("لطفاً فیش واریز را آپلود کنید");
+        return;
+      }
 
       const card = bankCards.find((c) => c.bank === data.bank);
-      if (!card) throw new Error("کارت مبدا انتخاب نشده است");
+      if (!card) {
+        toast.error("حساب مبدا انتخاب نشده است");
+        return;
+      }
 
       const payeeIban = receiptAccounts[0]?.iban_number;
-      if (!payeeIban) throw new Error("شماره شبا مقصد در دسترس نیست");
+      if (!payeeIban) {
+        toast.error("شماره شبا مقصد در دسترس نیست");
+        return;
+      }
 
       const formData = new FormData();
       formData.append("amount", data.amount.toString());
@@ -142,11 +153,26 @@ export default function DepositBankReceipt({ loadingBankCards, bankCards, receip
       formData.append("file", selectedFile);
 
       const ok = await uploadFile(formData);
-      if (ok) setTimeout(onNext, 1500);
+      if (ok) {
+        setTimeout(onNext, 1500);
+      }
     } catch (err: any) {
       toast.error(err.message || "خطا در ثبت اطلاعات");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // تابع برای وقتی فرم invalid بود (فقط بعد از سابمیت)
+  const onInvalid = (errors: any) => {
+    if (errors.amount) {
+      toast.error(errors.amount.message);
+    } else if (errors.bank) {
+      toast.error(errors.bank.message);
+    } else if (errors.destinationBank) {
+      toast.error(errors.destinationBank.message);
+    } else {
+      toast.error("لطفاً تمام فیلدها را به درستی پر کنید");
     }
   };
 
@@ -234,19 +260,10 @@ export default function DepositBankReceipt({ loadingBankCards, bankCards, receip
                     {a.account_number && <span className="text-xs lg:text-sm text-black0">{toPersianDigits(a.account_number)}</span>}
                   </div>
                 ),
-                // icon: (
-                //   <img
-                //     src={getBankLogo(a.name_bank) || "/bank-logos/bank-sayer.png"}
-                //     alt={a.name_bank}
-                //     className="w-[22px] h-[22px] object-contain rounded-full"
-                //   />
-                // ),
               }))}
             />
           )}
         />
-
-        {errors.destinationBank && <p className="text-red1 text-xs pt-2">{errors.destinationBank.message}</p>}
       </div>
 
       {selectedDestination && (
@@ -286,7 +303,7 @@ export default function DepositBankReceipt({ loadingBankCards, bankCards, receip
               <span>شماره شبا</span>
               <div
                 onClick={() => {
-                  navigator.clipboard.writeText(selectedDestination.account_number);
+                  navigator.clipboard.writeText(selectedDestination.iban_number);
                   toast.info("کپی شد");
                 }}
                 className="flex items-center gap-1 hover:text-blue2 cursor-pointer"
@@ -322,7 +339,6 @@ export default function DepositBankReceipt({ loadingBankCards, bankCards, receip
           )}
         />
         <p className="text-gray5 text-sm mt-2">حداقل واریز با فیش بانکی، ۱,۰۰۰,۰۰۰ تومان می‌باشد.</p>
-        {/* {errors.amount && <p className="text-red1 text-xs py-3 pt-2">مبلغ عددی صحیح وارد کنید</p>} */}
       </div>
 
       {/* دکمه‌های مبلغ پیشنهادی */}
@@ -373,7 +389,7 @@ export default function DepositBankReceipt({ loadingBankCards, bankCards, receip
       {/* دکمه ثبت */}
       <div className="mt-14">
         <button
-          onClick={handleSubmit(onSubmit)}
+          onClick={handleSubmit(onSubmit, onInvalid)} // اضافه کردن onInvalid
           disabled={!isFormComplete || loading || isUploading}
           type="button"
           className={`relative text-white2 font-bold text-lg w-full py-3 rounded-lg overflow-hidden transition-all

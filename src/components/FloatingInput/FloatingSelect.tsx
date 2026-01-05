@@ -121,7 +121,7 @@ const FloatingSelect: FC<FloatingSelectProps> = ({
                   {value === option.value && <span className="absolute w-2 h-2 top-1/2 left-1/2 bg-blue2 -translate-x-1/2 -translate-y-1/2 rounded-full"></span>}
                 </span>
               )}
-              <div className="flex items-center justify-between w-full gap-4">
+              <div className="flex items-center justify-between w-full ">
                 {option.icon && <span className="w-8 h-8 flex-shrink-0">{option.icon}</span>}
 
                 <div className="flex-1 text-right">

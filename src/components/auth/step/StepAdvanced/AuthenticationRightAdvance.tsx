@@ -26,12 +26,6 @@ export default function AuthenticationRightAdvance({ step, onStart, isAdvanced }
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex flex-row items-center justify-end">
-            <span className="mr-2 text-black1 text-base">ثبت ایمیل</span>
-            <span className="icon-wrapper lg:w-7 lg:h-7 w-6 h-6 text-blue2">
-              <IconCheckmark />
-            </span>
-          </div>
-          <div className="flex flex-row items-center justify-end">
             <span className="mr-2 text-black1 text-base">مشخصات فردی</span>
             <span className="icon-wrapper lg:w-7 lg:h-7 w-6 h-6 text-blue2">
               <IconCheckmark />
