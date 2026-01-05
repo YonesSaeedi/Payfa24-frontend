@@ -60,7 +60,7 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent px-4" style={{ scrollbarGutter: "stable" }}>
+        {/* <div className="flex-1 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent px-4" style={{ scrollbarGutter: "stable" }}>
           {isLoading
             ? [...Array(3)].map((_, index) => (
                  <div
@@ -111,7 +111,68 @@ export default function OrderModal({ orders, isLoading, onSelectOrder, onClose }
                   </button>
                 );
               })}
+        </div> */}
+        <div
+  className="flex-1 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent px-4"
+  style={{ scrollbarGutter: "stable" }}
+>
+  {isLoading ? (
+    [...Array(3)].map((_, index) => (
+      <div
+        key={index}
+        className="w-full border rounded-xl p-3 flex justify-between items-center bg-gray33 border-gray21 animate-pulse mb-2"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg skeleton-bg"></div>
+          <div className="flex flex-col gap-2">
+            <div className="w-20 h-4 rounded-md skeleton-bg"></div>
+            <div className="w-12 h-3 rounded-md skeleton-bg"></div>
+          </div>
         </div>
+        <div className="w-16 h-4 rounded-md skeleton-bg"></div>
+      </div>
+    ))
+  ) : orders.length === 0 ? (
+    <div className="flex items-center justify-center h-full text-gray5 text-lg font-normal">
+      هیچ سفارشی ثبت نشده است.
+    </div>
+  ) : (
+    orders.map((order) => {
+      const orderType = order.type as string;
+      const { text: orderTypeText, icon: orderIcon } = mapOrderType(orderType);
+
+      return (
+        <button
+          key={order.id}
+          onClick={() => onSelectOrder(order)}
+          className="w-full border rounded-xl p-3 flex justify-between items-center bg-gray33 border-gray21 hover:border-blue-400 transition"
+        >
+          <div className="flex items-center w-full justify-between">
+            <div className="flex items-center">
+              <div className="w-10 h-10 ml-3 bg-blue15 rounded-lg flex items-center justify-center">
+                <span className=" w-6 h-6 text-blue2">{orderIcon}</span>
+              </div>
+              <div className="flex flex-col text-right">
+                <p className="text-sm font-medium text-black1">{order.coin}</p>
+                <span className="text-gray-500 font-normal text-xs mt-1">{orderTypeText}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-end">
+              {order.amount != null && orderType !== "ticket" && (
+                <span className="text-black0 font-medium text-[14px]">
+                  {Number(order.amount).toLocaleString("fa-IR")} <span className="text-gray5">USDT</span>
+                </span>
+              )}
+              {order.date && <span className="text-gray-400 text-xs mt-1">{order.date}</span>}
+            </div>
+          </div>
+        </button>
+      );
+    })
+  )}
+</div>
+
       </div>
     </div>
   );

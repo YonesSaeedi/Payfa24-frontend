@@ -182,6 +182,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
                 value={field.value || ""}
                 onChange={field.onChange}
                 type="text"
+                 placeholder="عنوان تیکت را وارد نمایید"
                 className="flex flex-row  rounded-lg border border-gray12 font-normal !text-[14px]"
               />
             )}
