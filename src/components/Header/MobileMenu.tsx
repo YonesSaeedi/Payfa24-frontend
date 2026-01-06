@@ -58,28 +58,7 @@ const handleKYCClick = () => {
   onClose(); // بستن منو بعد از انتخاب
 };
 
-  // const handleLogout = async () => {
-  //   try {
-  //     await apiRequest({ url: "/auth/logout", method: "POST" });
-  //   } catch (error) {
-  //     console.error("Error logging out:", error);
-  //   } finally {
-  //     localStorage.clear();
-  //     window.location.replace("/login");
-  //   }
-  // };
 
-  //////////////////////444
-// const handleLogoutConfirm = async () => {
-//   try {
-//     await apiRequest({ url: "/auth/logout", method: "POST" });
-//   } catch (error) {
-//     console.error("Error logging out:", error);
-//   } finally {
-//     localStorage.clear();
-//     window.location.replace("/login");
-//   }
-// };
 
 const handleLogout = () => {
   const token = localStorage.getItem("accessToken");

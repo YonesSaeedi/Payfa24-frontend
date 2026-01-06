@@ -47,8 +47,8 @@ const TicketsDashboard: React.FC = () => {
         if (serverTickets.length > 0 && !activeTicket) {
           setActiveTicket(serverTickets[0]);
         }
-      } catch (err) {
-        console.error("خطا در دریافت تیکت‌ها:", err);
+      } catch  {
+         // خطا نادیده گرفته شد
       } finally {
         setLoading(false);
       }

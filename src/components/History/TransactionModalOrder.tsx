@@ -98,7 +98,7 @@ const TransactionModalOrder: React.FC<TransactionModalOrderProps> = ({ tx, onClo
           });
         }
       } catch (err) {
-        console.error("خطا در دریافت جزئیات سفارش:", err);
+         // خطا نادیده گرفته شد
       } finally {
         setLoading(false);
       }

@@ -143,7 +143,7 @@ useEffect(() => {
         await apiRequest({ url: "/token-firebase", method: "PUT", data: { token: fcmTokenValue } });
         localStorage.setItem("fcmToken", fcmTokenValue);
       } catch (err) {
-        console.error("Failed to send token to server", err);
+        // خطا نادیده گرفته شد
       }
     };
     sendTokenToServer();

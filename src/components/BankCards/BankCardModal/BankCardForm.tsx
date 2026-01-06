@@ -63,7 +63,7 @@ const BankCardForm = ({ onSave }: BankCardFormProps) => {
       setCardNumber("");
       setBank("");
     } catch (err) {
-      console.error(err);
+      // خطا نادیده گرفته شد
     } finally {
       setIsSubmitting(false);
     }
