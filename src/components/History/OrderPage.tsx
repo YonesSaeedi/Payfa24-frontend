@@ -93,7 +93,7 @@ const OrderPage: React.FC = () => {
         setResponseData(response.orders || []);
         setTotalPages(response.orders_count || 1);
       } catch (err) {
-        console.error("خطا در دریافت داده‌های تراکنش:", err);
+         // خطا نادیده گرفته شد
       } finally {
         setIsLoading(false);
       }

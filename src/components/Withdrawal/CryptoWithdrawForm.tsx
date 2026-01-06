@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
@@ -107,6 +107,9 @@ const CryptoWithdrawForm: FC = () => {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const userMobile = userData?.user?.mobile || "شماره شما";
 
+
+  const hasFetched = useRef(false);
+
   const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
     setCrypto(currency.symbol);
     setCurrentCryptoCurrency(currency);
@@ -187,30 +190,55 @@ const CryptoWithdrawForm: FC = () => {
     };
   }, [isOtpModalOpen, resendCodeTimeLeft]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await apiRequest<WithdrawApiResponse>({
-          url: "/wallets/crypto/withdraw",
-          method: "GET",
-        });
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await apiRequest<WithdrawApiResponse>({
+  //         url: "/wallets/crypto/withdraw",
+  //         method: "GET",
+  //       });
 
-        setCoins(res.coins || []);
-        setAllNetworks(res.networks || []);
-        setLevelUsed(res.level_used || {});
-      } catch (err) {
-     toast.error(
-    (err as AxiosError<{ msg?: string }>).response?.data?.msg ||
-      "در بارگذاری اطلاعات برداشت مشکلی پیش آمده لطفاً دوباره تلاش کنید"
-  );
-      } finally {
-        setIsDataLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  //       setCoins(res.coins || []);
+  //       setAllNetworks(res.networks || []);
+  //       setLevelUsed(res.level_used || {});
+  //     } catch (err) {
+  //    toast.error(
+  //   (err as AxiosError<{ msg?: string }>).response?.data?.msg ||
+  //     "در بارگذاری اطلاعات برداشت مشکلی پیش آمده لطفاً دوباره تلاش کنید"
+  // );
+  //     } finally {
+  //       setIsDataLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+
+useEffect(() => {
+  if (hasFetched.current) return; // اگر قبلا fetch شد، هیچ کاری نکن
+  hasFetched.current = true;
+
+  const fetchData = async () => {
+   
+    try {
+      const res = await apiRequest<WithdrawApiResponse>({
+        url: "/wallets/crypto/withdraw",
+        method: "GET",
+      });
+    
+      setCoins(res.coins || []);
+      setAllNetworks(res.networks || []);
+      setLevelUsed(res.level_used || {});
+    }  finally {
+      setIsDataLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+
 
   useEffect(() => {
     if (!crypto) {
@@ -249,8 +277,86 @@ const CryptoWithdrawForm: FC = () => {
   };
 
   //  ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
-  const handleSubmit = async (e: React.FormEvent) => {
+//   const handleSubmit = async (e: React.FormEvent) => {
+//   e.preventDefault();
+//   setIsLoading(true);
+//   setAmountError(false);
+
+//   if (!selectedNetwork) {
+//     toast.error("لطفاً شبکه را انتخاب کنید");
+//     setIsLoading(false);
+//     return;
+//   }
+
+//   const withdrawAmount = parseFloat(amount);
+//   if (!amount || isNaN(withdrawAmount)) {
+//     toast.error("لطفاً مقدار برداشت را وارد کنید");
+//     setIsLoading(false);
+//     return;
+//   }
+
+// const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
+//  if (withdrawAmount < minWithdraw) {
+//   toast.error(
+//     `مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.  `
+//   );
+//   setAmountError(true);
+//   setIsLoading(false);
+//   return;
+// }
+
+//   try {
+//     const response = await apiRequest<WithdrawApiResponse, {
+//       coin: string;
+//       network: string;
+//       withdrawAmount: number;
+//       withdrawAddressWallet: string;
+//       withdrawAddressWalletTag: string;
+//     }>({
+//       url: "/wallets/crypto/withdraw/request",
+//       method: "POST",
+//       data: {
+//         coin: crypto,
+//         network: selectedNetwork?.symbol || "",
+//         withdrawAmount,
+//         withdrawAddressWallet: address,
+//         withdrawAddressWalletTag: tag,
+//       },
+//     });
+
+//     if (!response.transaction_id) {
+//       toast.error("شناسه تراکنش از سرور دریافت نشد.");
+//       setIsLoading(false);
+//       return;
+//     }
+
+//     setWithdrawData({
+//       transactionId: response.transaction_id,
+//       network: selectedNetwork.symbol,
+//       withdrawAmount,
+//       withdrawAddressWallet: address,
+//       withdrawAddressWalletTag: tag,
+//     });
+
+//     setResendCodeTimeLeft(120);
+//     setIsOtpModalOpen(true);
+//   } catch (err) {
+//     toast.error(
+//       (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
+//         "ارسال درخواست برداشت با مشکل مواجه شد."
+//     );
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
+
+
+
+
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+
+  if (isLoading) return; 
   setIsLoading(true);
   setAmountError(false);
 
@@ -260,23 +366,47 @@ const CryptoWithdrawForm: FC = () => {
     return;
   }
 
-  const withdrawAmount = parseFloat(amount.replace(/\D/g, ""));
+  const withdrawAmount = parseFloat(amount);
   if (!amount || isNaN(withdrawAmount)) {
     toast.error("لطفاً مقدار برداشت را وارد کنید");
     setIsLoading(false);
     return;
   }
 
-const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
- if (withdrawAmount < minWithdraw) {
-  toast.error(
-    `مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.  `
-  );
-  setAmountError(true);
-  setIsLoading(false);
-  return;
-}
+  const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
+  if (withdrawAmount < minWithdraw) {
+    toast.error(`مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.`);
+    setAmountError(true);
+    setIsLoading(false);
+    return;
+  }
 
+  // بررسی موجودی
+  const availableBalance = parseFloat(coins.find(c => c.symbol === crypto)?.balance_available ?? "0");
+  if (withdrawAmount > availableBalance) {
+    toast.error("مقدار وارد شده بیشتر از موجودی قابل برداشت است!");
+    setAmountError(true);
+    setIsLoading(false);
+    return;
+  }
+
+  // اعتبارسنجی آدرس و ممو
+  const addressRegex = selectedNetwork?.addressRegex ? new RegExp(selectedNetwork.addressRegex) : null;
+  const memoRegex = selectedNetwork?.memoRegex ? new RegExp(selectedNetwork.memoRegex) : null;
+
+  if (addressRegex && !addressRegex.test(address)) {
+    toast.error("آدرس کیف پول معتبر نیست");
+    setIsLoading(false);
+    return;
+  }
+
+  if (selectedNetwork?.tag === 1 && memoRegex && !memoRegex.test(tag)) {
+    toast.error("آدرس ممو/تگ معتبر نیست");
+    setIsLoading(false);
+    return;
+  }
+
+  // ادامه ارسال درخواست به سرور
   try {
     const response = await apiRequest<WithdrawApiResponse, {
       coin: string;
@@ -289,7 +419,7 @@ const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
       method: "POST",
       data: {
         coin: crypto,
-        network: selectedNetwork?.symbol || "",
+        network: selectedNetwork.symbol || "",
         withdrawAmount,
         withdrawAddressWallet: address,
         withdrawAddressWalletTag: tag,
@@ -313,15 +443,11 @@ const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
     setResendCodeTimeLeft(120);
     setIsOtpModalOpen(true);
   } catch (err) {
-    toast.error(
-      (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
-        "ارسال درخواست برداشت با مشکل مواجه شد."
-    );
+    toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "ارسال درخواست برداشت با مشکل مواجه شد.");
   } finally {
     setIsLoading(false);
   }
 };
-
 
   //  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
   const handleSubmitTransfers = async (e: React.FormEvent) => {
@@ -420,11 +546,11 @@ useEffect(() => {
   setTag("");   
 }, [activeTab]);
 
-const formatWithComma = (value: string | number) => {
-  const strValue = value.toString();
-  const cleaned = strValue.replace(/\D/g, "");
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
+// const formatWithComma = (value: string | number) => {
+//   const strValue = value.toString();
+//   const cleaned = strValue.replace(/\D/g, "");
+//   return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+// };
 
 
 
@@ -529,16 +655,20 @@ const formatWithComma = (value: string | number) => {
   label="مقدار"
   value={amount}
   onChange={(e) => {
-  const raw = e.target.value.replace(/\D/g, "");
-  setAmount(formatWithComma(raw));
-  if (amountError) setAmountError(false);
-}}
-
+    const raw = e.target.value;
+    if (/^\d*\.?\d*$/.test(raw)) {
+      setAmount(raw);
+      if (amountError) setAmountError(false);
+    }
+  }}
   type="text"
-  className={`border mb-2 ${amountError ? "border-red-500 shadow-red-700" : "border-gray12"}`}
+  className={`border mb-2 ${amountError ? "border-red-500! shadow-red-700" : "border-gray12"}`}
   labelClassName="!font-normal !text-sm"
   placeholder="0"
 />
+
+
+
 
 <div className="flex justify-end items-center text-sm font-normal pb-2 gap-1">
 

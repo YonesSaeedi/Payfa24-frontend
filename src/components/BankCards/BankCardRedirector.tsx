@@ -22,8 +22,8 @@ export default function BankCardsRedirector() {
         } else {
           navigate(ROUTES.BANK_CARDS, { replace: true });
         }
-      } catch (e) {
-        console.error(e);
+      } catch {
+       
         navigate(ROUTES.BANK_CARDS, { replace: true });
       }
     };

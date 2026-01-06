@@ -100,7 +100,7 @@ const [selectedTx, setSelectedTx] = useState<Tx | null>(null);
         setResponseData(response.transaction || []);
         setTotalPages(response.transaction_count || 1);
       } catch (err) {
-        console.error("خطا در دریافت داده‌های تراکنش:", err);
+         // خطا نادیده گرفته شد
       } finally {
         setIsLoading(false);
       }
