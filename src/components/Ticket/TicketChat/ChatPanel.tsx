@@ -1,0 +1,409 @@
+import React, { useState, useEffect, useRef } from "react";
+import { Ticket } from "./types";
+import bgChat from "../../../assets/images/Ticket/bgchatlight.jpg";
+import bgchatDark from "../../../assets/images/Ticket/bgchatDark.jpg";
+import supportAvatar from "../../../assets/images/Ticket/avator.jpg";
+import IconSendMessage from "../../../assets/icons/ticket/IconSendMessage";
+import IconAttachFile from "../../../assets/icons/ticket/IconAttachFile";
+import { apiRequest } from "../../../utils/apiClient";
+import { ticketStatusMap } from "../../../utils/statusMap";
+import StatusBadge from "../../UI/Button/StatusBadge";
+import axios from "axios";
+import { toast } from "react-toastify";
+import type { AxiosProgressEvent } from "axios";
+import IconCloseButtun from "../../../assets/icons/services/IconCloseButtun";
+
+interface ChatPanelProps {
+  ticket: Ticket | null;
+}
+
+interface Message {
+  id: number;
+  text?: string;
+  isUser: boolean;
+  timestamp: string;
+  senderName?: string;
+  senderRole?: string;
+  file?: string;
+  attachment?: {
+    type: "pdf" | "image";
+    name: string;
+    size: string;
+    url?: string;
+  };
+  system?: boolean;
+}
+
+interface TicketMessageResponse {
+  id: number;
+  message: string;
+  author: "user" | "support";
+  time: string;
+  file?: string;
+}
+
+interface TicketInfoResponse {
+  ticket: {
+    id: number;
+    title: string;
+    status: keyof typeof ticketStatusMap;
+  };
+  ticket_message: TicketMessageResponse[];
+}
+
+type TicketInfo = TicketInfoResponse;
+
+const ChatHeader: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
+  const statusText = ticketStatusMap[ticket.status] || "نامشخص";
+
+  return (
+    <div className="border-b border-b-gray21 bg-gray37 rounded-t-[16px] px-4 py-3">
+      <div className="flex items-center justify-between flex-row-reverse">
+        <div dir="rtl" className="flex flex-col">
+          <span className="text-gray5 text-sm">شماره تیکت: #{ticket.id}</span>
+          <span className="font-medium text-black1 mt-2 text-base">{ticket.title}</span>
+        </div>
+        <div>
+          <StatusBadge text={statusText} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
+  const [newMessage, setNewMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isSending, setIsSending] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [imageCache, setImageCache] = useState<Record<number, string>>({});
+  const imageCacheRef = useRef<Record<number, string>>({});
+  const pendingFetches = useRef<Set<number>>(new Set());
+  const [ticketInfo, setTicketInfo] = useState<TicketInfo | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+
+    updateTheme();
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+
+  const fetchData = async () => {
+    if (!ticket?.id) return;
+    setLoading(true);
+    try {
+      const res = await apiRequest<TicketInfoResponse>({
+        url: `/ticket/${ticket.id}/get-info`,
+        method: "GET",
+      });
+
+      const formattedMessages: Message[] = res.ticket_message.map((m) => ({
+        id: m.id,
+        text: m.message,
+        isUser: m.author === "user",
+        timestamp: m.time,
+        file: m.file,
+      }));
+
+      setTicketInfo(res);
+      setMessages(formattedMessages);
+    } catch (err) {
+      console.error("ticket/get-info:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFileAsDataUrl = async (fileToken: string) => {
+    const filePath = `/image/${fileToken}`;
+    try {
+      const blob = await apiRequest<Blob>({
+        url: filePath,
+        method: "GET",
+        responseType: "blob",
+      });
+      return URL.createObjectURL(blob);
+    } catch (err) {
+      console.error("خطا در دریافت فایل:", err);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [ticket]);
+
+  useEffect(() => {
+    if (!ticketInfo) return;
+
+    ticketInfo.ticket_message.forEach((msg) => {
+      if (!msg.file) return;
+      const id = msg.id;
+      if (imageCacheRef.current[id] || pendingFetches.current.has(id)) return;
+
+      pendingFetches.current.add(id);
+
+      fetchFileAsDataUrl(msg.file)
+        .then((fileUrl) => {
+          if (fileUrl) {
+            const next = { ...imageCacheRef.current, [id]: fileUrl };
+            imageCacheRef.current = next;
+            setImageCache((prev) => ({ ...prev, [id]: fileUrl }));
+          }
+        })
+        .catch((err) => console.error("خطا در دانلود تصویر پیام:", id, err))
+        .finally(() => pendingFetches.current.delete(id));
+    });
+  }, [ticketInfo]);
+
+  useEffect(() => {
+    imageCacheRef.current = imageCache;
+  }, [imageCache]);
+
+  const handleSend = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) e.preventDefault();
+    if ((!newMessage.trim() && !selectedFile) || !ticket || isSending) return;
+
+    setIsSending(true);
+    setUploadProgress(0);
+
+    try {
+      const formData = new FormData();
+      formData.append("message", newMessage.trim() || "فایل پیوست شد");
+      if (selectedFile) formData.append("file", selectedFile);
+
+      await apiRequest({
+        url: `/ticket/${ticket.id}/new`,
+        method: "POST",
+        data: formData,
+        isFormData: true,
+        onUploadProgress: (event?: AxiosProgressEvent) => {
+          if (event?.loaded && event?.total) {
+            const percent = Math.round((event.loaded * 100) / event.total);
+            setUploadProgress(percent);
+          }
+        },
+      });
+
+      const tempMsgId = Date.now();
+      const tempUrl = selectedFile ? URL.createObjectURL(selectedFile) : undefined;
+
+      const newMsg: Message = {
+        id: tempMsgId,
+        text: newMessage.trim(),
+        isUser: true,
+        timestamp: new Date().toLocaleString("fa-IR"),
+        file: tempUrl,
+      };
+
+      setMessages((prev) => [...prev, newMsg]);
+      setNewMessage("");
+      setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
+      // ---------- حذف کامل get-info اضافی ----------
+      if (selectedFile && tempUrl) {
+        // دانلود مستقیم فایل و قرار دادن در cache
+        fetchFileAsDataUrl(selectedFile.name).then((fileUrl) => {
+          if (fileUrl) {
+            const next = { ...imageCacheRef.current, [tempMsgId]: fileUrl };
+            imageCacheRef.current = next;
+            setImageCache((prev) => ({ ...prev, [tempMsgId]: fileUrl }));
+          }
+        });
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
+        toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");
+      }
+      console.error("خطا در ارسال پیام:", err);
+    } finally {
+      setIsSending(false);
+      setUploadProgress(null);
+    }
+  };
+
+  const handleAttachClick = () => fileInputRef.current?.click();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        alert("فقط فرمت‌های jpg, jpeg, png مجاز است");
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const convertDigitsToPersian = (str: string) => {
+    return str.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
+  };
+
+  return (
+    <div className="flex-1 w-full">
+      <div className=" relative border border-gray21 rounded-[16px] h-[798px] flex flex-col overflow-hidden">
+        {ticket && <ChatHeader ticket={ticket} />}
+
+        <div className="relative flex-1 p-4 overflow-y-auto bg-cover bg-center" style={{ backgroundImage: `url(${isDark ? bgchatDark : bgChat})` }}>
+          <div className="relative z-10 flex flex-col gap-4">
+            {loading ? (
+              <>
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+                    <div dir="rtl" className="shadow rounded-xl px-3 w-[360px] h-[110px] relative flex-col bg-gray40 text-black1 animate-pulse">
+                      <div className="h-4 w-32 skeleton-bg rounded mt-4 mb-2"></div>
+                      <div className="h-4 w-64 skeleton-bg rounded mb-4"></div>
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              messages.map((msg) => (
+                <div key={msg.id} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
+                  <div
+                    dir="rtl"
+                    className={`shadow px-3 w-[379px] relative flex-col ${msg.isUser
+                      ? "bg-black4 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-bl-[8px]"
+                      : "bg-gray40 text-black1 rounded-tl-[8px] rounded-tr-[8px] rounded-br-[8px]"
+                      }`}
+                  >
+                    {!msg.isUser && (
+                      <div dir="rtl" className="flex items-center gap-2 mb-2 mt-4">
+                        <img src={supportAvatar} alt="پشتیبانی" className="w-6 h-6 rounded-full" />
+                        <span className="text-xs text-black1">
+                          {msg.senderName || "پشتیبانی"} ({msg.senderRole || "admin"})
+                        </span>
+                      </div>
+                    )}
+
+                    {msg.text && <p dir="rtl" className="mt-4">{msg.text}</p>}
+
+                    {msg.file && (
+                      <div className="rounded-2xl w-fit p-2 mt-2">
+                        {imageCache[msg.id] ? (
+                          <img
+                            src={imageCache[msg.id]}
+                            alt="attachment"
+                            className="rounded-lg border border-gray21 w-[200px] h-[150px] object-cover cursor-pointer"
+                            onClick={() => setFullscreenImage(imageCache[msg.id])}
+                          />
+                        ) : (
+                          <div className="border rounded-lg border-gray21 animate-pulse w-[200px] h-[150px] skeleton-bg"></div>
+                        )}
+                      </div>
+                    )}
+
+                    <span dir="rtl" className=" text-gray-400 block mt-4 text-right mb-4 font-normal  text-[12px]">
+                      {convertDigitsToPersian(msg.timestamp)}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          {selectedFile && (
+            <div dir="rtl" className="mt-4 mb-2 mx-3">
+              <div className="flex flex-col rounded-2xl w-64 shadow bg-blue-100 p-3 gap-2">
+                <div className="flex relative gap-2 items-center">
+                  <div className="w-full text-sm break-all">{selectedFile.name}</div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedFile(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                    }}
+                    className="flex text-xs bg-red-500 text-white rounded-full w-5 h-5 items-center justify-center hover:bg-red-600"
+                    title="حذف فایل"
+                  >
+                    <span className="w-4 h-4 icon-wrapper">
+                      <IconCloseButtun />
+                    </span>
+                  </button>
+                </div>
+                {isSending && uploadProgress !== null && (
+                  <div className="w-full h-1 bg-gray-300 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div dir="rtl" className="p-3 flex gap-2 bg-white8">
+          <input
+            type="text"
+            placeholder="پیام خود را بنویسید..."
+            className="flex-1 px-3 py-2 focus:outline-none bg-white8 text-black0"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                setTimeout(() => handleSend(), 0);
+              }
+            }}
+          />
+          <input type="file" ref={fileInputRef} accept=".jpg,.jpeg,.png" className="hidden" onChange={handleFileChange} />
+
+          <button className="text-gray39 pl-3" onClick={handleAttachClick}>
+            <span className="icon-wrapper w-[22px] hover:text-blue2 h-[22px]">
+              <IconAttachFile />
+            </span>
+          </button>
+
+          <button className="bg-blue15 text-white rounded-xl shadow w-[45px] h-[45px] hover:border-blue2 hover:border  hover:text-blue2" onClick={handleSend} disabled={isSending}>
+            {isSending ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
+            ) : (
+              <span className="icon-wrapper w-[22px] h-[22px]">
+                <IconSendMessage />
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {fullscreenImage && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onClick={() => setFullscreenImage(null)}>
+          <img src={fullscreenImage} alt="fullscreen" className="max-h-full max-w-full rounded-lg" />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ChatPanel;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

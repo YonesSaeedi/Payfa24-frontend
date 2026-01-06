@@ -1,0 +1,46 @@
+name: React Panel Deployment
+
+on:
+  push:
+    branches: [main, dev]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install & Build
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to Server
+        run: |
+          if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/main"
+          else
+            TARGET_DIR="/home/payfa24/domains/payfa24.org/panel/dev"
+          fi
+
+          # ۱. ایجاد پوشه در صورت عدم وجود
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "mkdir -p ${TARGET_DIR}"
+
+          # ۲. پاکسازی فایل‌های قدیمی (حذف همه چیز به جز خود پوشه اصلی)
+          # استفاده از rsync برای پاکسازی ایمن‌تر
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "cd ${TARGET_DIR} && rm -rf *"
+
+          # ۳. انتقال فایل‌های جدید بیلد شده
+          scp -P 3031 -r dist/* root@45.159.114.231:${TARGET_DIR}/
+
+          # ۴. اصلاح مالکیت فایل‌ها
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "chown -R payfa24:payfa24 ${TARGET_DIR} && chmod -R 755 ${TARGET_DIR}"
+
+          # ۵. تایید انتقال فایل‌ها
+          echo "Deployment completed to: ${TARGET_DIR}"
+          ssh -o StrictHostKeyChecking=no -p 3031 root@45.159.114.231 "ls -la ${TARGET_DIR}/"
