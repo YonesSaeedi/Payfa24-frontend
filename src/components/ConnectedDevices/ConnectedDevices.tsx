@@ -36,7 +36,7 @@ export default function DeviceList() {
       });
       setActiveSessions(response.sessions);
     } catch (error) {
-      console.error("Error fetching active sessions:", error);
+       // خطا نادیده گرفته شد
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +55,7 @@ export default function DeviceList() {
       });
       fetchActiveSessions();
     } catch (error) {
-      console.error("Error ending all sessions:", error);
+       // خطا نادیده گرفته شد
     } finally {
       setIsSubmitting(false);
     }
@@ -71,7 +71,7 @@ export default function DeviceList() {
       });
       fetchActiveSessions();
     } catch (error) {
-      console.error("Error ending session:", error);
+      // خطا نادیده گرفته شد
     } finally {
       setIsSubmitting(false);
     }

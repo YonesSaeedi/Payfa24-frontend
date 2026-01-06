@@ -118,7 +118,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
       setTicketInfo(res);
       setMessages(formattedMessages);
     } catch (err) {
-      console.error("ticket/get-info:", err);
+       // خطا نادیده گرفته شد
     } finally {
       setLoading(false);
     }
@@ -134,7 +134,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
       });
       return URL.createObjectURL(blob);
     } catch (err) {
-      console.error("خطا در دریافت فایل:", err);
+        // خطا نادیده گرفته شد
       return null;
     }
   };
@@ -161,7 +161,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
             setImageCache((prev) => ({ ...prev, [id]: fileUrl }));
           }
         })
-        .catch((err) => console.error("خطا در دانلود تصویر پیام:", id, err))
+        
         .finally(() => pendingFetches.current.delete(id));
     });
   }, [ticketInfo]);
@@ -226,7 +226,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ ticket }) => {
       if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
         toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");
       }
-      console.error("خطا در ارسال پیام:", err);
+     
     } finally {
       setIsSending(false);
       setUploadProgress(null);

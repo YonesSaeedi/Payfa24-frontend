@@ -121,7 +121,7 @@ export default function UserAccount() {
         const data = await getUserInfo();
         setUserData(data);
       } catch (err) {
-        console.error("Error fetching user data:", err);
+        // toast.error("Error fetching user data:", err);
       } finally {
         setLoading(false);
       }

@@ -106,7 +106,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
         toast.error(response.msg || "خطا در ثبت تیکت");
       }
     } catch (err) {
-      console.error("Upload error:", err);
+     
       if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
         toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");
         return;
@@ -156,8 +156,6 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
         });
         setApiOrders(mappedOrders);
       }
-    } catch (err) {
-      console.error(err);
     } finally {
       setIsOrdersLoading(false);
     }

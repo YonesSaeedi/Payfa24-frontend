@@ -77,8 +77,6 @@ export default function WithdrawForm() {
         });
         setListCards(response.list_cards || []);
         setWalletBalance(Number(response.wallet.balance_available) || 0);
-      } catch (err) {
-        console.error("Failed to fetch cards", err);
       } finally {
         setIsLoading(false);
       }

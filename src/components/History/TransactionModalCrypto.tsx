@@ -98,7 +98,7 @@ const handleCopy = async (text: string) => {
           setDetail(mergedDetail);
         }
       } catch (err) {
-        console.error("خطا در دریافت جزئیات تراکنش:", err);
+         // خطا نادیده گرفته شد
       } finally {
         setLoading(false);
       }

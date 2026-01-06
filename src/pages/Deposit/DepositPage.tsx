@@ -21,6 +21,7 @@ import IconWallet from "../../assets/icons/Deposit/IconWallet";
 import IconLink from "../../assets/icons/Deposit/IconLink";
 import { formatPersianDigits } from "../../utils/formatPersianDigits";
 import CryptoListModal from "../../components/trade/CryptoListModal";
+import { AxiosError } from "axios";
 
 // ---------- کارت‌های رسید واریز (Receipt) ----------
 interface ReceiptCard {
@@ -214,7 +215,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       setDepositWalletsTxid(res?.wallets_txid ?? []);
       setWallets(walletsData);
     } catch (err) {
-      console.error("خطا در رفرش داده‌های واریز", err);
+      toast.error((err as AxiosError<{ msg: string }>)?.response?.data?.msg || "خطا در رفرش داده‌های واریز");
     }
   }, [generalInfo]);
   // 1. تابع را خارج از useEffect تعریف کن (در والد)
@@ -298,7 +299,6 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
 
         hasFetchedCryptoData.current = true;
       } catch (err) {
-        console.error(err);
         toast.error("خطا در بارگذاری لیست ارزها");
       } finally {
         setIsDepositCoinsLoading(false);
@@ -319,7 +319,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
       const dedicatedList = cryptoListData.filter((c) => c.symbol === "USDT" || c.symbol === "TRON");
 
       if (dedicatedList.length > 0) {
-        setSelectedCrypto(dedicatedList[0]); 
+        setSelectedCrypto(dedicatedList[0]);
       }
     }
   }, [selectedOption, cryptoListData]);
@@ -471,7 +471,7 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
             bankCards={bankCards}
             receiptAccounts={receiptAccounts}
             onNext={() => setIdentifierData(null)}
-            onFileChange={() => {}}
+            onFileChange={() => { }}
             initialPreviewUrl={null}
           />
         );
@@ -534,9 +534,8 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
             return (
               <div key={option.id} className={`mt-4 ${disabled ? "pointer-events-none" : "cursor-pointer"}`} onClick={() => !disabled && setSelectedOption(option.id)}>
                 <div
-                  className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200 border ${
-                    selectedOption === option.id ? "border-blue2" : disabled ? "border-gray2 dark:bg-gray21 opacity-60" : "border-gray2"
-                  }`}
+                  className={`flex items-center rounded-lg gap-2 justify-between p-3 transition-all duration-200 border ${selectedOption === option.id ? "border-blue2" : disabled ? "border-gray2 dark:bg-gray21 opacity-60" : "border-gray2"
+                    }`}
                 >
                   <div className="flex items-center gap-2">
                     <div className={`p-3 rounded-lg ${disabled ? "bg-gray21 border border-gray5 opacity-45" : "bg-blue14"}`}>
@@ -566,9 +565,8 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
           {rightOptions.slice(4, 6).map((option) => (
             <div key={option.id} className="mt-4 cursor-pointer" onClick={() => setSelectedOption(option.id)}>
               <div
-                className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${
-                  selectedOption === option.id ? "border border-blue2" : "border border-gray2"
-                }`}
+                className={`flex items-center rounded-lg gap-2 justify-between border p-3 transition-all duration-200 ${selectedOption === option.id ? "border border-blue2" : "border border-gray2"
+                  }`}
               >
                 <div>
                   <div className="flex items-center gap-2">
