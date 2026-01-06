@@ -298,7 +298,6 @@ export default function DepositPage({ selected = "gateway" }: DepositPageProps) 
 
         hasFetchedCryptoData.current = true;
       } catch (err) {
-        console.error(err);
         toast.error("خطا در بارگذاری لیست ارزها");
       } finally {
         setIsDepositCoinsLoading(false);

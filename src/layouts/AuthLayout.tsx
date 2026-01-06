@@ -45,7 +45,6 @@ export default function AuthLayout({ children, image }: AuthLayoutProps) {
               src={image}
               alt="Authentication Visual"
               className="object-fill lg:object-contain hidden lg:block lg:w-[915px] lg:h-[608px] w-[250px] h-[170px] "
-              onError={(e) => console.error("Failed to load image:", image, e)}
             />
           </div>
         )}

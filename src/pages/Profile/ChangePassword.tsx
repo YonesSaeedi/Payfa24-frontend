@@ -86,7 +86,6 @@ export default function ChangePassword() {
       toast.error(response.msg || "خطا در تغییر رمز عبور");
     }
   } catch (error: any) {
-    console.error("API ERROR:", error);
     const errorMsg =
       error?.response?.data?.message ||
       error?.message ||
