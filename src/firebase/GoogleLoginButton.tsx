@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { apiRequest } from "../utils/apiClient";
 import IconGoogle from "../assets/icons/Login/IconGoogle";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 interface GoogleTokenClient {
   requestAccessToken: () => void;
@@ -84,9 +86,9 @@ export const GoogleLoginButton = ({ onSuccess }: { onSuccess: (data: Response) =
       client_id: CLIENT_ID,
       scope: "openid profile email",
       callback: async (tokenResponse: TokenResponse) => {
-        document.removeEventListener("click", () => {});
-        window.removeEventListener("blur", () => {});
-        document.removeEventListener("visibilitychange", () => {});
+        document.removeEventListener("click", () => { });
+        window.removeEventListener("blur", () => { });
+        document.removeEventListener("visibilitychange", () => { });
 
         if (!tokenResponse?.access_token) {
           setIsLoading(false);
@@ -125,7 +127,7 @@ export const GoogleLoginButton = ({ onSuccess }: { onSuccess: (data: Response) =
             onSuccess(response);
           }
         } catch (error) {
-          console.error("خطا در ورود با گوگل:", error);
+          toast.error((error as AxiosError<{ msg: string }>)?.response?.data?.msg || "در ورود با گوگل مشکلی پیش آمد.");
         } finally {
           setIsLoading(false);
         }

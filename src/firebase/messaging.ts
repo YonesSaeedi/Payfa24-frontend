@@ -13,10 +13,7 @@ export const requestFirebaseToken = async (): Promise<string | null> => {
     } else {
       return null;
     }
-  } catch (error) {
-    console.error("Error retrieving FCM token:", error);
-    return null;
-  }
+  } catch { return null }
 };
 
 /**
