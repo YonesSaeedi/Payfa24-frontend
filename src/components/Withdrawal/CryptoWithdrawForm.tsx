@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import FloatingSelect from "../FloatingInput/FloatingSelect";
 import FloatingInput from "../FloatingInput/FloatingInput";
 import IconVideo from "../../assets/icons/Withdrawal/IconVideo";
@@ -80,8 +80,7 @@ const CryptoWithdrawForm: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const allWithdrawFieldsFilled = crypto && selectedNetworkId && amount && address;
   const allTransferFieldsFilled = crypto && amount && address;
-  const [coins, setCoins] = useState<Coin[]>([]);
-  const [allNetworks, setAllNetworks] = useState<FullNetwork[]>([]);
+  const [coins, _setCoins] = useState<Coin[]>([]);
   const [availableNetworks, setAvailableNetworks] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string })[]>([]);
   const [selectedNetwork, setSelectedNetwork] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string }) | undefined>(undefined);
   const [activeTab, setActiveTab] = useState<"withdraw" | "transfer">("withdraw");
@@ -95,7 +94,7 @@ const CryptoWithdrawForm: FC = () => {
     withdrawAddressWallet?: string;
     withdrawAddressWalletTag?: string;
   } | null>(null);
-  const [levelUsed, setLevelUsed] = useState<{ daily_withdrawal_crypto?: number }>({});
+  const [levelUsed, _setLevelUsed] = useState<{ daily_withdrawal_crypto?: number }>({});
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [otpCode, setOtpCode] = useState<string>("");
@@ -104,11 +103,11 @@ const CryptoWithdrawForm: FC = () => {
   const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState(false);
   const [currentCryptoCurrency, setCurrentCryptoCurrency] = useState<CryptoItem | null>(null);
   const { data: userData } = useGetUser();
-  const [isDataLoading, setIsDataLoading] = useState(true);
+  const [isDataLoading, _setIsDataLoading] = useState(true);
   const userMobile = userData?.user?.mobile || "شماره شما";
 
 
-  const hasFetched = useRef(false);
+ 
 
   const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
     setCrypto(currency.symbol);
@@ -190,53 +189,31 @@ const CryptoWithdrawForm: FC = () => {
     };
   }, [isOtpModalOpen, resendCodeTimeLeft]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res = await apiRequest<WithdrawApiResponse>({
-  //         url: "/wallets/crypto/withdraw",
-  //         method: "GET",
-  //       });
-
-  //       setCoins(res.coins || []);
-  //       setAllNetworks(res.networks || []);
-  //       setLevelUsed(res.level_used || {});
-  //     } catch (err) {
-  //    toast.error(
-  //   (err as AxiosError<{ msg?: string }>).response?.data?.msg ||
-  //     "در بارگذاری اطلاعات برداشت مشکلی پیش آمده لطفاً دوباره تلاش کنید"
-  // );
-  //     } finally {
-  //       setIsDataLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
+  
   //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
 
-useEffect(() => {
-  if (hasFetched.current) return; // اگر قبلا fetch شد، هیچ کاری نکن
-  hasFetched.current = true;
+// useEffect(() => {
+//   if (hasFetched.current) return; // اگر قبلا fetch شد، هیچ کاری نکن
+//   hasFetched.current = true;
 
-  const fetchData = async () => {
+//   const fetchData = async () => {
    
-    try {
-      const res = await apiRequest<WithdrawApiResponse>({
-        url: "/wallets/crypto/withdraw",
-        method: "GET",
-      });
+//     try {
+//       const res = await apiRequest<WithdrawApiResponse>({
+//         url: "/wallets/crypto/withdraw",
+//         method: "GET",
+//       });
     
-      setCoins(res.coins || []);
-      setAllNetworks(res.networks || []);
-      setLevelUsed(res.level_used || {});
-    }  finally {
-      setIsDataLoading(false);
-    }
-  };
+//       setCoins(res.coins || []);
+//       setAllNetworks(res.networks || []);
+//       setLevelUsed(res.level_used || {});
+//     }  finally {
+//       setIsDataLoading(false);
+//     }
+//   };
 
-  fetchData();
-}, []);
+//   fetchData();
+// }, []);
 
 
 
@@ -247,27 +224,32 @@ useEffect(() => {
       setSelectedNetwork(undefined);
       return;
     }
-    const selectedCoin = coins.find((c) => c.symbol === crypto);
-    if (!selectedCoin || !Array.isArray(selectedCoin.network)) {
-      setAvailableNetworks([]);
-      setSelectedNetworkId("");
-      setSelectedNetwork(undefined);
-      return;
-    }
-    const nets = selectedCoin.network.map((cn) => {
-      const full = allNetworks.find((n) => n.id === cn.id) || ({} as FullNetwork);
-      const localeName = (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) || full?.name || full?.symbol || String(cn.id);
-      return {
-        ...full,
-        ...cn,
-        displayName: localeName,
-      } as FullNetwork & CoinNetworkRef & { displayName?: string };
-    });
-    setAvailableNetworks(nets);
-    setSelectedNetworkId("");
-    setSelectedNetwork(undefined);
-    setTag("");
-  }, [crypto, coins, allNetworks]);
+   const selectedCoin = mergedCryptosData?.find(c => c.symbol === crypto);
+
+if (!selectedCoin || !Array.isArray(selectedCoin.network)) {
+  setAvailableNetworks([]);
+  setSelectedNetworkId("");
+  setSelectedNetwork(undefined);
+  return;
+}
+
+const nets = selectedCoin.network.map((cn) => {
+ const full = selectedCoin.network!.find(nw => nw.id === cn.id) || ({} as FullNetwork);
+
+  const localeName = (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) || full?.name || full?.symbol || String(cn.id);
+  return {
+    ...full,
+    ...cn,
+    displayName: localeName,
+  } as FullNetwork & CoinNetworkRef & { displayName?: string };
+});
+
+setAvailableNetworks(nets);
+setSelectedNetworkId("");
+setSelectedNetwork(undefined);
+setTag("");
+
+  }, [crypto, mergedCryptosData]);
 
   const handleNetworkChange = (id: string) => {
     setSelectedNetworkId(id);
@@ -546,11 +528,7 @@ useEffect(() => {
   setTag("");   
 }, [activeTab]);
 
-// const formatWithComma = (value: string | number) => {
-//   const strValue = value.toString();
-//   const cleaned = strValue.replace(/\D/g, "");
-//   return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-// };
+
 
 
 
@@ -686,7 +664,7 @@ useEffect(() => {
   </button>
 
   <span className="text-blue2" dir="ltr">
-    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0")
+    {parseFloat(mergedCryptosData?.find(c => c.symbol === crypto)?.balance_available ?? "0")
       .toFixed(currentCryptoCurrency?.percent ?? 2)}
   </span>
 
