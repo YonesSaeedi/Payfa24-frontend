@@ -81,15 +81,17 @@ export default function AddFriend() {
       toast.error("خطا در دریافت لیست تراکنش‌ها.");
       setTransactions([]);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   const handleSaveCommissionSplit = async () => {
     if (isLoading) return;
 
-    const friendPercentToSend = selectedPercent;
-    if (friendPercentToSend === currentFriendPercent) {
+    const callerPercentToSend = maxPercent - selectedPercent; // درصد شما (دعوت‌کننده)
+
+    // مقایسه درست با مقدار فعلی ذخیره‌شده در سرور
+    if (callerPercentToSend === currentCallerPercent) {
       toast.info("درصد تغییر نکرده است.");
       setIsOpenModal(false);
       return;
@@ -97,10 +99,10 @@ export default function AddFriend() {
 
     setIsLoading(true);
     try {
-      const response = await setReferralCommission(friendPercentToSend);
+      const response = await setReferralCommission(callerPercentToSend); // ← درست: درصد دعوت‌کننده رو بفرست
       if (response.status) {
         toast.success(response.msg || "تقسیم سود با موفقیت ذخیره شد.");
-        await fetchReferralReportData();
+        await fetchReferralReportData(); // ← این خط مهمه! مقدار جدید رو از سرور می‌گیره و اسلایدر رو آپدیت می‌کنه
         setIsOpenModal(false);
       } else {
         toast.error(response.msg || "مشکلی در ذخیره درصد پیش آمد.");
@@ -245,12 +247,12 @@ export default function AddFriend() {
                 <div className="flex flex-row justify-between w-full py-6 border border-gray12 rounded-xl text-black0">
                   <div className="flex flex-col items-center gap-2 w-1/2 ">
                     <div className="font-medium text-sm">سهم دریافتی دوستتان</div>
-                    {isLoading ? <span className="skeleton-bg w-12 h-4 rounded-sm"></span> : <p>{toPersianDigits(currentCallerPercent)}%</p>}
+                    {isLoading ? <span className="skeleton-bg w-12 h-4 rounded-sm"></span> : <p>{toPersianDigits(currentFriendPercent)}%</p>}
                   </div>
                   <div className="border-l border-gray12 h-14"></div>
                   <div className="flex flex-col items-center gap-2 w-1/2">
                     <div className="font-medium text-sm">سهم دریافتی شما</div>
-                    {isLoading ? <span className="skeleton-bg w-14 h-4 rounded-sm"></span> : <p>{toPersianDigits(currentFriendPercent)}%</p>}
+                    {isLoading ? <span className="skeleton-bg w-14 h-4 rounded-sm"></span> : <p>{toPersianDigits(currentCallerPercent)}%</p>}
                   </div>
                 </div>
 
@@ -259,10 +261,10 @@ export default function AddFriend() {
                     setSelectedPercent(currentFriendPercent);
                     setIsOpenModal(!IsOpenModal);
                   }}
-                  className="w-full font-bold lg:text-lg text-sm text-white2 bg-blue2 py-3 rounded-lg hover:bg-blue1"
+                  className={`w-full font-bold lg:text-lg text-sm text-white2 bg-blue2 py-3 rounded-lg hover:bg-blue1 ${isLoading? "cursor-not-allowed`":"cursor-pointer"}`}
                   disabled={isLoading}
                 >
-                  {isLoading ? "درحال بارگذاری..." : "تنظیم درصد سود"}
+                  تنظیم درصد سود
                 </button>
               </div>
             </div>
@@ -490,7 +492,7 @@ export default function AddFriend() {
         {IsOpenModal && (
           <>
             <div className="fixed inset-0 bg-black/25 z-30 cursor-pointer"></div>
-            <div  onClick={() => setIsOpenModal(false)} className="fixed inset-0 flex items-center justify-center z-50">
+            <div onClick={() => setIsOpenModal(false)} className="fixed inset-0 flex items-center justify-center z-50">
               <div onClick={(e) => e.stopPropagation()} className="bg-white8 w-full max-w-md rounded-xl shadow-lg overflow-hidden lg:py-6 py-4 px-7 mx-2">
                 <div className="flex justify-between items-center border-b border-gray21 pb-4">
                   <span className="icon-wrapper w-6 h-6 cursor-pointer text-gray12 hover:text-blue2" onClick={() => setIsOpenModal(false)}>
@@ -500,7 +502,7 @@ export default function AddFriend() {
                 </div>
                 <p className="text-black0 text-xs lg:text-sm text-end mt-6">. میزان سود خود و دوستتان را از کارمزد معاملات مشخص کنید</p>
                 <div className="mt-14">
-                  <ReferralPercentBar  selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
+                  <ReferralPercentBar selectedPercent={selectedPercent} setSelectedPercent={setSelectedPercent} lastChangedRef={lastChangedRef} />
                 </div>
                 <div className="flex flex-col items-center mt-14 mb-14">
                   <div className="grid grid-cols-2 w-full text-center gap-y-2">
