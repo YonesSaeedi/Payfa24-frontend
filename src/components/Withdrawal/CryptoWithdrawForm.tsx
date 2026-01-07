@@ -17,7 +17,6 @@ import { ROUTES } from "../../routes/routes";
 import { useSearchParams } from "react-router-dom";
 import { formatEnglishNumber, formatPersianNumber } from "../../utils/formatPersianNumber";
 
-
 interface WithdrawApiResponse {
   status: boolean;
   msg: string;
@@ -71,7 +70,6 @@ interface FullNetwork {
 
 const CryptoWithdrawForm: FC = () => {
   const [amountError, setAmountError] = useState(false);
-  
   const [crypto, setCrypto] = useState<string>("");
   const [selectedNetworkId, setSelectedNetworkId] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -80,7 +78,6 @@ const CryptoWithdrawForm: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const allWithdrawFieldsFilled = crypto && selectedNetworkId && amount && address;
   const allTransferFieldsFilled = crypto && amount && address;
-  const [coins, _setCoins] = useState<Coin[]>([]);
   const [availableNetworks, setAvailableNetworks] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string })[]>([]);
   const [selectedNetwork, setSelectedNetwork] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string }) | undefined>(undefined);
   const [activeTab, setActiveTab] = useState<"withdraw" | "transfer">("withdraw");
@@ -94,7 +91,7 @@ const CryptoWithdrawForm: FC = () => {
     withdrawAddressWallet?: string;
     withdrawAddressWalletTag?: string;
   } | null>(null);
-  const [levelUsed, _setLevelUsed] = useState<{ daily_withdrawal_crypto?: number }>({});
+  const levelUsed: { daily_withdrawal_crypto?: number } = {};
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [otpCode, setOtpCode] = useState<string>("");
@@ -103,11 +100,9 @@ const CryptoWithdrawForm: FC = () => {
   const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState(false);
   const [currentCryptoCurrency, setCurrentCryptoCurrency] = useState<CryptoItem | null>(null);
   const { data: userData } = useGetUser();
-  const [isDataLoading, _setIsDataLoading] = useState(true);
+  const isDataLoading = isCryptoListLoading;
+
   const userMobile = userData?.user?.mobile || "شماره شما";
-
-
- 
 
   const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
     setCrypto(currency.symbol);
@@ -189,33 +184,7 @@ const CryptoWithdrawForm: FC = () => {
     };
   }, [isOtpModalOpen, resendCodeTimeLeft]);
 
-  
   //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
-
-// useEffect(() => {
-//   if (hasFetched.current) return; // اگر قبلا fetch شد، هیچ کاری نکن
-//   hasFetched.current = true;
-
-//   const fetchData = async () => {
-   
-//     try {
-//       const res = await apiRequest<WithdrawApiResponse>({
-//         url: "/wallets/crypto/withdraw",
-//         method: "GET",
-//       });
-    
-//       setCoins(res.coins || []);
-//       setAllNetworks(res.networks || []);
-//       setLevelUsed(res.level_used || {});
-//     }  finally {
-//       setIsDataLoading(false);
-//     }
-//   };
-
-//   fetchData();
-// }, []);
-
-
 
   useEffect(() => {
     if (!crypto) {
@@ -224,31 +193,29 @@ const CryptoWithdrawForm: FC = () => {
       setSelectedNetwork(undefined);
       return;
     }
-   const selectedCoin = mergedCryptosData?.find(c => c.symbol === crypto);
+    const selectedCoin = mergedCryptosData?.find((c) => c.symbol === crypto);
 
-if (!selectedCoin || !Array.isArray(selectedCoin.network)) {
-  setAvailableNetworks([]);
-  setSelectedNetworkId("");
-  setSelectedNetwork(undefined);
-  return;
-}
+    if (!selectedCoin || !Array.isArray(selectedCoin.network)) {
+      setAvailableNetworks([]);
+      setSelectedNetworkId("");
+      setSelectedNetwork(undefined);
+      return;
+    }
 
-const nets = selectedCoin.network.map((cn) => {
- const full = selectedCoin.network!.find(nw => nw.id === cn.id) || ({} as FullNetwork);
+    const nets = selectedCoin.network.map((cn) => {
+      const full = selectedCoin.network!.find((nw) => nw.id === cn.id) || ({} as FullNetwork);
+      const localeName = (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) || full?.name || full?.symbol || String(cn.id);
+      return {
+        ...full,
+        ...cn,
+        displayName: localeName,
+      } as FullNetwork & CoinNetworkRef & { displayName?: string };
+    });
 
-  const localeName = (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) || full?.name || full?.symbol || String(cn.id);
-  return {
-    ...full,
-    ...cn,
-    displayName: localeName,
-  } as FullNetwork & CoinNetworkRef & { displayName?: string };
-});
-
-setAvailableNetworks(nets);
-setSelectedNetworkId("");
-setSelectedNetwork(undefined);
-setTag("");
-
+    setAvailableNetworks(nets);
+    setSelectedNetworkId("");
+    setSelectedNetwork(undefined);
+    setTag("");
   }, [crypto, mergedCryptosData]);
 
   const handleNetworkChange = (id: string) => {
@@ -259,177 +226,177 @@ setTag("");
   };
 
   //  ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
-//   const handleSubmit = async (e: React.FormEvent) => {
-//   e.preventDefault();
-//   setIsLoading(true);
-//   setAmountError(false);
+  //   const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   setAmountError(false);
 
-//   if (!selectedNetwork) {
-//     toast.error("لطفاً شبکه را انتخاب کنید");
-//     setIsLoading(false);
-//     return;
-//   }
+  //   if (!selectedNetwork) {
+  //     toast.error("لطفاً شبکه را انتخاب کنید");
+  //     setIsLoading(false);
+  //     return;
+  //   }
 
-//   const withdrawAmount = parseFloat(amount);
-//   if (!amount || isNaN(withdrawAmount)) {
-//     toast.error("لطفاً مقدار برداشت را وارد کنید");
-//     setIsLoading(false);
-//     return;
-//   }
+  //   const withdrawAmount = parseFloat(amount);
+  //   if (!amount || isNaN(withdrawAmount)) {
+  //     toast.error("لطفاً مقدار برداشت را وارد کنید");
+  //     setIsLoading(false);
+  //     return;
+  //   }
 
-// const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
-//  if (withdrawAmount < minWithdraw) {
-//   toast.error(
-//     `مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.  `
-//   );
-//   setAmountError(true);
-//   setIsLoading(false);
-//   return;
-// }
+  // const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
+  //  if (withdrawAmount < minWithdraw) {
+  //   toast.error(
+  //     `مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.  `
+  //   );
+  //   setAmountError(true);
+  //   setIsLoading(false);
+  //   return;
+  // }
 
-//   try {
-//     const response = await apiRequest<WithdrawApiResponse, {
-//       coin: string;
-//       network: string;
-//       withdrawAmount: number;
-//       withdrawAddressWallet: string;
-//       withdrawAddressWalletTag: string;
-//     }>({
-//       url: "/wallets/crypto/withdraw/request",
-//       method: "POST",
-//       data: {
-//         coin: crypto,
-//         network: selectedNetwork?.symbol || "",
-//         withdrawAmount,
-//         withdrawAddressWallet: address,
-//         withdrawAddressWalletTag: tag,
-//       },
-//     });
+  //   try {
+  //     const response = await apiRequest<WithdrawApiResponse, {
+  //       coin: string;
+  //       network: string;
+  //       withdrawAmount: number;
+  //       withdrawAddressWallet: string;
+  //       withdrawAddressWalletTag: string;
+  //     }>({
+  //       url: "/wallets/crypto/withdraw/request",
+  //       method: "POST",
+  //       data: {
+  //         coin: crypto,
+  //         network: selectedNetwork?.symbol || "",
+  //         withdrawAmount,
+  //         withdrawAddressWallet: address,
+  //         withdrawAddressWalletTag: tag,
+  //       },
+  //     });
 
-//     if (!response.transaction_id) {
-//       toast.error("شناسه تراکنش از سرور دریافت نشد.");
-//       setIsLoading(false);
-//       return;
-//     }
+  //     if (!response.transaction_id) {
+  //       toast.error("شناسه تراکنش از سرور دریافت نشد.");
+  //       setIsLoading(false);
+  //       return;
+  //     }
 
-//     setWithdrawData({
-//       transactionId: response.transaction_id,
-//       network: selectedNetwork.symbol,
-//       withdrawAmount,
-//       withdrawAddressWallet: address,
-//       withdrawAddressWalletTag: tag,
-//     });
+  //     setWithdrawData({
+  //       transactionId: response.transaction_id,
+  //       network: selectedNetwork.symbol,
+  //       withdrawAmount,
+  //       withdrawAddressWallet: address,
+  //       withdrawAddressWalletTag: tag,
+  //     });
 
-//     setResendCodeTimeLeft(120);
-//     setIsOtpModalOpen(true);
-//   } catch (err) {
-//     toast.error(
-//       (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
-//         "ارسال درخواست برداشت با مشکل مواجه شد."
-//     );
-//   } finally {
-//     setIsLoading(false);
-//   }
-// };
+  //     setResendCodeTimeLeft(120);
+  //     setIsOtpModalOpen(true);
+  //   } catch (err) {
+  //     toast.error(
+  //       (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
+  //         "ارسال درخواست برداشت با مشکل مواجه شد."
+  //     );
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
+    if (isLoading) return;
+    setIsLoading(true);
+    setAmountError(false);
 
-
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  if (isLoading) return; 
-  setIsLoading(true);
-  setAmountError(false);
-
-  if (!selectedNetwork) {
-    toast.error("لطفاً شبکه را انتخاب کنید");
-    setIsLoading(false);
-    return;
-  }
-
-  const withdrawAmount = parseFloat(amount);
-  if (!amount || isNaN(withdrawAmount)) {
-    toast.error("لطفاً مقدار برداشت را وارد کنید");
-    setIsLoading(false);
-    return;
-  }
-
-  const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
-  if (withdrawAmount < minWithdraw) {
-    toast.error(`مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.`);
-    setAmountError(true);
-    setIsLoading(false);
-    return;
-  }
-
-  // بررسی موجودی
-  const availableBalance = parseFloat(coins.find(c => c.symbol === crypto)?.balance_available ?? "0");
-  if (withdrawAmount > availableBalance) {
-    toast.error("مقدار وارد شده بیشتر از موجودی قابل برداشت است!");
-    setAmountError(true);
-    setIsLoading(false);
-    return;
-  }
-
-  // اعتبارسنجی آدرس و ممو
-  const addressRegex = selectedNetwork?.addressRegex ? new RegExp(selectedNetwork.addressRegex) : null;
-  const memoRegex = selectedNetwork?.memoRegex ? new RegExp(selectedNetwork.memoRegex) : null;
-
-  if (addressRegex && !addressRegex.test(address)) {
-    toast.error("آدرس کیف پول معتبر نیست");
-    setIsLoading(false);
-    return;
-  }
-
-  if (selectedNetwork?.tag === 1 && memoRegex && !memoRegex.test(tag)) {
-    toast.error("آدرس ممو/تگ معتبر نیست");
-    setIsLoading(false);
-    return;
-  }
-
-  // ادامه ارسال درخواست به سرور
-  try {
-    const response = await apiRequest<WithdrawApiResponse, {
-      coin: string;
-      network: string;
-      withdrawAmount: number;
-      withdrawAddressWallet: string;
-      withdrawAddressWalletTag: string;
-    }>({
-      url: "/wallets/crypto/withdraw/request",
-      method: "POST",
-      data: {
-        coin: crypto,
-        network: selectedNetwork.symbol || "",
-        withdrawAmount,
-        withdrawAddressWallet: address,
-        withdrawAddressWalletTag: tag,
-      },
-    });
-
-    if (!response.transaction_id) {
-      toast.error("شناسه تراکنش از سرور دریافت نشد.");
+    if (!selectedNetwork) {
+      toast.error("لطفاً شبکه را انتخاب کنید");
       setIsLoading(false);
       return;
     }
 
-    setWithdrawData({
-      transactionId: response.transaction_id,
-      network: selectedNetwork.symbol,
-      withdrawAmount,
-      withdrawAddressWallet: address,
-      withdrawAddressWalletTag: tag,
-    });
+    const withdrawAmount = parseFloat(amount);
+    if (!amount || isNaN(withdrawAmount)) {
+      toast.error("لطفاً مقدار برداشت را وارد کنید");
+      setIsLoading(false);
+      return;
+    }
 
-    setResendCodeTimeLeft(120);
-    setIsOtpModalOpen(true);
-  } catch (err) {
-    toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "ارسال درخواست برداشت با مشکل مواجه شد.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+    const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
+    if (withdrawAmount < minWithdraw) {
+      toast.error(`مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.`);
+      setAmountError(true);
+      setIsLoading(false);
+      return;
+    }
+
+    // بررسی موجودی
+    const availableBalance = parseFloat(mergedCryptosData?.find((c) => c.symbol === crypto)?.balance_available ?? "0");
+    if (withdrawAmount > availableBalance) {
+      toast.error("مقدار وارد شده بیشتر از موجودی قابل برداشت است!");
+      setAmountError(true);
+      setIsLoading(false);
+      return;
+    }
+
+    // اعتبارسنجی آدرس و ممو
+    const addressRegex = selectedNetwork?.addressRegex ? new RegExp(selectedNetwork.addressRegex) : null;
+    const memoRegex = selectedNetwork?.memoRegex ? new RegExp(selectedNetwork.memoRegex) : null;
+
+    if (addressRegex && !addressRegex.test(address)) {
+      toast.error("آدرس کیف پول معتبر نیست");
+      setIsLoading(false);
+      return;
+    }
+
+    if (selectedNetwork?.tag === 1 && memoRegex && !memoRegex.test(tag)) {
+      toast.error("آدرس ممو/تگ معتبر نیست");
+      setIsLoading(false);
+      return;
+    }
+
+    // ادامه ارسال درخواست به سرور
+    try {
+      const response = await apiRequest<
+        WithdrawApiResponse,
+        {
+          coin: string;
+          network: string;
+          withdrawAmount: number;
+          withdrawAddressWallet: string;
+          withdrawAddressWalletTag: string;
+        }
+      >({
+        url: "/wallets/crypto/withdraw/request",
+        method: "POST",
+        data: {
+          coin: crypto,
+          network: selectedNetwork.symbol || "",
+          withdrawAmount,
+          withdrawAddressWallet: address,
+          withdrawAddressWalletTag: tag,
+        },
+      });
+
+      if (!response.transaction_id) {
+        toast.error("شناسه تراکنش از سرور دریافت نشد.");
+        setIsLoading(false);
+        return;
+      }
+
+      setWithdrawData({
+        transactionId: response.transaction_id,
+        network: selectedNetwork.symbol,
+        withdrawAmount,
+        withdrawAddressWallet: address,
+        withdrawAddressWalletTag: tag,
+      });
+
+      setResendCodeTimeLeft(120);
+      setIsOtpModalOpen(true);
+    } catch (err) {
+      toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "ارسال درخواست برداشت با مشکل مواجه شد.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   //  مرحله ۱ انتقال به کاربر پی‌فا (ارسال درخواست انتقال)======================================================================================================
   const handleSubmitTransfers = async (e: React.FormEvent) => {
@@ -520,17 +487,11 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   };
 
-
-  
-useEffect(() => {
-  setAmount(""); 
-  setAddress(""); 
-  setTag("");   
-}, [activeTab]);
-
-
-
-
+  useEffect(() => {
+    setAmount("");
+    setAddress("");
+    setTag("");
+  }, [activeTab]);
 
   return (
     <>
@@ -629,92 +590,74 @@ useEffect(() => {
               {selectedNetworkId && (
                 <div className="mt-4 relative z-10 flex flex-col gap-10">
                   <div>
-<FloatingInput
-  label="مقدار"
-  value={amount}
-  onChange={(e) => {
-    const raw = e.target.value;
-    if (/^\d*\.?\d*$/.test(raw)) {
-      setAmount(raw);
-      if (amountError) setAmountError(false);
-    }
-  }}
-  type="text"
-  className={`border mb-2 ${amountError ? "border-red-500! shadow-red-700" : "border-gray12"}`}
-  labelClassName="!font-normal !text-sm"
-  placeholder="0"
-/>
+                    <FloatingInput
+                      label="مقدار"
+                      value={amount}
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        if (/^\d*\.?\d*$/.test(raw)) {
+                          setAmount(raw);
+                          if (amountError) setAmountError(false);
+                        }
+                      }}
+                      type="text"
+                      className={`border mb-2 ${amountError ? "border-red-500! shadow-red-700" : "border-gray12"}`}
+                      labelClassName="!font-normal !text-sm"
+                      placeholder="0"
+                    />
 
-
-
-
-<div className="flex justify-end items-center text-sm font-normal pb-2 gap-1">
-
-  <button
-    type="button"
-    className="text-blue2 text-sm font-normal hover:underline"
-    onClick={() => {
-      const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
-      const decimalPlaces = currentCryptoCurrency?.percent ?? 2;
-      const formattedAmount = parseFloat(available).toFixed(decimalPlaces);
-      setAmount(formattedAmount);
-    }}
-  >
-    تمام موجودی:
-  </button>
-
-  <span className="text-blue2" dir="ltr">
-    {parseFloat(mergedCryptosData?.find(c => c.symbol === crypto)?.balance_available ?? "0")
-      .toFixed(currentCryptoCurrency?.percent ?? 2)}
-  </span>
-
-</div>
-
-
+                    <div className="flex justify-end items-center text-sm font-normal pb-2 gap-1">
+                      <button
+                        type="button"
+                        className="text-blue2 text-sm font-normal hover:underline"
+                        onClick={() => {
+                          const available = mergedCryptosData?.find((c) => c.symbol === crypto)?.balance_available ?? "0";
+                          const decimalPlaces = currentCryptoCurrency?.percent ?? 2;
+                          const formattedAmount = parseFloat(available).toFixed(decimalPlaces);
+                          setAmount(formattedAmount);
+                        }}
+                      >
+                        تمام موجودی:
+                      </button>
+                      <span className="text-blue2" dir="ltr">
+                        {parseFloat(mergedCryptosData?.find((c) => c.symbol === crypto)?.balance_available ?? "0").toFixed(currentCryptoCurrency?.percent ?? 2)}
+                      </span>
+                    </div>
                     <div className="text-md text-gray5 mt-3 space-y-2">
-                    
                       <div className="flex items-center justify-between mb-2">
-  <span className="font-normal text-sm">کارمزد برداشت</span>
-  {isDataLoading ? (
-    <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
-  ) : (
-    <span dir="ltr" className="font-medium text-black0 text-sm">
-      {formatEnglishNumber(selectedNetwork?.withdraw_fee  ?? "0")} {crypto}
-    </span>
-  )}
-</div>
-
+                        <span className="font-normal text-sm">کارمزد برداشت</span>
+                        {isDataLoading ? (
+                          <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
+                        ) : (
+                          <span dir="ltr" className="font-medium text-black0 text-sm">
+                            {formatEnglishNumber(selectedNetwork?.withdraw_fee ?? "0")} {crypto}
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center justify-between">
                         <span className="font-normal text-sm">مقدار برداشت روزانه معادل</span>
                         {isDataLoading ? (
                           <span className="skeleton-bg h-5 w-20 lg:w-28 rounded"></span>
                         ) : (
-                          <span className="font-medium text-black0  text-sm">
-                           {formatPersianNumber(levelUsed.daily_withdrawal_crypto?? "0")} تومان
-                         </span>
-
+                          <span className="font-medium text-black0  text-sm">{formatPersianNumber(levelUsed.daily_withdrawal_crypto ?? "0")} تومان</span>
                         )}
                       </div>
-
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-normal text-sm">حداقل مجاز برداشت</span>
                         {isDataLoading ? (
                           <span className="skeleton-bg h-5 w-20 lg:w-24 rounded"></span>
                         ) : (
                           <span dir="ltr" className="font-medium text-black0 text-sm">
-                           {formatEnglishNumber(selectedNetwork?.withdraw_min?? "0")} {crypto}
-                         </span>
-
+                            {formatEnglishNumber(selectedNetwork?.withdraw_min ?? "0")} {crypto}
+                          </span>
                         )}
                       </div>
-
-                    
- <div className="flex items-center justify-between mb-2">
-  <span className="font-normal text-sm">موجودی قابل برداشت</span>
-  <span dir="ltr" className="font-medium text-black0 text-sm">
-    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available ?? "0").toFixed(currentCryptoCurrency?.percent ?? 2)} {crypto}
-  </span>
-</div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-normal text-sm">موجودی قابل برداشت</span>
+                        <span dir="ltr" className="font-medium text-black0 text-sm">
+                          {parseFloat(mergedCryptosData?.find((c) => c.symbol === crypto)?.balance_available ?? "0").toFixed(currentCryptoCurrency?.percent ?? 2)} {crypto}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -791,24 +734,23 @@ useEffect(() => {
                   />
 
                   <div className="text-md text-gray5 mt-3 space-y-2">
-                  <div className="flex items-center justify-between mb-2">
-  <span className="font-normal text-sm">موجودی قابل برداشت</span>
-  <span
-    dir="ltr"
-    className="font-medium text-black0 text-sm cursor-pointer"
-    onClick={() => {
-      const available = coins.find((c) => c.symbol === crypto)?.balance_available ?? "0";
-      setAmount(available);
-    }}
-  >
-    {parseFloat(coins.find((c) => c.symbol === crypto)?.balance_available || "0").toString()} {crypto}
-  </span>
-</div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-normal text-sm">موجودی قابل برداشت</span>
+                      <span
+                        dir="ltr"
+                        className="font-medium text-black0 text-sm cursor-pointer"
+                        onClick={() => {
+                          const available = mergedCryptosData?.find((c) => c.symbol === crypto)?.balance_available ?? "0";
+                          setAmount(available);
+                        }}
+                      >
+                        {parseFloat(mergedCryptosData?.find((c) => c.symbol === crypto)?.balance_available || "0").toString()} {crypto}
+                      </span>
+                    </div>
 
                     <div className="flex items-center justify-between">
                       <span className="font-normal text-sm">مقدار برداشت روزانه معادل</span>
-                      <span className="font-medium text-black0 text-sm">{formatPersianNumber(levelUsed.daily_withdrawal_crypto || 0)} تومان
-</span>
+                      <span className="font-medium text-black0 text-sm">{formatPersianNumber(levelUsed.daily_withdrawal_crypto || 0)} تومان</span>
                     </div>
                   </div>
                 </div>
@@ -887,7 +829,7 @@ useEffect(() => {
           <OTPInputModal
             closeModal={handleCloseOtpModal}
             onChange={(value: string) => setOtpCode(value)}
-            onSubmit={activeTab === "withdraw" ? handleSubmitOtp : handleSubmitTransferOtp} 
+            onSubmit={activeTab === "withdraw" ? handleSubmitOtp : handleSubmitTransferOtp}
             OTPLength={6}
             handleResendCode={handleResendCode}
             resendCodeIsSubmitting={isResending}
