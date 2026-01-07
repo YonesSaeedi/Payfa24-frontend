@@ -371,7 +371,7 @@ finally {
             mainText={`لطفاً کد ارسال شده به شماره ${userMobile} را وارد کنید`}
             submitButtonText="تأیید"
             titleText="تأیید برداشت"
-           isSubmitting={isSubmittingOtp}
+            isSubmitting={isSubmittingOtp}
             isSubmittingText="درحال ارسال..."
           />
         </div>
