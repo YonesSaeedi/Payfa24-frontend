@@ -101,7 +101,6 @@ const CryptoWithdrawForm: FC = () => {
   const [currentCryptoCurrency, setCurrentCryptoCurrency] = useState<CryptoItem | null>(null);
   const { data: userData } = useGetUser();
   const isDataLoading = isCryptoListLoading;
-
   const userMobile = userData?.user?.mobile || "شماره شما";
 
   const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
@@ -114,6 +113,7 @@ const CryptoWithdrawForm: FC = () => {
     setOtpCode("");
   };
   const [searchParams] = useSearchParams();
+  
 
   useEffect(() => {
     if (!mergedCryptosData?.length || crypto) return;
@@ -185,38 +185,36 @@ const CryptoWithdrawForm: FC = () => {
   }, [isOtpModalOpen, resendCodeTimeLeft]);
 
   //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+useEffect(() => {
+  // فقط وقتی crypto داریم و داده‌ها لود شده‌اند
+  if (!crypto || !mergedCryptosData?.length) return;
 
-  useEffect(() => {
-    if (!crypto) {
-      setAvailableNetworks([]);
-      setSelectedNetworkId("");
-      setSelectedNetwork(undefined);
-      return;
-    }
-    const selectedCoin = mergedCryptosData?.find((c) => c.symbol === crypto);
-
-    if (!selectedCoin || !Array.isArray(selectedCoin.network)) {
-      setAvailableNetworks([]);
-      setSelectedNetworkId("");
-      setSelectedNetwork(undefined);
-      return;
-    }
-
-    const nets = selectedCoin.network.map((cn) => {
-      const full = selectedCoin.network!.find((nw) => nw.id === cn.id) || ({} as FullNetwork);
-      const localeName = (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) || full?.name || full?.symbol || String(cn.id);
-      return {
-        ...full,
-        ...cn,
-        displayName: localeName,
-      } as FullNetwork & CoinNetworkRef & { displayName?: string };
-    });
-
-    setAvailableNetworks(nets);
+  const selectedCoin = mergedCryptosData.find((c) => c.symbol === crypto);
+  if (!selectedCoin || !Array.isArray(selectedCoin.network)) {
+    setAvailableNetworks([]);
     setSelectedNetworkId("");
     setSelectedNetwork(undefined);
     setTag("");
-  }, [crypto, mergedCryptosData]);
+    return;
+  }
+
+  const nets = selectedCoin.network.map((cn) => {
+    const full = selectedCoin.network!.find((nw) => nw.id === cn.id) || ({} as FullNetwork);
+    const localeName =
+      (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) ||
+      full?.name ||
+      full?.symbol ||
+      String(cn.id);
+    return { ...full, ...cn, displayName: localeName } as FullNetwork & CoinNetworkRef & { displayName?: string };
+  });
+
+  setAvailableNetworks(nets);
+  setSelectedNetworkId("");
+  setSelectedNetwork(undefined);
+  setTag("");
+}, [crypto, mergedCryptosData]);
+
+
 
   const handleNetworkChange = (id: string) => {
     setSelectedNetworkId(id);
@@ -225,79 +223,7 @@ const CryptoWithdrawForm: FC = () => {
     setTag("");
   };
 
-  //  ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
-  //   const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-  //   setAmountError(false);
-
-  //   if (!selectedNetwork) {
-  //     toast.error("لطفاً شبکه را انتخاب کنید");
-  //     setIsLoading(false);
-  //     return;
-  //   }
-
-  //   const withdrawAmount = parseFloat(amount);
-  //   if (!amount || isNaN(withdrawAmount)) {
-  //     toast.error("لطفاً مقدار برداشت را وارد کنید");
-  //     setIsLoading(false);
-  //     return;
-  //   }
-
-  // const minWithdraw = Number(selectedNetwork.withdraw_min ?? 0);
-  //  if (withdrawAmount < minWithdraw) {
-  //   toast.error(
-  //     `مقدار وارد شده کمتر از حداقل مقدار مجاز برداشت است.  `
-  //   );
-  //   setAmountError(true);
-  //   setIsLoading(false);
-  //   return;
-  // }
-
-  //   try {
-  //     const response = await apiRequest<WithdrawApiResponse, {
-  //       coin: string;
-  //       network: string;
-  //       withdrawAmount: number;
-  //       withdrawAddressWallet: string;
-  //       withdrawAddressWalletTag: string;
-  //     }>({
-  //       url: "/wallets/crypto/withdraw/request",
-  //       method: "POST",
-  //       data: {
-  //         coin: crypto,
-  //         network: selectedNetwork?.symbol || "",
-  //         withdrawAmount,
-  //         withdrawAddressWallet: address,
-  //         withdrawAddressWalletTag: tag,
-  //       },
-  //     });
-
-  //     if (!response.transaction_id) {
-  //       toast.error("شناسه تراکنش از سرور دریافت نشد.");
-  //       setIsLoading(false);
-  //       return;
-  //     }
-
-  //     setWithdrawData({
-  //       transactionId: response.transaction_id,
-  //       network: selectedNetwork.symbol,
-  //       withdrawAmount,
-  //       withdrawAddressWallet: address,
-  //       withdrawAddressWalletTag: tag,
-  //     });
-
-  //     setResendCodeTimeLeft(120);
-  //     setIsOtpModalOpen(true);
-  //   } catch (err) {
-  //     toast.error(
-  //       (err as AxiosError<{ msg?: string }>)?.response?.data?.msg ||
-  //         "ارسال درخواست برداشت با مشکل مواجه شد."
-  //     );
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  // ارسال درخواست برداشت رمزارز (برداشت از کیف پول)======================================================================================================
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
