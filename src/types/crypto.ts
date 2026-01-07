@@ -1,5 +1,18 @@
 import { TradePrices } from "./apiResponses"
 
+export interface CoinNetworkRef {
+  id: number
+  withdraw_min?: string
+  withdraw_fee?: string
+  name?: string
+  symbol?: string
+  tag?: any
+  addressRegex?: string
+  memoRegex?: string
+  locale?: any
+}
+
+
 export type UnifiedCryptoItem = {
   symbol: string
   icon?: string
@@ -49,6 +62,7 @@ export interface CryptoItem {
   sell_status?: number
   symbol: string
   withdraw?: number
+   network?: CoinNetworkRef[];
   // price, change percent, volume
   quoteVolume?: string
   priceSell?: string
