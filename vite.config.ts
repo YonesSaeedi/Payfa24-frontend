@@ -5,9 +5,19 @@ import pkg from './package.json'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(),
+  {
+    name: 'html-transform',
+    transformIndexHtml(html) {
+      return html.replace(
+        '%APP_VERSION%',
+        pkg.version
+      )
+    }
+  }
+  ],
   define: {
-    __APP_VERSION__: JSON.stringify(pkg.version)
+    APP_VERSION: JSON.stringify(pkg.version)
   },
   resolve: {
     alias: {
