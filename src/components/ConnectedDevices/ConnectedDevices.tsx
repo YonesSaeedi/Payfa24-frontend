@@ -36,7 +36,7 @@ export default function DeviceList() {
       });
       setActiveSessions(response.sessions);
     } catch (error) {
-       // خطا نادیده گرفته شد
+      // خطا نادیده گرفته شد
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +55,7 @@ export default function DeviceList() {
       });
       fetchActiveSessions();
     } catch (error) {
-       // خطا نادیده گرفته شد
+      // خطا نادیده گرفته شد
     } finally {
       setIsSubmitting(false);
     }
@@ -98,10 +98,10 @@ export default function DeviceList() {
     }
     return "unknown";
   }
- function toPersianDigits(str: any) {
-  if (str == null) return "";
-  return str.toString().replace(/\d/g, (d: string) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
-}
+  function toPersianDigits(str: any) {
+    if (str == null) return "";
+    return str.toString().replace(/\d/g, (d: string) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d)]);
+  }
 
 
 
@@ -139,146 +139,143 @@ export default function DeviceList() {
 
           {isLoading
             ? [...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-full py-2 grid grid-cols-5 rounded-[10px] my-2"
-                >
-                  <span className="w-12 h-4 mx-auto skeleton-bg" />
-                  <span className="w-12 h-4 mx-auto skeleton-bg" />
-                  <span className="w-20 h-4 mx-auto skeleton-bg" />
-                  <span className="w-16 h-4 mx-auto skeleton-bg" />
-                  <span className="w-10 h-4 mx-auto skeleton-bg" />
-                </div>
-              ))
+              <div
+                key={i}
+                className="w-full py-2 grid grid-cols-5 rounded-[10px] my-2"
+              >
+                <span className="w-12 h-4 mx-auto skeleton-bg" />
+                <span className="w-12 h-4 mx-auto skeleton-bg" />
+                <span className="w-20 h-4 mx-auto skeleton-bg" />
+                <span className="w-16 h-4 mx-auto skeleton-bg" />
+                <span className="w-10 h-4 mx-auto skeleton-bg" />
+              </div>
+            ))
             : activeSessions.map((items) => {
-                return (
-                  <div className="flex flex-col gap-1">
-                    <div
-                      key={items.id}
-                      className="w-full py-2 grid grid-cols-5 rounded-[10px] items-center text-black1"
-                    >
-                      <span className=" text-center text-base font-normal">
-                        {items?.browser}
-                      </span>
-                      <span className=" text-center text-base font-normal">
-                        {items?.os}
-                        {items?.device && items.device !== "0"
-                          ? `-${items.device}`
-                          : ""}
-                      </span>
-                      <span className="text-base font-normal text-center">
-                        {toPersianDigits(items?.last_used_at)}
-                      </span>
-                      <span className="text-base font-normal text-center">
-                        {toPersianDigits(items?.last_ip)}
-                      </span>
-                      <span
-                        className={`text-base font-medium text-center p-2 rounded-md transition duration-300 ${
-                          items.is_current
-                            ? "text-blue-500"
-                            : "text-rose-500 cursor-pointer hover:bg-rose-500 hover:text-white"
-                        }`}
-                        onClick={() => {
-                          if (!items.is_current) handleEndSession(items.id);
-                        }}
-                      >
-                        {items.is_current ? "نشست فعال" : "پایان نشست"}
-                      </span>
-                    </div>
-                    <hr className="bg-gray21" />
-                  </div>
-                );
-              })}
-        </div>
-
-        <div className="flex lg:hidden flex-col w-full self-center">
-          {isLoading
-            ? [...Array(2)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-full flex flex-col bg-third p-2 rounded-[10px] my-2 gap-2"
-                >
-                  <div className="flex w-full items-center justify-between text-xs font-normal">
-                    <span className="w-1/2 h-3 skeleton-bg rounded" />
-                    <span className="w-1/2 h-3 skeleton-bg rounded" />
-                  </div>
-
-                 <hr className="border-t border-gray21" />
-
-
-                  <div className="flex w-full items-center justify-between text-xs font-normal">
-                    <span className="w-1/2 h-3 skeleton-bg rounded" />
-                    <span className="w-1/2 h-3 skeleton-bg rounded" />
-                  </div>
-
-                  <hr className="border-t border-gray21" />
-
-
-                  <div className="flex w-full items-center justify-between text-xs font-normal">
-                    <span className="w-1/2 h-3 skeleton-bg rounded" />
-                    <span className="w-1/2 h-3 skeleton-bg rounded" />
-                  </div>
-
-                  <hr className="border-gray21" />
-
-                  <div className="flex w-full items-center justify-between text-xs font-normal">
-                    <span className="w-1/2 h-3 skeleton-bg rounded" />
-                    <span className="w-1/2 h-3 skeleton-bg rounded" />
-                  </div>
-
-                  <hr className="border-gray21" />
-
-                  <div className="flex w-full justify-end">
-                    <span className="w-24 h-6 skeleton-bg rounded mx-1" />
-                  </div>
-                </div>
-              ))
-            : activeSessions.map((items) => (
-                <div
-                  key={items.id}
-                  className="w-full flex flex-col p-4 rounded-lg bg-gray27 shadow-sm my-2 gap-2 border border-gray21 "
-                >
-                  <button className=" text-end">
+              return (
+                <div key={items.id} className="flex flex-col gap-1">
+                  <div
+                    className="w-full py-2 grid grid-cols-5 rounded-[10px] items-center text-black1"
+                  >
+                    <span className=" text-center text-base font-normal">
+                      {items?.browser}
+                    </span>
+                    <span className=" text-center text-base font-normal">
+                      {items?.os}
+                      {items?.device && items.device !== "0"
+                        ? `-${items.device}`
+                        : ""}
+                    </span>
+                    <span className="text-base font-normal text-center">
+                      {toPersianDigits(items?.last_used_at)}
+                    </span>
+                    <span className="text-base font-normal text-center">
+                      {toPersianDigits(items?.last_ip)}
+                    </span>
                     <span
-                      className={` font-medium text-xs text-center ${
-                        items.is_current
-                          ? "text-blue2"
-                          : "text-red6 cursor-pointer"
-                      }`}
+                      className={`text-base font-medium text-center p-2 rounded-md transition duration-300 ${items.is_current
+                        ? "text-blue-500"
+                        : "text-rose-500 cursor-pointer hover:bg-rose-500 hover:text-white"
+                        }`}
                       onClick={() => {
                         if (!items.is_current) handleEndSession(items.id);
                       }}
                     >
                       {items.is_current ? "نشست فعال" : "پایان نشست"}
                     </span>
-                  </button>
+                  </div>
+                  <hr className="bg-gray21" />
+                </div>
+              );
+            })}
+        </div>
 
-                  <div className="flex w-full items-center justify-between mt-3 font-normal text-sm text-black1 ">
-                    <span className="text-center text-base font-normal mb-2">
-                      {getDeviceType(items) === "mobile"
-                        ? " موبایل"
-                        : getDeviceType(items) === "tablet"
+        <div className="flex lg:hidden flex-col w-full self-center">
+          {isLoading
+            ? [...Array(2)].map((_, i) => (
+              <div
+                key={i}
+                className="w-full flex flex-col bg-third p-2 rounded-[10px] my-2 gap-2"
+              >
+                <div className="flex w-full items-center justify-between text-xs font-normal">
+                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                </div>
+
+                <hr className="border-t border-gray21" />
+
+
+                <div className="flex w-full items-center justify-between text-xs font-normal">
+                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                </div>
+
+                <hr className="border-t border-gray21" />
+
+
+                <div className="flex w-full items-center justify-between text-xs font-normal">
+                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                </div>
+
+                <hr className="border-gray21" />
+
+                <div className="flex w-full items-center justify-between text-xs font-normal">
+                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                  <span className="w-1/2 h-3 skeleton-bg rounded" />
+                </div>
+
+                <hr className="border-gray21" />
+
+                <div className="flex w-full justify-end">
+                  <span className="w-24 h-6 skeleton-bg rounded mx-1" />
+                </div>
+              </div>
+            ))
+            : activeSessions.map((items) => (
+              <div
+                key={items.id}
+                className="w-full flex flex-col p-4 rounded-lg bg-gray27 shadow-sm my-2 gap-2 border border-gray21 "
+              >
+                <button className=" text-end">
+                  <span
+                    className={` font-medium text-xs text-center ${items.is_current
+                      ? "text-blue2"
+                      : "text-red6 cursor-pointer"
+                      }`}
+                    onClick={() => {
+                      if (!items.is_current) handleEndSession(items.id);
+                    }}
+                  >
+                    {items.is_current ? "نشست فعال" : "پایان نشست"}
+                  </span>
+                </button>
+
+                <div className="flex w-full items-center justify-between mt-3 font-normal text-sm text-black1 ">
+                  <span className="text-center text-base font-normal mb-2">
+                    {getDeviceType(items) === "mobile"
+                      ? " موبایل"
+                      : getDeviceType(items) === "tablet"
                         ? " تبلت"
                         : getDeviceType(items) === "desktop"
-                        ? " دسکتاپ"
-                        : "❓ ناشناخته"}
-                    </span>
+                          ? " دسکتاپ"
+                          : "❓ ناشناخته"}
+                  </span>
 
-                    <span className="text-center text-sm font-normal mb-2">
-                      {items?.os}
-                      {items?.device && items.device !== "0"
-                        ? `-${items.device}`
-                        : ""}{" "}
-                      {items?.browser}
-                    </span>
-                  </div>
-
-                  <div className="flex w-full items-center justify-between text-xs font-normal text-black1">
-                    <span> {toPersianDigits(items?.last_used_at)}</span>
-                    <span> {toPersianDigits(items?.last_ip)}</span>
-                  </div>
+                  <span className="text-center text-sm font-normal mb-2">
+                    {items?.os}
+                    {items?.device && items.device !== "0"
+                      ? `-${items.device}`
+                      : ""}{" "}
+                    {items?.browser}
+                  </span>
                 </div>
-              ))}
+
+                <div className="flex w-full items-center justify-between text-xs font-normal text-black1">
+                  <span> {toPersianDigits(items?.last_used_at)}</span>
+                  <span> {toPersianDigits(items?.last_ip)}</span>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
 

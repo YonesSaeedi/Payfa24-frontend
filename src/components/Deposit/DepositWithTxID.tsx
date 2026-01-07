@@ -203,7 +203,7 @@ export default function DepositWithTxID({ openCryptoModal, selectedCrypto, netwo
                 <i className={`cf cf-${selectedCurrency.symbol?.toLowerCase()}`} style={{ color: selectedCurrency.color || "#000", fontSize: "24px" }} />
               ) : (
                 <img
-                  src={`https://api.payfa24.org/images/currency/${selectedCurrency.icon}`}
+                  src={`https://api.payfa24.com/images/currency/${selectedCurrency.icon}`}
                   alt={selectedCurrency.symbol}
                   className="w-6 h-6 object-contain rounded-full"
                   onError={(e) => {

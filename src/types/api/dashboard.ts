@@ -2,7 +2,7 @@
 export interface Banner {
   imgUrl?: string // "94download.jpg"
   locale?: string[] // ['fa', 'en']
-  link?: string // "https://payfa24.org/settings",
+  link?: string // "https://payfa24.com/settings",
   sort?: string // "2"
   [key: string]: unknown
 }

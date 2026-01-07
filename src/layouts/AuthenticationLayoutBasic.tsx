@@ -1,7 +1,7 @@
 import React from "react";
 import BreadcrumbNavigation from "../components/BreadcrumbNavigation";
-import AuthenticationRight from "../components/authenticationRight";
 import AuthenticationLeft from "../components/authenticationLeft";
+import AuthenticationRight from "../components/authenticationRight";
 
 type AuthenticationLayoutProps = {
   step: number;
@@ -15,7 +15,7 @@ export default function AuthenticationLayoutBasic({ step, started, onStart, leve
   const showIntroPage = levelKyc === null && !started;
 
   return (
-    <div className="w-full bg-white1  ">
+    <div className="w-full bg-white1">
       <div className="w-full lg:container-style lg:mt-4 mt-7 px-4 py-2">
         <BreadcrumbNavigation />
       </div>
@@ -25,7 +25,7 @@ export default function AuthenticationLayoutBasic({ step, started, onStart, leve
           {showIntroPage ? (
             <AuthenticationLeft text2="لطفاً جهت دسترسی به خدمات ابتدایی، احراز هویت سطح پایه را تکمیل نمایید. این مرحله تنها چند دقیقه زمان خواهد برد." />
           ) : (
-            <div className="w-full  lg:mt-10 ">{children}</div>
+            <div className="w-full   ">{children}</div>
           )}
         </div>
 

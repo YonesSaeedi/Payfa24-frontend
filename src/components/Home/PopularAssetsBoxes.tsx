@@ -75,9 +75,9 @@ export default function PopularAssetsBoxes({ topCoins = [], isLoading = false }:
 
     const symbolLower = coin.symbol?.toLowerCase();
     let src = coin.image
-      ? `https://api.payfa24.org/images/currency/${coin.image}`
+      ? `https://api.payfa24.com/images/currency/${coin.image}`
       : symbolLower
-      ? `https://api.payfa24.org/images/currency/${symbolLower}.png`
+      ? `https://api.payfa24.com/images/currency/${symbolLower}.png`
       : "/images/fallback-coin.png";
 
     return (

@@ -124,3 +124,45 @@ overflow-x: hidden;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+
+
+
+
+
+.custom-calendar .rmdp-header-values span {
+  color: var(--black1) !important;
+}
+
+.custom-calendar .rmdp-year-picker {
+  background-color:var(--black4);
+}
+
+
+.disabled-year {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}
+.custom-calendar .rmdp-month-picker{
+  background-color:var(--black4);
+}
+
+.my-disabled-date {
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+.rmdp-day span{
+  color: var(--black1);
+}
+
+.custom-calendar .rmdp-calendar {
+  background-color: var(--black4);
+  color: var(--black0);
+  border-radius: 5px;
+}
+
+
+
+
+
