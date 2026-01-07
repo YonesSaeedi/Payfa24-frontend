@@ -45,7 +45,7 @@ function MarketPage() {
         />
        : 
         <img
-          src={`https://api.payfa24.org/images/currency/${item.icon}`}
+          src={`https://api.payfa24.com/images/currency/${item.icon}`}
           alt={item.symbol || ""}
           className="w-6 h-6 rounded-full object-contain"
         />

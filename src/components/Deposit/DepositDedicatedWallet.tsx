@@ -233,7 +233,7 @@ export default function DepositDedicatedWallet({
                 />
               ) : (
                 <img
-                  src={`https://api.payfa24.org/images/currency/${selectedCrypto?.icon}`}
+                  src={`https://api.payfa24.com/images/currency/${selectedCrypto?.icon}`}
                   alt={selectedCurrency.symbol}
                   className="w-6 h-6 object-contain"
                   onError={(e) => {

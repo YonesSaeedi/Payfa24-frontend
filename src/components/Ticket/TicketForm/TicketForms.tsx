@@ -106,7 +106,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
         toast.error(response.msg || "خطا در ثبت تیکت");
       }
     } catch (err) {
-      console.error("Upload error:", err);
+     
       if (axios.isAxiosError(err) && err.code === "ECONNABORTED") {
         toast.error("درخواست بیش از ۱۰ ثانیه طول کشید و لغو شد!");
         return;
@@ -156,8 +156,6 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
         });
         setApiOrders(mappedOrders);
       }
-    } catch (err) {
-      console.error(err);
     } finally {
       setIsOrdersLoading(false);
     }
@@ -182,6 +180,7 @@ const [isOrdersLoading, setIsOrdersLoading] = useState(false);
                 value={field.value || ""}
                 onChange={field.onChange}
                 type="text"
+                 placeholder="عنوان تیکت را وارد نمایید"
                 className="flex flex-row  rounded-lg border border-gray12 font-normal !text-[14px]"
               />
             )}

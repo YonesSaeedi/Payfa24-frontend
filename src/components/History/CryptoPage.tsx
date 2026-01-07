@@ -100,7 +100,7 @@ const [selectedTx, setSelectedTx] = useState<Tx | null>(null);
         setResponseData(response.transaction || []);
         setTotalPages(response.transaction_count || 1);
       } catch (err) {
-        console.error("خطا در دریافت داده‌های تراکنش:", err);
+         // خطا نادیده گرفته شد
       } finally {
         setIsLoading(false);
       }
@@ -159,7 +159,7 @@ const handleOpenModal = (tx: MergedCryptoHistory) => {
   isFont: coinData?.isFont ?? false,
   icon: coinData?.icon ?? null,
   image: coinData?.icon
-    ? `https://api.payfa24.org/images/currency/${coinData.icon}` 
+    ? `https://api.payfa24.com/images/currency/${coinData.icon}` 
     : "/images/fallback-coin.png",
   coin: { symbol: tx.coin.symbol },
 };
@@ -316,7 +316,7 @@ const MobileSkeleton = () => (
                       {tx.isFont ? (
                         <i className={`cf cf-${tx.coin.symbol?.toLowerCase()}  w-10 h-10 size-10 text-[35px]`} style={{ color: tx.color ?? "" }} />
                       ) : (
-                        <img src={mappedGeneralData[tx.coin.symbol]?.icon? `https://api.payfa24.org/images/currency/${mappedGeneralData[tx.coin.symbol].icon}`
+                        <img src={mappedGeneralData[tx.coin.symbol]?.icon? `https://api.payfa24.com/images/currency/${mappedGeneralData[tx.coin.symbol].icon}`
                         : "/images/fallback-coin.png"} alt={tx.coin.symbol}/>
                       )}
                     </span>
@@ -386,7 +386,7 @@ const MobileSkeleton = () => (
                         <i className={`cf cf-${tx.coin.symbol?.toLowerCase()} text-[28px]`} style={{ color: tx.color ?? "" }} />
                       ) : (
                         <img
-                          src={`https://api.payfa24.org/images/currency/${tx.icon}`}
+                          src={`https://api.payfa24.com/images/currency/${tx.icon}`}
                           className="w-8 h-8"
                           alt={tx.coin.symbol}
                           onError={(e) => {

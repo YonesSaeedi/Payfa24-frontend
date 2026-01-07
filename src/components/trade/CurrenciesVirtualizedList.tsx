@@ -42,7 +42,7 @@ const CurrenciesVirtualizedList: React.FC<CurrenciesVirtualizedListProps> = ({ h
                 {item?.isFont ?
                   <i className={`cf cf-${item?.symbol.toLowerCase()}`} style={{ color: item?.color, fontSize: '32px' }}></i>
                   :
-                  <img src={`https://api.payfa24.org/images/currency/${item?.icon}`} alt={item?.symbol} className="object-contain w-full h-full" />
+                  <img src={`https://api.payfa24.com/images/currency/${item?.icon}`} alt={item?.symbol} className="object-contain w-full h-full" />
                 }
               </div>
               <div className="flex flex-col gap-0.5">

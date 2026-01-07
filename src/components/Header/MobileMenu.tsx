@@ -9,7 +9,6 @@ import BitcoinIcon from "../../assets/icons/header/BitcoinIcon";
 import IconUser from "../../assets/icons/ProfileMenue/IconUser";
 import IconExit from "../../assets/icons/ProfileMenue/IconExit";
 import IconProfileMenu from "../../assets/icons/Login/IconProfileMenu";
-import { apiRequest } from "../../utils/apiClient";
 import useGetUser from "../../hooks/useGetUser";
 import IconSun from "../../assets/icons/header/IconSun";
 import MoonIcon from "../../assets/icons/HeaderLogin/MoonIcon";
@@ -18,7 +17,8 @@ import IconChervDown from "../../assets/icons/Withdrawal/IconChervDown";
 import useGetKYCInfo from "../../hooks/useGetKYCInfo";
 import { useNavigate } from "react-router-dom";
 import ReceiptTextIcon from "../../assets/icons/Home/WalletCardIcon/ReceiptTextIcon";
-import ModalLogout from "./ModalLogout";
+import Logout from "../../assets/images/logout.png";
+
 
 type MobileMenuProps = {
   open: boolean;
@@ -41,7 +41,9 @@ export default function MobileMenu({
   const { data: userData, isLoading } = useGetUser();
   const navigate = useNavigate();
   const { data: kycInfo, isLoading: kycLoading } = useGetKYCInfo();
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+ // قبل از return
+const [IsModal, setIsModal] = useState(false);
+
 
 
 const handleKYCClick = () => {
@@ -56,26 +58,39 @@ const handleKYCClick = () => {
   onClose(); // بستن منو بعد از انتخاب
 };
 
-  // const handleLogout = async () => {
-  //   try {
-  //     await apiRequest({ url: "/auth/logout", method: "POST" });
-  //   } catch (error) {
-  //     console.error("Error logging out:", error);
-  //   } finally {
-  //     localStorage.clear();
-  //     window.location.replace("/login");
-  //   }
-  // };
-const handleLogoutConfirm = async () => {
-  try {
-    await apiRequest({ url: "/auth/logout", method: "POST" });
-  } catch (error) {
-    console.error("Error logging out:", error);
-  } finally {
-    localStorage.clear();
-    window.location.replace("/login");
-  }
+
+
+const handleLogout = () => {
+  const token = localStorage.getItem("accessToken");
+
+  localStorage.removeItem("_grecaptcha");
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("expiresAt");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("fcmToken");
+  window.location.replace("/login");
+  
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+  const dataToSign = `POST api/v4/auth/logout ${timestamp} []`;
+  const signature = CryptoJS.HmacSHA256(
+    dataToSign,
+    "V65HMX2FHYVQCFT33WX3PCPY7H59MIBDOMCOWQ4LALMYCYBY4HJIGAN51JOEK590"
+  ).toString(CryptoJS.enc.Hex);
+
+  fetch("https://api.payfa24.com/api/v4/auth/logout", {
+    method: "POST",
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+      "Content-Type": "application/json",
+      "X-Signature": signature,
+      "X-Timestamp": timestamp,
+      "X-Device": "mobile",
+    },
+    keepalive: true,
+    credentials: "include",
+  }).catch(() => {});
 };
+
   return (
     <>
       {open && (
@@ -380,7 +395,7 @@ const handleLogoutConfirm = async () => {
 {/* خروج از حساب کاربری */}
 <div className="p-4 flex items-center justify-start gap-2">
   <button
-    onClick={() => setIsLogoutModalOpen(true)}
+   onClick={() => setIsModal(true)}
     className="flex items-center gap-2 group w-auto"
   >
     <span className="flex items-center justify-center w-6 h-6 transition-colors duration-200 group-hover:text-red-600 ">
@@ -392,14 +407,51 @@ const handleLogoutConfirm = async () => {
   </button>
 </div>
       </div>
-     {isLogoutModalOpen && (
-  <ModalLogout
-  open={isLogoutModalOpen}
-  onClose={() => setIsLogoutModalOpen(false)}
-  onConfirm={handleLogoutConfirm}
-/>
+  
 
+  {IsModal && (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center"
+    onClick={() => setIsModal(false)} // ← کلیک روی بک‌گراند، مودال بسته می‌شود
+  >
+    {/* overlay کل صفحه */}
+    <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+    {/* مودال وسط صفحه با عرض محدود */}
+    <div
+      className="relative w-11/12 max-w-md lg:max-w-lg rounded-lg lg:p-8 p-4 bg-white8 z-10"
+      onClick={(e) => e.stopPropagation()} // ← کلیک داخل مودال رو جلوگیری می‌کنه
+    >
+      <div className="text-center gap-4 flex items-center justify-center flex-col">
+        <img src={Logout} alt="Logout" />
+        <h1 className="lg:text-2xl text-lg text-black0 font-medium">
+          خروج از حساب کاربری
+        </h1>
+        <p className="lg:text-lg text-sm text-gray5">
+          آیا از خروج از حساب کاربری خود اطمینان دارید. توجه داشته باشید که اطلاعات شما محفوظ می‌ماند
+        </p>
+      </div>
+
+      <div className="flex gap-2 mt-12 items-center justify-center">
+        <button
+          onClick={() => setIsModal(false)}
+          className="w-1/2 lg:py-3 py-2 border border-blue2 rounded-xl text-blue2 font-bold"
+        >
+          انصراف
+        </button>
+        <button
+          onClick={handleLogout}
+          className="w-1/2 lg:py-3 py-2 font-bold bg-blue2 text-white2 rounded-xl"
+        >
+          خروج
+        </button>
+      </div>
+    </div>
+  </div>
 )}
+
+
+
     </>
 
     

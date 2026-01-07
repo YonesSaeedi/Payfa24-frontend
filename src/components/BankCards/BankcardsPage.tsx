@@ -29,7 +29,7 @@ const BankCardsPage = () => {
 
         }
       } catch (error) {
-        console.error("❌ خطا در بررسی کارت‌های موجود:", error);
+        // خطا نادیده گرفته شد
       } 
     };
 

@@ -95,7 +95,7 @@ const CryptoTable = ({ data, isLoading }: CryptoTableProps) => {
                     {item?.isFont ?
                       <i className={`cf cf-${item?.symbol.toLowerCase()} text-[28px] lg:text-[40px]`} style={{ color: item.color }}></i>
                       :
-                      <img src={`https://api.payfa24.org/images/currency/${item?.icon}`} alt={item?.symbol} className="object-contain w-full h-full" />
+                      <img src={`https://api.payfa24.com/images/currency/${item?.icon}`} alt={item?.symbol} className="object-contain w-full h-full" />
                     }
                   </div>
                   <div className="min-w-0">

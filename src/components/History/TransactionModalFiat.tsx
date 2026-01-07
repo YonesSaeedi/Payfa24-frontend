@@ -52,7 +52,7 @@ const TransactionModalFiat: React.FC<TransactionModalFiatProps> = ({ tx, onClose
           setDetail({ ...res.transaction, source: "fiat", DateTime: res.transaction.DateTime });
         }
       } catch (err) {
-        console.error("خطا در دریافت جزئیات تراکنش:", err);
+         // خطا نادیده گرفته شد
       } finally {
         setLoading(false);
       }

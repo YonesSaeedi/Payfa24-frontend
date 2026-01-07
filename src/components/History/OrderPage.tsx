@@ -93,7 +93,7 @@ const OrderPage: React.FC = () => {
         setResponseData(response.orders || []);
         setTotalPages(response.orders_count || 1);
       } catch (err) {
-        console.error("خطا در دریافت داده‌های تراکنش:", err);
+         // خطا نادیده گرفته شد
       } finally {
         setIsLoading(false);
       }
@@ -294,7 +294,7 @@ const MobileSkeleton = () => (
                         />
                       ) : (
                         <img
-                          src={tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : "/images/fallback-coin.png"}
+                          src={tx.icon ? `https://api.payfa24.com/images/currency/${tx.icon}` : "/images/fallback-coin.png"}
                           className="w-full h-full"
                           alt={tx.symbol}
                         />
@@ -403,7 +403,7 @@ const MobileSkeleton = () => (
                         />
                       ) : (
                         <img
-                          src={tx.icon ? `https://api.payfa24.org/images/currency/${tx.icon}` : "/images/fallback-coin.png"}
+                          src={tx.icon ? `https://api.payfa24.com/images/currency/${tx.icon}` : "/images/fallback-coin.png"}
                           className="w-8 h-8"
                           alt={tx.symbol}
                           onError={(e) => {

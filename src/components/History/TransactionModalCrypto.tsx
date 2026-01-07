@@ -92,13 +92,13 @@ const handleCopy = async (text: string) => {
           };
 
           mergedDetail.image = mergedDetail.icon
-            ? `https://api.payfa24.org/images/currency/${mergedDetail.icon}`
+            ? `https://api.payfa24.com/images/currency/${mergedDetail.icon}`
             : "/images/fallback-coin.png";
 
           setDetail(mergedDetail);
         }
       } catch (err) {
-        console.error("خطا در دریافت جزئیات تراکنش:", err);
+         // خطا نادیده گرفته شد
       } finally {
         setLoading(false);
       }
@@ -122,7 +122,7 @@ const handleCopy = async (text: string) => {
           />
         ) : (
           <img
-            src={detail.icon ? `https://api.payfa24.org/images/currency/${detail.icon}` : "/images/fallback-coin.png"}
+            src={detail.icon ? `https://api.payfa24.com/images/currency/${detail.icon}` : "/images/fallback-coin.png"}
             alt={detail.faName ?? detail.symbol ?? ""}
             className="object-contain rounded-full"
             onError={(e) => (e.currentTarget.src = "/images/fallback-coin.png")}

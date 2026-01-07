@@ -224,7 +224,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
               {item.isFont ? (
                 <i className={`cf cf-${symbol.toLowerCase()}`} style={{ color: item.color, fontSize: "32px" }}></i>
               ) : (
-                <img src={`https://api.payfa24.org/images/currency/${item.icon}`} alt={symbol} className="object-contain w-full h-full" />
+                <img src={`https://api.payfa24.com/images/currency/${item.icon}`} alt={symbol} className="object-contain w-full h-full" />
               )}
             </div>
 
@@ -288,7 +288,7 @@ const CryptoMarketTable: React.FC<Props> = ({ data, active, setActive, isLoading
                           <i className={`cf cf-${symbol.toLowerCase()} text-[28px]`} style={{ color: item.color ?? "" }} />
                         ) : (
                           <img
-                            src={`https://api.payfa24.org/images/currency/${item.icon}`}
+                            src={`https://api.payfa24.com/images/currency/${item.icon}`}
                             className="w-8 h-8 rounded-full"
                             alt={symbol}
                             

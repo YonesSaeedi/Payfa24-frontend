@@ -1,10 +1,10 @@
 const IconCloseMonitor = () => (
-<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M22 11.89V12.78C22 16.34 21.11 17.22 17.56 17.22H6.44C2.89 17.22 2 16.33 2 12.78V6.44C2 2.89 2.89 2 6.44 2H13.5" stroke="Currentcolor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 17.2197V21.9997" stroke="#E11D48" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M2 13H22" stroke="#E11D48" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M7.5 22H16.5" stroke="#E11D48" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22 11.89V12.78C22 16.34 21.11 17.22 17.56 17.22H6.44C2.89 17.22 2 16.33 2 12.78V6.44C2 2.89 2.89 2 6.44 2H13.5" stroke="Currentcolor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12 17.2197V21.9997" stroke="#E11D48" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 13H22" stroke="#E11D48" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M7.5 22H16.5" stroke="#E11D48" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
 
 );
 

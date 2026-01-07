@@ -423,7 +423,7 @@ const BuyAndSell = ({ isSell = false }: { isSell: boolean }) => {
                   currentCryptocurrency?.isFont ?
                     <i className={`cf cf-${currentCryptocurrency?.symbol.toLowerCase()}`} style={{ color: currentCryptocurrency?.color, fontSize: '28px' }}></i>
                     :
-                    <img src={`https://api.payfa24.org/images/currency/${currentCryptocurrency?.icon}`} alt={currentCryptocurrency?.symbol} className="object-contain" />
+                    <img src={`https://api.payfa24.com/images/currency/${currentCryptocurrency?.icon}`} alt={currentCryptocurrency?.symbol} className="object-contain" />
                 }
               </span>
               {!currentCryptocurrency ? <div className="w-16 h-4 rounded skeleton-bg" /> :

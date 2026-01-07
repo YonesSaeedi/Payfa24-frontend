@@ -73,7 +73,7 @@ const SyncSlider = ({ boxes, isLoading }: SyncSliderProps) => {
                 box?.slides[index]?.isFont ?
                   <i className={`cf cf-${box?.slides[index]?.symbol?.toLowerCase()}`} style={{ color: box?.slides[index]?.color, fontSize: '185px' }}></i>
                   :
-                  <img src={`https://api.payfa24.org/images/currency/${box?.slides[index]?.icon}`} alt={box?.slides[index]?.symbol} className="object-cover w-full h-full" />
+                  <img src={`https://api.payfa24.com/images/currency/${box?.slides[index]?.icon}`} alt={box?.slides[index]?.symbol} className="object-cover w-full h-full" />
               )}
             </div>
             {/* === slides (clipped for movement) === */}
@@ -114,7 +114,7 @@ const SyncSlider = ({ boxes, isLoading }: SyncSliderProps) => {
                             {slide?.isFont ?
                               <i className={`cf cf-${slide?.symbol.toLowerCase()}`} style={{ color: slide?.color, fontSize: '54px' }}></i>
                               :
-                              <img src={`https://api.payfa24.org/images/currency/${slide?.icon}`} alt={slide?.symbol} className="object-contain" />
+                              <img src={`https://api.payfa24.com/images/currency/${slide?.icon}`} alt={slide?.symbol} className="object-contain" />
                             }
                           </div>
                           <div className="text-right">
