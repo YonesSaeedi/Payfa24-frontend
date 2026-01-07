@@ -138,7 +138,7 @@ const WalletAssets: React.FC = () => {
     const renderIcon = generalItem?.isFont ? (
       <i className={`cf cf-${wallet.symbol.toLowerCase()}`} style={{ color: generalItem?.color || "#000", fontSize: "24px" }}></i>
     ) : (
-      <img src={generalItem?.icon ? `https://api.payfa24.org/images/currency/${generalItem.icon}` : ""} alt={wallet.symbol} className="w-6 h-6 rounded-full" />
+      <img src={generalItem?.icon ? `https://api.payfa24.com/images/currency/${generalItem.icon}` : ""} alt={wallet.symbol} className="w-6 h-6 rounded-full" />
     );
 
     return {

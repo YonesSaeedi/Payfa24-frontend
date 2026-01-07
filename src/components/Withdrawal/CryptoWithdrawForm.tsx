@@ -593,7 +593,7 @@ useEffect(() => {
                           }}
                         ></i>
                       ) : (
-                        <img src={`https://api.payfa24.org/images/currency/${currentCryptoCurrency.icon}`} alt={currentCryptoCurrency.symbol} className="w-6 h-6 object-contain" />
+                        <img src={`https://api.payfa24.com/images/currency/${currentCryptoCurrency.icon}`} alt={currentCryptoCurrency.symbol} className="w-6 h-6 object-contain" />
                       )}
                       <span className="text-black1 font-medium">{currentCryptoCurrency.locale?.fa?.name}</span>
                     </span>
@@ -760,7 +760,7 @@ useEffect(() => {
                           }}
                         ></i>
                       ) : (
-                        <img src={`https://api.payfa24.org/images/currency/${currentCryptoCurrency.icon}`} alt={currentCryptoCurrency.symbol} className="w-6 h-6 object-contain" />
+                        <img src={`https://api.payfa24.com/images/currency/${currentCryptoCurrency.icon}`} alt={currentCryptoCurrency.symbol} className="w-6 h-6 object-contain" />
                       )}
                       <span className="text-black1 font-medium">{currentCryptoCurrency.symbol}</span>
                     </span>

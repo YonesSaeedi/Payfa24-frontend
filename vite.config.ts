@@ -13,7 +13,7 @@ export default defineConfig({
   // server: {
   //   proxy: {
   //     '/api': {
-  //       target: 'https://api.payfa24.org',
+  //       target: 'https://api.payfa24.com',
   //       changeOrigin: true,
   //       secure: false,
   //       rewrite: (path) => path.replace(/^\/api/, '/api/v4'),

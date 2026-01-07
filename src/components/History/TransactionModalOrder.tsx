@@ -121,9 +121,9 @@ const TransactionModalOrder: React.FC<TransactionModalOrderProps> = ({ tx, onClo
     );
 
     const src = localCoin?.icon
-      ? `https://api.payfa24.org/images/currency/${localCoin.icon}`
+      ? `https://api.payfa24.com/images/currency/${localCoin.icon}`
       : coin.symbol
-      ? `https://api.payfa24.org/images/currency/${coin.symbol.toLowerCase()}.png`
+      ? `https://api.payfa24.com/images/currency/${coin.symbol.toLowerCase()}.png`
       : "/images/fallback-coin.png";
 
     return (

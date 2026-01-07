@@ -119,7 +119,7 @@ const PosterSlider = ({ bannersData, isLoading }: { bannersData: Banner[] | unde
           >
             {slide.imgUrl && (
               <img
-                src={`https://cdn.payfa24.org/banner/${slide.imgUrl}`}
+                src={`https://cdn.payfa24.com/banner/${slide.imgUrl}`}
                 alt={`Slide ${index + 1}`}
                 className="w-full h-full object-cover"
                 draggable={false}

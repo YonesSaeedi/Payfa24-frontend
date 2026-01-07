@@ -304,7 +304,7 @@ export default function ConvertPage() {
                             />
                           ) : (
                             <img
-                              src={`https://api.payfa24.org/images/currency/${item.icon}`}
+                              src={`https://api.payfa24.com/images/currency/${item.icon}`}
                               alt={item.symbol}
                               className="object-contain w-7 h-7 rounded-full"
                             />

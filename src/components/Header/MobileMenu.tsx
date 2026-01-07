@@ -77,7 +77,7 @@ const handleLogout = () => {
     "V65HMX2FHYVQCFT33WX3PCPY7H59MIBDOMCOWQ4LALMYCYBY4HJIGAN51JOEK590"
   ).toString(CryptoJS.enc.Hex);
 
-  fetch("https://api.payfa24.org/api/v4/auth/logout", {
+  fetch("https://api.payfa24.com/api/v4/auth/logout", {
     method: "POST",
     headers: {
       Authorization: token ? `Bearer ${token}` : "",
