@@ -67,6 +67,8 @@ export default function WithdrawForm() {
   const watchAmount = useWatch({ control, name: "amount" });
   const watchBank = useWatch({ control, name: "bank" });
   const allFieldsFilled = !!watchBank && !!watchAmount && Number(watchAmount) > 0;
+  const [isSubmittingOtp, setIsSubmittingOtp] = useState(false);
+
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -141,53 +143,54 @@ export default function WithdrawForm() {
       setResendCodeTimeLeft(120);
       setIsResending(false);
     } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "در ارسال درخواست برداشت مشکلی پیش امده است");
-      }
+  let message = "در ارسال درخواست برداشت مشکلی پیش آمده است";
 
-      let message = "خطا در برداشت!";
-      if (err instanceof AxiosError && err.response?.data?.msg) {
-        message = err.response.data.msg;
-      } else if (err instanceof Error) {
-        message = err.message;
-      }
-      toast.error(message);
-    } finally {
+  if (err instanceof AxiosError) {
+    message = err.response?.data?.msg || message;
+  } else if (err instanceof Error) {
+    message = err.message;
+  }
+
+  toast.error(message);
+}
+finally {
       setIsSubmitting(false);
     }
   };
-  const handleOtpSubmit = async () => {
-    if (!otpCode || !pendingWithdrawData) {
-      toast.error("کد OTP وارد نشده است.");
-      return;
+ const handleOtpSubmit = async () => {
+  if (!otpCode || !pendingWithdrawData) {
+    toast.error("کد OTP وارد نشده است.");
+    return;
+  }
+
+  setIsSubmittingOtp(true); // ← دکمه OTP غیرفعال شود
+
+  try {
+    await apiRequest({
+      url: "/wallets/fiat/withdraw/confirm",
+      method: "POST",
+      data: {
+        transaction_id: pendingWithdrawData.transactionId,
+        codeOtp: otpCode,
+      },
+    });
+
+    toast.success("درخواست برداشت ثبت شد");
+    setIsOtpModalOpen(false);
+    setOtpCode("");
+    setIsTradeSuccessModalOpen(true);
+  } catch (err: unknown) {
+    let message = "خطا در برداشت!";
+    if (err instanceof AxiosError && err.response?.data?.msg) {
+      message = err.response.data.msg;
+    } else if (err instanceof Error) {
+      message = err.message;
     }
-
-    try {
-      await apiRequest({
-        url: "/wallets/fiat/withdraw/confirm",
-        method: "POST",
-        data: {
-          transaction_id: pendingWithdrawData.transactionId,
-          codeOtp: otpCode,
-        },
-      });
-
-      toast.success("درخواست برداشت ثبت شد");
-      setIsOtpModalOpen(false);
-      setOtpCode("");
-      setIsTradeSuccessModalOpen(true);
-    } catch (err: unknown) {
-      let message = "خطا در برداشت!";
-
-      if (err instanceof AxiosError && err.response?.data?.msg) {
-        message = err.response.data.msg;
-      } else if (err instanceof Error) {
-        message = err.message;
-      }
-
-      toast.error(message);
-    }
-  };
+    toast.error(message);
+  } finally {
+    setIsSubmittingOtp(false); // ← بعد از دریافت پاسخ API، دکمه دوباره فعال می‌شود
+  }
+};
 
   const handleResendCode = () => {
     setResendCodeTimeLeft(120);
@@ -317,15 +320,25 @@ export default function WithdrawForm() {
           <div>
             <div dir="rtl" className=" text-gray-500 mt-3 space-y-2">
               {/* ردیف اول */}
-              <div className="flex items-center justify-between mb-4">
-                <span className=" text-gray5 text-[14px] font-normal">کارمزد</span>
-                <span className="text-md text-gray-700"></span>
-              </div>
+            <div className="flex items-center justify-between mb-4">
+  <span className=" text-gray5 text-[14px] font-normal">کارمزد</span>
+  <span className="text-md text-gray-700">
+    {formatPersianNumber(0)} تومان
+  </span>
+</div>
+
               {/* ردیف دوم */}
-              <div className="flex items-center justify-between ">
-                <span className=" text-gray5 text-[14px] font-normal">مبلغ نهایی واریز به کیف پول </span>
-                <span className="text-md text-gray-700"></span>
-              </div>
+             <div className="flex items-center justify-between ">
+  <span className=" text-gray5 text-[14px] font-normal">
+    مبلغ نهایی واریز به کیف پول
+  </span>
+  <span className="text-md text-gray-700">
+    {watchAmount && Number(watchAmount) > 0
+      ? `${formatPersianInteger(Number(watchAmount))} تومان`
+      : ""}
+  </span>
+</div>
+
             </div>
           </div>
         </div>
@@ -358,13 +371,15 @@ export default function WithdrawForm() {
             mainText={`لطفاً کد ارسال شده به شماره ${userMobile} را وارد کنید`}
             submitButtonText="تأیید"
             titleText="تأیید برداشت"
+           isSubmitting={isSubmittingOtp}
+            isSubmittingText="درحال ارسال..."
           />
         </div>
       )}
 
       {isTradeSuccessModalOpen && (
         <div dir="rtl">
-          <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} linkTo={ROUTES.TRANSACTION.TOMAN_HISTORY} />
+          <TradeSuccessModal setIsTradeSuccessModalOpen={setIsTradeSuccessModalOpen} linkTo={ROUTES.TRANSACTION.TOMAN_HISTORY} successMsg="درخواست برداشت شما با موفقیت ثبت شد" />
         </div>
       )}
     </>

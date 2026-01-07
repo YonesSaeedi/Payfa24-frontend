@@ -114,10 +114,8 @@ const CryptoWithdrawForm: FC = () => {
   };
   const [searchParams] = useSearchParams();
   
-
   useEffect(() => {
     if (!mergedCryptosData?.length || crypto) return;
-
     const selectedCoinFromUrl = searchParams.get("coin");
     const urlCoin = selectedCoinFromUrl && mergedCryptosData.find((c) => c.symbol === selectedCoinFromUrl);
     const defaultCoin = urlCoin || mergedCryptosData[0];
@@ -763,6 +761,8 @@ useEffect(() => {
             mainText={`لطفاً کد ارسال شده به شماره ${userMobile} را وارد کنید`}
             submitButtonText="تأیید"
             titleText="تأیید برداشت"
+             isSubmitting={isOtpSubmitting}
+            isSubmittingText="درحال ارسال..."
           />
         </div>
       )}
