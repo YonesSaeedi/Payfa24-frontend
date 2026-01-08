@@ -41,7 +41,7 @@ interface TransferResponse {
   status: boolean;
   msg: string;
   transaction_id: number;
-  msgOtp:string;
+  msgOtp: string;
 }
 
 interface CoinNetworkRef {
@@ -78,11 +78,30 @@ const CryptoWithdrawForm: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const allWithdrawFieldsFilled = crypto && selectedNetworkId && amount && address;
   const allTransferFieldsFilled = crypto && amount && address;
-  const [availableNetworks, setAvailableNetworks] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string })[]>([]);
+  // --- add/replace this type + helper + state + hook ---
+  type NetworkForUI = {
+    id: number;
+    name?: string;
+    symbol?: string;
+    locale?: { fa?: { name?: string } };
+    tag?: number;
+    addressRegex?: string;
+    memoRegex?: string | null;
+    withdraw_min?: number;
+    withdraw_fee?: number;
+    // any other fields you need...
+    displayName?: string;
+  };
+
+  const [availableNetworks, setAvailableNetworks] = useState<NetworkForUI[]>([]);
+
+  // make sure withdrawQuery is available here:
+  // -----------------------------------------------
   const [selectedNetwork, setSelectedNetwork] = useState<(FullNetwork & CoinNetworkRef & { displayName?: string }) | undefined>(undefined);
   const [activeTab, setActiveTab] = useState<"withdraw" | "transfer">("withdraw");
   const [isOtpSubmitting, setIsOtpSubmitting] = useState(false);
-  const { data: mergedCryptosData, isLoading: isCryptoListLoading } = useMergedCryptoList();
+  const { data: mergedCryptosData, isLoading: isCryptoListLoading, allNetworks } = useMergedCryptoList();
+
   const [withdrawData, setWithdrawData] = useState<{
     transactionId: number;
     coin?: string;
@@ -99,10 +118,10 @@ const CryptoWithdrawForm: FC = () => {
   const [isResending, setIsResending] = useState(false);
   const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState(false);
   const [currentCryptoCurrency, setCurrentCryptoCurrency] = useState<CryptoItem | null>(null);
- 
+
   const isDataLoading = isCryptoListLoading;
-  
- const [otpMessage, setOtpMessage] = useState<string>('');
+
+  const [otpMessage, setOtpMessage] = useState<string>('');
   const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
     setCrypto(currency.symbol);
     setCurrentCryptoCurrency(currency);
@@ -113,7 +132,7 @@ const CryptoWithdrawForm: FC = () => {
     setOtpCode("");
   };
   const [searchParams] = useSearchParams();
-  
+
   useEffect(() => {
     if (!mergedCryptosData?.length || crypto) return;
     const selectedCoinFromUrl = searchParams.get("coin");
@@ -183,40 +202,60 @@ const CryptoWithdrawForm: FC = () => {
   }, [isOtpModalOpen, resendCodeTimeLeft]);
 
   //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
-useEffect(() => {
-  // فقط وقتی crypto داریم و داده‌ها لود شده‌اند
-  if (!crypto || !mergedCryptosData?.length) return;
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  //  دریافت اطلاعات اولیه لیست کوین‌ها و شبکه‌ها=======================================================================================================
+  useEffect(() => {
+    if (!crypto || !mergedCryptosData.length || !allNetworks.length) {
+      // setAvailableNetworks([])
+      // setSelectedNetworkId("")
+      // setSelectedNetwork(undefined)
+      // setTag("")
+      return
+    }
 
-  const selectedCoin = mergedCryptosData.find((c) => c.symbol === crypto);
-  if (!selectedCoin || !Array.isArray(selectedCoin.network)) {
-    setAvailableNetworks([]);
-    setSelectedNetworkId("");
-    setSelectedNetwork(undefined);
-    setTag("");
-    return;
-  }
+    const coin = mergedCryptosData.find((c) => c.symbol === crypto)
+    if (!coin || !Array.isArray(coin.network)) {
+      setAvailableNetworks([])
+      setSelectedNetworkId("")
+      setSelectedNetwork(undefined)
+      setTag("")
+      return
+    }
 
-  const nets = selectedCoin.network.map((cn) => {
-    const full = selectedCoin.network!.find((nw) => nw.id === cn.id) || ({} as FullNetwork);
-    const localeName =
-      (full?.locale && (full.locale.fa?.name || full.locale.fa || full.locale["fa"])) ||
-      full?.name ||
-      full?.symbol ||
-      String(cn.id);
-    return { ...full, ...cn, displayName: localeName } as FullNetwork & CoinNetworkRef & { displayName?: string };
-  });
+    const nets = coin.network.map((cn) => {
+      const fullNetwork = allNetworks.find((n: any) => n.id === cn.id)
+      return {
+        ...cn,
+        ...fullNetwork,
+        displayName: fullNetwork?.name || fullNetwork?.symbol || String(cn.id),
+      } as NetworkForUI
+    })
 
-  setAvailableNetworks(nets);
-  setSelectedNetworkId("");
-  setSelectedNetwork(undefined);
-  setTag("");
-}, [crypto, mergedCryptosData]);
+    setAvailableNetworks(nets)
+    setSelectedNetworkId("")
+    setSelectedNetwork(undefined)
+    setTag("")
+  }, [crypto, mergedCryptosData, allNetworks])
+
+
+
+
+
+
+
 
 
 
   const handleNetworkChange = (id: string) => {
     setSelectedNetworkId(id);
-    const net = availableNetworks.find((n) => String(n.id) === id);
+    const net: any = availableNetworks.find((n) => String(n.id) === id);
     setSelectedNetwork(net);
     setTag("");
   };
@@ -314,9 +353,9 @@ useEffect(() => {
       });
 
       setResendCodeTimeLeft(120);
-      
+
       setOtpMessage(response.msgOtp);
-  setIsOtpModalOpen(true);
+      setIsOtpModalOpen(true);
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "ارسال درخواست برداشت با مشکل مواجه شد.");
     } finally {
@@ -374,7 +413,7 @@ useEffect(() => {
           ...dataToSend,
         });
         setOtpMessage(res.msgOtp || res.msg);
-  setIsOtpModalOpen(true);
+        setIsOtpModalOpen(true);
         setResendCodeTimeLeft(120);
         toast.success(res.msg || "کد تأیید ارسال شد");
       } else {
@@ -444,9 +483,8 @@ useEffect(() => {
             <button
               type="button"
               onClick={() => setActiveTab("withdraw")}
-              className={`flex-1 py-3 text-center font-medium transition-colors ${
-                activeTab === "withdraw" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-blue-500"
-              }`}
+              className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "withdraw" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-blue-500"
+                }`}
             >
               برداشت از کیف پول
             </button>
@@ -454,9 +492,8 @@ useEffect(() => {
             <button
               type="button"
               onClick={() => setActiveTab("transfer")}
-              className={`flex-1 py-3 text-center font-medium transition-colors ${
-                activeTab === "transfer" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-blue-500"
-              }`}
+              className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "transfer" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500 hover:text-blue-500"
+                }`}
             >
               انتقال به کاربر پی فا
             </button>
@@ -704,11 +741,10 @@ useEffect(() => {
               <button
                 type="submit"
                 disabled={isLoading || (activeTab === "withdraw" ? !allWithdrawFieldsFilled : !allTransferFieldsFilled)}
-                className={`w-full py-3 rounded-lg mb-2 mt-4 font-bold text-[18px] transition-colors duration-300 ${
-                  isLoading || (activeTab === "withdraw" ? !allWithdrawFieldsFilled : !allTransferFieldsFilled)
-                    ? "bg-gray12 text-white cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-600 text-white"
-                }`}
+                className={`w-full py-3 rounded-lg mb-2 mt-4 font-bold text-[18px] transition-colors duration-300 ${isLoading || (activeTab === "withdraw" ? !allWithdrawFieldsFilled : !allTransferFieldsFilled)
+                  ? "bg-gray12 text-white cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600 text-white"
+                  }`}
               >
                 {isLoading ? "در حال ارسال..." : "تأیید"}
               </button>
@@ -761,10 +797,10 @@ useEffect(() => {
             handleResendCode={handleResendCode}
             resendCodeIsSubmitting={isResending}
             resendCodeTimeLeft={resendCodeTimeLeft}
-            mainText={otpMessage} 
+            mainText={otpMessage}
             submitButtonText="تأیید"
             titleText="تأیید برداشت"
-             isSubmitting={isOtpSubmitting}
+            isSubmitting={isOtpSubmitting}
             isSubmittingText="درحال ارسال..."
           />
         </div>
