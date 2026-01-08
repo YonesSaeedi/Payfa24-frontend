@@ -157,14 +157,10 @@ const handleCopyVoucher = (voucher?: string) => {
 
   if (!tx?.id) return null;
 
- 
-
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm animate-fadeIn"
-      onClick={onClose}
-    >
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm animate-fadeIn" onClick={onClose}>
       <div
         className="bg-white8 rounded-2xl p-6 w-[90%] max-w-md max-h-[90vh] overflow-y-auto relative shadow-xl
              scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 scrollbar-thumb-rounded"
@@ -176,7 +172,6 @@ const handleCopyVoucher = (voucher?: string) => {
             <IconClose />
           </button>
         </div>
-
         <div className="min-h-[200px]">
           {loading ? (
             <>
@@ -185,7 +180,6 @@ const handleCopyVoucher = (voucher?: string) => {
                 <div className="h-6 w-32 rounded-md skeleton-bg mt-3" />
                 <div className="h-4 w-20 rounded-md mt-2" />
               </div>
-
               <div className="grid grid-cols-1 gap-6 text-sm">
                 {Array.from({ length: 9 }).map((_, i) => (
                   <SkeletonRow key={i} />

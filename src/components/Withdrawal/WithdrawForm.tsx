@@ -18,7 +18,11 @@ import { formatPersianNumber } from "../../utils/formatPersianNumber";
 interface WithdrawRequestResponse {
   transaction_id: number;
   msg?: string;
+  msgOtp?: string; 
+  otp?: boolean;    
+  status?: boolean; 
 }
+
 interface PendingWithdrawData {
   amount: number;
   bank: BankOption;
@@ -68,7 +72,7 @@ export default function WithdrawForm() {
   const watchBank = useWatch({ control, name: "bank" });
   const allFieldsFilled = !!watchBank && !!watchAmount && Number(watchAmount) > 0;
   const [isSubmittingOtp, setIsSubmittingOtp] = useState(false);
-
+ const [otpMessage, setOtpMessage] = useState<string>('');
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -124,7 +128,7 @@ export default function WithdrawForm() {
     };
 
     try {
-      const response = await apiRequest<WithdrawRequestResponse, { amount: number; card: number }>({
+      const response = await apiRequest<WithdrawRequestResponse, { amount: number; card: number}>({
         url: "/wallets/fiat/withdraw/request",
         method: "POST",
         data: requestData,
@@ -138,8 +142,10 @@ export default function WithdrawForm() {
         transactionId,
       });
 
-      toast.success("کد تأیید ارسال شد ");
-      setIsOtpModalOpen(true);
+    setOtpMessage(response.msgOtp || `لطفاً کد ارسال شده به شماره ${userMobile} را وارد کنید`);
+setIsOtpModalOpen(true);
+toast.success("کد تأیید ارسال شد");
+
       setResendCodeTimeLeft(120);
       setIsResending(false);
     } catch (err: unknown) {
@@ -368,7 +374,7 @@ finally {
             handleResendCode={handleResendCode}
             resendCodeIsSubmitting={isResending}
             resendCodeTimeLeft={resendCodeTimeLeft}
-            mainText={`لطفاً کد ارسال شده به شماره ${userMobile} را وارد کنید`}
+             mainText={otpMessage} 
             submitButtonText="تأیید"
             titleText="تأیید برداشت"
             isSubmitting={isSubmittingOtp}

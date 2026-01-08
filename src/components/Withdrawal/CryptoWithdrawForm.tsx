@@ -11,7 +11,6 @@ import CryptoListModal from "../trade/CryptoListModal";
 import useMergedCryptoList from "./MergedCryptoData";
 import TradeSuccessModal from "../trade/TradeSuccessModal";
 import IconClose from "../../assets/icons/Login/IconClose";
-import useGetUser from "../../hooks/useGetUser";
 import { AxiosError } from "axios";
 import { ROUTES } from "../../routes/routes";
 import { useSearchParams } from "react-router-dom";
@@ -42,6 +41,7 @@ interface TransferResponse {
   status: boolean;
   msg: string;
   transaction_id: number;
+  msgOtp:string;
 }
 
 interface CoinNetworkRef {
@@ -99,10 +99,10 @@ const CryptoWithdrawForm: FC = () => {
   const [isResending, setIsResending] = useState(false);
   const [isTradeSuccessModalOpen, setIsTradeSuccessModalOpen] = useState(false);
   const [currentCryptoCurrency, setCurrentCryptoCurrency] = useState<CryptoItem | null>(null);
-  const { data: userData } = useGetUser();
+ 
   const isDataLoading = isCryptoListLoading;
-  const userMobile = userData?.user?.mobile || "شماره شما";
-
+  
+ const [otpMessage, setOtpMessage] = useState<string>('');
   const handleSetCurrentCryptoCurrency = (currency: CryptoItem) => {
     setCrypto(currency.symbol);
     setCurrentCryptoCurrency(currency);
@@ -314,7 +314,9 @@ useEffect(() => {
       });
 
       setResendCodeTimeLeft(120);
-      setIsOtpModalOpen(true);
+      
+      setOtpMessage(response.msgOtp);
+  setIsOtpModalOpen(true);
     } catch (err) {
       toast.error((err as AxiosError<{ msg?: string }>)?.response?.data?.msg || "ارسال درخواست برداشت با مشکل مواجه شد.");
     } finally {
@@ -371,7 +373,8 @@ useEffect(() => {
           transactionId: res.transaction_id,
           ...dataToSend,
         });
-        setIsOtpModalOpen(true);
+        setOtpMessage(res.msgOtp || res.msg);
+  setIsOtpModalOpen(true);
         setResendCodeTimeLeft(120);
         toast.success(res.msg || "کد تأیید ارسال شد");
       } else {
@@ -758,7 +761,7 @@ useEffect(() => {
             handleResendCode={handleResendCode}
             resendCodeIsSubmitting={isResending}
             resendCodeTimeLeft={resendCodeTimeLeft}
-            mainText={`لطفاً کد ارسال شده به شماره ${userMobile} را وارد کنید`}
+            mainText={otpMessage} 
             submitButtonText="تأیید"
             titleText="تأیید برداشت"
              isSubmitting={isOtpSubmitting}
