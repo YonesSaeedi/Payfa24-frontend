@@ -228,7 +228,7 @@ function mergeTopCoinsWithGeneralInfo(topCoins: Coin[], generalDataMap: CryptoDa
             <PopularAssetsBoxes topCoins={mergedTopCoins} />
           </div>
 
-          <div className="flex flex-col lg:flex-row-reverse justify-between gap-[27px] lg:pb-[49px] pb-[40px]">
+          <div className="flex flex-col lg:flex-row-reverse items-stretch justify-between gap-[27px] lg:pb-[49px] pb-[40px]">
             <PosterSlider isLoading={isLoadingDashboard} bannersData={dashboardData?.banner?.banner} />
             <InvitationCard referralLink={dashboardData?.referral?.reflink} />
           </div>

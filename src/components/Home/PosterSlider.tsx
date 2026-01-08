@@ -115,13 +115,12 @@ const PosterSlider = ({ bannersData, isLoading }: { bannersData: Banner[] | unde
             to={slide.link || "#"}
             draggable={false}
             onClick={(e) => draggedRef.current && e.preventDefault()}
-            className="flex-shrink-0 w-full lg:h-80 h-60 bg-[#0B0D17] overflow-hidden rounded-2xl"
-          >
+            className="flex-shrink-0 w-full lg:h-80   overflow-hidden rounded-2xl">
             {slide.imgUrl && (
               <img
                 src={`https://cdn.payfa24.com/banner/${slide.imgUrl}`}
                 alt={`Slide ${index + 1}`}
-                className="w-full h-full object-cover"
+                className="w-full h-full lg:object-cover object-contain"
                 draggable={false}
               />
             )}

@@ -290,7 +290,7 @@ const handleOpenModal = (tx: TypeTomanTransaction) => {
                     تاریخ تراکنش:
                     <span className="font-normal text-[14px]">{tx.DateTime ? convertDigitsToPersian(tx.DateTime) : "-"}</span>
                   </p>
-<p className="flex justify-between pb-4 font-medium text-[12px]">
+<div className="flex justify-between pb-4 font-medium text-[12px]">
   نوع:
   <div
     className={`inline-flex items-center gap-1 w-[108px] h-[29px] justify-center rounded-[4px] ${
@@ -308,7 +308,7 @@ const handleOpenModal = (tx: TypeTomanTransaction) => {
     )}
     <span className="text-[14px] font-normal">{transactionTypeMap[tx.type] || tx.type}</span>
   </div>
-</p>
+</div>
                   <p className="flex justify-between  pb-4 font-medium text-[12px]">
                     توضیحات: <span className="font-normal text-[14px]">{tx.description}</span>
                   </p>

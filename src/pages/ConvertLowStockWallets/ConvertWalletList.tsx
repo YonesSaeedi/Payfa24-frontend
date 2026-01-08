@@ -217,13 +217,13 @@ export default function ConvertPage() {
                       />
                       {allChecked && (
                         <span
-                          className="absolute inset-0 flex items-center justify-center text-black font-bold text-sm pointer-events-none"
+                          className="absolute inset-0 flex items-center justify-center text-black0 font-bold text-sm pointer-events-none"
                         >
                           ✓
                         </span>
                       )}
                     </div>
-                    <span className="text-sm">انتخاب همه</span>
+                    <span className="text-black1 text-sm">انتخاب همه</span>
                   </div>
 
                   <h5 className="text-black1 text-sm font-semibold">نماد رمزارز</h5>

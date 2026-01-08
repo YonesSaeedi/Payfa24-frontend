@@ -166,7 +166,8 @@ const handleCopyVoucher = (voucher?: string) => {
       onClick={onClose}
     >
       <div
-        className="bg-white8 rounded-2xl p-8 w-[90%] max-w-md relative shadow-xl text-black0 dark:text-white transition-colors duration-200"
+        className="bg-white8 rounded-2xl p-6 w-[90%] max-w-md max-h-[90vh] overflow-y-auto relative shadow-xl
+             scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 scrollbar-thumb-rounded"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center pb-4 mb-4">

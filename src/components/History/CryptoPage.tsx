@@ -407,7 +407,7 @@ const MobileSkeleton = () => (
                   <p className="flex justify-between">
                     مقدار: <span className="flex flex-row-reverse pb-4 font-normal text-[14px]">{formatEnglishNumber(tx.amount)} <span className="pl-1">{tx.coin.symbol}</span></span>
                   </p>
-                 <p className="flex justify-between items-center">
+                <div className="flex justify-between items-center">
   نوع:
   <div
     className={`inline-flex items-center gap-1   w-[108px] h-[29px] justify-center rounded-[4px] ${
@@ -431,7 +431,7 @@ const MobileSkeleton = () => (
       {transactionTypeMap[tx.type] || tx.type}
     </span>
   </div>
-</p>
+</div>
 
 
 
