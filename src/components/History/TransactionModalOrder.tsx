@@ -167,7 +167,7 @@ const handleCopyVoucher = (voucher?: string) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center pb-4 mb-4">
-          <h2 className="font-semibold text-lg">جزئیات سفارش</h2>
+          <h2 className="font-semibold text-lg text-black0">جزئیات سفارش</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-blue2 transition w-7">
             <IconClose />
           </button>
@@ -322,7 +322,7 @@ const DetailRow = ({
     <div className="flex justify-between items-center">
       <span className="font-medium text-[16px] text-gray5 whitespace-nowrap">{label}:</span>
       <div className="flex items-end justify-end gap-1 min-w-[120px] text-left">
-        <div className="flex items-center justify-end gap-1 min-w-[120px] text-left">
+        <div className="flex items-center justify-end gap-1 min-w-[120px] text-left text-black0">
           {value}
           {symbol && <span>{symbol}</span>}
         </div>
